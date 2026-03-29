@@ -1,0 +1,679 @@
+import React, { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, DollarSign, Reply, X } from 'lucide-react';
+import { Button } from '../../ui/button/Button';
+import { cn } from '../../ui/utils';
+import { ROUTES } from '@/app/routes.constants';
+
+interface NotificationsDropdownProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onToggle: () => void;
+}
+
+// Hook to detect mobile screen
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  return isMobile;
+};
+
+// Mock notifications data
+const NOTIFICATIONS = [
+  {
+    id: '1',
+    type: 'review-request' as const,
+    avatar: User,
+    avatarBg: 'bg-blue-100',
+    avatarColor: 'text-blue-600',
+    badge: MessageCircle,
+    badgeBg: 'bg-blue-500',
+    title: (
+      <>
+        <span className="font-semibold">John Smith</span> requested your review on{" "}
+        <span className="font-medium text-emerald-600">SOP-QA-015</span>
+      </>
+    ),
+    time: '2m ago',
+    onClick: () => console.log("Navigate to document review")
+  },
+  {
+    id: '2',
+    type: 'approval' as const,
+    avatar: User,
+    avatarBg: 'bg-emerald-100',
+    avatarColor: 'text-emerald-600',
+    badge: CheckCircle,
+    badgeBg: 'bg-emerald-500',
+    title: (
+      <>
+        <span className="font-semibold">Sarah Johnson</span> approved{" "}
+        <span className="font-medium text-emerald-600">DEV-2023-089</span>
+      </>
+    ),
+    time: '15m ago',
+    onClick: () => console.log("Navigate to approved document")
+  },
+  {
+    id: '3',
+    type: 'capa-assignment' as const,
+    avatar: AlertTriangle,
+    avatarBg: 'bg-amber-100',
+    avatarColor: 'text-amber-600',
+    badge: UserPlus,
+    badgeBg: 'bg-amber-500',
+    title: (
+      <>
+        You were assigned to{" "}
+        <span className="font-medium text-amber-600">CAPA-2023-045</span>
+      </>
+    ),
+    time: '1h ago',
+    onClick: () => console.log("Navigate to CAPA")
+  },
+  {
+    id: '4',
+    type: 'training-completion' as const,
+    avatar: User,
+    avatarBg: 'bg-purple-100',
+    avatarColor: 'text-purple-600',
+    badge: ThumbsUp,
+    badgeBg: 'bg-purple-500',
+    title: (
+      <>
+        <span className="font-semibold">Mike Wilson</span> completed training on{" "}
+        <span className="font-medium">GMP Basics</span>
+      </>
+    ),
+    time: '2h ago',
+    onClick: () => console.log("Navigate to training")
+  },
+  {
+    id: '5',
+    type: 'document-update' as const,
+    avatar: FileText,
+    avatarBg: 'bg-cyan-100',
+    avatarColor: 'text-cyan-600',
+    badge: DollarSign,
+    badgeBg: 'bg-cyan-500',
+    title: (
+      <>
+        <span className="font-semibold">Quality Team</span> updated{" "}
+        <span className="font-medium text-cyan-600">SOP-QA-001</span>
+      </>
+    ),
+    time: '3h ago',
+    onClick: () => console.log("Navigate to document")
+  },
+  {
+    id: '6',
+    type: 'comment-reply' as const,
+    avatar: User,
+    avatarBg: 'bg-slate-100',
+    avatarColor: 'text-slate-600',
+    badge: Reply,
+    badgeBg: 'bg-slate-500',
+    title: (
+      <>
+        <span className="font-semibold">Emma Davis</span> replied to your comment on{" "}
+        <span className="font-medium">Document Review Process</span>
+      </>
+    ),
+    time: '5h ago',
+    onClick: () => console.log("Navigate to comment")
+  },
+  {
+    id: '7',
+    type: 'review-request' as const,
+    avatar: User,
+    avatarBg: 'bg-rose-100',
+    avatarColor: 'text-rose-600',
+    badge: MessageCircle,
+    badgeBg: 'bg-rose-500',
+    title: (
+      <>
+        <span className="font-semibold">Lisa Chen</span> requested your review on{" "}
+        <span className="font-medium text-rose-600">CAPA-2023-078</span>
+      </>
+    ),
+    time: '6h ago',
+    onClick: () => console.log("Navigate to CAPA review")
+  },
+  {
+    id: '8',
+    type: 'document-update' as const,
+    avatar: FileText,
+    avatarBg: 'bg-indigo-100',
+    avatarColor: 'text-indigo-600',
+    badge: CheckCircle,
+    badgeBg: 'bg-indigo-500',
+    title: (
+      <>
+        <span className="font-semibold">Regulatory Team</span> published{" "}
+        <span className="font-medium text-indigo-600">SOP-REG-003</span>
+      </>
+    ),
+    time: '8h ago',
+    onClick: () => console.log("Navigate to document")
+  },
+  {
+    id: '9',
+    type: 'training-completion' as const,
+    avatar: User,
+    avatarBg: 'bg-teal-100',
+    avatarColor: 'text-teal-600',
+    badge: ThumbsUp,
+    badgeBg: 'bg-teal-500',
+    title: (
+      <>
+        <span className="font-semibold">David Brown</span> completed training on{" "}
+        <span className="font-medium">Deviation Handling</span>
+      </>
+    ),
+    time: '10h ago',
+    onClick: () => console.log("Navigate to training")
+  },
+  {
+    id: '10',
+    type: 'approval' as const,
+    avatar: User,
+    avatarBg: 'bg-orange-100',
+    avatarColor: 'text-orange-600',
+    badge: CheckCircle,
+    badgeBg: 'bg-orange-500',
+    title: (
+      <>
+        <span className="font-semibold">Maria Garcia</span> approved{" "}
+        <span className="font-medium text-orange-600">CHG-2023-156</span>
+      </>
+    ),
+    time: '12h ago',
+    onClick: () => console.log("Navigate to change control")
+  },
+  {
+    id: '11',
+    type: 'capa-assignment' as const,
+    avatar: AlertTriangle,
+    avatarBg: 'bg-red-100',
+    avatarColor: 'text-red-600',
+    badge: UserPlus,
+    badgeBg: 'bg-red-500',
+    title: (
+      <>
+        Urgent: You were assigned to{" "}
+        <span className="font-medium text-red-600">DEV-2023-234</span>
+      </>
+    ),
+    time: '1d ago',
+    onClick: () => console.log("Navigate to deviation")
+  },
+  {
+    id: '12',
+    type: 'document-update' as const,
+    avatar: FileText,
+    avatarBg: 'bg-sky-100',
+    avatarColor: 'text-sky-600',
+    badge: DollarSign,
+    badgeBg: 'bg-sky-500',
+    title: (
+      <>
+        <span className="font-semibold">Production Team</span> updated{" "}
+        <span className="font-medium text-sky-600">BP-PROD-045</span>
+      </>
+    ),
+    time: '1d ago',
+    onClick: () => console.log("Navigate to batch record")
+  }
+];
+
+// Notification Item Component
+const NotificationItem: React.FC<{
+  notification: typeof NOTIFICATIONS[0];
+  isLast: boolean;
+  onClose: () => void;
+}> = ({ notification, isLast, onClose }) => {
+  const AvatarIcon = notification.avatar;
+  const BadgeIcon = notification.badge;
+  
+  return (
+    <button 
+      onClick={() => {
+        notification.onClick();
+        onClose();
+      }}
+      className={cn(
+        "w-full flex items-start gap-2.5 px-3.5 py-2 hover:bg-slate-50 active:bg-slate-100 transition-colors text-left",
+        !isLast && "border-b border-slate-100"
+      )}
+    >
+      <div className="relative shrink-0">
+        <div className={cn("h-8 w-8 rounded-full flex items-center justify-center", notification.avatarBg)}>
+          <AvatarIcon className={cn("h-4 w-4", notification.avatarColor)} />
+        </div>
+        <div className={cn(
+          "absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full flex items-center justify-center border-2 border-white",
+          notification.badgeBg
+        )}>
+          <BadgeIcon className="h-2.5 w-2.5 text-white" />
+        </div>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-slate-900 leading-snug">
+          {notification.title}
+        </p>
+        <p className="text-[10px] text-slate-400 mt-0.5">{notification.time}</p>
+      </div>
+    </button>
+  );
+};
+
+// Mobile Bottom Drawer Component
+const MobileDrawer: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  onViewAll: () => void;
+}> = ({ isOpen, onClose, onViewAll }) => {
+  const [animationState, setAnimationState] = useState<'closed' | 'opening' | 'open' | 'closing'>('closed');
+  const [shouldRender, setShouldRender] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [drawerHeight, setDrawerHeight] = useState(70); // Height in vh (percentage of viewport)
+  const dragStartY = useRef(0);
+  const dragStartHeight = useRef(70);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  
+  // Min and max height constraints (in vh)
+  const MIN_HEIGHT = 30;
+  const MAX_HEIGHT = 100;
+  const CLOSE_THRESHOLD = 20; // Close drawer if dragged below this height
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+      setDrawerHeight(70); // Reset to default height
+      // Start from below screen
+      setAnimationState('closed');
+      // Small delay then animate up
+      const openTimer = setTimeout(() => {
+        setAnimationState('opening');
+      }, 10);
+      // Mark as fully open
+      const openedTimer = setTimeout(() => {
+        setAnimationState('open');
+      }, 450);
+      // Lock body scroll
+      document.body.style.overflow = 'hidden';
+      return () => {
+        clearTimeout(openTimer);
+        clearTimeout(openedTimer);
+      };
+    } else {
+      if (animationState !== 'closed') {
+        setAnimationState('closing');
+        // Wait for animation to complete before unmounting
+        const timer = setTimeout(() => {
+          setShouldRender(false);
+          setAnimationState('closed');
+        }, 350);
+        // Restore body scroll
+        document.body.style.overflow = '';
+        return () => clearTimeout(timer);
+      }
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  // Handle drag start
+  const handleDragStart = (clientY: number) => {
+    setIsDragging(true);
+    dragStartY.current = clientY;
+    dragStartHeight.current = drawerHeight;
+  };
+
+  // Handle drag move
+  const handleDragMove = (clientY: number) => {
+    if (!isDragging) return;
+    
+    const viewportHeight = window.innerHeight;
+    const deltaY = dragStartY.current - clientY; // Positive when dragging up
+    const deltaVh = (deltaY / viewportHeight) * 100;
+    
+    let newHeight = dragStartHeight.current + deltaVh;
+    // Clamp between min and max
+    newHeight = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, newHeight));
+    setDrawerHeight(newHeight);
+  };
+
+  // Handle drag end
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    
+    // Close if dragged too low
+    if (drawerHeight < CLOSE_THRESHOLD) {
+      onClose();
+      return;
+    }
+    
+    // Snap to nearest comfortable height
+    if (drawerHeight < 40) {
+      setDrawerHeight(MIN_HEIGHT);
+    } else if (drawerHeight > 90) {
+      setDrawerHeight(MAX_HEIGHT);
+    }
+    // Otherwise keep current height
+  };
+
+  // Touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    handleDragStart(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    handleDragMove(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = () => {
+    handleDragEnd();
+  };
+
+  // Mouse handlers (for testing on desktop)
+  const handleMouseDown = (e: React.MouseEvent) => {
+    handleDragStart(e.clientY);
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      handleDragMove(e.clientY);
+    };
+    
+    const handleMouseUp = () => {
+      handleDragEnd();
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
+
+  if (!shouldRender) return null;
+
+  const isVisible = animationState === 'opening' || animationState === 'open';
+  const isFullHeight = drawerHeight >= 95;
+
+  return createPortal(
+    <div className="fixed inset-0 z-50 md:hidden">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        style={{
+          opacity: isVisible ? 1 : 0,
+          transition: `opacity ${isVisible ? '350ms' : '250ms'} cubic-bezier(0.4, 0, 0.2, 1)`,
+        }}
+        onClick={onClose}
+      />
+      
+      {/* Drawer */}
+      <div 
+        ref={drawerRef}
+        className={cn(
+          "absolute bottom-0 left-0 right-0 bg-white shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.25)]",
+          isFullHeight ? "rounded-none" : "rounded-t-xl"
+        )}
+        style={{
+          height: `${drawerHeight}dvh`,
+          // Safe area for home indicator (bottom) and Dynamic Island (top when expanded)
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          paddingTop: isFullHeight ? 'env(safe-area-inset-top, 0px)' : '0',
+          paddingLeft: 'env(safe-area-inset-left, 0px)',
+          paddingRight: 'env(safe-area-inset-right, 0px)',
+          transform: isVisible ? 'translateY(0)' : 'translateY(100%)',
+          transition: isDragging 
+            ? 'none' 
+            : isVisible 
+              ? 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1), height 300ms cubic-bezier(0.16, 1, 0.3, 1), border-radius 200ms ease'
+              : 'transform 300ms cubic-bezier(0.4, 0, 0.6, 1)',
+          // iOS Safari optimization
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
+        }}
+      >
+        {/* Drawer Handle - Draggable */}
+        <div 
+          className={cn(
+            "flex justify-center py-3 cursor-grab active:cursor-grabbing select-none touch-none",
+            isFullHeight && "pt-4"
+          )}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+        >
+          <div className={cn(
+            "rounded-full transition-all duration-200",
+            isDragging 
+              ? "w-20 h-1.5 bg-slate-400" 
+              : "w-12 h-1 bg-slate-300 hover:bg-slate-400 hover:w-16"
+          )} />
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200">
+          <h3 className="text-lg font-semibold text-slate-900">Notifications</h3>
+          <button 
+            className="flex items-center gap-1.5 py-2 hover:bg-slate-100 active:bg-slate-200 rounded-lg transition-colors"
+            onClick={() => console.log("Mark all as read")}
+          >
+            <CheckCheck className="h-4 w-4 text-emerald-600" />
+            <span className="text-xs font-medium text-emerald-600">Mark all read</span>
+          </button>
+        </div>
+
+        {/* Notifications List */}
+        <div 
+          className="overflow-y-auto overscroll-contain flex-1"
+          style={{ 
+            // Dynamic height based on drawer height
+            height: `calc(${drawerHeight}dvh - 120px - ${isFullHeight ? 'env(safe-area-inset-top, 0px)' : '0px'} - env(safe-area-inset-bottom, 0px))`,
+            WebkitOverflowScrolling: 'touch',
+            transition: isDragging ? 'none' : 'height 300ms cubic-bezier(0.16, 1, 0.3, 1)',
+            overscrollBehavior: 'contain',
+          }}
+        >
+          {NOTIFICATIONS.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 px-4">
+              <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                <Bell className="h-8 w-8 text-slate-400" />
+              </div>
+              <p className="text-base font-medium text-slate-900">No notifications</p>
+              <p className="text-sm text-slate-500 mt-1">You're all caught up!</p>
+            </div>
+          ) : (
+            NOTIFICATIONS.map((notification, index) => (
+              <NotificationItem
+                key={notification.id}
+                notification={notification}
+                isLast={index === NOTIFICATIONS.length - 1}
+                onClose={onClose}
+              />
+            ))
+          )}
+        </div>
+
+        {/* Footer - View All */}
+        <div className="border-t border-slate-200 px-4" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 12px)' }}>
+          <button 
+            className="w-full py-3 text-center text-sm font-medium text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100 rounded-lg transition-colors"
+            onClick={() => {
+              onViewAll();
+              onClose();
+            }}
+          >
+            View all notifications
+          </button>
+        </div>
+
+      </div>
+    </div>,
+    document.body
+  );
+};
+
+// Desktop Dropdown Component
+const DesktopDropdown: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  buttonRef: React.RefObject<HTMLDivElement>;
+  onViewAll: () => void;
+}> = ({ isOpen, onClose, buttonRef, onViewAll }) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (buttonRef.current && !buttonRef.current.contains(target) &&
+          dropdownRef.current && !dropdownRef.current.contains(target)) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [isOpen, onClose, buttonRef]);
+
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-50 pointer-events-none">
+      {/* Full-screen Backdrop Overlay - only catches clicks */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 z-0 bg-transparent pointer-events-auto"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Dropdown Content */}
+      <motion.div
+        ref={dropdownRef}
+        initial={{ opacity: 0, scale: 0.95, y: -10, transformOrigin: 'top right' }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: -10 }}
+        transition={{ type: 'spring', bounce: 0, duration: 0.25 }}
+        className="fixed w-80 bg-white border border-slate-200 rounded-xl shadow-2xl z-10 overflow-hidden pointer-events-auto"
+        style={{
+          top: `${buttonRef.current?.getBoundingClientRect().bottom! + window.scrollY + 8}px`,
+          right: `${window.innerWidth - buttonRef.current?.getBoundingClientRect().right! - window.scrollX}px`
+        }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-200">
+          <h3 className="text-sm font-semibold text-slate-900">Notifications</h3>
+          <button 
+            className="flex items-center gap-1.5 px-2 py-1 hover:bg-slate-100 rounded-lg transition-colors group"
+            onClick={() => console.log("Mark all as read")}
+            title="Mark all as read"
+          >
+            <CheckCheck className="h-3.5 w-3.5 text-slate-500 group-hover:text-emerald-600 transition-colors" />
+            <span className="text-[11px] font-medium text-slate-600 group-hover:text-emerald-600 transition-colors">Mark all as read</span>
+          </button>
+        </div>
+
+        {/* Notifications List — max 5 visible, scroll for more */}
+        <div className="max-h-[240px] overflow-y-auto">
+          {NOTIFICATIONS.map((notification, index) => (
+            <NotificationItem
+              key={notification.id}
+              notification={notification}
+              isLast={index === NOTIFICATIONS.length - 1}
+              onClose={onClose}
+            />
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-slate-200">
+          <button 
+            className="w-full py-1.5 text-center text-[11px] font-medium text-emerald-600 hover:bg-emerald-50 rounded-b-xl transition-colors"
+            onClick={() => {
+              onViewAll();
+              onClose();
+            }}
+          >
+            View all notifications
+          </button>
+        </div>
+      </motion.div>
+    </div>,
+    document.body
+  );
+};
+
+export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ isOpen, onClose, onToggle }) => {
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const handleViewAllNotifications = () => {
+    navigate(ROUTES.NOTIFICATIONS);
+  };
+
+  return (
+    <>
+      {/* Notifications Button */}
+      <div ref={notificationRef} className="inline-flex">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onToggle}
+          className="relative text-slate-600 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
+        >
+          <motion.div
+            animate={isOpen ? { rotate: [0, -20, 20, -15, 15, -10, 10, 0] } : { rotate: 0 }}
+            transition={{ duration: 0.5 }}
+            className="origin-top flex items-center justify-center"
+          >
+            <Bell className="h-5 w-5 md:h-6 md:w-6" />
+          </motion.div>
+          <span className="absolute top-2.5 right-2.5 h-2 w-2 bg-red-500 rounded-full border border-white shadow-sm" />
+        </Button>
+      </div>
+
+      {/* Mobile: Bottom Drawer */}
+      {isMobile && <MobileDrawer isOpen={isOpen} onClose={onClose} onViewAll={handleViewAllNotifications} />}
+
+      {/* Desktop: Dropdown */}
+      {!isMobile && (
+        <AnimatePresence>
+          {isOpen && (
+            <DesktopDropdown 
+              isOpen={isOpen} 
+              onClose={onClose} 
+              buttonRef={notificationRef as React.RefObject<HTMLDivElement>}
+              onViewAll={handleViewAllNotifications}
+            />
+          )}
+        </AnimatePresence>
+      )}
+    </>
+  );
+};

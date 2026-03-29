@@ -1,0 +1,97 @@
+/* Styles for docx-preview library */
+.docx-preview-container {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: #1e293b;
+}
+
+/* Set white background for docx wrapper */
+.docx-preview-container .docx-wrapper,
+.docx-preview-container .docx {
+    background-color: white !important;
+}
+
+/* Add page breaks for multi-page documents */
+.docx-preview-container section {
+    background-color: white;
+    padding: 2cm 1.5cm;
+    margin: 0 auto 2cm auto;
+    max-width: 21cm;
+    min-height: 29.7cm;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+    position: relative;
+}
+
+.docx-preview-container section:last-child {
+    margin-bottom: 0;
+}
+
+.docx-preview-container p {
+    margin-bottom: 0.5em;
+}
+
+.docx-preview-container h1,
+.docx-preview-container h2,
+.docx-preview-container h3,
+.docx-preview-container h4,
+.docx-preview-container h5,
+.docx-preview-container h6 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.docx-preview-container h1 {
+    font-size: 2em;
+}
+
+.docx-preview-container h2 {
+    font-size: 1.5em;
+}
+
+.docx-preview-container h3 {
+    font-size: 1.25em;
+}
+
+.docx-preview-container table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+.docx-preview-container table td,
+.docx-preview-container table th {
+    border: 1px solid #e2e8f0;
+    padding: 0.5em;
+}
+
+.docx-preview-container table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+}
+
+.docx-preview-container ul,
+.docx-preview-container ol {
+    margin: 0.5em 0;
+    padding-left: 2em;
+}
+
+.docx-preview-container li {
+    margin-bottom: 0.25em;
+}
+
+.docx-preview-container img {
+    max-width: 100%;
+    height: auto;
+}
+
+.docx-preview-container a {
+    color: #059669;
+    text-decoration: underline;
+}
+
+.docx-preview-container a:hover {
+    color: #047857;
+}

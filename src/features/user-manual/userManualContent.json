@@ -1,0 +1,1489 @@
+{
+  "notifications": {
+    "label": "Notifications",
+    "iconName": "Bell",
+    "section": {
+      "id": "notifications",
+      "title": "Notifications",
+      "overview": "The Notifications system keeps you informed about important events, task assignments, and system updates in real-time. It ensures you never miss critical actions that require your attention.",
+      "features": [
+        {
+          "iconName": "Bell",
+          "title": "In-App Alerts",
+          "description": "Real-time pop-up notifications and an unread count in the top-bar keep you updated while you work in the system.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "FileText",
+          "title": "Email Notifications",
+          "description": "Configurable email alerts for critical events like document approval requests, CAPA assignments, or overdue tasks.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "Settings",
+          "title": "Configurable Rules",
+          "description": "Customize which events trigger notifications and choose between daily summaries or immediate individual alerts.",
+          "color": "bg-slate-100",
+          "iconColor": "text-slate-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "View Recent Notifications",
+          "description": "Click the Bell icon in the top header to view your most recent notifications and alerts."
+        },
+        {
+          "step": 2,
+          "title": "Mark as Read",
+          "description": "Click on a specific notification to open the related record and automatically mark it as read, or use 'Mark All as Read'."
+        },
+        {
+          "step": 3,
+          "title": "Manage Settings",
+          "description": "Navigate to Preferences > Notifications to choose which modules and events should trigger email or in-app alerts."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Check your notifications first thing every morning together with the Dashboard to prioritize your day's work."
+        }
+      ]
+    }
+  },
+  "dashboard": {
+    "label": "Dashboard",
+    "iconName": "IconLayoutGrid",
+    "section": {
+      "id": "dashboard",
+      "title": "Dashboard",
+      "overview": "The Dashboard provides a real-time, comprehensive overview of your eQMS system health. Monitor critical KPIs, recent activity across all modules, and tasks requiring your immediate attention — all from a single screen.",
+      "features": [
+        {
+          "iconName": "BarChart3",
+          "title": "KPI Widgets",
+          "description": "Real-time display of critical metrics including pending document approvals, open CAPAs, overdue tasks, and training compliance rates.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "Priority Tasks",
+          "description": "A prioritized list of tasks requiring immediate attention, sorted by urgency and due date for efficient workload management.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "RefreshCw",
+          "title": "Recent Activity Feed",
+          "description": "A live log of the latest system actions, helping you quickly grasp what is happening across all modules and teams.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "AlertCircle",
+          "title": "Alerts & Reminders",
+          "description": "Proactive notifications for upcoming deadlines, expiring documents, past-due calibrations, and incomplete training assignments.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Review KPI Widgets",
+          "description": "Scan the KPI widget area at the top of the screen for a high-level summary of system health and outstanding items."
+        },
+        {
+          "step": 2,
+          "title": "Check Pending Tasks",
+          "description": "Review the My Tasks panel directly on the dashboard, or click 'View All' to navigate to the full My Tasks page."
+        },
+        {
+          "step": 3,
+          "title": "Monitor Recent Activity",
+          "description": "Browse the activity feed to see who performed which actions in the system and when they occurred."
+        },
+        {
+          "step": 4,
+          "title": "Act on Alerts",
+          "description": "Click any alert to be navigated directly to the relevant record that requires your attention."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Dashboard widgets can be rearranged by drag-and-drop to suit your personal workflow preferences."
+        },
+        {
+          "type": "info",
+          "text": "Dashboard data refreshes automatically every 5 minutes. Click the Refresh button to update the view immediately."
+        }
+      ]
+    }
+  },
+  "my-tasks": {
+    "label": "My Tasks",
+    "iconName": "IconBrandAsana",
+    "section": {
+      "id": "my-tasks",
+      "title": "My Tasks",
+      "overview": "The My Tasks module provides a consolidated, prioritized list of all activities assigned to you across every system module. From document reviews to equipment calibrations, your complete workload is visible and manageable in one place.",
+      "features": [
+        {
+          "iconName": "ClipboardList",
+          "title": "Unified Task List",
+          "description": "See all your assigned actions from Documents, Training, CAPA, Deviations, and more in a single, sortable list view.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "AlertCircle",
+          "title": "Priority & Deadlines",
+          "description": "Tasks are clearly marked with due dates and statuses (Normal, Urgent, Overdue), making it easy to focus on critical work first.",
+          "color": "bg-red-100",
+          "iconColor": "text-red-600"
+        },
+        {
+          "iconName": "IconFilter2Search",
+          "title": "Advanced Filtering",
+          "description": "Find specific tasks quickly by filtering by module, assignment date, status, or keyword search.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Access My Tasks List",
+          "description": "Select 'My Tasks' from the side menu to view your active workload."
+        },
+        {
+          "step": 2,
+          "title": "Select Task to Execute",
+          "description": "Click on a task record to open the Task Detail Drawer. Review the task description and requirements."
+        },
+        {
+          "step": 3,
+          "title": "Action the Task",
+          "description": "Use the direct links within the task drawer to navigate to the exact screen where the task should be performed (e.g., Document Review screen)."
+        },
+        {
+          "step": 4,
+          "title": "Track Completion",
+          "description": "Once actions are completed, the system automatically removes the task from your active list or updates its status."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Overdue tasks appear in red at the top of your list and generate escalation notices to your manager. Keep your tasks up to date!"
+        }
+      ]
+    }
+  },
+  "documents": {
+    "label": "Document Control",
+    "iconName": "IconFileDescription",
+    "section": {
+      "id": "documents",
+      "title": "Document Control",
+      "overview": "The Document Control module is the backbone of eQMS, managing every stage of the document lifecycle — from creation, drafting, review, and approval, through to official issuance and archival. It ensures all controlled documents are traceable, current, and compliant with your organization's processes.",
+      "features": [
+        {
+          "iconName": "FileText",
+          "title": "Create & Draft",
+          "description": "Create new documents from pre-built templates or from scratch, with full metadata fields, an integrated editor, and configurable approval workflows.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "CheckCircle2",
+          "title": "Review & Approval Workflow",
+          "description": "Documents follow a configurable Review → Approval process secured by electronic signatures (e-Signature) to ensure authenticity at every step.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "RefreshCw",
+          "title": "Version Management",
+          "description": "Maintain a complete version history for every document, compare differences between revisions, and roll back to any previous version if needed.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "Truck",
+          "title": "Controlled Copies",
+          "description": "Distribute Controlled Copies to relevant departments, track their distribution status, and automatically recall them when a newer version is issued.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Create a New Document",
+          "description": "Go to Documents > All Documents and click '+ New Document'. Fill in the required fields: title, document type, owning department, and the reviewer/approver list."
+        },
+        {
+          "step": 2,
+          "title": "Draft the Content",
+          "description": "Use the integrated document editor to write content and upload file attachments. Save as a draft at any time without triggering the approval workflow."
+        },
+        {
+          "step": 3,
+          "title": "Submit for Review",
+          "description": "When the draft is ready, click 'Submit for Review'. All assigned reviewers will receive an email notification."
+        },
+        {
+          "step": 4,
+          "title": "Review & Comment",
+          "description": "Reviewers read the document, add inline comments if revisions are needed, or click 'Approve' to advance it to the next stage."
+        },
+        {
+          "step": 5,
+          "title": "Approve & Issue",
+          "description": "The authorized approver signs the document with their e-Signature to issue it officially. The document status changes to Effective."
+        },
+        {
+          "step": 6,
+          "title": "Distribute Controlled Copies",
+          "description": "Generate Controlled Copies from the effective document and distribute them to all relevant departments or locations."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Use document Templates to save significant time when creating multiple documents of the same type."
+        },
+        {
+          "type": "warning",
+          "text": "Only the document Owner can edit an existing document or initiate a new revision. Contact your Quality team to update ownership if needed."
+        },
+        {
+          "type": "info",
+          "text": "Effective documents cannot be directly edited. A Document Revision must be created to propose any changes to an issued document."
+        }
+      ]
+    }
+  },
+  "training": {
+    "label": "Training Management",
+    "iconName": "GraduationCap",
+    "section": {
+      "id": "training",
+      "title": "Training Management",
+      "overview": "The Training Management module provides end-to-end oversight of your organization's training program — from course planning and learning material management, to tracking employee completion and generating audit-ready training records that meet GMP and ISO requirements.",
+      "features": [
+        {
+          "iconName": "GraduationCap",
+          "title": "Course Management",
+          "description": "Create and manage training courses with full details: learning objectives, target audience, schedule, reference materials, and minimum pass score.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "FileText",
+          "title": "Training Materials",
+          "description": "Upload and manage learning assets (SOPs, videos, slides) that link directly to documents in the Document Control module for seamless traceability.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "BarChart3",
+          "title": "Training Matrix",
+          "description": "A role-based compliance matrix displaying required training by department or job title against actual employee completion status, clearly highlighting gaps.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "Training Records",
+          "description": "Maintain a permanent training record for every employee, exportable as PDF or Excel for customer audits or regulatory authority submissions.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Create a New Training Course",
+          "description": "Go to Training > Courses and click '+ New Course'. Enter course title, description, learning objectives, and passing criteria."
+        },
+        {
+          "step": 2,
+          "title": "Attach Learning Materials",
+          "description": "Link SOPs from Document Control, upload presentation slides, training videos, and add any external reference links."
+        },
+        {
+          "step": 3,
+          "title": "Assign Courses to Employees",
+          "description": "Go to Training > Assignments. Assign courses to specific employees, departments, or job roles. Set due dates and recurrence policy."
+        },
+        {
+          "step": 4,
+          "title": "Complete Training",
+          "description": "Employees receive notifications, access the assigned course, and complete a final test/quiz if configured."
+        },
+        {
+          "step": 5,
+          "title": "Verify Completion",
+          "description": "The system automatically records the training completion date and score. Authorized trainers can verify final qualification manually if needed."
+        },
+        {
+          "step": 6,
+          "title": "Generate Training Reports",
+          "description": "Access Training Reports to view completion statistics, identify gaps, and export audit-ready training record summaries."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Set automatic recurrence for critical GMP training (e.g., every 12 months) to ensure continuous compliance."
+        },
+        {
+          "type": "warning",
+          "text": "Training records are permanent. Once marked as complete, the record cannot be deleted, only edited by Quality Managers."
+        },
+        {
+          "type": "info",
+          "text": "Training completion triggers automatic notification to the employee's manager and quality department."
+        }
+      ]
+    }
+  },
+  "deviations": {
+    "label": "Deviations & NCs",
+    "iconName": "IconAlertTriangle",
+    "section": {
+      "id": "deviations",
+      "title": "Deviations & NCs",
+      "overview": "The Deviations module enables you to document, investigate, and resolve any departure from approved procedures or established standards. Proper deviation management ensures that non-conformances are addressed quickly and systematically, safeguarding product quality and regulatory compliance.",
+      "features": [
+        {
+          "iconName": "AlertCircle",
+          "title": "Capture & Classify",
+          "description": "Record deviation events with complete details: description, root cause classification, severity, affected products, and related documents.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "Investigation",
+          "description": "Conduct formal investigations with cross-functional teams, document findings, and link results directly to CAPA actions as necessary.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "CheckCircle2",
+          "title": "Approval & Closure",
+          "description": "All deviations must be formally reviewed, justified, and approved by Quality Assurance before being closed with full traceability.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "BarChart3",
+          "title": "Deviation Analytics",
+          "description": "Track trend analysis over time to identify recurring issues, root cause patterns, and improvement opportunities.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Report a Deviation",
+          "description": "Go to Deviations > All Deviations and click '+ New Deviation'. Provide a clear description, classification, and severity level."
+        },
+        {
+          "step": 2,
+          "title": "Immediate Action",
+          "description": "Document any containment actions taken immediately to prevent further non-conformance (e.g., quarantine affected product)."
+        },
+        {
+          "step": 3,
+          "title": "Assign Investigation Team",
+          "description": "Assign QA, QC, and operations personnel to conduct the investigation. Set target completion dates."
+        },
+        {
+          "step": 4,
+          "title": "Root Cause Analysis",
+          "description": "Use 5-Why, Fishbone Diagram, or Failure Mode analysis to identify the true root cause of the deviation."
+        },
+        {
+          "step": 5,
+          "title": "Link to CAPA",
+          "description": "If systemic improvement is needed, initiate a CAPA record directly from the deviation to ensure corrective action."
+        },
+        {
+          "step": 6,
+          "title": "QA Review & Closure",
+          "description": "Quality Assurance reviews all investigation data, approves the disposition, and formally closes the deviation."
+        }
+      ],
+      "tips": [
+        {
+          "type": "warning",
+          "text": "All critical deviations (impacting patient safety or product quality) must be reported to regulatory authorities as per local requirements."
+        },
+        {
+          "type": "tip",
+          "text": "Attach photos, lab test results, and batch records as evidence to support your investigation findings."
+        },
+        {
+          "type": "info",
+          "text": "Deviations cannot be deleted once approved. Use the 'Archived' status to hide obsolete or cancelled deviation records."
+        }
+      ]
+    }
+  },
+  "capa": {
+    "label": "CAPA Management",
+    "iconName": "IconClipboardCheck",
+    "section": {
+      "id": "capa",
+      "title": "CAPA Management",
+      "overview": "The CAPA module provides structured workflows to manage Corrective Actions (resolving existing problems) and Preventive Actions (preventing potential problems). It ensures that root causes are eliminated, implemented solutions are verified, and effectiveness is validated before closure.",
+      "features": [
+        {
+          "iconName": "AlertCircle",
+          "title": "CAPA Initiation",
+          "description": "Create CAPA records from deviations, audit findings, customer complaints, or proactive risk assessments, ensuring every issue is tracked.",
+          "color": "bg-red-100",
+          "iconColor": "text-red-600"
+        },
+        {
+          "iconName": "ListChecks",
+          "title": "Action Planning",
+          "description": "Define specific, measurable action items with owners, due dates, and resource requirements to address identified root causes.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "CheckCircle2",
+          "title": "Implementation & Verification",
+          "description": "Track action implementation progress and verify that each step has been correctly executed before proceeding to effectiveness check.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "BarChart3",
+          "title": "Effectiveness Review",
+          "description": "Conduct a formal effectiveness review (typically 30–90 days post-implementation) to confirm that the CAPA has resolved the issue.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Initiate CAPA",
+          "description": "Go to CAPA > All CAPAs and click '+ New CAPA'. Link it to the source event (deviation, audit finding, complaint, etc.)."
+        },
+        {
+          "step": 2,
+          "title": "Define the Problem",
+          "description": "Clearly describe the problem statement, what happened, when it happened, and the impact to quality, safety, or compliance."
+        },
+        {
+          "step": 3,
+          "title": "Root Cause Analysis",
+          "description": "Perform a root cause investigation (5 Whys, Fishbone, etc.) and document the findings within the CAPA record."
+        },
+        {
+          "step": 4,
+          "title": "Plan Actions",
+          "description": "Define Corrective and/or Preventive actions, assign owners, set due dates, and attach supporting documents as needed."
+        },
+        {
+          "step": 5,
+          "title": "Execute Actions",
+          "description": "Action owners implement the planned actions, update status, and attach evidence of completion (photos, data, etc.)."
+        },
+        {
+          "step": 6,
+          "title": "Verify Implementation",
+          "description": "Quality team verifies that the actions were completed correctly and fully as planned."
+        },
+        {
+          "step": 7,
+          "title": "Effectiveness Check",
+          "description": "After a defined period, review data to confirm the CAPA resolved the issue. If not effective, re-plan and re-execute."
+        },
+        {
+          "step": 8,
+          "title": "Closure",
+          "description": "Once effectiveness is confirmed, the QA manager formally closes the CAPA with final approval."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "CAPA effectiveness reviews should be conducted at least 30 days after implementation to allow sufficient time to observe results."
+        },
+        {
+          "type": "warning",
+          "text": "Overdue CAPAs are automatically flagged on the Dashboard and escalated to upper management via email notifications."
+        },
+        {
+          "type": "info",
+          "text": "All CAPA records are subject to regulatory inspection. Ensure all fields are complete and accurate before submitting for approval."
+        }
+      ]
+    }
+  },
+  "change-control": {
+    "label": "Change Controls",
+    "iconName": "IconReplace",
+    "section": {
+      "id": "change-control",
+      "title": "Change Controls",
+      "overview": "The Change Control module provides formal governance for all changes to validated systems, manufacturing processes, facilities, or critical documents. It ensures that every change is evaluated for impact, approved by the appropriate stakeholders, and implemented in a controlled manner to maintain compliance and system integrity.",
+      "features": [
+        {
+          "iconName": "FileText",
+          "title": "Change Request",
+          "description": "Initiate change requests with full justification, risk assessment, and linked documentation to ensure transparency and traceability.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "ShieldCheck",
+          "title": "Impact Assessment",
+          "description": "Perform cross-functional impact assessments covering quality, safety, regulatory compliance, and validation status.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "CheckCircle2",
+          "title": "Approval Workflow",
+          "description": "Multi-level approvals from Quality Assurance, Operations, and Validation teams ensure every change is properly reviewed.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "Implementation & Verification",
+          "description": "Track implementation tasks, verify correct execution, and close the change request with formal sign-off.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Initiate Change Request",
+          "description": "Go to Change Control > All Changes and click '+ New Change Request'. Provide a clear description, justification, and urgency level."
+        },
+        {
+          "step": 2,
+          "title": "Risk & Impact Assessment",
+          "description": "Complete the impact assessment form covering all affected areas: Quality, Safety, Validation, Training, and Documentation."
+        },
+        {
+          "step": 3,
+          "title": "Approval Routing",
+          "description": "Route the change request to QA, Operations, and any other required approvers as defined by your company's change control policy."
+        },
+        {
+          "step": 4,
+          "title": "Plan Implementation",
+          "description": "Once approved, create an implementation plan with specific tasks, owners, and target completion dates."
+        },
+        {
+          "step": 5,
+          "title": "Execute Change",
+          "description": "Implement the change according to the approved plan. Document all activities and attach evidence of completion."
+        },
+        {
+          "step": 6,
+          "title": "Verify & Close",
+          "description": "Verify that the change was executed correctly and the desired outcome was achieved. Close the change request with final QA sign-off."
+        }
+      ],
+      "tips": [
+        {
+          "type": "warning",
+          "text": "Changes to validated systems may require re-validation or supplemental validation work. Consult your Validation team before execution."
+        },
+        {
+          "type": "tip",
+          "text": "Use the 'Emergency Change' type for urgent changes that require immediate implementation, followed by post-implementation review."
+        },
+        {
+          "type": "info",
+          "text": "All approved changes trigger automatic notifications to affected departments and personnel to ensure everyone is aware."
+        }
+      ]
+    }
+  },
+  "complaints": {
+    "label": "Complaints Management",
+    "iconName": "IconMessageReport",
+    "section": {
+      "id": "complaints",
+      "title": "Complaints Management",
+      "overview": "The Complaints module provides a systematic approach to receive, triage, investigate, and resolve customer complaints. It ensures timely response to customer concerns, links to CAPA for systemic improvements, and maintains complete traceability from receipt through final closure and regulatory reporting.",
+      "features": [
+        {
+          "iconName": "FileText",
+          "title": "Complaint Logging",
+          "description": "Record all customer complaints with full details: reporter information, product details, batch number, and complaint description.",
+          "color": "bg-red-100",
+          "iconColor": "text-red-600"
+        },
+        {
+          "iconName": "ListChecks",
+          "title": "Investigation",
+          "description": "Conduct investigations involving QA, QC, and Operations to determine root cause and implement immediate corrective actions.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "CAPA Linkage",
+          "description": "Link complaints directly to CAPA records when systemic improvements are needed to prevent recurrence.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "BarChart3",
+          "title": "Trend Analysis",
+          "description": "Analyze complaint trends by product, category, and root cause to identify patterns and proactively address emerging issues.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Log Complaint",
+          "description": "Go to Complaints > All Complaints and click '+ New Complaint'. Enter customer information, product, batch, and complaint details."
+        },
+        {
+          "step": 2,
+          "title": "Triage & Classify",
+          "description": "Classify complaint severity (Critical, Major, Minor) and assign to the appropriate investigator (QA, QC, Technical)."
+        },
+        {
+          "step": 3,
+          "title": "Conduct Investigation",
+          "description": "Investigate the complaint by reviewing batch records, testing data, and interviewing personnel. Document all findings."
+        },
+        {
+          "step": 4,
+          "title": "Determine Root Cause",
+          "description": "Use root cause analysis techniques (5-Why, Fishbone) to identify the underlying cause of the complaint."
+        },
+        {
+          "step": 5,
+          "title": "Implement Corrective Action",
+          "description": "If a systemic issue is found, initiate a CAPA record. For isolated incidents, document the immediate action taken."
+        },
+        {
+          "step": 6,
+          "title": "Customer Response",
+          "description": "Prepare and send a formal response letter to the customer explaining findings, actions taken, and timeline."
+        },
+        {
+          "step": 7,
+          "title": "Close Complaint",
+          "description": "Once all actions are complete and customer is satisfied, formally close the complaint with QA approval."
+        }
+      ],
+      "tips": [
+        {
+          "type": "warning",
+          "text": "Some complaints may require regulatory reporting (e.g., serious adverse events). Check your company's regulatory reporting policy."
+        },
+        {
+          "type": "tip",
+          "text": "Respond to customer complaints within your company's committed timeframe (typically 5-10 business days) to maintain customer satisfaction."
+        },
+        {
+          "type": "info",
+          "text": "Complaint records are subject to customer audits. Ensure all investigation documentation is complete and accurate."
+        }
+      ]
+    }
+  },
+  "risk-management": {
+    "label": "Risk Management",
+    "iconName": "IconShieldExclamation",
+    "section": {
+      "id": "risk-management",
+      "title": "Risk Management",
+      "overview": "The Risk Management module provides a structured, ICH Q9-aligned framework for identifying, assessing, controlling, and monitoring quality risks across your organization. It enables proactive risk-based decision-making — from product development and process changes to supplier management and regulatory compliance — ensuring risks are managed systematically and transparently.",
+      "features": [
+        {
+          "iconName": "Search",
+          "title": "Risk Identification",
+          "description": "Capture and catalog potential risks using structured forms including hazard description, risk source, affected processes, and initial risk category classification.",
+          "color": "bg-rose-100",
+          "iconColor": "text-rose-600"
+        },
+        {
+          "iconName": "BarChart3",
+          "title": "Risk Assessment Matrix",
+          "description": "Evaluate each risk using a configurable Severity × Probability × Detectability matrix to calculate a Risk Priority Number (RPN) and determine the risk level (Low / Medium / High / Critical).",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        },
+        {
+          "iconName": "ShieldCheck",
+          "title": "Risk Controls & Mitigation",
+          "description": "Define and assign risk mitigation actions with responsible owners, target dates, and effectiveness criteria. Link controls to CAPAs, Change Controls, or SOPs for full traceability.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "RefreshCw",
+          "title": "Periodic Risk Review",
+          "description": "Schedule recurring risk reviews to re-evaluate residual risk levels, verify control effectiveness, and update risk registers based on new data or process changes.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "FileText",
+          "title": "Risk Register & Reports",
+          "description": "Maintain a centralized risk register with full audit history. Generate risk heat maps, trend reports, and management review summaries for informed decision-making.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Create a Risk Assessment",
+          "description": "Go to Risk Management > Risk Register and click '+ New Risk'. Select the risk category, enter the hazard description, affected process or product, and initial observations."
+        },
+        {
+          "step": 2,
+          "title": "Evaluate Severity, Probability & Detectability",
+          "description": "Use the built-in Risk Assessment Matrix to score the risk on three dimensions: Severity of impact, Probability of occurrence, and Detectability. The system auto-calculates the RPN."
+        },
+        {
+          "step": 3,
+          "title": "Determine Risk Level & Accept or Mitigate",
+          "description": "Based on the RPN score, the system classifies the risk as Low, Medium, High, or Critical. Decide whether to accept the risk (with justification) or proceed with mitigation planning."
+        },
+        {
+          "step": 4,
+          "title": "Define Mitigation Actions",
+          "description": "For risks requiring mitigation, add specific action items: assign an owner, set a target completion date, and define measurable acceptance criteria for the residual risk level."
+        },
+        {
+          "step": 5,
+          "title": "Implement & Verify Controls",
+          "description": "Execute mitigation actions and document evidence of completion. Re-score the residual risk to confirm the RPN has been reduced to an acceptable level."
+        },
+        {
+          "step": 6,
+          "title": "Schedule Periodic Reviews",
+          "description": "Set up recurring review cycles (e.g., quarterly or annually) to reassess risks, verify ongoing control effectiveness, and update the risk register with any changes."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Use risk categories aligned with ICH Q9 (e.g., Patient Safety, Product Quality, Data Integrity, Regulatory Compliance) for consistent risk classification across the organization."
+        },
+        {
+          "type": "info",
+          "text": "Risks linked to CAPAs, Deviations, or Change Controls will automatically cross-reference, providing full traceability during regulatory inspections."
+        },
+        {
+          "type": "warning",
+          "text": "Critical and High risks require documented management approval before the risk can be accepted. Ensure escalation pathways are configured in system settings."
+        },
+        {
+          "type": "tip",
+          "text": "Export the Risk Heat Map before management review meetings to provide leadership with a visual overview of the organization's risk landscape."
+        }
+      ]
+    }
+  },
+  "equipment": {
+    "label": "Equipment Management",
+    "iconName": "IconDeviceLaptop",
+    "section": {
+      "id": "equipment",
+      "title": "Equipment Management",
+      "overview": "The Equipment Management module oversees the entire lifecycle of critical manufacturing and laboratory equipment — from procurement and qualification, through regular maintenance and calibration, to decommissioning. It ensures equipment remains qualified, calibrated, and reliable to support compliant operations.",
+      "features": [
+        {
+          "iconName": "Wrench",
+          "title": "Equipment Master List",
+          "description": "Maintain a centralized inventory of all equipment with full specifications, location, owner, and qualification status.",
+          "color": "bg-slate-100",
+          "iconColor": "text-slate-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "Maintenance Scheduling",
+          "description": "Schedule preventive maintenance activities with automatic reminders and overdue alerts to ensure continuous equipment availability.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "CheckCircle2",
+          "title": "Calibration Management",
+          "description": "Track calibration due dates, record calibration results, and automatically update equipment status based on pass/fail outcomes.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "BarChart3",
+          "title": "Equipment History",
+          "description": "View complete maintenance, calibration, and repair history for every piece of equipment to support root cause investigations.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Register Equipment",
+          "description": "Go to Equipment > Equipment List and click '+ Add Equipment'. Enter equipment ID, name, type, location, and responsible owner."
+        },
+        {
+          "step": 2,
+          "title": "Set Maintenance Schedule",
+          "description": "Define the preventive maintenance schedule (e.g., every 6 months) and assign maintenance tasks to the appropriate technician."
+        },
+        {
+          "step": 3,
+          "title": "Set Calibration Schedule",
+          "description": "For calibrated equipment, define the calibration frequency and link to calibration procedures or external providers."
+        },
+        {
+          "step": 4,
+          "title": "Perform Maintenance",
+          "description": "When maintenance is due, the system generates a task. Technicians complete the task and record all findings and actions taken."
+        },
+        {
+          "step": 5,
+          "title": "Perform Calibration",
+          "description": "Calibration personnel execute calibration per procedure, record results, and update equipment status to 'Calibrated' or 'Out of Calibration'."
+        },
+        {
+          "step": 6,
+          "title": "Review Equipment Status",
+          "description": "QA periodically reviews equipment status to ensure all critical equipment is qualified, calibrated, and available for use."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Use the Equipment Dashboard to monitor upcoming maintenance and calibration due dates to prevent overdue situations."
+        },
+        {
+          "type": "warning",
+          "text": "Equipment that fails calibration must be immediately removed from service and tagged as 'Out of Calibration' to prevent inadvertent use."
+        },
+        {
+          "type": "info",
+          "text": "Equipment qualification documents (IQ/OQ/PQ) should be linked to the equipment master record for easy reference during audits."
+        }
+      ]
+    }
+  },
+  "supplier": {
+    "label": "Supplier Management",
+    "iconName": "IconBuildingStore",
+    "section": {
+      "id": "supplier",
+      "title": "Supplier Management",
+      "overview": "The Supplier Management module enables you to qualify, monitor, and maintain approved suppliers throughout their lifecycle. It ensures that all suppliers meet your quality standards, are periodically re-evaluated, and that their performance is tracked to support continuous improvement and risk mitigation.",
+      "features": [
+        {
+          "iconName": "Truck",
+          "title": "Supplier Qualification",
+          "description": "Conduct formal supplier qualification including audits, questionnaire responses, and risk assessments before approving suppliers.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "BarChart3",
+          "title": "Performance Monitoring",
+          "description": "Track supplier performance metrics such as on-time delivery, quality defects, and complaint rates to identify reliable suppliers.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "Audit Management",
+          "description": "Schedule and conduct periodic supplier audits (on-site or remote), document findings, and track CAPA actions from audit results.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "AlertCircle",
+          "title": "Re-Qualification",
+          "description": "Automatically trigger re-qualification workflows based on time intervals, performance issues, or risk profile changes.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Initiate Supplier Qualification",
+          "description": "Go to Supplier > All Suppliers and click '+ New Supplier'. Enter supplier details, type, and risk classification."
+        },
+        {
+          "step": 2,
+          "title": "Send Qualification Questionnaire",
+          "description": "Send the supplier qualification questionnaire via email and request supporting documents (certifications, quality agreements)."
+        },
+        {
+          "step": 3,
+          "title": "Conduct Supplier Audit",
+          "description": "For high-risk suppliers, schedule and conduct an on-site or remote audit to verify compliance with your quality requirements."
+        },
+        {
+          "step": 4,
+          "title": "Review & Approve",
+          "description": "Quality Assurance reviews all qualification data and either approves the supplier or requests additional information."
+        },
+        {
+          "step": 5,
+          "title": "Monitor Performance",
+          "description": "Track supplier deliveries, quality metrics, and complaints. Periodically review performance scorecards."
+        },
+        {
+          "step": 6,
+          "title": "Conduct Re-Qualification",
+          "description": "Every 1-3 years (depending on risk), re-evaluate the supplier by repeating qualification steps and updating the approval status."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Maintain a risk-based approach: high-risk suppliers require more frequent audits and stricter qualification criteria."
+        },
+        {
+          "type": "warning",
+          "text": "Suppliers that fail re-qualification must be removed from the Approved Supplier List and replaced to ensure continuous supply chain quality."
+        },
+        {
+          "type": "info",
+          "text": "Supplier audit findings can be directly linked to CAPA records to ensure that supplier quality issues are systematically resolved."
+        }
+      ]
+    }
+  },
+  "product": {
+    "label": "Product Management",
+    "iconName": "Package",
+    "section": {
+      "id": "product",
+      "title": "Product Management",
+      "overview": "The Product Management module maintains the definitive record for every product in your portfolio. It centralizes product specifications, bill of materials (BOM), manufacturing instructions, and version history to ensure absolute consistency and compliance.",
+      "features": [
+        {
+          "iconName": "Package",
+          "title": "Product Master File",
+          "description": "Centralized record for every product, including SKU, strength, dosage form, and regulatory approval status.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "FileText",
+          "title": "Specifications & Methods",
+          "description": "Directly link product records to approved specifications, analytical methods, and manufacturing procedures in Document Control.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "RefreshCw",
+          "title": "BOM & Version Control",
+          "description": "Manage multi-level Bill of Materials and ensure only the latest approved versions are used in production.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Create Product Record",
+          "description": "Go to Products > All Products and click '+ New Product'. Enter the product code, name, and primary categories."
+        },
+        {
+          "step": 2,
+          "title": "Configure BOM",
+          "description": "Define the raw materials and components required for the product. Link each component to its respective material specification."
+        },
+        {
+          "step": 3,
+          "title": "Link Documents",
+          "description": "Associate the product with approved SOPs, manufacturing records (MBR/BMR), and validation protocols."
+        }
+      ],
+      "tips": [
+        {
+          "type": "info",
+          "text": "Product records are version-controlled. Any change to a critical product attribute requires a formal Change Control and a new product version."
+        }
+      ]
+    }
+  },
+  "regulatory": {
+    "label": "Regulatory Management",
+    "iconName": "Scale",
+    "section": {
+      "id": "regulatory",
+      "title": "Regulatory Management",
+      "overview": "The Regulatory Management module centralizes your interactions with regulatory authorities, product registrations, and compliance certificates. It ensures all submissions are tracked, deadlines are monitored, and regulatory intelligence is shared across the organization.",
+      "features": [
+        {
+          "iconName": "FileText",
+          "title": "Registration Tracking",
+          "description": "Maintain a full history of product registrations and licenses by country or region, with automatic reminders for upcoming renewals.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "ShieldCheck",
+          "title": "Regulatory Submissions",
+          "description": "Manage the lifecycle of regulatory submissions (IND, NDA, DMF, etc.) with integrated task tracking and document linkage.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "AlertCircle",
+          "title": "Deadline Management",
+          "description": "Never miss a regulatory commitment with a centralized calendar of submission deadlines, response due dates, and reporting obligations.",
+          "color": "bg-rose-100",
+          "iconColor": "text-rose-600"
+        },
+        {
+          "iconName": "Info",
+          "title": "Authority Interactions",
+          "description": "Log all meetings, correspondence, and inspections from regulatory agencies, ensuring a complete and searchable historical record.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Register a Product Submission",
+          "description": "Go to Regulatory > Submissions and click '+ Add Submission'. Define the product, region, submission type, and target date."
+        },
+        {
+          "step": 2,
+          "title": "Assign Submission Tasks",
+          "description": "Create and assign preparation tasks (e.g., CMC review, clinical data summary) to the cross-functional team with specific deadlines."
+        },
+        {
+          "step": 3,
+          "title": "Upload Submission Files",
+          "description": "Link final submission documents from the Document Control module to maintain a single point of truth."
+        },
+        {
+          "step": 4,
+          "title": "Monitor Approval Status",
+          "description": "Update the registration status as it progresses through regulatory review (e.g., Submitted, RFI, Approved, Rejected)."
+        },
+        {
+          "step": 5,
+          "title": "Maintain Certificates",
+          "description": "Store final approval certificates (CPP, Free Sale, etc.) and set automatic renewal alerts based on the expiration dates."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Link Regulatory Submissions directly to Change Controls to ensure all process changes are properly evaluated for regulatory impact."
+        },
+        {
+          "type": "info",
+          "text": "The Regulatory Calendar provides a consolidated view of all global reporting obligations across all your products and markets."
+        },
+        {
+          "type": "warning",
+          "text": "Failure to renew product registrations before the deadline may result in a halt to sales or distribution. Monitor the Deadline Dashboard closely."
+        }
+      ]
+    }
+  },
+  "reports": {
+    "label": "Reports & Analytics",
+    "iconName": "IconChartHistogram",
+    "section": {
+      "id": "reports",
+      "title": "Reports & Analytics",
+      "overview": "The Reports module provides comprehensive data visualization and reporting capabilities across all eQMS modules. Generate custom reports, export data for regulatory submissions, and leverage interactive dashboards to gain insights into quality trends, compliance status, and operational performance.",
+      "features": [
+        {
+          "iconName": "BarChart3",
+          "title": "Pre-Built Reports",
+          "description": "Access a library of pre-configured reports covering documents, deviations, CAPA, training, and more — ready to use without customization.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "FileText",
+          "title": "Custom Report Builder",
+          "description": "Build custom reports by selecting data sources, filters, grouping, and output format (PDF, Excel, CSV) tailored to your specific needs.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "Scheduled Reports",
+          "description": "Schedule reports to run automatically (daily, weekly, monthly) and deliver results via email to specific recipients.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "BarChart3",
+          "title": "Interactive Dashboards",
+          "description": "Explore interactive charts and graphs to drill down into data, identify trends, and make data-driven quality decisions.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Access Reports",
+          "description": "Go to Reports from the main menu. Browse available report categories or use the search function to find a specific report."
+        },
+        {
+          "step": 2,
+          "title": "Select Report Filters",
+          "description": "Choose filters such as date range, department, status, or document type to narrow down results to your area of interest."
+        },
+        {
+          "step": 3,
+          "title": "Preview Report",
+          "description": "Click 'Generate Preview' to view the report on-screen. Review data accuracy and adjust filters if needed."
+        },
+        {
+          "step": 4,
+          "title": "Export Report",
+          "description": "Export the report in your desired format (PDF for presentations, Excel for further analysis, CSV for data import)."
+        },
+        {
+          "step": 5,
+          "title": "Schedule Automated Reports",
+          "description": "For recurring reports, click 'Schedule' to set frequency, email recipients, and delivery time."
+        },
+        {
+          "step": 6,
+          "title": "Create Custom Reports",
+          "description": "Use the Report Builder to design custom reports by selecting fields, applying filters, and configuring output layout."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Save your frequently used filter combinations as 'Report Favorites' for faster access in the future."
+        },
+        {
+          "type": "info",
+          "text": "Scheduled reports are automatically archived in the system and can be re-downloaded at any time from the Report History."
+        },
+        {
+          "type": "warning",
+          "text": "Exported reports contain sensitive data. Ensure files are stored securely and shared only with authorized personnel."
+        }
+      ]
+    }
+  },
+  "audit-trail": {
+    "label": "Audit Trail",
+    "iconName": "IconFilter2Search",
+    "section": {
+      "id": "audit-trail",
+      "title": "Audit Trail",
+      "overview": "The Audit Trail module provides a comprehensive, tamper-proof log of all system activities. Every user action — including create, read, update, delete, and approval operations — is permanently recorded with timestamp, user identity, and the nature of the change. This ensures full traceability and meets 21 CFR Part 11 requirements for electronic records.",
+      "features": [
+        {
+          "iconName": "FileText",
+          "title": "Complete Activity Log",
+          "description": "Every system event is logged with date, time, user, action type, affected record, and before/after values for full transparency.",
+          "color": "bg-slate-100",
+          "iconColor": "text-slate-600"
+        },
+        {
+          "iconName": "Search",
+          "title": "Advanced Search & Filter",
+          "description": "Search audit logs by user, date range, module, action type, or record ID to quickly locate specific events during investigations.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "ClipboardList",
+          "title": "Export for Audits",
+          "description": "Export filtered audit logs to Excel or PDF format for internal audits, customer audits, or regulatory authority inspections.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "ShieldCheck",
+          "title": "Tamper-Proof Records",
+          "description": "Audit logs are write-once, read-many (WORM) and cryptographically signed to prevent unauthorized modification or deletion.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Access Audit Trail",
+          "description": "Go to Audit Trail from the main menu. The system displays the most recent activity log entries by default."
+        },
+        {
+          "step": 2,
+          "title": "Apply Filters",
+          "description": "Use filters to narrow results: select a specific user, date range, module (Documents, CAPA, etc.), or action type (Create, Edit, Delete, Approve)."
+        },
+        {
+          "step": 3,
+          "title": "Review Event Details",
+          "description": "Click any log entry to view full details including timestamp, user, IP address, record ID, and the exact change made (before/after values)."
+        },
+        {
+          "step": 4,
+          "title": "Export Audit Logs",
+          "description": "Select the filtered results and click 'Export' to generate an Excel or PDF report for audit submission or investigation records."
+        },
+        {
+          "step": 5,
+          "title": "Use Audit Trail for Investigations",
+          "description": "During deviation or CAPA investigations, reference the Audit Trail to reconstruct the timeline of events and identify who did what and when."
+        }
+      ],
+      "tips": [
+        {
+          "type": "info",
+          "text": "Audit Trail records are retained permanently and cannot be edited or deleted by any user, including System Administrators."
+        },
+        {
+          "type": "tip",
+          "text": "Use the 'Changed Fields' filter to quickly identify all records where a specific field (e.g., Status, Approver) was modified."
+        },
+        {
+          "type": "warning",
+          "text": "Regulatory inspectors commonly request Audit Trail data. Ensure your team is trained on how to generate and interpret audit reports."
+        }
+      ]
+    }
+  },
+  "settings": {
+    "label": "Settings",
+    "iconName": "IconSettings2",
+    "section": {
+      "id": "settings",
+      "title": "System Settings",
+      "overview": "The Settings module provides all system administration capabilities: user account management, role-based access control, system configuration, data dictionary management, and technical system monitoring. Access is restricted to System Administrators and Quality Managers.",
+      "features": [
+        {
+          "iconName": "Settings",
+          "title": "User Management",
+          "description": "Create, edit, and deactivate user accounts. Manage user profiles and assign roles to precisely control each person's system access.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "ShieldCheck",
+          "title": "Roles & Permissions",
+          "description": "Define roles with granular permission sets, configurable per module and per action type (Read/Create/Edit/Delete/Approve).",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "Wrench",
+          "title": "Configuration",
+          "description": "Configure all system-wide settings: company branding, SMTP email server, password policies, session security, notification rules, and third-party integrations.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "Info",
+          "title": "System Information",
+          "description": "Monitor technical health indicators: application version, server resource utilization, database connectivity, API status, and the full system changelog.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Manage Users",
+          "description": "Go to Settings > User Management to create new user accounts, assign or change roles, or issue a password reset. All accounts require a valid company email address."
+        },
+        {
+          "step": 2,
+          "title": "Configure Roles",
+          "description": "Design roles with the correct permission sets for each job function. Best practice: build roles around job titles rather than assigning permissions directly to individuals."
+        },
+        {
+          "step": 3,
+          "title": "System Configuration",
+          "description": "Go to Configuration to set the company logo, organization details, SMTP server settings, password complexity policies, and SSO/LDAP integration."
+        },
+        {
+          "step": 4,
+          "title": "Manage Dictionaries",
+          "description": "Configure all system dropdown values used across modules: Document Types, Departments, Retention Policies, and Storage Locations."
+        },
+        {
+          "step": 5,
+          "title": "Check System Information",
+          "description": "Periodically review System Information to proactively monitor server resource usage, database health, and the currently deployed application version."
+        }
+      ],
+      "tips": [
+        {
+          "type": "warning",
+          "text": "Always test all configuration changes in a staging environment before applying them to the production system."
+        },
+        {
+          "type": "tip",
+          "text": "Use the 'Roles Preview' feature to verify the exact permission set granted by a role before assigning it to any user account."
+        },
+        {
+          "type": "info",
+          "text": "The System Administrator account must be protected with MFA and should only be used when strictly necessary for administrative tasks."
+        }
+      ]
+    }
+  },
+  "preferences": {
+    "label": "User Preferences",
+    "iconName": "IconAdjustmentsHorizontal",
+    "section": {
+      "id": "preferences",
+      "title": "User Preferences",
+      "overview": "Personalize your eQMS experience by configuring your individual settings. Change your profile picture, update your notification preferences, and customize how the dashboard and system alerts are displayed.",
+      "features": [
+        {
+          "iconName": "Settings",
+          "title": "Profile Information",
+          "description": "Keep your personal information up to date, including job title, department, and a profile photo for easier identification in activity logs.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "IconMessageChatbot",
+          "title": "Notification Settings",
+          "description": "Precisely control which system events trigger email notifications and which only generate in-app alerts.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "IconLayoutGrid",
+          "title": "Interface Localization",
+          "description": "Configure your language, date format, and timezone to ensure all timestamps and reports reflect your local time accurately.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        },
+        {
+          "iconName": "ShieldCheck",
+          "title": "Security Settings",
+          "description": "Manage your password, enable multi-factor authentication (MFA), and view your active sessions for enhanced account security.",
+          "color": "bg-amber-100",
+          "iconColor": "text-amber-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Update Profile",
+          "description": "Go to Preferences > Profile settings and upload a clear photo and verify your workstation and direct manager information."
+        },
+        {
+          "step": 2,
+          "title": "Configure Notifications",
+          "description": "Review the list of system events (e.g., 'New Task Assigned', 'Document Approved') and choose your preferred delivery method for each."
+        },
+        {
+          "step": 3,
+          "title": "Set Regional Preferences",
+          "description": "Select your local timezone and preferred date/time formatting to avoid confusion in multi-site operations."
+        },
+        {
+          "step": 4,
+          "title": "Check Security Status",
+          "description": "If enabled by policy, set up your mobile authenticator for MFA and set a secure, long-lived password according to the password complexity rules."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Regularly check your 'Active Session' list to ensure no unauthorized devices are logged into your account."
+        },
+        {
+          "type": "info",
+          "text": "Some preference settings (like language and timezone) can only be changed by your System Administrator if locked by global policy."
+        },
+        {
+          "type": "warning",
+          "text": "Ensure your notification email address is always correct, as critical system alerts and task escalations depend on it."
+        }
+      ]
+    }
+  },
+  "help-support": {
+    "label": "Help & Support",
+    "iconName": "IconMessageChatbot",
+    "section": {
+      "id": "help-support",
+      "title": "Help & Support",
+      "overview": "Get the assistance you need to use the eQMS effectively. Access our support resources, submit help tickets, and find answers to frequently asked questions.",
+      "features": [
+        {
+          "iconName": "IconMessageChatbot",
+          "title": "Direct Support Chat",
+          "description": "Chat directly with our support team during business hours for immediate assistance with system issues.",
+          "color": "bg-blue-100",
+          "iconColor": "text-blue-600"
+        },
+        {
+          "iconName": "FileText",
+          "title": "Help Documentation",
+          "description": "Search our extensive library of articles, video tutorials, and best practice guides.",
+          "color": "bg-emerald-100",
+          "iconColor": "text-emerald-600"
+        },
+        {
+          "iconName": "Info",
+          "title": "Submit a Ticket",
+          "description": "For complex technical issues, submit a formal support ticket and track its resolution progress.",
+          "color": "bg-purple-100",
+          "iconColor": "text-purple-600"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Search the Help Center",
+          "description": "Enter your question in the search bar to find relevant help articles and tutorials."
+        },
+        {
+          "step": 2,
+          "title": "Start a Support Chat",
+          "description": "Click the chat icon to connect with a support representative for real-time help."
+        },
+        {
+          "step": 3,
+          "title": "Open a Support Ticket",
+          "description": "If your issue isn't resolved via chat or articles, fill out the support form to create a formal ticket."
+        }
+      ],
+      "tips": [
+        {
+          "type": "tip",
+          "text": "Always check the 'What's New' section for updates on the latest system features and improvements."
+        }
+      ]
+    }
+  }
+}

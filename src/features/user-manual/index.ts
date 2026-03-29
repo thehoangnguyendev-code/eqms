@@ -1,0 +1,1 @@
+export { UserManualView } from './UserManualView';

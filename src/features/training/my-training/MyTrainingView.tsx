@@ -1,0 +1,701 @@
+import React, { useState, useMemo } from "react";
+import {
+  CheckCircle2,
+  Clock,
+  ExternalLink,
+  FileText,
+  GraduationCap,
+  PlayCircle,
+  Search,
+  Trophy,
+  Calendar,
+  ShieldCheck,
+  Star,
+  Award,
+} from "lucide-react";
+import { PageHeader } from "@/components/ui/page/PageHeader";
+import { Button } from "@/components/ui/button/Button";
+import { cn } from "@/components/ui/utils";
+import { TabNav } from "@/components/ui/tabs/TabNav";
+import type { TabItem } from "@/components/ui/tabs/TabNav";
+import { Badge } from "@/components/ui/badge/Badge";
+import type { BadgeColor } from "@/components/ui/badge/Badge";
+import { TablePagination } from "@/components/ui/table/TablePagination";
+import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
+import * as breadcrumbs from "@/components/ui/breadcrumb/breadcrumbs.config";
+import { IconMenu3, IconTrophy } from "@tabler/icons-react";
+import { Select } from "@/components/ui/select/Select";
+import { FullPageLoading } from "@/components/ui/loading";
+import { useNavigateWithLoading } from "@/hooks";
+
+// --- Mock Data ---
+interface TrainingTask {
+  id: string;
+  title: string;
+  deadline: string;
+  type: string;
+  testType: string;
+  status: "Assigned" | "Pending" | "Expiring Soon";
+  materialType: "PDF" | "Video";
+  materialUrl: string;
+}
+
+const MOCK_TODO_TASKS: TrainingTask[] = [
+  {
+    id: "TRN-001",
+    title: "Bio-decontamination Standard Operating Procedure",
+    deadline: "20/03/2026",
+    type: "SOP",
+    testType: "Quiz Offline",
+    status: "Expiring Soon",
+    materialType: "PDF",
+    materialUrl: "/sample.pdf",
+  },
+  {
+    id: "TRN-002",
+    title: "Cleanroom Safety & Gowning Protocol",
+    deadline: "25/03/2026",
+    type: "GMP",
+    testType: "Hands-on",
+    status: "Assigned",
+    materialType: "Video",
+    materialUrl: "/sample-video.mp4",
+  },
+  {
+    id: "TRN-003",
+    title: "Quality Risk Management – ICH Q9",
+    deadline: "30/03/2026",
+    type: "GMP",
+    testType: "Quiz Offline",
+    status: "Assigned",
+    materialType: "PDF",
+    materialUrl: "/sample.pdf",
+  },
+  {
+    id: "TRN-004",
+    title: "Data Integrity & ALCOA+ Principles",
+    deadline: "10/04/2026",
+    type: "Compliance",
+    testType: "Written Test",
+    status: "Pending",
+    materialType: "Video",
+    materialUrl: "/sample-video.mp4",
+  },
+];
+
+interface TranscriptRecord {
+  id: string;
+  title: string;
+  completedDate: string;
+  score: number;
+  type: string;
+  certUrl: string;
+}
+
+const MOCK_TRANSCRIPT: TranscriptRecord[] = [
+  {
+    id: "TRN-PY-001",
+    title: "Introduction to GxP Documentation",
+    completedDate: "15/01/2026",
+    score: 95,
+    type: "GMP",
+    certUrl: "#",
+  },
+  {
+    id: "TRN-PY-002",
+    title: "Cybersecurity Awareness 2026",
+    completedDate: "10/01/2026",
+    score: 100,
+    type: "Compliance",
+    certUrl: "#",
+  },
+  {
+    id: "TRN-PY-003",
+    title: "Laboratory Equipment Calibration SOP",
+    completedDate: "05/01/2026",
+    score: 88,
+    type: "SOP",
+    certUrl: "#",
+  },
+];
+
+const MY_TRAINING_TABS: TabItem[] = [
+  {
+    id: "todo",
+    label: "To-do List",
+    icon: IconMenu3,
+    count: MOCK_TODO_TASKS.length,
+  },
+  {
+    id: "transcript",
+    label: "My Transcript",
+    icon: IconTrophy,
+    count: MOCK_TRANSCRIPT.length,
+  },
+];
+
+// --- Status helpers ---
+const TODO_STATUS_MAP: Record<
+  TrainingTask["status"],
+  { label: string; color: BadgeColor; className?: string }
+> = {
+  "Expiring Soon": {
+    label: "Expiring Soon",
+    color: "amber",
+    className: "ring-1 ring-inset ring-amber-600/20 animate-pulse",
+  },
+  Assigned: {
+    label: "Assigned",
+    color: "blue",
+    className: "ring-1 ring-inset ring-blue-600/10",
+  },
+  Pending: {
+    label: "Pending",
+    color: "slate",
+    className: "ring-1 ring-inset ring-slate-600/10",
+  },
+};
+
+// --- Main View ---
+
+export const MyTrainingView: React.FC = () => {
+  const { navigateTo, isNavigating } = useNavigateWithLoading();
+  const [activeTab, setActiveTab] = useState<"todo" | "transcript">("todo");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Filter states
+  const [typeFilter, setTypeFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [assessmentFilter, setAssessmentFilter] = useState("All");
+
+  const pendingCount = MOCK_TODO_TASKS.length;
+
+  // Reset pagination on tab or search change
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId as "todo" | "transcript");
+    setCurrentPage(1);
+    setSearchQuery("");
+    setTypeFilter("All");
+    setStatusFilter("All");
+    setAssessmentFilter("All");
+  };
+
+  const handleSearch = (val: string) => {
+    setSearchQuery(val);
+    setCurrentPage(1);
+  };
+
+  const filteredTasks = useMemo(
+    () =>
+      MOCK_TODO_TASKS.filter((t) => {
+        const matchesSearch =
+          t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          t.id.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesType = typeFilter === "All" || t.type === typeFilter;
+        const matchesStatus =
+          statusFilter === "All" || t.status === statusFilter;
+        const matchesAssessment =
+          assessmentFilter === "All" || t.testType === assessmentFilter;
+
+        return matchesSearch && matchesType && matchesStatus && matchesAssessment;
+      }),
+    [searchQuery, typeFilter, statusFilter, assessmentFilter],
+  );
+
+  const filteredTranscript = useMemo(
+    () =>
+      MOCK_TRANSCRIPT.filter((r) => {
+        const matchesSearch =
+          r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          r.id.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesType = typeFilter === "All" || r.type === typeFilter;
+
+        return matchesSearch && matchesType;
+      }),
+    [searchQuery, typeFilter],
+  );
+
+  // Pagination
+  const activeData = activeTab === "todo" ? filteredTasks : filteredTranscript;
+  const totalPages = Math.ceil(activeData.length / itemsPerPage);
+  const paginatedTasks = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredTasks.slice(start, start + itemsPerPage);
+  }, [filteredTasks, currentPage, itemsPerPage]);
+  const paginatedTranscript = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredTranscript.slice(start, start + itemsPerPage);
+  }, [filteredTranscript, currentPage, itemsPerPage]);
+
+  return (
+    <div className="space-y-6 w-full flex-1 flex flex-col pb-8">
+      {/* Page Header */}
+      <PageHeader
+        title="My Training"
+        breadcrumbItems={breadcrumbs.myTraining(navigateTo)}
+      />
+
+      {/* Hero / Overview Banner */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row relative">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-emerald-50/50 to-transparent pointer-events-none" />
+
+        {/* Identity Section */}
+        <div className="p-6 md:p-8 flex-1 flex items-center gap-5 border-b md:border-b-0 md:border-r border-slate-100 relative z-10">
+          <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 shrink-0">
+            <GraduationCap className="h-8 w-8" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">
+              My Training Overview
+            </h2>
+            <p className="text-slate-500 mt-1 text-sm">
+              You have{" "}
+              <span className="font-semibold text-emerald-600">
+                {pendingCount} assignments
+              </span>{" "}
+              pending completion.
+            </p>
+          </div>
+        </div>
+
+        {/* Highlight Stats */}
+        <div className="flex shrink-0">
+          <div className="p-6 md:p-8 flex flex-col items-center justify-center border-r border-slate-100 min-w-[160px] bg-slate-50/30">
+            <div className="flex items-center gap-1.5 text-emerald-600 mb-2">
+              <ShieldCheck className="h-4 w-4" />
+              <span className="text-xs font-bold uppercase tracking-widest">
+                Compliance
+              </span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl font-bold text-slate-900 tracking-tighter">
+                92
+              </span>
+              <span className="text-xl font-bold text-slate-400">%</span>
+            </div>
+          </div>
+          <div className="p-6 md:p-8 flex flex-col items-center justify-center min-w-[160px] bg-slate-50/30">
+            <div className="flex items-center gap-1.5 text-amber-500 mb-2">
+              <Star className="h-4 w-4 fill-amber-500" />
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-600">
+                Credits
+              </span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl font-bold text-slate-900 tracking-tighter">
+                14
+              </span>
+              <span className="text-xl font-bold text-slate-400">pts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Main Card: Tabs + Table ─────────────────────── */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
+        {/* Tab Navigation — underline variant, identical to MaterialsView */}
+        <TabNav
+          tabs={MY_TRAINING_TABS}
+          activeTab={activeTab}
+          onChange={handleTabChange}
+          variant="underline"
+        />
+
+        {/* ── To-do List Tab ── */}
+        {activeTab === "todo" && (
+          <div className="p-4 lg:p-6 flex-1 flex flex-col">
+            {/* Filter / Search row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 items-end mb-5">
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+                  Search
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by title or ID..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
+                  />
+                </div>
+              </div>
+
+              <Select
+                label="Training Type"
+                value={typeFilter}
+                onChange={setTypeFilter}
+                options={[
+                  { label: "All Types", value: "All" },
+                  { label: "SOP", value: "SOP" },
+                  { label: "GMP", value: "GMP" },
+                  { label: "Compliance", value: "Compliance" },
+                ]}
+              />
+
+              <Select
+                label="Status"
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  { label: "All Status", value: "All" },
+                  { label: "Assigned", value: "Assigned" },
+                  { label: "Pending", value: "Pending" },
+                  { label: "Expiring Soon", value: "Expiring Soon" },
+                ]}
+              />
+
+              <Select
+                label="Assessment"
+                value={assessmentFilter}
+                onChange={setAssessmentFilter}
+                options={[
+                  { label: "All Assessments", value: "All" },
+                  { label: "Quiz Offline", value: "Quiz Offline" },
+                  { label: "Hands-on", value: "Hands-on" },
+                  { label: "Written Test", value: "Written Test" },
+                ]}
+              />
+            </div>
+
+            {/* Table container — identical structure to TaskTable (MyTasks) */}
+            <div className="flex-1 overflow-hidden border border-slate-200 rounded-xl bg-white shadow-sm flex flex-col">
+              <div className="overflow-x-auto flex-1">
+                <table className="w-full min-w-[800px] lg:min-w-[1200px]">
+                  <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
+                    <tr>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
+                        No.
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Course ID
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Course Title
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Material
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Type
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Assessment
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Deadline
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Status
+                      </th>
+                      <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px]">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 bg-white">
+                    {paginatedTasks.map((task, index) => {
+                      const isExpiring = task.status === "Expiring Soon";
+                      const statusStyle = TODO_STATUS_MAP[task.status];
+                      return (
+                        <tr
+                          key={task.id}
+                          className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                        >
+                          {/* No. */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap text-center">
+                            <div className="text-xs sm:text-sm text-slate-500">
+                              {(currentPage - 1) * itemsPerPage + index + 1}
+                            </div>
+                          </td>
+                          {/* Course ID */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
+                            <span className="text-xs sm:text-sm font-medium text-emerald-600">
+                              {task.id}
+                            </span>
+                          </td>
+                          {/* Course Title */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
+                            <div className="flex items-center gap-1.5 sm:gap-2">
+                              <div
+                                className={cn(
+                                  "flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105",
+                                  task.materialType === "PDF"
+                                    ? "bg-rose-50 text-rose-600"
+                                    : "bg-indigo-50 text-indigo-600",
+                                )}
+                              >
+                                {task.materialType === "PDF" ? (
+                                  <FileText className="h-4 w-4" />
+                                ) : (
+                                  <PlayCircle className="h-4 w-4" />
+                                )}
+                              </div>
+                              <div>
+                                <p className="font-medium whitespace-nowrap text-xs sm:text-sm text-slate-900 group-hover:text-emerald-700 transition-colors">
+                                  {task.title}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                          {/* Material */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
+                            <div className="flex items-center gap-1.5 sm:gap-2">
+                              <span className="text-xs sm:text-sm text-slate-700 font-medium">
+                                {task.materialType}
+                              </span>
+                            </div>
+                          </td>
+                          {/* Type */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                            {task.type}
+                          </td>
+                          {/* Assessment */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                            {task.testType}
+                          </td>
+                          {/* Deadline */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                            <div
+                              className={cn(
+                                "flex items-center gap-1",
+                                isExpiring
+                                  ? "text-amber-600 font-semibold"
+                                  : "text-slate-700",
+                              )}
+                            >
+                              <Calendar
+                                className={cn(
+                                  "h-3.5 w-3.5",
+                                  isExpiring
+                                    ? "text-amber-500"
+                                    : "text-slate-400",
+                                )}
+                              />
+                              {task.deadline}
+                            </div>
+                          </td>
+                          {/* Status */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
+                            <Badge
+                              color={statusStyle.color}
+                              size="sm"
+                              className={cn(
+                                "font-bold tracking-wide uppercase",
+                                statusStyle.className,
+                              )}
+                            >
+                              {statusStyle.label}
+                            </Badge>
+                          </td>
+                          <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px]">
+                            <Button
+                              size="xs"
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                            >
+                              Start
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {filteredTasks.length > 0 && (
+                <TablePagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  totalItems={filteredTasks.length}
+                  itemsPerPage={itemsPerPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                  showItemCount={true}
+                />
+              )}
+
+              {filteredTasks.length === 0 && (
+                <TableEmptyState
+                  icon={<CheckCircle2 className="h-8 w-8 text-emerald-400" />}
+                  title="All caught up!"
+                  description={
+                    searchQuery
+                      ? "No assignments match your search. Try a different keyword."
+                      : "You have completed all pending training assignments. Great job staying compliant."
+                  }
+                  actionLabel="Clear Search"
+                  onAction={searchQuery ? () => handleSearch("") : undefined}
+                />
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── My Transcript Tab ── */}
+        {activeTab === "transcript" && (
+          <div className="p-4 lg:p-6 flex-1 flex flex-col">
+            {/* Filter / Search row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-end mb-8">
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+                  Search
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by title or ID..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
+                  />
+                </div>
+              </div>
+
+              <Select
+                label="Training Type"
+                value={typeFilter}
+                onChange={setTypeFilter}
+                options={[
+                  { label: "All Types", value: "All" },
+                  { label: "SOP", value: "SOP" },
+                  { label: "GMP", value: "GMP" },
+                  { label: "Compliance", value: "Compliance" },
+                ]}
+              />
+            </div>
+
+            {/* Table container — identical structure to TaskTable (MyTasks) */}
+            <div className="flex-1 overflow-hidden border border-slate-200 rounded-xl bg-white shadow-sm flex flex-col">
+              <div className="overflow-x-auto flex-1">
+                <table className="w-full min-w-[800px] lg:min-w-[1200px]">
+                  <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
+                    <tr>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
+                        No.
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Course ID
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Course Title
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Type
+                      </th>
+                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Completed Date
+                      </th>
+                      <th className="py-2.5 px-1 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        Score
+                      </th>
+                      <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px]">
+                        E-Certificate
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 bg-white">
+                    {paginatedTranscript.map((record, index) => (
+                      <tr
+                        key={record.id}
+                        className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                      >
+                        {/* No. */}
+                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap text-center">
+                          <div className="text-xs sm:text-sm text-slate-500">
+                            {(currentPage - 1) * itemsPerPage + index + 1}
+                          </div>
+                        </td>
+                        {/* Course ID */}
+                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
+                          <span className="text-xs sm:text-sm font-medium text-emerald-600">
+                            {record.id}
+                          </span>
+                        </td>
+                        {/* Course Title */}
+                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
+                          <div className="flex items-center gap-1.5 sm:gap-2">
+                            <div className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-105 transition-transform">
+                              <Award className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <p className="font-medium whitespace-nowrap text-xs sm:text-sm text-slate-900 group-hover:text-emerald-700 transition-colors">
+                                {record.title}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        {/* Type */}
+                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                          {record.type}
+                        </td>
+                        {/* Completed Date */}
+                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                          {record.completedDate}
+                        </td>
+                        {/* Score */}
+                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap">
+                          <Badge
+                            color={record.score >= 90 ? "emerald" : "blue"}
+                            pill
+                            size="sm"
+                            className="font-bold ring-1 ring-inset ring-emerald-600/10"
+                          >
+                            {record.score}%
+                          </Badge>
+                        </td>
+                        {/* E-Certificate - Sticky */}
+                        <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px]">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 gap-1.5 font-semibold h-7 sm:h-8 text-[10px] sm:text-xs"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            <span className="hidden sm:inline">View Cert</span>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {filteredTranscript.length > 0 && (
+                <TablePagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  totalItems={filteredTranscript.length}
+                  itemsPerPage={itemsPerPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                  showItemCount={true}
+                />
+              )}
+
+              {filteredTranscript.length === 0 && (
+                <TableEmptyState
+                  icon={<Trophy className="h-8 w-8 text-slate-300" />}
+                  title="No records found"
+                  description={
+                    searchQuery
+                      ? "No transcript records match your search. Try a different keyword."
+                      : "Your completed training records will appear here."
+                  }
+                  actionLabel="Clear Search"
+                  onAction={searchQuery ? () => handleSearch("") : undefined}
+                />
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      {isNavigating && <FullPageLoading text="Loading..." />}
+    </div>
+  );
+};

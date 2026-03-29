@@ -1,0 +1,801 @@
+/* ===================================
+   GLOBAL STYLES - Quality Management System
+   =================================== */
+
+/* Viewport configuration for mobile devices */
+@viewport {
+  width: device-width;
+  zoom: 1.0;
+}
+
+/* Smooth scroll behavior for entire app */
+html {
+  scroll-behavior: smooth;
+  /* IMPORTANT: Remove padding from html element - safe area handled per component */
+  /* This prevents double padding issues */
+}
+
+/* Prevent text size adjustment on mobile and lock body scroll */
+html, body {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  
+  /* Lock body scroll - app uses internal scroll containers */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+/* ===================================
+   iOS SAFARI & NOTCH/DYNAMIC ISLAND SUPPORT
+   =================================== */
+
+/* Support for iOS Safari standalone mode (Add to Home Screen) */
+@media screen and (display-mode: standalone) {
+  html, body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Prevent rubber-band scrolling on body */
+  body {
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent iOS text selection highlight */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Better button appearance on iOS */
+  button, input[type="button"], input[type="submit"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+/* ===================================
+   iOS SAFARI INPUT ZOOM FIX
+   iOS Safari auto-zooms when input font-size < 16px
+   Apply to ALL devices for consistency (no harm on desktop)
+   =================================== */
+
+/* Ensure all interactive form elements have 16px font-size on touch devices */
+@media screen and (max-width: 1024px) {
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  input[type="url"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="week"],
+  input[type="time"],
+  select,
+  textarea {
+    font-size: 16px !important;
+    /* Prevent zoom on focus */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Also apply to any element with contenteditable */
+  [contenteditable="true"] {
+    font-size: 16px !important;
+  }
+}
+
+/* iOS Safari specific - more aggressive fix */
+@supports (-webkit-touch-callout: none) {
+  input, select, textarea {
+    font-size: max(16px, 1rem) !important;
+  }
+  
+  /* Disable auto-zoom behavior */
+  input:focus, select:focus, textarea:focus {
+    font-size: 16px !important;
+  }
+}
+
+/* ===================================
+   iOS SAFARI LAYOUT FIXES
+   Using flex-based pinned header/footer pattern:
+   No sticky/fixed needed — header & footer are flex children
+   with shrink-0, only the content area scrolls.
+   =================================== */
+
+/* ===================================
+   MOBILE SIDEBAR & OVERLAY SCROLL FIX
+   Ensures sidebar content is fully scrollable on mobile
+   Prevents content from being hidden behind browser UI
+   =================================== */
+
+@media (max-width: 767px) {
+  /* Fix for mobile sidebar scroll - ensure content is not cut off */
+  .sidebar-mobile {
+    /* Use flexbox for proper height distribution */
+    display: flex !important;
+    flex-direction: column !important;
+    
+    /* Contain scroll within sidebar */
+    overflow: hidden !important;
+  }
+  
+  /* Navigation container must be scrollable */
+  .sidebar-mobile > div:last-of-type {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+  
+  /* Ensure proper touch scrolling on iOS */
+  .custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Hide scrollbar on mobile for cleaner look while maintaining scroll */
+  .custom-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  
+  .custom-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Dynamic Island & Notch safe area utilities */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.safe-area-x {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.safe-area-y {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ===================================
+   TOUCH TARGET UTILITIES
+   Minimum 44px touch targets for mobile accessibility
+   =================================== */
+
+/* Touch-friendly action buttons */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Responsive touch target - smaller on desktop */
+.touch-target-responsive {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@media (min-width: 768px) {
+  .touch-target-responsive {
+    min-height: unset;
+    min-width: unset;
+  }
+}
+
+/* ===================================
+   HEIGHT UTILITIES WITH DVH SUPPORT
+   Use dvh for iOS Safari dynamic viewport
+   =================================== */
+
+/* Full viewport height with dvh fallback */
+.h-screen-safe {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Min height with dvh */
+.min-h-screen-safe {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Max height with dvh */
+.max-h-screen-safe {
+  max-height: 100vh;
+  max-height: 100dvh;
+}
+
+.safe-area-all {
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+}
+
+/* Margin versions for elements that can't use padding */
+.safe-margin-top {
+  margin-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-margin-bottom {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* CSS Variables for theming */
+:root {
+  /* Safe Area Insets for iOS devices (notch, dynamic island, home indicator) */
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  
+  /* Dynamic viewport units for iOS Safari (iOS 15.4+) */
+  --vh: 1vh;
+  --dvh: 1dvh; /* Dynamic - changes when browser UI shows/hides */
+  --svh: 1svh; /* Small - minimum viewport (browser UI visible) */
+  --lvh: 1lvh; /* Large - maximum viewport (browser UI hidden) */
+  
+  /* Full height utilities */
+  --full-height: 100vh;
+  --full-height-dynamic: 100dvh;
+  --full-height-small: 100svh;
+  --full-height-large: 100lvh;
+  
+  /* Z-Index Scale - Standardized across application */
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-footer: 20;
+  --z-table-header: 30;
+  --z-sidebar: 30;
+  --z-header: 40;
+  --z-backdrop: 40;
+  --z-dropdown: 50;
+  --z-modal: 50;
+  --z-toast: 60;
+  --z-portal-escape: 9999; /* Only for portal components escaping stacking contexts */
+  
+  /* Primary Colors */
+  --color-primary: #6366f1; /* Indigo */
+  --color-primary-dark: #4f46e5;
+  --color-primary-light: #818cf8;
+  
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+  
+  /* Neutral Colors */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  
+  /* Responsive Breakpoints */
+  --breakpoint-tablet: 768px;
+  --breakpoint-tablet-lg: 1024px;
+  --breakpoint-desktop: 1280px;
+  --breakpoint-desktop-lg: 1920px;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --: 'Monaco', 'Courier New', monospace;
+  
+  /* Layout Sizes */
+  --sidebar-collapsed: 80px;
+  --sidebar-expanded: 280px;
+  --header-height: 64px;
+  --header-height-desktop: 72px;
+}
+
+/* Responsive Typography */
+@media (min-width: 768px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    font-size: 17px;
+  }
+}
+
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 15px; /* Base for mobile/tablet portrait */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-slate-900);
+  background-color: var(--color-slate-50);
+  line-height: 1.6;
+}
+
+/* Touch-friendly for tablets */
+@media (hover: none) and (pointer: coarse) {
+  button, 
+  a, 
+  input, 
+  select {
+    min-height: 44px; /* iOS recommended touch target */
+    min-width: 44px;
+  }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.6);
+  border-radius: 2px;
+  transition: background var(--transition-base);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.8);
+}
+
+/* Thin Scrollbar for Tables - Updated to hide vertical and make horizontal thinner/fainter */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 0px; /* Hide vertical scrollbar */
+  height: 3px; /* Thinner horizontal scrollbar */
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-track-slate-100::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.5);
+  border-radius: 9999px;
+}
+
+.scrollbar-thumb-slate-300::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.4); /* Fainter slate-300 */
+  border-radius: 9999px;
+  transition: background 200ms ease;
+}
+
+.scrollbar-thumb-slate-300:hover::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.6); /* Fainter slate-400 */
+}
+
+.scrollbar-thumb-rounded-full::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+}
+
+.scrollbar-track-rounded-full::-webkit-scrollbar-track {
+  border-radius: 9999px;
+}
+
+/* Firefox scrollbar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.4) transparent;
+}
+
+
+/* Utility Classes */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Animation Classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Smooth Page Transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-smooth), transform var(--transition-smooth);
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-base);
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale var(--transition-smooth);
+}
+
+.animate-slide-in-up {
+  animation: slideInUp var(--transition-slow);
+}
+
+.animate-slide-in-down {
+  animation: slideInDown var(--transition-slow);
+}
+
+.animate-slide-in-right {
+  animation: slideInRight var(--transition-smooth);
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft var(--transition-smooth);
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--transition-smooth);
+}
+
+/* Transition Utilities */
+.transition-smooth {
+  transition: all var(--transition-smooth);
+}
+
+.transition-smooth-colors {
+  transition: color var(--transition-smooth), background-color var(--transition-smooth), border-color var(--transition-smooth);
+}
+
+.transition-smooth-transform {
+  transition: transform var(--transition-smooth);
+}
+
+.transition-smooth-opacity {
+  transition: opacity var(--transition-smooth);
+}
+
+.transition-bounce {
+  transition: all var(--transition-bounce);
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hover-scale {
+  transition: transform var(--transition-smooth);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-glow {
+  transition: box-shadow var(--transition-smooth);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  @page {
+    margin: 2cm;
+  }
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus Visible */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Loading States */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-slate-200) 25%,
+    var(--color-slate-100) 50%,
+    var(--color-slate-200) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Animated Gradient Background */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Custom Classes for QMS */
+.compliance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.audit-highlight {
+  background-color: rgba(99, 102, 241, 0.1);
+  border-left: 3px solid var(--color-primary);
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+}
+
+.signature-field {
+  border: 2px dashed var(--color-slate-300);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  text-align: center;
+  transition: all var(--transition-base);
+}
+
+.signature-field:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-slate-50);
+}

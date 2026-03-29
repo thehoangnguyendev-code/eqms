@@ -1,0 +1,406 @@
+import React, { useState, useMemo } from "react";
+import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/app/routes.constants";
+import { Plus, Search, MoreVertical, Users, Lock, Download } from "lucide-react";
+import { IconEye, IconEdit, IconTrash } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button/Button";
+import { AlertModal } from "@/components/ui/modal/AlertModal";
+import { TablePagination } from "@/components/ui/table/TablePagination";
+import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
+import { useToast } from "@/components/ui/toast";
+import { cn } from "@/components/ui/utils";
+import { FilterCard } from "@/components/ui/card/FilterCard";
+import { PageHeader } from "@/components/ui/page/PageHeader";
+import { Badge } from "@/components/ui/badge/Badge";
+import { rolePermissions } from "@/components/ui/breadcrumb/breadcrumbs.config";
+import { Role } from "../types";
+import { PERMISSION_GROUPS } from "../constants";
+import { MOCK_ROLES } from "../mockData";
+import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { usePortalDropdown, useNavigateWithLoading } from "@/hooks";
+
+interface DropdownMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+  position: { top: number; left: number; showAbove?: boolean };
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  canDelete: boolean;
+}
+
+const DropdownMenu: React.FC<DropdownMenuProps> = ({
+  isOpen,
+  onClose,
+  position,
+  onView,
+  onEdit,
+  onDelete,
+  canDelete,
+}) => {
+  if (!isOpen) return null;
+
+  const menuItems = [
+    {
+      icon: IconEye,
+      label: "View Role",
+      onClick: onView,
+      color: "text-slate-500",
+    },
+    {
+      icon: IconEdit,
+      label: "Edit Role",
+      onClick: onEdit,
+      color: "text-slate-500",
+    },
+    {
+      icon: IconTrash,
+      label: "Delete Role",
+      onClick: onDelete,
+      color: canDelete ? "text-slate-500" : "text-slate-300",
+      disabled: !canDelete,
+    },
+  ];
+
+  return createPortal(
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-40 animate-in fade-in duration-150"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-hidden="true"
+      />
+      {/* Menu */}
+      <div
+        className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={{
+          top: `${position.top}px`,
+          left: `${position.left}px`,
+          transform: position.showAbove ? 'translateY(-100%)' : 'none'
+        }}
+      >
+        <div className="py-1">
+          {menuItems.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!item.disabled) {
+                    item.onClick();
+                    onClose();
+                  }
+                }}
+                disabled={item.disabled}
+                className={cn(
+                  "flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 active:bg-slate-100 transition-colors",
+                  item.disabled && "opacity-50 cursor-not-allowed",
+                  item.color
+                )}
+              >
+                <Icon className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </>,
+    window.document.body
+  );
+};
+
+export const RoleListView: React.FC = () => {
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
+  const [roles, setRoles] = useState<Role[]>(MOCK_ROLES);
+
+  // Calculate total permissions
+  const totalPermissions = useMemo(
+    () => PERMISSION_GROUPS.reduce((sum, group) => sum + group.permissions.length, 0),
+    []
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+  const { navigateTo, isNavigating } = useNavigateWithLoading();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteRoleId, setDeleteRoleId] = useState<string>("");
+
+
+  // Filtered data
+  const filteredRoles = useMemo(() => {
+    return roles.filter((role) => {
+      const matchesSearch =
+        searchQuery === "" ||
+        role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        role.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [roles, searchQuery]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredRoles.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedRoles = useMemo(() => {
+    return filteredRoles.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredRoles, startIndex, itemsPerPage]);
+
+  // Handlers
+  const handleViewRole = (id: string) => {
+    navigateTo(ROUTES.SETTINGS.ROLES_DETAIL(id));
+  };
+
+  const handleEdit = (id: string) => {
+    navigateTo(ROUTES.SETTINGS.ROLES_EDIT(id));
+  };
+
+  const handleCreateNew = () => {
+    navigateTo(ROUTES.SETTINGS.ROLES_NEW);
+  };
+
+
+
+  const openDeleteModal = (roleId: string) => {
+    const role = roles.find((r) => r.id === roleId);
+    if (!role) return;
+    if (role.type === "system") {
+      showToast({
+        type: "error",
+        title: "Protected role",
+        message: "System roles cannot be deleted",
+      });
+      return;
+    }
+    setDeleteRoleId(roleId);
+    setIsDeleteOpen(true);
+  };
+
+  const handleDeleteRole = () => {
+    const role = roles.find((r) => r.id === deleteRoleId);
+    if (!role) {
+      setIsDeleteOpen(false);
+      return;
+    }
+    if (role.type === "system") {
+      setIsDeleteOpen(false);
+      showToast({
+        type: "error",
+        title: "Protected role",
+        message: "System roles cannot be deleted",
+      });
+      return;
+    }
+
+    const updated = roles.filter((r) => r.id !== deleteRoleId);
+    setRoles(updated);
+    setIsDeleteOpen(false);
+    showToast({
+      type: "success",
+      title: "Role deleted",
+      message: `${role.name} has been removed`,
+    });
+  };
+
+  return (
+    <div className="space-y-6 w-full flex-1 flex flex-col">
+      {/* Header */}
+      <PageHeader
+        title="Role & Permissions"
+        breadcrumbItems={rolePermissions()}
+        actions={
+          <>
+            <Button
+              onClick={() => console.log("Export roles")}
+              variant="outline"
+              size="sm"
+              className="whitespace-nowrap gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+            <Button size="sm" className="whitespace-nowrap gap-2" onClick={handleCreateNew}>
+              <Plus className="h-4 w-4" />
+              New Role
+            </Button>
+          </>
+        }
+      />
+
+      {/* Unified Content Card */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
+        {/* Filter Section */}
+        <div className="p-4 md:p-5 border-b border-slate-50">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            {/* Search */}
+            <div className="lg:col-span-2 max-w-lg">
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Search</label>
+              <div className="relative group">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Search by role name, description..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="block w-full pl-10 pr-3 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
+          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
+            {paginatedRoles.length > 0 ? (
+              <>
+                {/* Table */}
+                <div className="overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+                  <table className="w-full">
+                    <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
+                      <tr>
+                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                          No.
+                        </th>
+                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                          Role Name
+                        </th>
+                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                          Description
+                        </th>
+                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                          Type
+                        </th>
+                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                          Users
+                        </th>
+                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                          Permissions
+                        </th>
+                        <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 bg-white">
+                      {paginatedRoles.map((role, index) => (
+                        <tr
+                          key={role.id}
+                          onClick={() => handleViewRole(role.id)}
+                          className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
+                        >
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                            {startIndex + index + 1}
+                          </td>
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                            <span className="font-medium text-emerald-600">{role.name}</span>
+                          </td>
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-700 max-w-md">
+                            <span className="line-clamp-2">{role.description}</span>
+                          </td>
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                            <Badge
+                              color={role.type === "custom" ? "amber" : "slate"}
+                              size="sm"
+                            >
+                              {role.type === "system" ? "System" : "Custom"}
+                            </Badge>
+                          </td>
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                            <div className="flex items-center gap-1.5">
+                              <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-slate-400" />
+                              <span className="font-medium">{role.userCount}</span>
+                            </div>
+                          </td>
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-medium">
+                                {role.permissions.length}
+                                <span className="text-slate-400 mx-0.5">/</span>
+                                {totalPermissions}
+                              </span>
+                            </div>
+                          </td>
+                          <td
+                            onClick={(e) => e.stopPropagation()}
+                            className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)] group-hover:bg-slate-50"
+                          >
+                            <button
+                              ref={getRef(role.id)}
+                              onClick={(e) => handleDropdownToggle(role.id, e)}
+                              className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
+                              aria-label="More actions"
+                            >
+                              <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination */}
+                <TablePagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  totalItems={filteredRoles.length}
+                  itemsPerPage={itemsPerPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                  showItemCount={true}
+                />
+              </>
+            ) : (
+              <TableEmptyState
+                title="No roles found"
+                description="Try adjusting your search criteria"
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Dropdown Menu */}
+      {openDropdownId && (
+        <DropdownMenu
+          isOpen={openDropdownId !== null}
+          onClose={closeDropdown}
+          position={dropdownPosition}
+          onView={() => handleViewRole(openDropdownId!)}
+          onEdit={() => handleEdit(openDropdownId!)}
+          onDelete={() => openDeleteModal(openDropdownId!)}
+          canDelete={roles.find(r => r.id === openDropdownId)?.type !== 'system'}
+        />
+      )}
+
+      {/* Delete Role Confirm */}
+      <AlertModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={handleDeleteRole}
+        type="warning"
+        title="Delete Role"
+        confirmText="Delete"
+        showCancel
+        description={
+          <div className="text-sm text-slate-600">
+            Are you sure you want to delete this role? This action cannot be undone.
+          </div>
+        }
+      />
+
+      {isNavigating && <FullPageLoading text="Loading..." />}
+    </div>
+  );
+};
