@@ -590,14 +590,22 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
                       return (
                         <tr
                           key={copy.id}
-                          onClick={() => handleViewRow(copy)}
-                          className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                          className="hover:bg-slate-50/80 transition-colors group"
                         >
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
                             {rowNumber}
                           </td>
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                            <span className="font-medium text-emerald-600">{copy.documentNumber}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleViewRow(copy);
+                              }}
+                              className="font-medium text-emerald-600 hover:underline transition-colors"
+                            >
+                              {copy.documentNumber}
+                            </button>
                           </td>
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
                             {formatDateTimeParts(copy.createdDate, copy.createdTime)}

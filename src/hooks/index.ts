@@ -12,4 +12,5 @@ export { useDropdownPosition } from './useDropdownPosition';
 export { usePortalDropdown } from './usePortalDropdown';
 export { useNavigateWithLoading } from './useNavigateWithLoading';
 export { useTableFilter } from './useTableFilter';
+export { useGlobalDragScroll } from './useGlobalDragScroll';
 

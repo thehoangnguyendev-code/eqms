@@ -35,7 +35,10 @@ export const ResponsiveTableWrapper: React.FC<ResponsiveTableProps> = ({
   className,
 }) => {
   return (
-    <div className={cn('overflow-x-auto flex-1', className)}>
+    <div className={cn(
+      'overflow-x-auto flex-1 scrollbar-always-visible scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full',
+      className
+    )}>
       <div className="inline-block min-w-full align-middle">
         {children}
       </div>

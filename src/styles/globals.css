@@ -407,6 +407,99 @@ body {
 
 /* Webkit support (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.3) !important;
+  border-radius: 10px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.6) !important;
+  background-clip: padding-box !important;
+  border: 2px solid transparent !important;
+  border-radius: 10px !important;
+  transition: background var(--transition-base) !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.8) !important;
+  border: 2px solid transparent !important;
+}
+
+/* Custom Scrollbar Utility */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.5);
+}
+
+/* Scrollbar Always Visible Utility - Specifically for macOS/WebKit */
+.scrollbar-always-visible::-webkit-scrollbar {
+  display: block !important;
+}
+
+.drag-scroll-target {
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.drag-scroll-target.dragging {
+  cursor: grabbing;
+}
+
+/* Thin Scrollbar for Tables - Hide vertical and make horizontal accessible */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 0px; 
+  height: 6px; /* Increased from 3px for better visibility on macOS */
+}
+
+.scrollbar-track-slate-100::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.8) !important;
+  border-radius: 9999px;
+}
+
+.scrollbar-thumb-slate-300::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.8) !important;
+  border-radius: 9999px;
+}
+
+.scrollbar-thumb-slate-300:hover::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 1) !important;
+}
+
+.scrollbar-thumb-rounded-full::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+}
+
+.scrollbar-track-rounded-full::-webkit-scrollbar-track {
+  border-radius: 9999px;
+}
+
+/* Firefox Specific Class */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.5) rgba(241, 245, 249, 0.3);
+}
+
+/* ===================================
+   GLOBAL CUSTOM SCROLLBAR
+   Thin, elegant, and harmonious across all browsers
+   =================================== */
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.4) transparent;
+}
+
+/* Webkit support (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
   width: 6px !important;
   height: 6px !important;
 }

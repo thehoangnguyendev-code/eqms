@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ROUTES } from '@/app/routes.constants';
@@ -337,12 +337,18 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
   const [columns, setColumns] = useState<TableColumn[]>(config.defaultColumns);
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
   const [selectedDocumentTab, setSelectedDocumentTab] = useState<string>("general");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
   const [selectedDocumentForLink, setSelectedDocumentForLink] = useState<Document | null>(null);
   const [isLocalNavigating, setIsLocalNavigating] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [isDragging, setIsDragging] = useState(false);
+
+  const tableScrollerRef = useRef<HTMLDivElement | null>(null);
+  const dragStartX = useRef(0);
+  const scrollStartLeft = useRef(0);
+  const dragMoved = useRef(false);
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
 
@@ -415,12 +421,50 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
     setIsCreateLinkModalOpen(true);
   };
 
+  const handleDragMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    dragMoved.current = false;
+    dragStartX.current = e.clientX;
+    scrollStartLeft.current = tableScrollerRef.current?.scrollLeft ?? 0;
+    setIsDragging(true);
+  };
+
+  const handleDragMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || !tableScrollerRef.current) return;
+    const deltaX = e.clientX - dragStartX.current;
+    if (Math.abs(deltaX) > 5) {
+      dragMoved.current = true;
+    }
+    tableScrollerRef.current.scrollLeft = scrollStartLeft.current - deltaX;
+  };
+
+  const stopDrag = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleScrollClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (dragMoved.current) {
+      dragMoved.current = false;
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!isLoading) {
+      setIsTableLoading(true);
+      const timer = setTimeout(() => {
+        setIsTableLoading(false);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [
+    searchQuery, statusFilter, typeFilter, businessUnitFilter, departmentFilter, authorFilter, versionFilter,
+    createdFromDate, createdToDate, effectiveFromDate, effectiveToDate, validFromDate, validToDate,
+    relatedDocumentFilter, correlatedDocumentFilter, templateFilter, config
+  ]);
 
   // Filter documents based on viewType and filters
   const filteredDocuments = useMemo(() => {
@@ -795,8 +839,17 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
               )}>
                 {paginatedDocuments.length > 0 ? (
                   <>
-                    <div className="overflow-x-auto overflow-y-hidden">
-                      <table className="w-full">
+                    <div
+                      ref={tableScrollerRef}
+                      className="overflow-x-auto overflow-y-hidden cursor-grab"
+                      style={{ WebkitOverflowScrolling: 'touch', cursor: isDragging ? 'grabbing' : 'grab' }}
+                      onMouseDown={handleDragMouseDown}
+                      onMouseMove={handleDragMouseMove}
+                      onMouseUp={stopDrag}
+                      onMouseLeave={stopDrag}
+                      onClickCapture={handleScrollClickCapture}
+                    >
+                      <table className="w-full min-w-max">
                         <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-30">
                           <tr>
                             <th className="py-2.5 px-2 sm:py-3.5 sm:px-3 w-9 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap"></th>
@@ -818,10 +871,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                             const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
                             return (
                               <React.Fragment key={doc.id}>
-                                <tr
-                                  onClick={() => handleViewDocument(doc.id)}
-                                  className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
-                                >
+                                <tr className="hover:bg-slate-50/80 transition-colors group">
                                   <td className="py-2 px-2 sm:py-3.5 sm:px-3 w-9 whitespace-nowrap"
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -852,7 +902,16 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                     if (col.id === 'documentId') {
                                       return (
                                         <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                                          <span className="font-medium text-emerald-600">{doc.documentId}</span>
+                                          <button
+                                            type="button"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleViewDocument(doc.id);
+                                            }}
+                                            className="font-medium text-emerald-600 hover:underline transition-colors"
+                                          >
+                                            {doc.documentId}
+                                          </button>
                                         </td>
                                       );
                                     }

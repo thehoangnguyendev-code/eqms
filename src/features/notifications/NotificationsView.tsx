@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Breadcrumb } from '@/components/ui/breadcrumb/Breadcrumb';
-import { notifications as notificationsBreadcrumb } from '@/components/ui/breadcrumb/breadcrumbs.config';
+import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { notifications as notificationsBreadcrumb } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import {
   Search,
   Bell,
@@ -35,6 +35,7 @@ import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { FilterCard } from "@/components/ui/card/FilterCard";
 import { cn } from "@/components/ui/utils";
+import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
 import type {
   Notification,
   NotificationType,
@@ -61,16 +62,55 @@ const getTypeIcon = (type: NotificationType) => {
 };
 
 const getTypeColor = (type: NotificationType) => {
-  const colors: Record<NotificationType, { bg: string; text: string; badge: string }> = {
-    "review-request": { bg: "bg-blue-100", text: "text-blue-600", badge: "bg-blue-500" },
-    approval: { bg: "bg-emerald-100", text: "text-emerald-600", badge: "bg-emerald-500" },
-    "capa-assignment": { bg: "bg-amber-100", text: "text-amber-600", badge: "bg-amber-500" },
-    "training-completion": { bg: "bg-purple-100", text: "text-purple-600", badge: "bg-purple-500" },
-    "document-update": { bg: "bg-cyan-100", text: "text-cyan-600", badge: "bg-cyan-500" },
-    "comment-reply": { bg: "bg-slate-100", text: "text-slate-600", badge: "bg-slate-500" },
-    "deviation-assignment": { bg: "bg-red-100", text: "text-red-600", badge: "bg-red-500" },
-    "change-control": { bg: "bg-indigo-100", text: "text-indigo-600", badge: "bg-indigo-500" },
-    system: { bg: "bg-slate-100", text: "text-slate-600", badge: "bg-slate-500" },
+  const colors: Record<
+    NotificationType,
+    { bg: string; text: string; badge: string }
+  > = {
+    "review-request": {
+      bg: "bg-blue-100",
+      text: "text-blue-600",
+      badge: "bg-blue-500",
+    },
+    approval: {
+      bg: "bg-emerald-100",
+      text: "text-emerald-600",
+      badge: "bg-emerald-500",
+    },
+    "capa-assignment": {
+      bg: "bg-amber-100",
+      text: "text-amber-600",
+      badge: "bg-amber-500",
+    },
+    "training-completion": {
+      bg: "bg-purple-100",
+      text: "text-purple-600",
+      badge: "bg-purple-500",
+    },
+    "document-update": {
+      bg: "bg-cyan-100",
+      text: "text-cyan-600",
+      badge: "bg-cyan-500",
+    },
+    "comment-reply": {
+      bg: "bg-slate-100",
+      text: "text-slate-600",
+      badge: "bg-slate-500",
+    },
+    "deviation-assignment": {
+      bg: "bg-red-100",
+      text: "text-red-600",
+      badge: "bg-red-500",
+    },
+    "change-control": {
+      bg: "bg-indigo-100",
+      text: "text-indigo-600",
+      badge: "bg-indigo-500",
+    },
+    system: {
+      bg: "bg-slate-100",
+      text: "text-slate-600",
+      badge: "bg-slate-500",
+    },
   };
   return colors[type] || colors.system;
 };
@@ -126,7 +166,7 @@ const NotificationTabs: React.FC<{
             "flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 flex-1 sm:flex-initial relative z-10",
             activeTab === tab.id
               ? "text-slate-900"
-              : "text-slate-600 hover:text-slate-900 hover:bg-slate-50/50"
+              : "text-slate-600 hover:text-slate-900 hover:bg-slate-50/50",
           )}
         >
           {activeTab === tab.id && (
@@ -145,7 +185,7 @@ const NotificationTabs: React.FC<{
                   ? tab.id === "unread"
                     ? "bg-emerald-100 text-emerald-700"
                     : "bg-slate-200 text-slate-700"
-                  : "bg-slate-200/60 text-slate-500"
+                  : "bg-slate-200/60 text-slate-500",
               )}
             >
               {tab.count}
@@ -157,8 +197,6 @@ const NotificationTabs: React.FC<{
   );
 };
 
-
-
 const NotificationActionsDropdown: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -167,7 +205,15 @@ const NotificationActionsDropdown: React.FC<{
   onMarkAsRead: () => void;
   onDelete: () => void;
   onView: () => void;
-}> = ({ isOpen, onClose, position, notification, onMarkAsRead, onDelete, onView }) => {
+}> = ({
+  isOpen,
+  onClose,
+  position,
+  notification,
+  onMarkAsRead,
+  onDelete,
+  onView,
+}) => {
   if (!isOpen) return null;
 
   return createPortal(
@@ -182,9 +228,9 @@ const NotificationActionsDropdown: React.FC<{
         aria-hidden="true"
         style={{
           // Allow scroll on touch devices
-          touchAction: 'auto',
+          touchAction: "auto",
           // Make backdrop invisible but still clickable
-          backgroundColor: 'transparent'
+          backgroundColor: "transparent",
         }}
       />
       <div
@@ -192,7 +238,7 @@ const NotificationActionsDropdown: React.FC<{
         style={{
           top: `${position.top}px`,
           left: `${position.left}px`,
-          transform: position.showAbove ? 'translateY(-100%)' : 'none'
+          transform: position.showAbove ? "translateY(-100%)" : "none",
         }}
       >
         <div className="py-1">
@@ -234,7 +280,7 @@ const NotificationActionsDropdown: React.FC<{
         </div>
       </div>
     </>,
-    document.body
+    document.body,
   );
 };
 
@@ -244,13 +290,19 @@ const NotificationRow: React.FC<{
   onView: (notification: Notification) => void;
   onMarkAsRead: (id: string) => void;
   onDelete: (id: string) => void;
-  getRef: (id: string) => React.RefObject<HTMLButtonElement>;
+  getRef: (id: string) => React.RefObject<HTMLButtonElement | null>;
   onToggle: (id: string, e: React.MouseEvent<HTMLButtonElement>) => void;
-}> = ({ notification, index, onView, onMarkAsRead, onDelete, getRef, onToggle }) => {
+}> = ({
+  notification,
+  index,
+  onView,
+  onMarkAsRead,
+  onDelete,
+  getRef,
+  onToggle,
+}) => {
   const Icon = getTypeIcon(notification.type);
   const colors = getTypeColor(notification.type);
-
-
 
   return (
     <tr
@@ -259,7 +311,7 @@ const NotificationRow: React.FC<{
         "group cursor-pointer transition-colors",
         notification.status === "unread"
           ? "bg-emerald-50/30 hover:bg-emerald-50/50"
-          : "hover:bg-slate-50/80"
+          : "hover:bg-slate-50/80",
       )}
     >
       {/* No. */}
@@ -268,13 +320,13 @@ const NotificationRow: React.FC<{
       </td>
 
       {/* Icon & Title */}
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4">
+      <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
         <div className="flex items-start gap-3">
           <div className="relative shrink-0">
             <div
               className={cn(
                 "h-10 w-10 rounded-full flex items-center justify-center",
-                colors.bg
+                colors.bg,
               )}
             >
               <Icon className={cn("h-5 w-5", colors.text)} />
@@ -283,18 +335,18 @@ const NotificationRow: React.FC<{
               <div className="absolute -top-0.5 -right-0.5 h-3 w-3 bg-emerald-500 rounded-full border-2 border-white" />
             )}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-full">
             <p
               className={cn(
-                "text-sm",
+                "text-sm whitespace-nowrap",
                 notification.status === "unread"
                   ? "font-semibold text-slate-900"
-                  : "font-medium text-slate-700"
+                  : "font-medium text-slate-700",
               )}
             >
               {notification.title}
             </p>
-            <p className="text-sm text-slate-500 mt-0.5 line-clamp-1">
+            <p className="text-sm text-slate-500 mt-0.5 whitespace-nowrap">
               {notification.description}
             </p>
           </div>
@@ -303,9 +355,12 @@ const NotificationRow: React.FC<{
 
       {/* Module */}
       <td className="py-2 px-2 sm:py-3.5 sm:px-4 hidden md:table-cell whitespace-nowrap">
-        <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-slate-100 text-slate-700">
-          {notification.module}
-        </span>
+        <StatusBadge
+          status="draft"
+          label={notification.module}
+          className="text-slate-700 bg-slate-100 border-slate-200"
+          size="sm"
+        />
       </td>
 
       {/* Related Item */}
@@ -324,7 +379,7 @@ const NotificationRow: React.FC<{
         <span
           className={cn(
             "inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border capitalize",
-            getPriorityStyles(notification.priority)
+            getPriorityStyles(notification.priority),
           )}
         >
           {notification.priority}
@@ -392,12 +447,16 @@ const EmptyState: React.FC<{
   );
 };
 
-
-
 // --- Main View ---
 export const NotificationsView: React.FC = () => {
   const navigate = useNavigate();
-  const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+  const {
+    openId: openDropdownId,
+    position: dropdownPosition,
+    getRef,
+    toggle: handleDropdownToggle,
+    close: closeDropdown,
+  } = usePortalDropdown();
 
   // Filter states
   const [activeTab, setActiveTab] = useState<NotificationFilterTab>("all");
@@ -416,7 +475,8 @@ export const NotificationsView: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Notification data (in real app, this would come from API)
-  const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
+  const [notifications, setNotifications] =
+    useState<Notification[]>(MOCK_NOTIFICATIONS);
 
   // Counts for tabs
   const counts = useMemo(() => {
@@ -431,7 +491,8 @@ export const NotificationsView: React.FC = () => {
   const filteredNotifications = useMemo(() => {
     return notifications.filter((notification) => {
       // Tab filter
-      if (activeTab === "unread" && notification.status !== "unread") return false;
+      if (activeTab === "unread" && notification.status !== "unread")
+        return false;
       if (activeTab === "read" && notification.status !== "read") return false;
 
       // Search filter
@@ -451,7 +512,8 @@ export const NotificationsView: React.FC = () => {
       if (module !== "all" && notification.module !== module) return false;
 
       // Priority filter
-      if (priority !== "all" && notification.priority !== priority) return false;
+      if (priority !== "all" && notification.priority !== priority)
+        return false;
 
       // Date filters
       if (dateFrom) {
@@ -468,7 +530,16 @@ export const NotificationsView: React.FC = () => {
 
       return true;
     });
-  }, [notifications, activeTab, search, type, module, priority, dateFrom, dateTo]);
+  }, [
+    notifications,
+    activeTab,
+    search,
+    type,
+    module,
+    priority,
+    dateFrom,
+    dateTo,
+  ]);
 
   // Paginated notifications
   const paginatedNotifications = useMemo(() => {
@@ -493,8 +564,10 @@ export const NotificationsView: React.FC = () => {
   const handleMarkAsRead = (id: string) => {
     setNotifications((prev) =>
       prev.map((n) =>
-        n.id === id ? { ...n, status: "read" as const, readAt: new Date().toISOString() } : n
-      )
+        n.id === id
+          ? { ...n, status: "read" as const, readAt: new Date().toISOString() }
+          : n,
+      ),
     );
   };
 
@@ -503,8 +576,8 @@ export const NotificationsView: React.FC = () => {
       prev.map((n) =>
         n.status === "unread"
           ? { ...n, status: "read" as const, readAt: new Date().toISOString() }
-          : n
-      )
+          : n,
+      ),
     );
   };
 
@@ -522,7 +595,13 @@ export const NotificationsView: React.FC = () => {
     setDateTo("");
   };
 
-  const hasActiveFilters = search !== "" || type !== "all" || module !== "all" || priority !== "all" || dateFrom !== "" || dateTo !== "";
+  const hasActiveFilters =
+    search !== "" ||
+    type !== "all" ||
+    module !== "all" ||
+    priority !== "all" ||
+    dateFrom !== "" ||
+    dateTo !== "";
 
   return (
     <div className="flex flex-col h-full gap-4 md:gap-6">
@@ -614,7 +693,9 @@ export const NotificationsView: React.FC = () => {
 
               <Button
                 variant="outline"
-                onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+                onClick={() =>
+                  setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+                }
                 className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
                 size="sm"
               >
@@ -638,7 +719,7 @@ export const NotificationsView: React.FC = () => {
                   height: { type: "spring", bounce: 0, duration: 0.4 },
                   marginTop: { type: "spring", bounce: 0, duration: 0.4 },
                   opacity: { duration: 0.25 },
-                  y: { duration: 0.3 }
+                  y: { duration: 0.3 },
                 }}
                 className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
               >
@@ -648,16 +729,31 @@ export const NotificationsView: React.FC = () => {
                       <Select
                         label="Notification Type"
                         value={type}
-                        onChange={(val) => { setType(val as string); setCurrentPage(1); }}
+                        onChange={(val) => {
+                          setType(val as string);
+                          setCurrentPage(1);
+                        }}
                         options={[
                           { label: "All Types", value: "all" },
                           { label: "Review Request", value: "review-request" },
                           { label: "Approval", value: "approval" },
-                          { label: "CAPA Assignment", value: "capa-assignment" },
-                          { label: "Training Completion", value: "training-completion" },
-                          { label: "Document Update", value: "document-update" },
+                          {
+                            label: "CAPA Assignment",
+                            value: "capa-assignment",
+                          },
+                          {
+                            label: "Training Completion",
+                            value: "training-completion",
+                          },
+                          {
+                            label: "Document Update",
+                            value: "document-update",
+                          },
                           { label: "Comment Reply", value: "comment-reply" },
-                          { label: "Deviation Assignment", value: "deviation-assignment" },
+                          {
+                            label: "Deviation Assignment",
+                            value: "deviation-assignment",
+                          },
                           { label: "Change Control", value: "change-control" },
                         ]}
                       />
@@ -667,7 +763,10 @@ export const NotificationsView: React.FC = () => {
                       <Select
                         label="Module"
                         value={module}
-                        onChange={(val) => { setModule(val as string); setCurrentPage(1); }}
+                        onChange={(val) => {
+                          setModule(val as string);
+                          setCurrentPage(1);
+                        }}
                         options={[
                           { label: "All Modules", value: "all" },
                           { label: "Document", value: "Document" },
@@ -683,7 +782,10 @@ export const NotificationsView: React.FC = () => {
                       <Select
                         label="Priority"
                         value={priority}
-                        onChange={(val) => { setPriority(val as string); setCurrentPage(1); }}
+                        onChange={(val) => {
+                          setPriority(val as string);
+                          setCurrentPage(1);
+                        }}
                         options={[
                           { label: "All Priorities", value: "all" },
                           { label: "Critical", value: "critical" },
@@ -699,25 +801,27 @@ export const NotificationsView: React.FC = () => {
                         label="Time Range"
                         startDate={dateFrom}
                         endDate={dateTo}
-                        onStartDateChange={(val) => { setDateFrom(val); setCurrentPage(1); }}
-                        onEndDateChange={(val) => { setDateTo(val); setCurrentPage(1); }}
+                        onStartDateChange={(val) => {
+                          setDateFrom(val);
+                          setCurrentPage(1);
+                        }}
+                        onEndDateChange={(val) => {
+                          setDateTo(val);
+                          setCurrentPage(1);
+                        }}
                         placeholder="Select date range"
                       />
                     </div>
-
-                    {hasActiveFilters && (
-                      <div className="col-span-full flex justify-end">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleClearFilters}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-2"
-                        >
-                          <X className="h-4 w-4" />
-                          Clear Filters
-                        </Button>
-                      </div>
-                    )}
+                    <div className="col-span-full flex justify-start">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleClearFilters}
+                        className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                      >
+                        Clear Filters
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -729,7 +833,7 @@ export const NotificationsView: React.FC = () => {
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
             <div className="overflow-x-auto overflow-y-hidden flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
-              <table className="w-full">
+              <table className="w-full min-w-max table-auto whitespace-nowrap">
                 <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
                   <tr>
                     <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap w-10 sm:w-14">
@@ -772,7 +876,11 @@ export const NotificationsView: React.FC = () => {
                   ) : (
                     <tr>
                       <td colSpan={7}>
-                        <EmptyState type={activeTab} hasActiveFilters={hasActiveFilters} onClearFilters={handleClearFilters} />
+                        <EmptyState
+                          type={activeTab}
+                          hasActiveFilters={hasActiveFilters}
+                          onClearFilters={handleClearFilters}
+                        />
                       </td>
                     </tr>
                   )}
@@ -796,27 +904,32 @@ export const NotificationsView: React.FC = () => {
       </div>
 
       {/* Shared Dropdown Portal */}
-      {openDropdownId && filteredNotifications.find(n => n.id === openDropdownId) && (
-        <NotificationActionsDropdown
-          isOpen={true}
-          onClose={closeDropdown}
-          position={dropdownPosition}
-          notification={filteredNotifications.find(n => n.id === openDropdownId)!}
-          onMarkAsRead={() => {
-            handleMarkAsRead(openDropdownId);
-            closeDropdown();
-          }}
-          onDelete={() => {
-            handleDeleteNotification(openDropdownId);
-            closeDropdown();
-          }}
-          onView={() => {
-            const n = filteredNotifications.find(n => n.id === openDropdownId);
-            if (n) handleViewNotification(n);
-            closeDropdown();
-          }}
-        />
-      )}
+      {openDropdownId &&
+        filteredNotifications.find((n) => n.id === openDropdownId) && (
+          <NotificationActionsDropdown
+            isOpen={true}
+            onClose={closeDropdown}
+            position={dropdownPosition}
+            notification={
+              filteredNotifications.find((n) => n.id === openDropdownId)!
+            }
+            onMarkAsRead={() => {
+              handleMarkAsRead(openDropdownId);
+              closeDropdown();
+            }}
+            onDelete={() => {
+              handleDeleteNotification(openDropdownId);
+              closeDropdown();
+            }}
+            onView={() => {
+              const n = filteredNotifications.find(
+                (n) => n.id === openDropdownId,
+              );
+              if (n) handleViewNotification(n);
+              closeDropdown();
+            }}
+          />
+        )}
     </div>
   );
 };

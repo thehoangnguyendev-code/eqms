@@ -187,12 +187,21 @@ export const ArchivedDocumentsView: React.FC = () => {
                                         const retentionStatus = calculateRetentionStatus(doc.retentionExpiry);
                                         const rowNumber = startIndex + index + 1;
                                         return (
-                                            <tr key={doc.id} className="hover:bg-slate-50/80 transition-colors cursor-pointer group" onClick={() => handleView(doc)}>
+                                            <tr key={doc.id} className="hover:bg-slate-50/80 transition-colors group">
                                                 <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center text-slate-600">
                                                     {rowNumber}
                                                 </td>
                                                 <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                                                    <span className="font-medium text-emerald-600">{doc.code}</span>
+                                                    <button
+                                                      type="button"
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleView(doc);
+                                                      }}
+                                                      className="font-medium text-emerald-600 hover:underline transition-colors"
+                                                    >
+                                                      {doc.code}
+                                                    </button>
                                                 </td>
                                                 <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm">
                                                     <div className="max-w-md">
