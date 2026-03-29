@@ -94,16 +94,16 @@ const MatrixHead: React.FC<MatrixHeadProps> = React.memo(({ onSOPHeaderClick }) 
           onClick={(e) => onSOPHeaderClick(e, sop)}
           title={`${sop.code}: ${sop.title}`}
         >
-            <div className="flex flex-col gap-1.5 overflow-hidden">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <span className="text-[10px] sm:text-[12px] font-bold text-emerald-600 leading-tight block truncate w-full">
-                  {sop.code}
-                </span>
-              </div>
-              <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium leading-snug truncate group-hover/sop:text-slate-500 transition-colors">
-                {sop.title}
-              </p>
+          <div className="flex flex-col gap-1.5 overflow-hidden">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <span className="text-[10px] sm:text-[12px] font-bold text-emerald-600 leading-tight block truncate w-full">
+                {sop.code}
+              </span>
             </div>
+            <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium leading-snug truncate group-hover/sop:text-slate-500 transition-colors">
+              {sop.title}
+            </p>
+          </div>
         </th>
       ))}
     </tr>

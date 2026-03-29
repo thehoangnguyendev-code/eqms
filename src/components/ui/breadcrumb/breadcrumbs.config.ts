@@ -173,7 +173,7 @@ export const requestControlledCopy = (
   dashboard(_navigate),
   { label: "Document Control" },
   { label: "Document Revisions" },
-  { label: documentId || "Request Controlled Copy", isActive: true },
+  { label: "Request Controlled Copy", isActive: true },
 ];
 
 export const standaloneRevision = (_navigate?: (path: string) => void): BreadcrumbItem[] => [

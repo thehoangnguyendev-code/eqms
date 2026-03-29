@@ -273,7 +273,7 @@ export const RequestControlledCopyView: React.FC = () => {
 
         {/* Document Info - Full Width */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 lg:p-6">
-          <h2 className="text-base lg:text-lg font-semibold text-slate-900 mb-3 lg:mb-4">
+          <h2 className="text-base font-semibold text-slate-900 mb-3 lg:mb-4">
             Document Information
           </h2>
           <div className="space-y-3 lg:space-y-4">
@@ -318,7 +318,7 @@ export const RequestControlledCopyView: React.FC = () => {
           {/* Document Selection - Only show if has related documents */}
           {hasRelatedDocs && (
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 lg:p-6">
-              <h2 className="text-base lg:text-lg font-semibold text-slate-900 mb-3 lg:mb-4">
+              <h2 className="text-base font-semibold text-slate-900 mb-3 lg:mb-4">
                 Select Documents to Print
               </h2>
               <div>
@@ -406,7 +406,7 @@ export const RequestControlledCopyView: React.FC = () => {
 
           {/* Distribution Details */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 lg:p-6">
-            <h2 className="text-base lg:text-lg font-semibold text-slate-900 mb-3 lg:mb-4">
+            <h2 className="text-base font-semibold text-slate-900 mb-3 lg:mb-4">
               Distribution Details
             </h2>
             <div>

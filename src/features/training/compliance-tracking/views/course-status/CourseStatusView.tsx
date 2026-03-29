@@ -605,7 +605,7 @@ export const CourseStatusView: React.FC = () => {
 
       {/* Table */}
       <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col flex-1">
-        <div className="overflow-x-auto">
+        <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10 backdrop-blur-sm">
               <tr>
@@ -701,7 +701,7 @@ export const CourseStatusView: React.FC = () => {
             <span>{selectedCourse?.totalAssigned} Total Participants</span>
           </div>
 
-          <div className="border rounded-lg overflow-x-auto">
+          <div className="border rounded-lg flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
             <table className="w-full text-[10px] sm:text-sm">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>

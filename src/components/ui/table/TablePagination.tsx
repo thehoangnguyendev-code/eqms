@@ -92,7 +92,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
       <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
         {showItemCount && (
           <div className="text-[10px] sm:text-xs md:text-sm text-slate-600">
-            Showing <span className="font-medium text-slate-900">{startItem}</span> to{' '}
+            <span className="font-medium text-slate-900">{startItem}</span> -{' '}
             <span className="font-medium text-slate-900">{endItem}</span> of{' '}
             <span className="font-medium text-slate-900">{totalItems}</span>
             <span className="hidden sm:inline"> results</span>

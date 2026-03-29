@@ -27,6 +27,7 @@ import {
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { materialUsageReport } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
+import { StatusBadge, type StatusType } from "@/components/ui/status-badge/StatusBadge";
 import { formatDateUS } from "@/utils/format";
 import { Select } from "@/components/ui/select/Select";
 import { cn } from "@/components/ui/utils";
@@ -43,29 +44,29 @@ import {
 
 const getTypeIcon = (type: UsageReportMaterialType) => {
   switch (type) {
-    case "Video": return <Video className="h-4 w-4 text-purple-600" />;
-    case "PDF": return <FileText className="h-4 w-4 text-red-600" />;
-    case "Image": return <FileImage className="h-4 w-4 text-blue-600" />;
-    default: return <FileText className="h-4 w-4 text-slate-600" />;
+    case "Video": return <Video className="h-5 w-5 text-purple-600" />;
+    case "PDF": return <FileText className="h-5 w-5 text-red-600" />;
+    case "Image": return <FileImage className="h-5 w-5 text-blue-600" />;
+    default: return <GraduationCap className="h-5 w-5 text-slate-600" />;
   }
 };
 
-const getCourseStatusConfig = (status: UsageReportCourseStatus) => {
+const getCourseStatusConfig = (status: UsageReportCourseStatus): { label: string; type: StatusType } => {
   switch (status) {
     case "Active":
-      return { label: "Active", classes: "bg-blue-50 text-blue-700 border-blue-200", icon: <Activity className="h-3 w-3" /> };
+      return { label: "Active", type: "current" };
     case "In Progress":
-      return { label: "In Progress", classes: "bg-amber-50 text-amber-700 border-amber-200", icon: <Clock className="h-3 w-3" /> };
+      return { label: "In Progress", type: "inProgress" };
     case "Completed":
-      return { label: "Completed", classes: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: <CheckCircle className="h-3 w-3" /> };
+      return { label: "Completed", type: "completed" };
     case "Cancelled":
-      return { label: "Cancelled", classes: "bg-red-50 text-red-700 border-red-200", icon: <XCircle className="h-3 w-3" /> };
+      return { label: "Cancelled", type: "cancelled" };
   }
 };
 
 // ─── Component ──────────────────────────────────────────────────────
 export const UsageReportView: React.FC = () => {
-  const { id: materialId } = useParams<{ id: string }>();
+  const { materialId } = useParams<{ materialId: string }>();
   const navigate = useNavigate();
   const [isNavigating, setIsNavigating] = useState(false);
 
@@ -556,10 +557,11 @@ export const UsageReportView: React.FC = () => {
                       </td>
                       {/* Status */}
                       <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
-                        <span className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border", statusConfig.classes)}>
-                          {statusConfig.icon}
-                          {statusConfig.label}
-                        </span>
+                        <StatusBadge
+                          status={statusConfig.type}
+                          label={statusConfig.label}
+                          size="sm"
+                        />
                       </td>
                     </tr>
                   );

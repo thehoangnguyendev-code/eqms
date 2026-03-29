@@ -161,6 +161,9 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
     evidenceFiles,
     setEvidenceFiles,
 }) => {
+    // Defensive check for recurrence data
+    const safeRecurrence = recurrence || { enabled: false, intervalMonths: 0, warningPeriodDays: 30 };
+    
     // Parsing location for internal state
     const parseLocation = (loc: string) => {
         const match = loc.match(/^\[(Zoom|Google Meet|Microsoft Teams|Other)\]\s*(.*)$/);
@@ -515,10 +518,10 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                         <Checkbox
                             id="recurrence-enabled"
                             label="Enable Periodic Retraining"
-                            checked={recurrence.enabled}
-                            onChange={(v) => !readOnly && setRecurrence?.({ ...recurrence, enabled: v })}
+                            checked={safeRecurrence.enabled}
+                            onChange={(v) => !readOnly && setRecurrence?.({ ...safeRecurrence, enabled: v })}
                         />
-                        {recurrence.enabled && (
+                        {safeRecurrence.enabled && (
                             <div className="flex flex-col gap-3 ml-6">
                                 <div className="flex items-center gap-3">
                                     <label className="text-sm text-slate-700 whitespace-nowrap w-32">Retrain every</label>
@@ -527,9 +530,9 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                             type="number"
                                             min={1}
                                             max={60}
-                                            value={recurrence.intervalMonths}
+                                            value={safeRecurrence.intervalMonths}
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                !readOnly && setRecurrence?.({ ...recurrence, intervalMonths: parseInt(e.target.value) || 12 })
+                                                !readOnly && setRecurrence?.({ ...safeRecurrence, intervalMonths: parseInt(e.target.value) || 12 })
                                             }
                                             readOnly={readOnly}
                                             className="text-xs md:text-sm text-center"
@@ -545,9 +548,9 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                             type="number"
                                             min={1}
                                             max={90}
-                                            value={recurrence.warningPeriodDays || 30}
+                                            value={safeRecurrence.warningPeriodDays || 30}
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                !readOnly && setRecurrence?.({ ...recurrence, warningPeriodDays: parseInt(e.target.value) || 30 })
+                                                !readOnly && setRecurrence?.({ ...safeRecurrence, warningPeriodDays: parseInt(e.target.value) || 30 })
                                             }
                                             readOnly={readOnly}
                                             className="text-xs md:text-sm text-center"

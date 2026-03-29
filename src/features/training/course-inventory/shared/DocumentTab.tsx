@@ -106,6 +106,9 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
     instruction,
     setInstruction,
 }) => {
+    // Defensive check for trainingFiles
+    const safeFiles = trainingFiles || [];
+
     const [isDragOver, setIsDragOver] = useState(false);
     const [showLibraryModal, setShowLibraryModal] = useState(false);
     const [showSaveToLibrary, setShowSaveToLibrary] = useState(false);
@@ -202,7 +205,7 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
             <div className="p-4 lg:p-6 space-y-6">
                 {/* Training Files */}
                 <div className="space-y-4">
-                    {trainingFiles.length === 0 ? (
+                    {safeFiles.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
                             <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center mb-3">
                                 <Upload className="h-6 w-6 text-slate-300" />
@@ -216,11 +219,11 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
                         <>
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-xs sm:text-sm font-medium text-slate-700">
-                                    {trainingFiles.length} file{trainingFiles.length > 1 ? "s" : ""} uploaded
+                                    {safeFiles.length} file{safeFiles.length > 1 ? "s" : ""} uploaded
                                 </p>
                             </div>
                             <div className="space-y-2">
-                                {trainingFiles.map((file) => (
+                                {safeFiles.map((file) => (
                                     <div
                                         key={file.id}
                                         className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors"
@@ -340,11 +343,11 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
             </div>
 
             {/* File List */}
-            {trainingFiles.length > 0 && (
+            {safeFiles.length > 0 && (
                 <div>
-                    <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-2">Uploaded Files ({trainingFiles.length})</h4>
+                    <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-2">Uploaded Files ({safeFiles.length})</h4>
                     <div className="space-y-2">
-                        {trainingFiles.map(file => (
+                        {safeFiles.map(file => (
                             <div
                                 key={file.id}
                                 className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200 group hover:bg-slate-100 transition-colors"
@@ -425,7 +428,7 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
                 onClose={() => setShowLibraryModal(false)}
                 onSelect={handleLibrarySelect}
                 items={LIBRARY_MATERIALS}
-                excludeFileNames={trainingFiles.map((f) => f.name)}
+                excludeFileNames={safeFiles.map((f) => f.name)}
             />
 
             {/* Save to Library Prompt */}

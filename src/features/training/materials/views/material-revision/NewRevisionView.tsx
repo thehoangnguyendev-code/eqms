@@ -395,7 +395,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
       setModalType("success");
       setModalTitle("Revision Saved as Draft");
       setModalDescription(`New revision ${formData.version} of ${formData.materialCode} has been saved as draft.`);
-      setModalAction(() => () => navigate(ROUTES.TRAINING.TRAINING_MATERIALS));
+      setModalAction(() => () => navigate(ROUTES.TRAINING.MATERIALS));
       setIsModalOpen(true);
     }, 1000);
   };
@@ -417,7 +417,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
       setModalType("success");
       setModalTitle("Revision Submitted for Review");
       setModalDescription(`Revision ${formData.version} of ${formData.materialCode} has been submitted for review.`);
-      setModalAction(() => () => navigate(ROUTES.TRAINING.TRAINING_MATERIALS));
+      setModalAction(() => () => navigate(ROUTES.TRAINING.MATERIALS));
       setIsModalOpen(true);
     }, 1000);
   };

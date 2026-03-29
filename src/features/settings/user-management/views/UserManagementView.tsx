@@ -362,7 +362,7 @@ export const UserManagementView: React.FC = () => {
           )}>
             {currentUsers.length > 0 ? (
               <>
-                <div className="overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+                <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
                   <table className="w-full">
                     <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
                       <tr>

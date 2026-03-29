@@ -323,21 +323,21 @@ export const AppRoutes: React.FC = () => {
           <Route path="materials">
             <Route index element={<Suspense fallback={<LoadingFallback />}><MaterialsView /></Suspense>} />
             <Route path="upload" element={<Suspense fallback={<LoadingFallback />}><UploadMaterialView /></Suspense>} />
-            <Route path=":id" element={<Suspense fallback={<LoadingFallback />}><MaterialDetailView /></Suspense>} />
-            <Route path=":id/edit" element={<Suspense fallback={<LoadingFallback />}><EditMaterialView /></Suspense>} />
-            <Route path="review/:id" element={<Suspense fallback={<LoadingFallback />}><MaterialReviewView /></Suspense>} />
-            <Route path="approval/:id" element={<Suspense fallback={<LoadingFallback />}><MaterialApprovalView /></Suspense>} />
-            <Route path="new-revision/:id" element={<Suspense fallback={<LoadingFallback />}><MaterialNewRevisionView /></Suspense>} />
-            <Route path="usage-report/:id" element={<Suspense fallback={<LoadingFallback />}><UsageReportView /></Suspense>} />
+            <Route path=":materialId" element={<Suspense fallback={<LoadingFallback />}><MaterialDetailView /></Suspense>} />
+            <Route path=":materialId/edit" element={<Suspense fallback={<LoadingFallback />}><EditMaterialView /></Suspense>} />
+            <Route path="review/:materialId" element={<Suspense fallback={<LoadingFallback />}><MaterialReviewView /></Suspense>} />
+            <Route path="approval/:materialId" element={<Suspense fallback={<LoadingFallback />}><MaterialApprovalView /></Suspense>} />
+            <Route path="new-revision/:materialId" element={<Suspense fallback={<LoadingFallback />}><MaterialNewRevisionView /></Suspense>} />
+            <Route path="usage-report/:materialId" element={<Suspense fallback={<LoadingFallback />}><UsageReportView /></Suspense>} />
           </Route>
           
           {/* Course Inventory */}
           <Route path="courses-list" element={<Suspense fallback={<LoadingFallback />}><CourseListView /></Suspense>} />
           <Route path="courses/create" element={<Suspense fallback={<LoadingFallback />}><CreateCourseView /></Suspense>} />
           <Route path="pending-review" element={<Suspense fallback={<LoadingFallback />}><PendingReviewView /></Suspense>} />
-          <Route path="pending-review/:id" element={<Suspense fallback={<LoadingFallback />}><ReviewCourseView /></Suspense>} />
+          <Route path="pending-review/:courseId" element={<Suspense fallback={<LoadingFallback />}><ReviewCourseView /></Suspense>} />
           <Route path="pending-approval" element={<Suspense fallback={<LoadingFallback />}><PendingApprovalView /></Suspense>} />
-          <Route path="pending-approval/:id" element={<Suspense fallback={<LoadingFallback />}><ApproveCourseView /></Suspense>} />
+          <Route path="pending-approval/:courseId" element={<Suspense fallback={<LoadingFallback />}><ApproveCourseView /></Suspense>} />
           <Route path="courses/:courseId" element={<Suspense fallback={<LoadingFallback />}><CourseDetailView /></Suspense>} />
           <Route path="courses/:courseId/edit" element={<Suspense fallback={<LoadingFallback />}><EditCourseView /></Suspense>} />
           <Route path="courses/:courseId/progress" element={<Suspense fallback={<LoadingFallback />}><CourseProgressView /></Suspense>} />

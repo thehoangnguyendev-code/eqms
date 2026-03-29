@@ -18,6 +18,7 @@ import {
 import { BasicInfoTab } from "../../shared/BasicInfoTab";
 import { DocumentTab } from "../../shared/DocumentTab";
 import { ConfigTab } from "../../shared/ConfigTab";
+import { MOCK_COURSES, MOCK_TRAININGS } from "../mockData";
 
 type TabType = "basic-info" | "document-training" | "training-config";
 
@@ -84,7 +85,10 @@ export const EditCourseView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>("basic-info");
 
   // In real app, fetch course data by courseId
-  const courseData = MOCK_COURSE_DATA;
+  const courseDataFromMocks = (MOCK_COURSES.find((c) => c.id === courseId) ||
+    (MOCK_TRAININGS.find((t) => t.id === courseId) as any))
+    || MOCK_COURSE_DATA;
+  const courseData = courseDataFromMocks;
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -114,13 +118,15 @@ export const EditCourseView: React.FC = () => {
   const [linkedDocumentTitle, setLinkedDocumentTitle] = useState(courseData.linkedDocumentTitle);
 
   // Recurrence
-  const [recurrence, setRecurrence] = useState<Recurrence>(courseData.recurrence);
+  const [recurrence, setRecurrence] = useState<Recurrence>(
+    courseData.recurrence || { enabled: false, intervalMonths: 0, warningPeriodDays: 30 }
+  );
 
   // Evidence upload
   const [evidenceFiles, setEvidenceFiles] = useState<File[]>([]);
 
   // Training Materials — pre-populated
-  const [trainingFiles, setTrainingFiles] = useState<TrainingFile[]>(courseData.trainingFiles);
+  const [trainingFiles, setTrainingFiles] = useState<TrainingFile[]>(courseData.trainingFiles || []);
   const [instruction, setInstruction] = useState(courseData.instruction);
 
   // Quiz Configuration
@@ -318,9 +324,6 @@ export const EditCourseView: React.FC = () => {
 
       {/* Info Banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-start gap-3">
-        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-          <span className="text-blue-600 text-xs font-bold">i</span>
-        </div>
         <div>
           <p className="text-sm font-medium text-blue-800">
             Editing: {courseData.trainingId} — {courseData.title}
@@ -352,15 +355,15 @@ export const EditCourseView: React.FC = () => {
                       isCompleted
                         ? "bg-emerald-100"
                         : isCurrent
-                        ? "bg-emerald-600"
-                        : "bg-slate-100"
+                          ? "bg-emerald-600"
+                          : "bg-slate-100"
                     )}
                     style={{
                       clipPath: isFirst
                         ? "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%)"
                         : isLast
-                        ? "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 20px 50%)"
-                        : "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%, 20px 50%)",
+                          ? "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 20px 50%)"
+                          : "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%, 20px 50%)",
                     }}
                   />
                   <div className="relative z-10 flex items-center gap-2 px-6">
@@ -373,8 +376,8 @@ export const EditCourseView: React.FC = () => {
                         isCurrent
                           ? "text-white"
                           : isCompleted
-                          ? "text-slate-700"
-                          : "text-slate-400"
+                            ? "text-slate-700"
+                            : "text-slate-400"
                       )}
                     >
                       {step}
@@ -423,12 +426,12 @@ export const EditCourseView: React.FC = () => {
         onConfirm={
           modalAction
             ? () => {
-                setIsNavigating(true);
-                setTimeout(() => {
-                  modalAction();
-                  setIsModalOpen(false);
-                }, 600);
-              }
+              setIsNavigating(true);
+              setTimeout(() => {
+                modalAction();
+                setIsModalOpen(false);
+              }, 600);
+            }
             : undefined
         }
         type={modalType}
@@ -439,8 +442,8 @@ export const EditCourseView: React.FC = () => {
           modalType === "success"
             ? "OK"
             : modalType === "confirm"
-            ? "Discard"
-            : undefined
+              ? "Discard"
+              : undefined
         }
       />
 

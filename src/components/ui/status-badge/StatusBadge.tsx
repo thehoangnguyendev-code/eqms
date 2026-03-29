@@ -19,7 +19,9 @@ export type StatusType =
   | 'obsolete'
   | 'current'
   | 'blocked'
-  | 'inProgress';
+  | 'inProgress'
+  | 'completed'
+  | 'cancelled';
 
 const STATUS_CONFIG: Record<StatusType, { label: string; className: string }> = {
   draft: { 
@@ -81,6 +83,14 @@ const STATUS_CONFIG: Record<StatusType, { label: string; className: string }> = 
   obsolete: { 
     label: 'Obsoleted', 
     className: 'bg-rose-50 text-rose-700 border-rose-200' 
+  },
+  completed: {
+    label: 'Completed',
+    className: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+  },
+  cancelled: {
+    label: 'Cancelled',
+    className: 'bg-red-50 text-red-700 border-red-200'
   }
 };
 
@@ -103,13 +113,16 @@ export interface StatusBadgeProps {
   size?: 'default' | 'sm' | 'lg';
   /** Optional icon to display */
   icon?: React.ReactNode;
+  /** Optional custom label */
+  label?: string;
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ 
   status, 
   className,
   size = 'default',
-  icon
+  icon,
+  label
 }) => {
   const config = STATUS_CONFIG[status] || STATUS_CONFIG.draft;
   
@@ -129,7 +142,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       className
     )}>
       {icon}
-      {config.label}
+      {label || config.label}
     </span>
   );
 };

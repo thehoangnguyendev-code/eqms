@@ -15,6 +15,7 @@ import { StatusBadge } from "@/components/ui/badge";
 import type { StatusType } from "@/components/ui/badge";
 import { cn } from "@/components/ui/utils";
 import type { TrainingMaterial, MaterialVersionEntry } from "@/features/training/materials/types";
+import { IconMessage2 } from "@tabler/icons-react";
 
 // ─── Animation styles (same as CellDetailDrawer) ─────────────────────────────
 const DRAWER_STYLES = `
@@ -225,7 +226,7 @@ const VersionCard: React.FC<VersionCardProps> = ({ entry, isLatest, fileType }) 
               onClick={() => setShowNotes((v) => !v)}
               className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider hover:text-slate-600 transition-colors"
             >
-              <FileText className="h-3.5 w-3.5" />
+              <IconMessage2 className="h-3.5 w-3.5" />
               Revision Notes
               {showNotes ? <ChevronUp className="h-3 w-3 ml-auto" /> : <ChevronDown className="h-3 w-3 ml-auto" />}
             </button>

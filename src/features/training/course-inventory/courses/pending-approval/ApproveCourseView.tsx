@@ -34,7 +34,7 @@ type WorkflowStep = (typeof WORKFLOW_STEPS)[number];
 
 export const ApproveCourseView: React.FC = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
   const [isNavigating, setIsNavigating] = useState(false);
 
   const handleNavigateBack = () => {
@@ -49,7 +49,7 @@ export const ApproveCourseView: React.FC = () => {
     null,
   );
 
-  const original = MOCK_APPROVAL_DETAILS.find((a) => a.id === id);
+  const original = MOCK_APPROVAL_DETAILS.find((a) => a.courseId === courseId);
 
   // Local status override to reflect stepper advancement after action
   const [localStatus, setLocalStatus] = useState<string | null>(null);

@@ -16,7 +16,8 @@ import {
 import { BasicInfoTab } from "../shared/BasicInfoTab";
 import { DocumentTab } from "../shared/DocumentTab";
 import { ConfigTab } from "../shared/ConfigTab";
-import { MOCK_COURSES } from "./mockData";
+import { MOCK_COURSES, MOCK_TRAININGS } from "./mockData";
+import { TrainingRecord } from "../../types";
 
 // Tab types
 type TabType = "basic-info" | "document-training" | "training-config";
@@ -65,8 +66,9 @@ export const CourseDetailView: React.FC = () => {
     setTimeout(() => navigate(path as any), 600);
   };
 
-  // Find course by ID
-  const course = MOCK_COURSES.find((c) => c.id === courseId);
+  // Find course by ID with fallback to MOCK_TRAININGS
+  const course = MOCK_COURSES.find((c) => c.id === courseId) ||
+    (MOCK_TRAININGS.find((t) => t.id === courseId) as any);
 
   if (!course) {
     return (

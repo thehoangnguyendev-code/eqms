@@ -87,12 +87,12 @@ export const ROUTES = {
     EXPORT_RECORDS: '/training-management/export-records',
     // Materials
     MATERIALS: '/training-management/materials',
-    MATERIAL_DETAIL: (id: string) => `/training-management/materials/${id}`,
-    MATERIAL_EDIT: (id: string) => `/training-management/materials/${id}/edit`,
-    MATERIAL_REVIEW: (id: string) => `/training-management/materials/review/${id}`,
-    MATERIAL_APPROVAL: (id: string) => `/training-management/materials/approval/${id}`,
-    MATERIAL_NEW_REVISION: (id: string) => `/training-management/materials/new-revision/${id}`,
-    MATERIAL_USAGE_REPORT: (id: string) => `/training-management/materials/usage-report/${id}`,
+    MATERIAL_DETAIL: (materialId: string) => `/training-management/materials/${materialId}`,
+    MATERIAL_EDIT: (materialId: string) => `/training-management/materials/${materialId}/edit`,
+    MATERIAL_REVIEW: (materialId: string) => `/training-management/materials/review/${materialId}`,
+    MATERIAL_APPROVAL: (materialId: string) => `/training-management/materials/approval/${materialId}`,
+    MATERIAL_NEW_REVISION: (materialId: string) => `/training-management/materials/new-revision/${materialId}`,
+    MATERIAL_USAGE_REPORT: (materialId: string) => `/training-management/materials/usage-report/${materialId}`,
     UPLOAD_MATERIAL: '/training-management/materials/upload',
   },
 

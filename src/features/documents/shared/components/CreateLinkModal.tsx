@@ -251,8 +251,8 @@ export const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                   setGeneratedLink("");
                 }}
                 className={`flex-1 px-4 py-2.5 text-sm font-medium rounded-lg transition-all ${recipientType === "users"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
                   }`}
               >
                 Users
@@ -263,8 +263,8 @@ export const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                   setGeneratedLink("");
                 }}
                 className={`flex-1 px-4 py-2.5 text-sm font-medium rounded-lg transition-all ${recipientType === "department"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
                   }`}
               >
                 Department
@@ -338,7 +338,7 @@ export const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
             <Button
               onClick={handleGenerateLink}
               variant="outline"
-              size="default"
+              size="sm"
               className="w-full"
               disabled={
                 (recipientType === "users" && selectedUsers.length === 0) ||
