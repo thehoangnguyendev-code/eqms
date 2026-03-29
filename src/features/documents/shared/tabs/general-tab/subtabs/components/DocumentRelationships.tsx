@@ -347,7 +347,7 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
               />
             </div>
 
-            <div className="border border-slate-200 rounded-lg bg-slate-50 flex-1 min-h-[320px] max-h-[320px] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-slate-50 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400">
+            <div className="border border-slate-200 rounded-lg bg-slate-50 flex-1 min-h-[320px] max-h-[320px] overflow-y-auto">
               {filteredAvailableDocs.length > 0 ? (
                 <div className="divide-y divide-slate-200">
                   {filteredAvailableDocs.map((doc) => (
@@ -403,7 +403,7 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
 
             <div className="h-10 mb-3"></div>
 
-            <div className="border border-slate-200 rounded-lg bg-slate-50 flex-1 min-h-[320px] max-h-[320px] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-slate-50 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400">
+            <div className="border border-slate-200 rounded-lg bg-slate-50 flex-1 min-h-[320px] max-h-[320px] overflow-y-auto">
               {tempRelatedDocuments.length > 0 ? (
                 <div className="divide-y divide-slate-200">
                   {tempRelatedDocuments.map((doc) => (

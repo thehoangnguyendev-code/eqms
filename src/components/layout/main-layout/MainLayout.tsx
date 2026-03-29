@@ -157,7 +157,7 @@ export const MainLayout: React.FC = () => {
         <div
           id="main-scroll-container"
           ref={scrollContainerRef}
-          className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar"
+          className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
           style={{
             WebkitOverflowScrolling: 'touch',
           }}

@@ -463,7 +463,7 @@ export const RoleDetailView: React.FC = () => {
         )}
 
         {/* Content List */}
-        <div className="flex-1 overflow-y-auto bg-white custom-scrollbar">
+        <div className="flex-1 overflow-y-auto bg-white">
           <div className="min-h-full">
             {PERMISSION_GROUPS.map((group) => {
               const visiblePermissions = group.permissions.filter((permission) => {

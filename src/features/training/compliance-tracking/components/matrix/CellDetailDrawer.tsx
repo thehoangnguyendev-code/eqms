@@ -112,7 +112,7 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                 </div>
 
                 {/* Scrollable body */}
-                <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 custom-scrollbar scroll-smooth" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "thin", scrollbarColor: "#cbd5e1 transparent" }}>
+                <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth" style={{ WebkitOverflowScrolling: "touch" }}>
                     {/* Employee card */}
                     <div className="bg-white border border-slate-100 rounded-xl p-4 flex items-center gap-3 shadow-sm">
                         <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">

@@ -93,7 +93,7 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto max-h-[290px] px-4 py-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-slate-400">
+                <div className="flex-1 overflow-y-auto max-h-[290px] px-4 py-2">
                     {filteredUsers.length > 0 ? (
                         <div className="space-y-0 divide-y divide-slate-100">
                             {filteredUsers.map((user, index) => {

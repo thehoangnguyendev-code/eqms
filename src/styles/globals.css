@@ -394,34 +394,53 @@ body {
   }
 }
 
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+/* ===================================
+   GLOBAL CUSTOM SCROLLBAR
+   Thin, elegant, and harmonious across all browsers
+   =================================== */
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.4) transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+/* Webkit support (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.4) !important;
+  background-clip: padding-box !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  transition: background var(--transition-base) !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6) !important;
+}
+
+/* Custom Scrollbar Utility */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.6);
-  border-radius: 2px;
-  transition: background var(--transition-base);
+  background: rgba(203, 213, 225, 0.5);
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.8);
-}
-
-/* Thin Scrollbar for Tables - Updated to hide vertical and make horizontal thinner/fainter */
+/* Thin Scrollbar for Tables - Hide vertical and make horizontal extra thin */
 .scrollbar-thin::-webkit-scrollbar {
-  width: 0px; /* Hide vertical scrollbar */
-  height: 3px; /* Thinner horizontal scrollbar */
-}
-
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: transparent;
+  width: 0px; 
+  height: 3px;
 }
 
 .scrollbar-track-slate-100::-webkit-scrollbar-track {
@@ -430,13 +449,12 @@ body {
 }
 
 .scrollbar-thumb-slate-300::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.4); /* Fainter slate-300 */
+  background: rgba(203, 213, 225, 0.4);
   border-radius: 9999px;
-  transition: background 200ms ease;
 }
 
 .scrollbar-thumb-slate-300:hover::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.6); /* Fainter slate-400 */
+  background: rgba(148, 163, 184, 0.6);
 }
 
 .scrollbar-thumb-rounded-full::-webkit-scrollbar-thumb {
@@ -447,10 +465,10 @@ body {
   border-radius: 9999px;
 }
 
-/* Firefox scrollbar */
+/* Firefox Specific Class */
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: rgba(203, 213, 225, 0.4) transparent;
+  scrollbar-color: rgba(203, 213, 225, 0.3) transparent;
 }
 
 

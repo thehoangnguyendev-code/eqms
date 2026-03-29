@@ -417,8 +417,8 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
             <div key={item.id} className="w-full relative">
               {!isCollapsed && level > 0 && (
                 <div
-                  className="absolute left-4 top-0 bottom-0 border-l border-slate-200 w-px"
-                  style={{ left: `${level * LEVEL_PADDING}px` }}
+                  className="absolute top-0 bottom-0 border-l border-slate-200 w-px z-0"
+                  style={{ left: `${BASE_PADDING + 10 + (level - 1) * LEVEL_PADDING}px` }}
                 />
               )}
 
@@ -815,7 +815,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
 
             {/* Menu items */}
             <div
-              className="py-1 overflow-y-auto custom-scrollbar"
+              className="py-1 overflow-y-auto"
               style={{ maxHeight: "calc(100vh - 120px)" }}
             >
               {hoverMenu.item.children?.map((child) =>
@@ -955,7 +955,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   onClick={() => setActiveTab("all")}
                   className={cn(
                     "flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors relative z-10",
-                    activeTab === "all" ? "text-slate-900" : "text-slate-600 hover:text-slate-900",
+                    activeTab === "all" ? "text-emerald-600" : "text-slate-600 hover:text-slate-900",
                   )}
                 >
                   {activeTab === "all" && (
@@ -965,7 +965,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                       transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
                     />
                   )}
-                  <span className="relative z-20">All</span>
+                  <span className="relative z-20">All Items</span>
                 </button>
                 <button
                   onClick={() => setActiveTab("favourite")}
@@ -994,7 +994,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
           {/* Navigation Menu */}
           <div
             className={cn(
-              "flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar scroll-smooth",
+              "flex-1 overflow-y-auto overflow-x-hidden scroll-smooth",
               // Mobile: More padding for easier scrolling
               "pt-4 md:pt-3 md:pb-3",
             )}

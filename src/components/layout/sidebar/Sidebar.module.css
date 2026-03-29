@@ -46,40 +46,11 @@
   }
 }
 
-/* Custom scrollbar for sidebar and hover menu - optimized for mobile */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 2px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* ===================================
-   MOBILE SAFE AREA SUPPORT (iOS Notch, Dynamic Island, Safari Tab Bar)
-   =================================== */
+ /* ===================================
+    MOBILE SAFE AREA SUPPORT (iOS Notch, Dynamic Island, Safari Tab Bar)
+    =================================== */
 
 /* Mobile sidebar - Handle iOS safe areas and dynamic viewport */
-@media (max-width: 767px) {
-  .custom-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .custom-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-}
-
 /* Mobile-specific sidebar styles */
 @supports (height: 100dvh) {
   /* Use dynamic viewport height (dvh) for browsers that support it */
@@ -107,19 +78,6 @@
     /* Ensure proper touch scrolling behavior */
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-  }
-  
-  /* Navigation container scroll fix for iOS */
-  .sidebar-mobile .custom-scrollbar {
-    /* Allow proper scrolling */
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-    
-    /* Ensure content is not cut off */
-    flex: 1 1 auto;
-    min-height: 0;
   }
 }
 

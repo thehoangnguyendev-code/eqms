@@ -795,7 +795,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
               )}>
                 {paginatedDocuments.length > 0 ? (
                   <>
-                    <div className="overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+                    <div className="overflow-x-auto overflow-y-hidden">
                       <table className="w-full">
                         <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-30">
                           <tr>

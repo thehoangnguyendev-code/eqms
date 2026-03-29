@@ -7,6 +7,7 @@ import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
+import { IconArrowBigUpFilled, IconArrowBigUpLine } from "@tabler/icons-react";
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -167,6 +168,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isCapsLockOn, setIsCapsLockOn] = useState(false);
 
   // ========================================================================
   // MEMOIZED VALUES
@@ -212,10 +214,15 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
     setCurrentSlide(index);
   }, []);
 
+  const handleCapsLockCheck = useCallback((e: React.KeyboardEvent) => {
+    const capsLockState = e.getModifierState("CapsLock");
+    setIsCapsLockOn(capsLockState);
+  }, []);
+
   const handleForgotPasswordClick = useCallback(() => {
     blurActiveInput();
     resetViewportZoom();
-    
+
     if (onForgotPassword) {
       onForgotPassword();
     }
@@ -224,7 +231,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
   const handleContactAdminClick = useCallback(() => {
     blurActiveInput();
     resetViewportZoom();
-    
+
     if (onContactAdmin) {
       onContactAdmin();
     }
@@ -312,41 +319,41 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950/95 via-slate-900/60 to-transparent pointer-events-none" />
 
           {/* Content Overlay - Modern Clean Style */}
-          <div className="absolute inset-x-0 bottom-0 z-20 p-8 lg:p-12 xl:p-16 flex flex-col justify-end pointer-events-none"> 
+          <div className="absolute inset-x-0 bottom-0 z-20 p-8 lg:p-12 xl:p-16 flex flex-col justify-end pointer-events-none">
             <div className="max-w-3xl pointer-events-auto">
-               {/* Animated Text Content */}
-               <div className="relative h-[220px] mb-6"> 
-                  {AUTH_SLIDE_IMAGES.map((_, index) => {
-                    const content = SLIDE_CONTENT[index % SLIDE_CONTENT.length];
-                    return (
+              {/* Animated Text Content */}
+              <div className="relative h-[220px] mb-6">
+                {AUTH_SLIDE_IMAGES.map((_, index) => {
+                  const content = SLIDE_CONTENT[index % SLIDE_CONTENT.length];
+                  return (
                     <div
                       key={index}
                       className={cn(
                         "absolute bottom-0 left-0 w-full flex flex-col justify-end transition-all duration-700 ease-out transform",
-                        index === currentSlide 
-                           ? "opacity-100 translate-y-0" 
-                           : "opacity-0 translate-y-8"
+                        index === currentSlide
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 translate-y-8"
                       )}
                     >
-                       <div className="flex items-center gap-3 mb-4">
-                          <span className="w-8 h-0.5 bg-emerald-500 rounded-full"></span>
-                          <span className="text-emerald-400 font-bold tracking-wider text-xs uppercase">{content.tag}</span>
-                       </div>
-                       
-                       <h2 className="text-4xl lg:text-5xl font-bold leading-tight text-white mb-4 tracking-tight drop-shadow-sm">
-                          {content.title}
-                       </h2>
-                       
-                       <p className="text-lg text-slate-300/90 leading-relaxed font-light max-w-xl">
-                          {content.description}
-                       </p>
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="w-8 h-0.5 bg-emerald-500 rounded-full"></span>
+                        <span className="text-emerald-400 font-bold tracking-wider text-xs uppercase">{content.tag}</span>
+                      </div>
+
+                      <h2 className="text-4xl lg:text-5xl font-bold leading-tight text-white mb-4 tracking-tight drop-shadow-sm">
+                        {content.title}
+                      </h2>
+
+                      <p className="text-lg text-slate-300/90 leading-relaxed font-light max-w-xl">
+                        {content.description}
+                      </p>
                     </div>
                   );
-                  })}
-               </div>
+                })}
+              </div>
 
-               {/* Modern Indicators */}
-               <div className="flex gap-4">
+              {/* Modern Indicators */}
+              <div className="flex gap-4">
                 {AUTH_SLIDE_IMAGES.map((_, index) => (
                   <button
                     key={index}
@@ -384,9 +391,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
 
         {/* Form Container */}
         <div className="w-full max-w-md">
-            <div className="bg-white overflow-hidden rounded-xl lg:rounded-none shadow-2xl lg:shadow-none">
-              {/* Mobile gradient top bar */}
-              <div className="lg:hidden h-2 bg-gradient-to-r from-green-400 via-emerald-400 to-emerald-600" />
+          <div className="bg-white overflow-hidden rounded-xl lg:rounded-none shadow-2xl lg:shadow-none">
+            {/* Mobile gradient top bar */}
+            <div className="lg:hidden h-2 bg-gradient-to-r from-green-400 via-emerald-400 to-emerald-600" />
             {/* Form Header */}
             <div className="px-6 sm:px-8 pt-4 sm:pt-10 pb-4">
               <div className="text-center space-y-3">
@@ -497,24 +504,34 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                       )}
                       placeholder="Enter your password"
                       disabled={isLoading}
+                      onKeyUp={handleCapsLockCheck}
+                      onKeyDown={handleCapsLockCheck}
                       aria-invalid={!!errors.password}
                       aria-describedby={errors.password ? "password-error" : undefined}
                     />
-                    <button
-                      type="button"
-                      onClick={handleTogglePassword}
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors focus:outline-none focus:text-slate-700"
-                      disabled={isLoading}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      tabIndex={-1}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5" aria-hidden="true" />
-                      ) : (
-                        <Eye className="h-5 w-5" aria-hidden="true" />
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
+                      {isCapsLockOn && (
+                        <div className="p-1 bg-slate-50 border border-slate-200 rounded-md animate-in fade-in zoom-in duration-200 shadow-sm" title="Caps Lock is ON">
+                          <IconArrowBigUpFilled className="h-4 w-4 text-slate-600" />
+                        </div>
                       )}
-                    </button>
+                      <button
+                        type="button"
+                        onClick={handleTogglePassword}
+                        className="p-1.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors focus:outline-none focus:text-slate-700"
+                        disabled={isLoading}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        tabIndex={-1}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5" aria-hidden="true" />
+                        ) : (
+                          <Eye className="h-5 w-5" aria-hidden="true" />
+                        )}
+                      </button>
+                    </div>
                   </div>
+
                   {errors.password && (
                     <p
                       id="password-error"

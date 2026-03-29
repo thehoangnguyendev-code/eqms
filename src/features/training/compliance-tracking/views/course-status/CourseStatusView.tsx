@@ -701,7 +701,7 @@ export const CourseStatusView: React.FC = () => {
             <span>{selectedCourse?.totalAssigned} Total Participants</span>
           </div>
 
-          <div className="border rounded-lg overflow-x-auto custom-scrollbar">
+          <div className="border rounded-lg overflow-x-auto">
             <table className="w-full text-[10px] sm:text-sm">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
@@ -773,7 +773,7 @@ export const CourseStatusView: React.FC = () => {
               </button>
             </div>
 
-            <div className="max-h-[200px] overflow-y-auto pr-1 space-y-2 custom-scrollbar">
+            <div className="max-h-[200px] overflow-y-auto pr-1 space-y-2">
               {[
                 { id: "EMP-1010", name: "Le Van Cuong", dept: "Production", title: "Senior Operator", status: "Overdue" },
                 { id: "EMP-1005", name: "Tran Thi Binh", dept: "QC", title: "Lab Technician", status: "In Progress" },

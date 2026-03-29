@@ -46,14 +46,6 @@ export const DRAWER_STYLES = `
   }
   .tm-backdrop-enter { animation: tmFadeIn  0.25s ease-out forwards; }
   .tm-backdrop-exit  { animation: tmFadeOut 0.22s ease-in  forwards; }
-  .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-  @media (max-width: 767px) {
-    .custom-scrollbar::-webkit-scrollbar { display: none; }
-    .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  }
 `;
 
 // ─── Utility ──────────────────────────────────────────────────────────────────

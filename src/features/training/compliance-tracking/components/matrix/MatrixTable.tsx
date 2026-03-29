@@ -31,7 +31,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
   return (
     <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col flex-1">
       {/* Scrollable grid — max 10 rows visible, scroll when exceeding */}
-      <div className="overflow-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-slate-400 [&::-webkit-scrollbar-corner]:bg-slate-100">
+      <div className="overflow-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative">
         <table className="border-separate border-spacing-0">
           <MatrixHead onSOPHeaderClick={onSOPHeaderClick} />
           <MatrixBody

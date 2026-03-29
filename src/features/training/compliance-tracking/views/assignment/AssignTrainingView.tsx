@@ -610,7 +610,7 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
       {/* Course list */}
       {/* Course list table */}
       <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+        <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
@@ -823,7 +823,7 @@ const Step2Assignees: React.FC<Step2Props> = ({
                     Employee List
                   </p>
                 </div>
-                <div className="space-y-1 max-h-[360px] overflow-y-auto px-3 pb-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-slate-400 [&::-webkit-scrollbar-corner]:bg-slate-100">
+                <div className="space-y-1 max-h-[360px] overflow-y-auto px-3 pb-3">
                   {employees.map((emp) => (
                     <label
                       key={emp.id}
@@ -1287,11 +1287,7 @@ const Step4Review: React.FC<Step4Props> = ({
 
               {/* Scrollable List Area */}
               <div className="border border-slate-100 rounded-lg bg-slate-50/30 overflow-hidden">
-                <div className="max-h-[320px] overflow-y-auto divide-y divide-slate-100 
-        [&::-webkit-scrollbar]:w-1.5 
-        [&::-webkit-scrollbar-track]:bg-transparent 
-        [&::-webkit-scrollbar-thumb]:bg-slate-200 
-        [&::-webkit-scrollbar-thumb]:rounded-full">
+                <div className="max-h-[320px] overflow-y-auto divide-y divide-slate-100">
 
                   {displayAssignees.map((e, index) => (
                     <div

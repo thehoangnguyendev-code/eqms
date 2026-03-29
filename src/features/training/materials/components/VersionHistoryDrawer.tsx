@@ -36,14 +36,6 @@ const DRAWER_STYLES = `
   }
   .vh-backdrop-enter { animation: vhFadeIn  0.25s ease-out forwards; }
   .vh-backdrop-exit  { animation: vhFadeOut 0.22s ease-in  forwards; }
-  .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-  @media (max-width: 767px) {
-    .custom-scrollbar::-webkit-scrollbar { display: none; }
-    .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  }
 `;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -336,14 +328,14 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
         </div>
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 custom-scrollbar scroll-smooth" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "thin", scrollbarColor: "#cbd5e1 transparent" }}>
+        <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth" style={{ WebkitOverflowScrolling: "touch" }}>
           {/* Material summary card */}
           <div className="border border-slate-200 rounded-xl p-4 flex items-center gap-3 shadow-sm">
             <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
               <FileText className="h-4 w-4 text-slate-500" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-slate-700 font-medium mb-0.5">Current Version</p>
+              <p className="text-xs text-emerald-700 font-medium mb-0.5">Current Version</p>
               <p className="text-sm font-semibold text-slate-900 truncate">{material.title}</p>
               <p className="text-xs text-slate-500">
                 v{material.version} · {material.type} · {material.department}
@@ -358,8 +350,8 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
           {/* History count badge */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
-              <History className="h-3.5 w-3.5 text-slate-400" />
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <History className="h-3.5 w-3.5 text-slate-600" />
+              <span className="text-sm font-semibold text-slate-600">
                 Version History
               </span>
             </div>

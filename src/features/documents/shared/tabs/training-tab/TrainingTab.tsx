@@ -228,7 +228,7 @@ export const TrainingTab: React.FC<TrainingTabProps> = ({
                                     <p className="text-xs md:text-sm">No assignees selected for this course</p>
                                 </div>
                             ) : (
-                                <div className="overflow-auto max-h-[265px] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-slate-300">
+                                <div className="overflow-auto max-h-[265px]">
                                     <table className="w-full text-left relative">
                                         <thead className="bg-slate-50 sticky top-0 z-10 shadow-[inset_0_-1px_0_#e2e8f0]">
                                             <tr>

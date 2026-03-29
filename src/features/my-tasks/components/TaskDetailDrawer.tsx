@@ -142,15 +142,7 @@ export const TaskDetailDrawer: React.FC<{
  }
 
  .backdrop-enter { animation: fadeIn 0.25s ease-out forwards; }
- .backdrop-exit { animation: fadeOut 0.22s ease-in forwards; }
- .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
- .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
- .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
- .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
- @media (max-width: 767px) {
-   .custom-scrollbar::-webkit-scrollbar { display: none; }
-   .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
- }
+  .backdrop-exit { animation: fadeOut 0.22s ease-in forwards; }
  `}</style>
 
           {/* Backdrop */}
@@ -219,7 +211,7 @@ export const TaskDetailDrawer: React.FC<{
             </div>
 
             {/* Body - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar scroll-smooth bg-slate-50/30" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "thin", scrollbarColor: "#cbd5e1 transparent" }}>
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 scroll-smooth bg-slate-50/30" style={{ WebkitOverflowScrolling: "touch" }}>
               {/* Status & Alerts */}
               <div className="flex flex-col gap-4 mb-8">
                 {overdue && (
