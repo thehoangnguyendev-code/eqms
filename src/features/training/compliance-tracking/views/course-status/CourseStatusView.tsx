@@ -383,10 +383,10 @@ export const CourseStatusView: React.FC = () => {
     const totalCourses = MOCK_COURSE_STATUS.length;
     const totalAssigned = MOCK_COURSE_STATUS.reduce((sum, c) => sum + c.totalAssigned, 0);
     const completed = MOCK_COURSE_STATUS.reduce((sum, c) => sum + c.completed, 0);
-    const avgScore = totalCourses > 0 
-      ? Math.round(MOCK_COURSE_STATUS.reduce((sum, c) => sum + c.averageScore, 0) / totalCourses) 
+    const avgScore = totalCourses > 0
+      ? Math.round(MOCK_COURSE_STATUS.reduce((sum, c) => sum + c.averageScore, 0) / totalCourses)
       : 0;
-    
+
     return { totalCourses, totalAssigned, completed, avgScore };
   }, []);
 
@@ -605,7 +605,7 @@ export const CourseStatusView: React.FC = () => {
 
       {/* Table */}
       <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col flex-1">
-        <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
+        <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10 backdrop-blur-sm">
               <tr>
@@ -701,7 +701,7 @@ export const CourseStatusView: React.FC = () => {
             <span>{selectedCourse?.totalAssigned} Total Participants</span>
           </div>
 
-          <div className="border rounded-lg flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
+          <div className="border rounded-lg flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5">
             <table className="w-full text-[10px] sm:text-sm">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>

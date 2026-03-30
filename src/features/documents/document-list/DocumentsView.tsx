@@ -35,7 +35,7 @@ import { getDocumentTypeColorClass } from "@/utils/status";
 import { DocumentFilters } from "./../shared/components/DocumentFilters";
 import { DetailDocumentView } from "../document-detail/DetailDocumentView";
 import { CreateLinkModal } from "./../shared/components/CreateLinkModal";
-import { usePortalDropdown, useNavigateWithLoading } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 
@@ -343,12 +343,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
   const [isLocalNavigating, setIsLocalNavigating] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [isDragging, setIsDragging] = useState(false);
-
-  const tableScrollerRef = useRef<HTMLDivElement | null>(null);
-  const dragStartX = useRef(0);
-  const scrollStartLeft = useRef(0);
-  const dragMoved = useRef(false);
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
 
@@ -421,36 +416,6 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
     setIsCreateLinkModalOpen(true);
   };
 
-  const handleDragMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return;
-    dragMoved.current = false;
-    dragStartX.current = e.clientX;
-    scrollStartLeft.current = tableScrollerRef.current?.scrollLeft ?? 0;
-    setIsDragging(true);
-  };
-
-  const handleDragMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging || !tableScrollerRef.current) return;
-    const deltaX = e.clientX - dragStartX.current;
-    if (Math.abs(deltaX) > 5) {
-      dragMoved.current = true;
-    }
-    tableScrollerRef.current.scrollLeft = scrollStartLeft.current - deltaX;
-  };
-
-  const stopDrag = () => {
-    if (isDragging) {
-      setIsDragging(false);
-    }
-  };
-
-  const handleScrollClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (dragMoved.current) {
-      dragMoved.current = false;
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
 
   useEffect(() => {
     if (!isLoading) {
@@ -840,14 +805,13 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                 {paginatedDocuments.length > 0 ? (
                   <>
                     <div
-                      ref={tableScrollerRef}
-                      className="overflow-x-auto overflow-y-hidden cursor-grab"
-                      style={{ WebkitOverflowScrolling: 'touch', cursor: isDragging ? 'grabbing' : 'grab' }}
-                      onMouseDown={handleDragMouseDown}
-                      onMouseMove={handleDragMouseMove}
-                      onMouseUp={stopDrag}
-                      onMouseLeave={stopDrag}
-                      onClickCapture={handleScrollClickCapture}
+                      ref={scrollerRef}
+                      className={cn(
+                        "overflow-x-auto overflow-y-hidden transition-colors",
+                        isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                      )}
+                      style={{ WebkitOverflowScrolling: 'touch' }}
+                      {...dragEvents}
                     >
                       <table className="w-full min-w-max">
                         <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-30">

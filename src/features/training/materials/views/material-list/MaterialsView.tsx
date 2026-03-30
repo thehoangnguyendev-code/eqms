@@ -46,7 +46,7 @@ import { formatDateUS } from "@/utils/format";
 import { MOCK_MATERIALS } from "../../mockData";
 import type { TrainingMaterial, MaterialFilters } from "../../types";
 import { VersionHistoryDrawer } from "../../components/VersionHistoryDrawer";
-import { usePortalDropdown, useNavigateWithLoading } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 
 /* ─── Dashboard Stats Calculation ───────────────────────────────── */
 const calcDashboardStats = (materials: TrainingMaterial[]) => {
@@ -201,6 +201,7 @@ export const MaterialsView: React.FC = () => {
   const [historyDrawerMaterial, setHistoryDrawerMaterial] = useState<TrainingMaterial | null>(null);
 
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
 
   const typeOptions = [
@@ -959,7 +960,15 @@ export const MaterialsView: React.FC = () => {
                 "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
                 isTableLoading && "blur-[2px] opacity-80"
               )}>
-                <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4 flex-1">
+                {/* Table wrapper — Scrollable */}
+                <div 
+                  ref={scrollerRef}
+                  className={cn(
+                    "overflow-x-auto overflow-y-hidden flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full transition-colors",
+                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                  )}
+                  {...dragEvents}
+                >
                   <table className="w-full">
                     <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
                       <tr>

@@ -22,11 +22,13 @@ import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
 import { StatusBadge } from "@/components/ui";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
+import { useTableDragScroll } from "@/hooks";
 import { cn } from "@/components/ui/utils";
 import { CAPA, CAPAFilters, CAPAType, CAPASource, CAPAStatus } from "./types";
 import { MOCK_CAPAS } from "./mockData";
 
 export const CAPAView: React.FC = () => {
+    const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
     const [filters, setFilters] = useState<CAPAFilters>({
         searchQuery: "",
         typeFilter: "All",
@@ -349,7 +351,14 @@ export const CAPAView: React.FC = () => {
             <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col">
                 {paginatedData.length > 0 ? (
                     <>
-                        <div className="overflow-x-auto">
+                        <div 
+                            ref={scrollerRef}
+                            className={cn(
+                                "overflow-x-auto transition-colors",
+                                isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                            )}
+                            {...dragEvents}
+                        >
                             <table className="w-full">
                                 <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
                                     <tr>

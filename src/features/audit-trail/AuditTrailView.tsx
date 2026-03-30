@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { usePortalDropdown } from "@/hooks/usePortalDropdown";
+import { usePortalDropdown, useTableDragScroll } from "@/hooks";
 import { useLocation } from "react-router-dom";
 import {
     Search,
@@ -263,6 +263,7 @@ export const AuditTrailView: React.FC = () => {
 
     // Dropdown state
     const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+    const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
     // Export modal state
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -476,7 +477,14 @@ export const AuditTrailView: React.FC = () => {
                     <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
                         {paginatedData.length > 0 ? (
                             <>
-                                <div className="overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+                                <div 
+                                    ref={scrollerRef}
+                                    className={cn(
+                                        "overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full transition-colors",
+                                        isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                                    )}
+                                    {...dragEvents}
+                                >
                                     <table className="w-full">
                                         {/* Table Header */}
                                         <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">

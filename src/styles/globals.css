@@ -444,14 +444,6 @@ body {
   display: block !important;
 }
 
-.drag-scroll-target {
-  cursor: grab;
-  touch-action: pan-y;
-}
-
-.drag-scroll-target.dragging {
-  cursor: grabbing;
-}
 
 /* Thin Scrollbar for Tables - Hide vertical and make horizontal accessible */
 .scrollbar-thin::-webkit-scrollbar {

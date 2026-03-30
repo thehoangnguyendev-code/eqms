@@ -30,7 +30,7 @@ import {
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { pendingDocuments } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
-import { usePortalDropdown, useNavigateWithLoading } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 import type { RelatedDocument, CorrelatedDocument } from "@/features/documents/document-revisions/views/mockData";
@@ -455,6 +455,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   const handleClearFilters = () => {
     setSearchQuery("");
@@ -890,7 +891,14 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
             {currentRevisions.length > 0 ? (
               <>
                 {/* Table with Horizontal Scroll */}
-                <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
+                <div
+                  ref={scrollerRef}
+                  className={cn(
+                    "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
+                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                  )}
+                  {...dragEvents}
+                >
                   <table className="w-full">
                     <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
                       <tr>
@@ -948,7 +956,6 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                         </th>
                         <th
                           className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]"
-                          style={{ width: "60px" }}
                         >
                           Action
                         </th>

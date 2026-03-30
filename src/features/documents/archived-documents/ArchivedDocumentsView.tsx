@@ -24,10 +24,11 @@ import { FullPageLoading } from '@/components/ui/loading/Loading';
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { archivedDocuments } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { MOCK_ARCHIVED_DOCS } from './mockData';
-import { usePortalDropdown, useNavigateWithLoading } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 
 export const ArchivedDocumentsView: React.FC = () => {
     const { navigateTo, isNavigating } = useNavigateWithLoading();
+    const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
     const [searchQuery, setSearchQuery] = useState('');
     const [lastApproverFilter, setLastApproverFilter] = useState('all');
     const [retentionFilter, setRetentionFilter] = useState<RetentionFilter>('all');
@@ -149,7 +150,14 @@ export const ArchivedDocumentsView: React.FC = () => {
                 {/* Table Section */}
                 <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
                     <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
-                        <div className="flex-1 overflow-auto flex-1 scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
+                        <div 
+                            ref={scrollerRef}
+                            className={cn(
+                                "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4 transition-colors",
+                                isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                            )}
+                            {...dragEvents}
+                        >
                             <table className="w-full">
                                 <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
                                     <tr>

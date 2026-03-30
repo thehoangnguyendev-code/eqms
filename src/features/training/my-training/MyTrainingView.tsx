@@ -26,7 +26,7 @@ import * as breadcrumbs from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { IconMenu3, IconTrophy } from "@tabler/icons-react";
 import { Select } from "@/components/ui/select/Select";
 import { FullPageLoading } from "@/components/ui/loading";
-import { useNavigateWithLoading } from "@/hooks";
+import { useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 
 // --- Mock Data ---
 interface TrainingTask {
@@ -164,6 +164,7 @@ export const MyTrainingView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   // Filter states
   const [typeFilter, setTypeFilter] = useState("All");
@@ -364,7 +365,14 @@ export const MyTrainingView: React.FC = () => {
 
             {/* Table container — identical structure to TaskTable (MyTasks) */}
             <div className="flex-1 overflow-hidden border border-slate-200 rounded-xl bg-white shadow-sm flex flex-col">
-              <div className="overflow-x-auto flex-1">
+              <div 
+                ref={scrollerRef}
+                className={cn(
+                  "overflow-x-auto flex-1 transition-colors",
+                  isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                )}
+                {...dragEvents}
+              >
                 <table className="w-full min-w-[800px] lg:min-w-[1200px]">
                   <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
                     <tr>
@@ -572,7 +580,14 @@ export const MyTrainingView: React.FC = () => {
 
             {/* Table container — identical structure to TaskTable (MyTasks) */}
             <div className="flex-1 overflow-hidden border border-slate-200 rounded-xl bg-white shadow-sm flex flex-col">
-              <div className="overflow-x-auto flex-1">
+              <div 
+                ref={scrollerRef}
+                className={cn(
+                  "overflow-x-auto flex-1 transition-colors",
+                  isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                )}
+                {...dragEvents}
+              >
                 <table className="w-full min-w-[800px] lg:min-w-[1200px]">
                   <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
                     <tr>

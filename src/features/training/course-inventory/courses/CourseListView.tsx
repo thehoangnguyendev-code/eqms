@@ -37,7 +37,7 @@ import {
   TrainingMethod,
 } from "../../types";
 import { MOCK_TRAININGS } from "./mockData";
-import { usePortalDropdown, useNavigateWithLoading, useTableFilter } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableFilter, useTableDragScroll } from "@/hooks";
 
 // ── Local Dropdown ────────────────────────────────────────────────
 interface CourseDropdownMenuProps {
@@ -182,6 +182,7 @@ export const CourseListView: React.FC = () => {
   }, [sortedData, startIndex, itemsPerPage]);
 
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   // Reset to page 1 when extra filters change
   useEffect(() => {
@@ -407,7 +408,14 @@ export const CourseListView: React.FC = () => {
             "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
             isTableLoading && "blur-[2px] opacity-80"
           )}>
-            <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
+            <div 
+              ref={scrollerRef}
+              className={cn(
+                "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
+                isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+              )}
+              {...dragEvents}
+            >
               <table className="w-full">
                 <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
                   <tr>

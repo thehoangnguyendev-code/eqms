@@ -34,7 +34,7 @@ import {
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { revisionsOwnedByMe } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
-import { usePortalDropdown, useNavigateWithLoading } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 import type { RelatedDocument, CorrelatedDocument, Revision } from "./mockData";
@@ -112,6 +112,7 @@ export const RevisionsOwnedByMeView: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   // Filtered data (Using MOCK_REVISIONS instead of MOCK_MY_REVISIONS)
   const filteredRevisions = useMemo(() => {
@@ -638,7 +639,14 @@ export const RevisionsOwnedByMeView: React.FC = () => {
             {paginatedRevisions.length > 0 ? (
               <>
                 {/* Table with Horizontal Scroll */}
-                <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
+                <div 
+                  ref={scrollerRef}
+                  className={cn(
+                    "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
+                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                  )}
+                  {...dragEvents}
+                >
                   <table className="w-full">
                     <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
                       <tr>

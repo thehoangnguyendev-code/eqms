@@ -6,6 +6,7 @@ import { ROUTES } from "@/app/routes.constants";
 import type { MatrixFilters, EmployeeRow, SOPColumn } from "../../types";
 import { MOCK_SOPS, getCell } from "../../mockData";
 import { CELL_CONFIG } from "./constants";
+import { useTableDragScroll } from "@/hooks";
 
 interface MatrixTableProps {
   employees: EmployeeRow[];
@@ -28,10 +29,19 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
   onSOPHeaderClick,
   navigateTo,
 }) => {
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
+
   return (
     <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col flex-1">
       {/* Scrollable grid — max 10 rows visible, scroll when exceeding */}
-      <div className="overflow-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative">
+      <div 
+        ref={scrollerRef}
+        className={cn(
+          "overflow-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative transition-colors",
+          isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+        )}
+        {...dragEvents}
+      >
         <table className="border-separate border-spacing-0">
           <MatrixHead onSOPHeaderClick={onSOPHeaderClick} />
           <MatrixBody

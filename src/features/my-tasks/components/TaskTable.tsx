@@ -3,6 +3,7 @@ import { CheckCircle2 } from "lucide-react";
 import { Button } from '@/components/ui/button/Button';
 import { TaskStatusBadge, PriorityBadge, ModuleBadge } from '@/components/ui/badge';
 import { cn } from '@/components/ui/utils';
+import { useTableDragScroll } from "@/hooks";
 import { formatDateUS } from '@/utils/format';
 import type { Task } from "../types";
 import {
@@ -55,11 +56,19 @@ export const TaskTable: React.FC<{
   onTaskClick: (task: Task) => void;
   startIndex: number;
 }> = ({ tasks, onTaskClick, startIndex }) => {
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: diagonalStripesStyle }} />
-      <div className="overflow-x-auto flex-1">
+      <div 
+        ref={scrollerRef}
+        className={cn(
+          "overflow-x-auto flex-1 transition-colors",
+          isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+        )}
+        {...dragEvents}
+      >
         <table className="w-full min-w-[1200px]">
           <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
             <tr>

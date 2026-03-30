@@ -27,6 +27,7 @@ import {
   ShieldCheck,
   MoreVertical,
 } from "lucide-react";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { courseProgress } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
@@ -182,39 +183,10 @@ const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
 export const CourseProgressView: React.FC = () => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
-  const [isNavigating, setIsNavigating] = useState(false);
+  const { navigateTo, isNavigating } = useNavigateWithLoading();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
+  const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
   const [isESignatureOpen, setIsESignatureOpen] = useState(false);
-
-  // Dropdown state
-  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, showAbove: false });
-  const buttonRefs = useRef<Record<string, React.RefObject<HTMLButtonElement | null>>>({});
-
-  const getButtonRef = (id: string) => {
-    if (!buttonRefs.current[id]) {
-      buttonRefs.current[id] = React.createRef<HTMLButtonElement>();
-    }
-    return buttonRefs.current[id];
-  };
-
-  const handleDropdownToggle = (id: string, event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    if (openDropdownId === id) {
-      setOpenDropdownId(null);
-      return;
-    }
-    const rect = event.currentTarget.getBoundingClientRect();
-    const menuHeight = 200;
-    const menuWidth = 200;
-    const safeMargin = 8;
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const shouldShowAbove = spaceBelow < menuHeight && rect.top > menuHeight;
-    const top = shouldShowAbove ? rect.top + window.scrollY - 4 : rect.bottom + window.scrollY + 4;
-    let left = rect.right + window.scrollX - menuWidth;
-    left = Math.max(safeMargin, Math.min(left, window.innerWidth - menuWidth - safeMargin));
-    setDropdownPosition({ top, left, showAbove: shouldShowAbove });
-    setOpenDropdownId(id);
-  };
 
   const info = {
     ...MOCK_PROGRESS_INFO,
@@ -300,7 +272,7 @@ export const CourseProgressView: React.FC = () => {
           <Button
             variant="outline-emerald"
             size="sm"
-            onClick={() => { setIsNavigating(true); setTimeout(() => navigate(-1), 600); }}
+            onClick={() => navigateTo(-1)}
             className="whitespace-nowrap"
           >
             Back
@@ -559,7 +531,14 @@ export const CourseProgressView: React.FC = () => {
 
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative min-h-0">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300 min-h-0">
-            <div className="flex-1 overflow-auto flex-1 scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
+            <div 
+              ref={scrollerRef}
+              className={cn(
+                "flex-1 overflow-auto flex-1 scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4 transition-colors",
+                isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+              )}
+              {...dragEvents}
+            >
           <table className="w-full">
             <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
               <tr>
@@ -696,7 +675,7 @@ export const CourseProgressView: React.FC = () => {
                     </td>
                     <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap sticky right-0 bg-white group-hover:bg-slate-50 transition-colors z-30 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
                       <button
-                        ref={getButtonRef(emp.userId)}
+                        ref={getRef(emp.userId)}
                         onClick={(e) => handleDropdownToggle(emp.userId, e)}
                         className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-slate-100 transition-colors"
                         aria-label="More actions"
@@ -707,7 +686,7 @@ export const CourseProgressView: React.FC = () => {
                         employee={emp}
                         courseId={courseId || ""}
                         isOpen={openDropdownId === emp.userId}
-                        onClose={() => setOpenDropdownId(null)}
+                        onClose={() => closeDropdown()}
                         position={dropdownPosition}
                         onNavigate={navigate}
                       />

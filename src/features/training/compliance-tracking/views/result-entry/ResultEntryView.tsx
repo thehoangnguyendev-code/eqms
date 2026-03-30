@@ -21,6 +21,7 @@ import { AlertModal, AlertModalType } from "@/components/ui/modal/AlertModal";
 import { ESignatureModal } from "@/components/ui/esign-modal";
 import { FormModal } from "@/components/ui/modal/FormModal";
 import { useToast } from "@/components/ui/toast";
+import { useTableDragScroll } from "@/hooks";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
@@ -205,6 +206,7 @@ export const ResultEntryView: React.FC = () => {
 
   // File input refs
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   /* ------ Computed ------ */
   const uniqueDepartments = useMemo(() => {
@@ -658,7 +660,14 @@ export const ResultEntryView: React.FC = () => {
         {/* ===== Table Section ===== */}
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
-            <div className="flex-1 overflow-auto flex-1 scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4">
+            <div 
+              ref={scrollerRef}
+              className={cn(
+                "flex-1 overflow-auto flex-1 scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4 transition-colors",
+                isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+              )}
+              {...dragEvents}
+            >
               <table className="w-full">
                 <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
                   <tr>

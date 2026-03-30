@@ -17,13 +17,15 @@ import { Select } from "@/components/ui/select/Select";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { MoreVertical } from "lucide-react";
-import { FullPageLoading } from "@/components/ui/loading";
-import { useNavigateWithLoading, useTableFilter } from "@/hooks";
+import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { cn } from "@/components/ui/utils";
+import { useNavigateWithLoading, useTableFilter, useTableDragScroll } from "@/hooks";
 import type { EmployeeTrainingFile, EmployeeFilters } from "../types";
 import { MOCK_EMPLOYEE_TRAINING_FILES } from "./mockData";
 
 export const EmployeeTrainingFilesView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   // Filters
   const [filters, setFilters] = useState<Omit<EmployeeFilters, "searchQuery">>({
@@ -217,7 +219,14 @@ export const EmployeeTrainingFilesView: React.FC = () => {
 
       {/* Table */}
       <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col flex-1">
-        <div className="overflow-x-auto">
+        <div 
+          ref={scrollerRef}
+          className={cn(
+            "overflow-x-auto transition-colors",
+            isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+          )}
+          {...dragEvents}
+        >
           <table className="w-full">
             <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
               <tr>

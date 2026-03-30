@@ -18,7 +18,7 @@ import { Role } from "../types";
 import { PERMISSION_GROUPS } from "../constants";
 import { MOCK_ROLES } from "../mockData";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
-import { usePortalDropdown, useNavigateWithLoading } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 
 interface DropdownMenuProps {
   isOpen: boolean;
@@ -130,6 +130,7 @@ export const RoleListView: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
   const { navigateTo, isNavigating } = useNavigateWithLoading();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteRoleId, setDeleteRoleId] = useState<string>("");
@@ -265,7 +266,14 @@ export const RoleListView: React.FC = () => {
             {paginatedRoles.length > 0 ? (
               <>
                 {/* Table */}
-                <div className="overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+                <div 
+                  ref={scrollerRef}
+                  className={cn(
+                    "overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full transition-colors",
+                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                  )}
+                  {...dragEvents}
+                >
                   <table className="w-full">
                     <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
                       <tr>

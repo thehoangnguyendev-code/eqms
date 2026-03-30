@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
-import { usePortalDropdown } from "@/hooks/usePortalDropdown";
+import { usePortalDropdown, useTableDragScroll } from "@/hooks";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker";
@@ -457,6 +457,7 @@ export const NotificationsView: React.FC = () => {
     toggle: handleDropdownToggle,
     close: closeDropdown,
   } = usePortalDropdown();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   // Filter states
   const [activeTab, setActiveTab] = useState<NotificationFilterTab>("all");
@@ -832,7 +833,14 @@ export const NotificationsView: React.FC = () => {
         {/* Table Section */}
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
-            <div className="overflow-x-auto overflow-y-hidden flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+            <div 
+              ref={scrollerRef}
+              className={cn(
+                "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
+                isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+              )}
+              {...dragEvents}
+            >
               <table className="w-full min-w-max table-auto whitespace-nowrap">
                 <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
                   <tr>
