@@ -372,7 +372,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         onNavigate(item.id);
         onClose();
       },
-      [isCollapsed, location.pathname, onNavigate, onClose],
+      [isCollapsed, location.pathname, onNavigate, onClose, getCurrentPageTitle],
     );
 
     // Handle tooltip show
@@ -574,28 +574,27 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
               </button>
 
               {/* Expanded children (only in expanded sidebar) */}
-              {hasChildren && !isCollapsed && (
-                <div
-                  className={cn(
-                    "grid",
-                    isExpanded
-                      ? "grid-rows-[1fr] opacity-100"
-                      : "grid-rows-[0fr] opacity-0",
-                  )}
-                  style={{
-                    transition:
-                      "grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 250ms cubic-bezier(0.4, 0, 0.2, 1)",
-                  }}
-                >
-                  <div className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
+              <AnimatePresence initial={false}>
+                {hasChildren && !isCollapsed && isExpanded && (
+                  <motion.div
+                    key={`submenu-${item.id}`}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ 
+                      duration: 0.3, 
+                      ease: [0.4, 0, 0.2, 1] 
+                    }}
+                    className="overflow-hidden"
+                  >
                     <div className="relative pt-1">
                       {item.children?.map((child, childIndex) =>
                         renderMenuItem(child, level + 1, childIndex),
                       )}
                     </div>
-                  </div>
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Divider after item if specified */}
@@ -623,6 +622,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         onClose,
         favoriteIds,
         setFavoriteIds,
+        shakingId,
       ],
     );
 
@@ -687,7 +687,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         setHoverMenu((prev) => ({ ...prev, isOpen: false }));
         onClose();
       },
-      [onNavigate, onClose, location.pathname],
+      [onNavigate, onClose, location.pathname, getCurrentPageTitle, isCollapsed],
     );
 
     // Render hover menu sub-item

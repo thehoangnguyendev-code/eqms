@@ -8,6 +8,7 @@ import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
 import { IconArrowBigUpFilled } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -390,7 +391,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
         </div>
 
         {/* Form Container */}
-        <div className="w-full max-w-md">
+        <motion.div 
+          initial={{ opacity: 0, x: -40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="w-full max-w-md"
+        >
           <div className="bg-white overflow-hidden rounded-xl lg:rounded-none shadow-2xl lg:shadow-none">
             {/* Mobile gradient top bar */}
             <div className="lg:hidden h-2 bg-gradient-to-r from-green-400 via-emerald-400 to-emerald-600" />
@@ -603,7 +609,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import { isValidEmail } from "@/utils/validation";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -376,15 +377,27 @@ export const ContactAdminView: React.FC<ContactAdminViewProps> = ({
         </div>
 
         {/* Form Container */}
-        <div className="w-full max-w-md">
+        <motion.div 
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="w-full max-w-md"
+        >
           <div className="bg-white overflow-hidden rounded-xl lg:rounded-none shadow-2xl lg:shadow-none">
             {/* Mobile gradient top bar */}
             <div className="lg:hidden h-1.5 bg-gradient-to-r from-green-400 via-emerald-400 to-emerald-500" />
             
             {/* Success State */}
+            <AnimatePresence mode="wait">
             {isSuccess ? (
-              <div className="px-6 sm:px-8 py-10">
-                <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
+              <motion.div 
+                key="success"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="px-6 sm:px-8 py-10"
+              >
+                <div className="text-center space-y-6">
                   <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 mb-2">
                     <CheckCircle2 className="h-10 w-10 text-emerald-600" aria-hidden="true" />
                   </div>
@@ -412,9 +425,15 @@ export const ContactAdminView: React.FC<ContactAdminViewProps> = ({
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ) : (
-              <>
+              <motion.div 
+                key="form"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="w-full"
+              >
                 {/* Form Header */}
                 <div className="px-6 sm:px-8 pt-4 sm:pt-10 pb-4">
                   <div className="text-center space-y-3">
@@ -683,10 +702,11 @@ export const ContactAdminView: React.FC<ContactAdminViewProps> = ({
                     </button>
                   </form>
                 </div>
-              </>
+              </motion.div>
             )}
+            </AnimatePresence>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

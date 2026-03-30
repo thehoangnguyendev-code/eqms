@@ -7,6 +7,7 @@ import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
 import { IconAuth2fa, IconRefresh } from "@tabler/icons-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -167,8 +168,8 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
       setTimeout(() => {
         setIsLoading(false);
 
-        // Demo logic: code '123456' is correct
-        if (code === "123456") {
+        // Demo logic: temporarily allow any 6-digit code to pass
+        if (code.length === OTP_LENGTH) {
           blurActiveInput();
           resetViewportZoom();
           if (onVerify) {
@@ -253,7 +254,12 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
           />
         </div>
 
-        <div className="w-full max-w-md">
+        <motion.div 
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="w-full max-w-md"
+        >
           <div className="bg-white overflow-hidden rounded-2xl shadow-2xl lg:shadow-none p-8 sm:p-10">
             {/* Header */}
             <div className="text-center mb-10">
@@ -285,8 +291,16 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
               </div>
             )}
 
+            <AnimatePresence mode="wait">
             {!method ? (
-              <div className="grid grid-cols-1 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <motion.div 
+                key="selection"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="grid grid-cols-1 gap-3"
+              >
                 <button
                   type="button"
                   onClick={() => setMethod('email')}
@@ -323,9 +337,17 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                   <ArrowLeft size={16} />
                   Back to Sign In
                 </button>
-              </div>
+              </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in zoom-in-95 duration-500">
+              <motion.form 
+                key="otp-form"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                onSubmit={handleSubmit} 
+                className="space-y-8"
+              >
                 {/* OTP Input Group */}
                 <div className="flex justify-between gap-2 sm:gap-3" onPaste={handlePaste}>
                   {otp.map((digit, index) => (
@@ -399,8 +421,9 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                     </button>
                   </div>
                 </div>
-              </form>
+              </motion.form>
             )}
+            </AnimatePresence>
 
             {/* Footer Help */}
             <div className="mt-3 pt-3 border-t border-slate-100">
@@ -411,7 +434,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
