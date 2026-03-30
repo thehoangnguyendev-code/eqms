@@ -363,121 +363,128 @@ export const UserManagementView: React.FC = () => {
           )}>
             {currentUsers.length > 0 ? (
               <>
-                <div 
-                  ref={scrollerRef}
-                  className={cn(
-                    "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
-                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
-                  )}
-                  {...dragEvents}
-                >
-                  <table className="w-full">
-                    <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
-                      <tr>
-                        {visibleColumns.map((col) => (
-                          <th
-                            key={col.id}
-                            className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap"
-                          >
-                            {col.label}
-                          </th>
-                        ))}
-                        <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 bg-white">
-                      {currentUsers.map((user, index) => (
-                        <tr
-                          key={user.id}
-                          className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
-                          onClick={() => navigateTo(USER_MANAGEMENT_ROUTES.PROFILE(user.id))}
-                        >
+                  <div
+                    ref={scrollerRef}
+                    className={cn(
+                      "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
+                      isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                    )}
+                    {...dragEvents}
+                  >
+                    <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                      <thead>
+                        <tr>
                           {visibleColumns.map((col) => (
-                            <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                              {col.id === "no" && (
-                                <span className="font-medium text-slate-900">{startIndex + index + 1}</span>
-                              )}
-                              {col.id === "status" && (
-                                <Badge
-                                  color={
-                                    user.status === "Active" ? "emerald" :
-                                      user.status === "Inactive" ? "slate" :
-                                        user.status === "Pending" ? "amber" :
-                                          user.status === "Suspended" ? "orange" :
-                                            "red"
-                                  }
-                                  size="sm"
-                                  pill
-                                >
-                                  {user.status}
-                                </Badge>
-                              )}
-                              {col.id === "role" && (
-                                <Badge
-                                  color={
-                                    user.role === "Admin" ? "purple" :
-                                      user.role === "QA Manager" ? "emerald" :
-                                        user.role === "Approver" ? "blue" :
-                                          user.role === "Reviewer" ? "cyan" :
-                                            user.role === "Document Owner" ? "indigo" :
-                                              "slate"
-                                  }
-                                  size="sm"
-                                >
-                                  {user.role}
-                                </Badge>
-                              )}
-                              {col.id === "email" && (
-                                <div className="flex items-center gap-2 text-slate-700">
-                                  {user.email}
-                                </div>
-                              )}
-                              {col.id === "phone" && (
-                                <div className="flex items-center gap-2 text-slate-700">
-                                  {user.phone}
-                                </div>
-                              )}
-                              {col.id === "fullName" && (
-                                <span className="font-medium text-slate-900">{user.fullName}</span>
-                              )}
-                              {col.id === "employeeCode" && (
-                                <span className="font-medium text-emerald-600">{user.employeeCode}</span>
-                              )}
-                              {col.id === "suspendedUntil" && (
-                                <span className="text-slate-700">
-                                  {user.suspendedUntil ? formatDateNumeric(user.suspendedUntil) : "-"}
-                                </span>
-                              )}
-                              {col.id === "terminationDate" && (
-                                <span className="text-slate-700">
-                                  {user.terminationDate ? formatDateNumeric(user.terminationDate) : "-"}
-                                </span>
-                              )}
-                              {!["status", "role", "email", "phone", "fullName", "employeeCode", "no", "suspendedUntil", "terminationDate"].includes(col.id) && (
-                                <span className="text-slate-700">{String(user[col.id as keyof User] ?? "")}</span>
-                              )}
-                            </td>
-                          ))}
-                          <td
-                            onClick={(e) => e.stopPropagation()}
-                            className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)] group-hover:bg-slate-50/80"
-                          >
-                            <button
-                              ref={getRef(user.id)}
-                              onClick={(e) => handleDropdownToggle(user.id, e)}
-                              className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
-                              aria-label="More actions"
+                            <th
+                              key={col.id}
+                              className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap"
                             >
-                              <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
-                            </button>
-                          </td>
+                              {col.label}
+                            </th>
+                          ))}
+                          <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                            Action
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="bg-white">
+                        {currentUsers.map((user, index) => {
+                          const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+
+                          return (
+                            <tr
+                              key={user.id}
+                              className="hover:bg-slate-50/80 transition-colors group"
+                            >
+                              {visibleColumns.map((col) => (
+                                <td key={col.id} className={tdClass}>
+                                  {col.id === "no" && (
+                                    <span className="font-medium text-slate-900">{startIndex + index + 1}</span>
+                                  )}
+                                  {col.id === "status" && (
+                                    <Badge
+                                      color={
+                                        user.status === "Active" ? "emerald" :
+                                          user.status === "Inactive" ? "slate" :
+                                            user.status === "Pending" ? "amber" :
+                                              user.status === "Suspended" ? "orange" :
+                                                "red"
+                                      }
+                                      size="sm"
+                                      pill
+                                    >
+                                      {user.status}
+                                    </Badge>
+                                  )}
+                                  {col.id === "role" && (
+                                    <Badge
+                                      color={
+                                        user.role === "Admin" ? "purple" :
+                                          user.role === "QA Manager" ? "emerald" :
+                                            user.role === "Approver" ? "blue" :
+                                              user.role === "Reviewer" ? "cyan" :
+                                                user.role === "Document Owner" ? "indigo" :
+                                                  "slate"
+                                      }
+                                      size="sm"
+                                    >
+                                      {user.role}
+                                    </Badge>
+                                  )}
+                                  {col.id === "email" && (
+                                    <div className="flex items-center gap-2 text-slate-700">
+                                      {user.email}
+                                    </div>
+                                  )}
+                                  {col.id === "phone" && (
+                                    <div className="flex items-center gap-2 text-slate-700">
+                                      {user.phone}
+                                    </div>
+                                  )}
+                                  {col.id === "fullName" && (
+                                    <span className="font-medium text-slate-900">{user.fullName}</span>
+                                  )}
+                                  {col.id === "employeeCode" && (
+                                    <span 
+                                      className="font-medium text-emerald-600 cursor-pointer hover:underline"
+                                      onClick={() => navigateTo(USER_MANAGEMENT_ROUTES.PROFILE(user.id))}
+                                    >
+                                      {user.employeeCode}
+                                    </span>
+                                  )}
+                                  {col.id === "suspendedUntil" && (
+                                    <span className="text-slate-700">
+                                      {user.suspendedUntil ? formatDateNumeric(user.suspendedUntil) : "-"}
+                                    </span>
+                                  )}
+                                  {col.id === "terminationDate" && (
+                                    <span className="text-slate-700">
+                                      {user.terminationDate ? formatDateNumeric(user.terminationDate) : "-"}
+                                    </span>
+                                  )}
+                                  {!["status", "role", "email", "phone", "fullName", "employeeCode", "no", "suspendedUntil", "terminationDate"].includes(col.id) && (
+                                    <span className="text-slate-700">{String(user[col.id as keyof User] ?? "")}</span>
+                                  )}
+                                </td>
+                              ))}
+                              <td
+                                onClick={(e) => e.stopPropagation()}
+                                className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                              >
+                                <button
+                                  ref={getRef(user.id)}
+                                  onClick={(e) => handleDropdownToggle(user.id, e)}
+                                  className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
+                                >
+                                  <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
 
                 {/* Pagination */}
                 <TablePagination

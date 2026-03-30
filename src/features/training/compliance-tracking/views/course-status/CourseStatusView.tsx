@@ -83,29 +83,31 @@ const CourseRow: React.FC<{
   return (
     <tr
       key={course.id}
-      className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
-      onClick={() => onViewProgress(course.id)}
+      className="hover:bg-slate-50/80 transition-colors group"
     >
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center text-slate-500 font-medium">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm text-center text-slate-500 font-medium border-b border-slate-200">
         {rowNumber}
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-        <span className="font-medium text-emerald-600">{course.courseId}</span>
+      <td 
+        className={cn("py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm whitespace-nowrap border-b border-slate-200 cursor-pointer")}
+        onClick={() => onViewProgress(course.id)}
+      >
+        <span className="font-semibold text-emerald-600 hover:underline">{course.courseId}</span>
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200">
         <div className="flex items-start gap-2 max-w-[200px] lg:max-w-[300px]">
           <GraduationCap className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />
-          <span className="font-medium text-slate-900 truncate">
+          <span className="font-bold text-slate-900 truncate">
             {course.courseTitle}
           </span>
         </div>
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm">
-        <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium border bg-blue-50 text-blue-700 border-blue-200">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200">
+        <span className="inline-flex px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border bg-blue-50 text-blue-700 border-blue-200">
           {course.courseType}
         </span>
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200">
         <div
           className="flex items-center gap-2 hover:bg-slate-100 p-1 rounded transition-colors group/stat"
           onClick={(e) => {
@@ -113,52 +115,52 @@ const CourseRow: React.FC<{
             onViewProgress(course.id);
           }}
         >
-          <Users className="h-3.5 w-3.5 text-slate-400 group-hover/stat:text-slate-600" />
-          <span className="text-slate-900 font-medium border-b border-transparent group-hover/stat:border-slate-400">
+          <Users className="h-4 w-4 text-slate-400 group-hover/stat:text-slate-600" />
+          <span className="text-slate-900 font-semibold border-b border-transparent group-hover/stat:border-slate-400">
             {course.totalAssigned}
           </span>
         </div>
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-emerald-700">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200 text-emerald-700">
         <div
           onClick={(e) => { e.stopPropagation(); showDetailList(course, "Completed"); }}
           className="flex items-center gap-2 hover:bg-emerald-50 p-1 rounded transition-colors group/stat"
         >
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 group-hover/stat:text-emerald-700" />
-          <span className="font-medium border-b border-transparent group-hover/stat:border-emerald-600">
+          <CheckCircle2 className="h-4 w-4 text-emerald-600 group-hover/stat:text-emerald-700" />
+          <span className="font-semibold border-b border-transparent group-hover/stat:border-emerald-600">
             {course.completed}
           </span>
         </div>
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-blue-700">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200 text-blue-700">
         <div
           onClick={(e) => { e.stopPropagation(); showDetailList(course, "InProgress"); }}
           className="flex items-center gap-2 hover:bg-blue-50 p-1 rounded transition-colors group/stat"
         >
-          <Clock className="h-3.5 w-3.5 text-blue-600 group-hover/stat:text-blue-700" />
-          <span className="font-medium border-b border-transparent group-hover/stat:border-blue-600">
+          <Clock className="h-4 w-4 text-blue-600 group-hover/stat:text-blue-700" />
+          <span className="font-semibold border-b border-transparent group-hover/stat:border-blue-600">
             {course.inProgress}
           </span>
         </div>
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-red-700">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200 text-red-700">
         <div
           onClick={(e) => { e.stopPropagation(); showDetailList(course, "Overdue"); }}
           className="flex items-center gap-2 hover:bg-red-50 p-1 rounded transition-colors group/stat"
         >
-          <Clock className="h-3.5 w-3.5 text-red-600 group-hover/stat:text-red-700" />
-          <span className="font-medium border-b border-transparent group-hover/stat:border-red-600">
+          <Clock className="h-4 w-4 text-red-600 group-hover/stat:text-red-700" />
+          <span className="font-semibold border-b border-transparent group-hover/stat:border-red-600">
             {course.overdue}
           </span>
         </div>
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm font-medium text-slate-900">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200 font-semibold text-slate-900">
         {course.averageScore}%
       </td>
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm min-w-[120px]">
+      <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200 min-w-[120px]">
         <div className="flex items-center gap-2">
           <div className="flex-1 max-w-[80px]">
-            <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all duration-500",
@@ -170,19 +172,19 @@ const CourseRow: React.FC<{
               />
             </div>
           </div>
-          <span className={cn("font-bold text-xs truncate", getCompletionColor(completionRate))}>
+          <span className={cn("font-bold text-[10px] md:text-xs truncate", getCompletionColor(completionRate))}>
             {completionRate}%
           </span>
         </div>
       </td>
       <td
-        className="sticky right-0 bg-white py-2 px-2 text-center group-hover:bg-slate-50 z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200"
+        className="sticky right-0 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3.5 md:px-4 text-center z-10 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           ref={getRef(course.id)}
           onClick={(e) => handleDropdownToggle(course.id, e)}
-          className="h-8 w-8 mx-auto rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors"
+          className="h-8 w-8 mx-auto rounded-lg hover:bg-slate-200 flex items-center justify-center transition-colors"
         >
           <MoreVertical className="h-4 w-4 text-slate-500" />
         </button>
@@ -604,47 +606,47 @@ export const CourseStatusView: React.FC = () => {
       </div>
 
       {/* Table */}
-      <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col flex-1">
-        <div className="flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10 backdrop-blur-sm">
+      <div className="border border-slate-200 rounded-xl bg-white overflow-hidden flex flex-col flex-1">
+        <div className="flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 pb-1.5 transition-colors">
+          <table className="w-full border-separate border-spacing-0 text-left">
+            <thead>
               <tr>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-[60px]">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                   No.
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                   Course ID
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[200px]">
                   Course Name
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                   Type
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                   Total Assigned
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-emerald-700">
                   Completed
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-blue-700">
                   In Progress
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-red-700">
                   Overdue
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                   Avg. Score
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                   Completion
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap text-center sticky right-0 bg-slate-50 z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200">
+                <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                   Action
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
+            <tbody className="bg-white">
               {paginatedData.map((course, index) => (
                 <CourseRow
                   key={course.id}

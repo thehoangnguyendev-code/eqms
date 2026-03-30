@@ -3,6 +3,7 @@ import { Search, SlidersHorizontal, ToggleLeft, ToggleRight, X } from "lucide-re
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { cn } from "@/components/ui/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import type { MatrixFilters, CellStatus } from "../../types";
 import {
   DEPARTMENT_OPTIONS,
@@ -104,29 +105,44 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
         </div>
       </div>
 
-      {/* Row 2: Expanded filter selects */}
-      {showFilters && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-2 border-t border-slate-100 animate-in slide-in-from-top-2 duration-200">
-          <Select
-            label="Department"
-            value={filters.department}
-            onChange={(val) => set({ department: val })}
-            options={DEPARTMENT_OPTIONS}
-          />
-          <Select
-            label="Job Title"
-            value={filters.jobTitle}
-            onChange={(val) => set({ jobTitle: val })}
-            options={JOB_TITLE_OPTIONS}
-          />
-          <Select
-            label="Status"
-            value={filters.status}
-            onChange={(val) => set({ status: val as CellStatus | "All" })}
-            options={STATUS_OPTIONS}
-          />
-        </div>
-      )}
+      {/* Row 2: Expanded filter selects with Animation */}
+      <AnimatePresence>
+        {showFilters && (
+          <motion.div
+            initial={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
+            animate={{ height: "auto", opacity: 1, y: 0, marginTop: 8 }}
+            exit={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
+            transition={{
+              height: { type: "spring", bounce: 0, duration: 0.4 },
+              marginTop: { type: "spring", bounce: 0, duration: 0.4 },
+              opacity: { duration: 0.25 },
+              y: { duration: 0.3 },
+            }}
+            className="overflow-hidden"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-4 pb-2">
+              <Select
+                label="Department"
+                value={filters.department}
+                onChange={(val) => set({ department: val })}
+                options={DEPARTMENT_OPTIONS}
+              />
+              <Select
+                label="Job Title"
+                value={filters.jobTitle}
+                onChange={(val) => set({ jobTitle: val })}
+                options={JOB_TITLE_OPTIONS}
+              />
+              <Select
+                label="Status"
+                value={filters.status}
+                onChange={(val) => set({ status: val as CellStatus | "All" })}
+                options={STATUS_OPTIONS}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Active filter chips */}
       {hasActiveFilters && (

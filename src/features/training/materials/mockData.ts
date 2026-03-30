@@ -212,6 +212,7 @@ export const MOCK_MATERIAL_REVIEW: TrainingMaterialWorkflow = {
   approver: "Dr. A. Smith",
 };
 
+
 export const MOCK_MATERIAL_APPROVAL: TrainingMaterialWorkflow = {
   id: "11",
   materialId: "TM-DOC-011",
@@ -231,3 +232,69 @@ export const MOCK_MATERIAL_APPROVAL: TrainingMaterialWorkflow = {
   reviewComment:
     "Material reviewed. Content is accurate and complete. Passed for final approval step.",
 };
+
+// ─── Version History Drawer Mock Material ────────────────────────────────────
+export const MOCK_DRAWER_MATERIAL: TrainingMaterial = {
+  id: "mock-1",
+  materialId: "TM-VID-001",
+  title: "GMP Introduction Video",
+  description: "Comprehensive overview of Good Manufacturing Practices",
+  type: "Video",
+  version: "2.1",
+  department: "Quality Assurance",
+  status: "Effective",
+  uploadedAt: "15/02/2026",
+  uploadedBy: "John Doe",
+  fileSize: "125 MB",
+  fileSizeBytes: 131072000,
+  usageCount: 15,
+  linkedCourses: ["TRN-2026-001", "TRN-2026-004", "TRN-2026-008"],
+  versionHistory: [
+    {
+      version: "1.0",
+      status: "Obsoleted",
+      uploadedBy: "Alice Carter",
+      uploadedAt: "10/05/2024",
+      reviewedBy: "Jane Smith",
+      reviewedAt: "14/05/2024",
+      reviewComment: "Content is accurate. Video quality is acceptable for initial rollout.",
+      approvedBy: "Dr. A. Smith",
+      approvedAt: "17/05/2024",
+      approvalComment: "Approved for distribution across all QA departments.",
+      revisionNotes: "Initial version. Covers GMP fundamentals for new hires.",
+      fileSize: "98 MB",
+      fileUrl: "https://example.com/materials/TM-VID-001-v1.0.mp4",
+    },
+    {
+      version: "2.0",
+      status: "Obsoleted",
+      uploadedBy: "John Doe",
+      uploadedAt: "03/09/2025",
+      reviewedBy: "Jane Smith",
+      reviewedAt: "08/09/2025",
+      reviewComment: "Updated content references are correct. Approved for management review.",
+      approvedBy: "Dr. A. Smith",
+      approvedAt: "12/09/2025",
+      approvalComment: "Reflects updated GMP guidelines from 2025 regulatory update.",
+      revisionNotes: "Updated to align with 2025 WHO GMP guidelines. Added section on documentation best practices.",
+      fileSize: "115 MB",
+      fileUrl: "https://example.com/materials/TM-VID-001-v2.0.mp4",
+    },
+    {
+      version: "2.1",
+      status: "Effective",
+      uploadedBy: "John Doe",
+      uploadedAt: "15/02/2026",
+      reviewedBy: "Jane Smith",
+      reviewedAt: "18/02/2026",
+      reviewComment: "Minor fixes verified. No significant content changes.",
+      approvedBy: "Dr. A. Smith",
+      approvedAt: "20/02/2026",
+      approvalComment: "Patch approved. Ready for immediate deployment.",
+      revisionNotes: "Corrected audio sync issues in Chapter 3. Updated footer branding.",
+      fileSize: "125 MB",
+      fileUrl: "https://example.com/materials/TM-VID-001-v2.1.mp4",
+    },
+  ],
+};
+

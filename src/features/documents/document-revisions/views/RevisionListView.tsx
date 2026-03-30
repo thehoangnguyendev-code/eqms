@@ -513,160 +513,153 @@ export const RevisionListView: React.FC = () => {
           )}
 
           <div className={cn(
-            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
-            isTableLoading && "blur-[2px] opacity-80"
+            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300 relative",
+            isTableLoading && "blur-[2px] opacity-80 pointer-events-none"
           )}>
             {paginatedRevisions.length > 0 ? (
               <>
-                {/* Table with Horizontal Scroll */}
-                <div 
+                {/* Khung chứa bảng có thể cuộn ngang */}
+                <div
                   ref={scrollerRef}
                   className={cn(
-                    "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
+                    "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
                     isDragging ? "cursor-grabbing select-none" : "cursor-grab"
                   )}
                   {...dragEvents}
                 >
-                  <table className="w-full">
-                    <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
+                  {/* Sử dụng border-separate để kiểm soát tốt nhất các cột sticky */}
+                  {/* Sử dụng border-separate để kiểm soát tốt nhất các cột sticky */}
+                  <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                    <thead>
                       <tr>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-3 w-9 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap"></th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">No.</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Document Number</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Revision Number</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Created</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Opened By</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Revision Name</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">State</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Document Name</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Document Type</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Related Document</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Correlated Document</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Template</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Business Unit</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Department</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Author</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Effective Date</th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Valid Until</th>
-                        <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">Action</th>
+                        {[
+                          { label: "", width: "w-8 md:w-10" },
+                          { label: "No." },
+                          { label: "Document Number" },
+                          { label: "Revision Number" },
+                          { label: "Created" },
+                          { label: "Opened By" },
+                          { label: "Revision Name" },
+                          { label: "State" },
+                          { label: "Document Name" },
+                          { label: "Document Type" },
+                          { label: "Related Document", align: "text-center" },
+                          { label: "Correlated Document", align: "text-center" },
+                          { label: "Template", align: "text-center" },
+                          { label: "Business Unit" },
+                          { label: "Department" },
+                          { label: "Author" },
+                          { label: "Effective Date" },
+                          { label: "Valid Until" }
+                        ].map((col, idx) => (
+                          <th
+                            key={idx}
+                            className={cn(
+                              // Responsive text & padding: nhỏ trên mobile, lớn hơn trên desktop (md)
+                              "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap",
+                              col.width,
+                              col.align || "text-left"
+                            )}
+                          >
+                            {col.label}
+                          </th>
+                        ))}
+                        {/* Cột Action Sticky */}
+                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                          Action
+                        </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200 bg-white">
-                      {paginatedRevisions.map((revision, index) => (
-                        <React.Fragment key={revision.id}>
-                          <tr
-                            onClick={() => handleViewRevision(revision.id)}
-                            className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
-                          >
-                            {/* Expand/collapse chevron cell */}
-                            <td
-                              className="py-2 px-2 sm:py-3.5 sm:px-3 w-9 whitespace-nowrap"
-                              onClick={(e) => {
+
+                    <tbody>
+                      {paginatedRevisions.map((revision, index) => {
+                        const isExpanded = expandedRowId === revision.id;
+                        const hasDocs = revision.hasRelatedDocuments || revision.hasCorrelatedDocuments;
+
+                        // Định nghĩa class dùng chung cho các ô td để code gọn hơn và dễ sửa đổi
+                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+
+                        return (
+                          <React.Fragment key={revision.id}>
+                            {/* Dòng dữ liệu chính */}
+                            <tr
+                              className="hover:bg-slate-50/80 transition-colors group"
+                            >
+                              <td className="py-2.5 px-2 md:py-3 md:px-3 border-b border-slate-200 whitespace-nowrap" onClick={(e) => {
                                 e.stopPropagation();
-                                if (revision.hasRelatedDocuments || revision.hasCorrelatedDocuments) {
-                                  setExpandedRowId(expandedRowId === revision.id ? null : revision.id);
-                                }
-                              }}
-                            >
-                              {revision.hasRelatedDocuments || revision.hasCorrelatedDocuments ? (
-                                <button
-                                  className="inline-flex items-center justify-center h-6 w-6 rounded-md hover:bg-slate-200 transition-colors"
-                                  aria-label={expandedRowId === revision.id ? "Collapse documents" : "Expand documents"}
-                                >
-                                  <ChevronRight
-                                    className={cn(
-                                      "h-3.5 w-3.5 text-slate-500 transition-transform duration-200",
-                                      expandedRowId === revision.id && "rotate-90"
-                                    )}
-                                  />
-                                </button>
-                              ) : (
-                                <span className="inline-flex h-6 w-6" />
-                              )}
-                            </td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{startIndex + index + 1}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                              <span className="font-medium text-emerald-600">{revision.documentNumber}</span>
-                            </td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                              {revision.revisionNumber}
-                            </td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{revision.created}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{revision.openedBy}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                              <span className="font-medium text-slate-900">{revision.revisionName}</span>
-                            </td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                              <StatusBadge status={mapStatusToStatusType(revision.state) as StatusType} />
-                            </td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">{revision.documentName}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{revision.type}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
-                              {revision.hasRelatedDocuments ? (
-                                <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">Yes</span>
-                              ) : (
-                                <span className="text-slate-600 font-medium">No</span>
-                              )}
-                            </td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
-                              {revision.hasCorrelatedDocuments ? (
-                                <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">Yes</span>
-                              ) : (
-                                <span className="text-slate-600 font-medium">No</span>
-                              )}
-                            </td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
-                              {revision.isTemplate ? (
-                                <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">Yes</span>
-                              ) : (
-                                <span className="text-slate-600 font-medium">No</span>
-                              )}
-                            </td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{revision.businessUnit}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{revision.department}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{revision.author}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{revision.effectiveDate}</td>
-                            <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{revision.validUntil}</td>
-                            <td
-                              onClick={(e) => e.stopPropagation()}
-                              className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)] group-hover:bg-slate-50"
-                            >
-                              <button
-                                ref={getRef(revision.id)}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggle(revision.id, e);
-                                }}
-                                className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
-                                aria-label="More actions"
+                                if (hasDocs) setExpandedRowId(isExpanded ? null : revision.id);
+                              }}>
+                                {hasDocs && (
+                                  <button className="flex items-center justify-center h-5 w-5 md:h-6 md:w-6 rounded-md hover:bg-slate-200 transition-colors">
+                                    <ChevronRight className={cn("h-3.5 w-3.5 md:h-4 md:w-4 text-slate-500 transition-transform duration-200", isExpanded && "rotate-90")} />
+                                  </button>
+                                )}
+                              </td>
+                              <td className={tdClass}>{startIndex + index + 1}</td>
+                              <td 
+                                onClick={() => handleViewRevision(revision.id)} 
+                                className={cn(tdClass, "font-medium text-emerald-600 cursor-pointer hover:underline")}
                               >
-                                <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
-                              </button>
-                            </td>
-                          </tr>
-                          {/* Accordion row — related + correlated documents (always rendered for smooth animation) */}
-                          {(revision.hasRelatedDocuments || revision.hasCorrelatedDocuments) &&
-                            ((revision.relatedDocuments?.length ?? 0) > 0 || (revision.correlatedDocuments?.length ?? 0) > 0) && (
-                              <tr>
-                                <td colSpan={19} className="p-0 border-0">
-                                  <div
-                                    className={cn(
-                                      "grid",
-                                      expandedRowId === revision.id ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                                    )}
-                                    style={{
-                                      transition: 'grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-                                    }}
-                                  >
-                                    <div className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
-                                      <div
-                                        className={cn(
-                                          "bg-slate-50/60 border-b border-slate-200 px-4 py-2 transition-opacity duration-200",
-                                          expandedRowId === revision.id ? "opacity-100" : "opacity-0"
-                                        )}
-                                      >
+                                {revision.documentNumber}
+                              </td>
+                              <td className={tdClass}>{revision.revisionNumber}</td>
+                              <td className={tdClass}>{revision.created}</td>
+                              <td className={tdClass}>{revision.openedBy}</td>
+                              <td className={cn(tdClass, "font-medium text-slate-900")}>{revision.revisionName}</td>
+                              <td className="py-2.5 px-2 md:py-3 md:px-4 border-b border-slate-200 whitespace-nowrap">
+                                <StatusBadge status={mapStatusToStatusType(revision.state) as StatusType} />
+                              </td>
+                              <td className={cn(tdClass, "text-slate-600")}>{revision.documentName}</td>
+                              <td className={tdClass}>{revision.type}</td>
+                              <td className={cn(tdClass, "text-center")}>
+                                {revision.hasRelatedDocuments ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>}
+                              </td>
+                              <td className={cn(tdClass, "text-center")}>
+                                {revision.hasCorrelatedDocuments ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>}
+                              </td>
+                              <td className={cn(tdClass, "text-center")}>
+                                {revision.isTemplate ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>}
+                              </td>
+                              <td className={tdClass}>{revision.businessUnit}</td>
+                              <td className={tdClass}>{revision.department}</td>
+                              <td className={tdClass}>{revision.author}</td>
+                              <td className={tdClass}>{revision.effectiveDate}</td>
+                              <td className={tdClass}>{revision.validUntil}</td>
+
+                              {/* Ô Action Sticky */}
+                              <td
+                                onClick={(e) => e.stopPropagation()}
+                                className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                              >
+                                <button
+                                  ref={getRef(revision.id)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggle(revision.id, e);
+                                  }}
+                                  className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
+                                >
+                                  <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                                </button>
+                              </td>
+                            </tr>
+
+                            {/* Dòng mở rộng (Accordion) - GIỮ NGUYÊN THIẾT KẾ CŨ CỦA BẠN */}
+                            <AnimatePresence initial={false}>
+                              {isExpanded && hasDocs && (
+                                <tr className="bg-slate-50/50">
+                                  {/* 18 Cột nội dung */}
+                                  <td colSpan={18} className="p-0 border-b border-slate-200">
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: "auto", opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.2 }}
+                                      className="overflow-hidden"
+                                    >
+                                      <div className="px-4 py-3">
                                         <div className="ml-9 flex flex-wrap gap-6">
-                                          {/* Related Documents table */}
+                                          {/* Bảng Related Documents (Thiết kế gốc) */}
                                           {revision.relatedDocuments && revision.relatedDocuments.length > 0 && (
                                             <div>
                                               <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
@@ -700,7 +693,8 @@ export const RevisionListView: React.FC = () => {
                                               </div>
                                             </div>
                                           )}
-                                          {/* Correlated Documents table */}
+
+                                          {/* Bảng Correlated Documents (Thiết kế gốc) */}
                                           {revision.correlatedDocuments && revision.correlatedDocuments.length > 0 && (
                                             <div>
                                               <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
@@ -738,33 +732,22 @@ export const RevisionListView: React.FC = () => {
                                           )}
                                         </div>
                                       </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className="p-0 border-0 sticky right-0 z-30 bg-white before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)]">
-                                  <div
-                                    className={cn(
-                                      "grid",
-                                      expandedRowId === revision.id ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                                    )}
-                                    style={{
-                                      transition: 'grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-                                    }}
-                                  >
-                                    <div className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
-                                      <div className="bg-slate-50/60 border-b border-slate-200 h-full w-full" />
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                            )}
-                        </React.Fragment>
-                      ))}
+                                    </motion.div>
+                                  </td>
+
+                                  {/* Cột Action giả để giữ cấu trúc bảng không bị vỡ */}
+                                  <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-slate-50/50 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                                  </td>
+                                </tr>
+                              )}
+                            </AnimatePresence>
+                          </React.Fragment>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
 
-                {/* Pagination Footer */}
                 <TablePagination
                   currentPage={currentPage}
                   totalPages={totalPages}

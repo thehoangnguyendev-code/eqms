@@ -79,6 +79,16 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
   };
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
 
+  const [isBackLoading, setIsBackLoading] = useState(false);
+
+  const handleBack = () => {
+    setIsBackLoading(true);
+    setTimeout(() => {
+      onBack();
+      setIsBackLoading(false);
+    }, 600);
+  };
+
   // Sub-tab state (for active documents)
   const [activeSubTab, setActiveSubTab] = useState<SubTabType>("revisions");
   const [reviewers, setReviewers] = useState<Reviewer[]>(
@@ -169,9 +179,7 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
           </div>
           <div className="flex items-center gap-2 md:gap-3 flex-wrap">
             <Button
-              onClick={() => {
-                onBack();
-              }}
+              onClick={handleBack}
               size="sm"
               variant="outline-emerald"
               className="whitespace-nowrap"
@@ -260,9 +268,7 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
       {/* Footer Actions */}
       <div className="flex items-center gap-2 md:gap-3">
         <Button
-          onClick={() => {
-            onBack();
-          }}
+          onClick={handleBack}
           size="sm"
           variant="outline-emerald"
           className="whitespace-nowrap"
@@ -306,7 +312,7 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
           </div>
         </div>
       )}
-      {isNavigating && <FullPageLoading text="Loading..." />}
+      {(isNavigating || isBackLoading) && <FullPageLoading text="Loading..." />}
     </div>
   );
 };

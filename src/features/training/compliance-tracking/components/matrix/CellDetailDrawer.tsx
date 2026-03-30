@@ -114,7 +114,7 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                 {/* Scrollable body */}
                 <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth" style={{ WebkitOverflowScrolling: "touch" }}>
                     {/* Employee card */}
-                    <div className="bg-white border border-slate-100 rounded-xl p-4 flex items-center gap-3 shadow-sm">
+                    <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3 shadow-sm">
                         <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
                             <User className="h-4 w-4 text-slate-500" />
                         </div>
@@ -128,7 +128,7 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                     </div>
 
                     {/* SOP card */}
-                    <div className="bg-white border border-slate-100 rounded-xl p-4 flex items-center gap-3 shadow-sm">
+                    <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3 shadow-sm">
                         <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
                             <FileText className="h-4 w-4 text-slate-500" />
                         </div>
@@ -165,10 +165,10 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                     })()}
 
                     {/* ── Score + Attempts ── */}
-                    <div className="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden">
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                         <div className="px-4 pt-4 pb-3 border-b border-slate-100 flex items-center gap-2">
-                            <Trophy className="h-3.5 w-3.5 text-slate-400" />
-                            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Assessment</span>
+                            <Trophy className="h-3.5 w-3.5 text-slate-600" />
+                            <span className="text-sm font-semibold text-slate-600">Assessment</span>
                         </div>
                         <div className="p-4 flex items-center gap-5">
                             {/* Score ring */}
@@ -241,46 +241,46 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                     </div>
 
                     {/* ── Training Timeline ── */}
-                    <div className="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden">
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                         <div className="px-4 pt-4 pb-3 border-b border-slate-100 flex items-center gap-2">
-                            <Clock className="h-3.5 w-3.5 text-slate-400" />
-                            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Training Timeline</span>
+                            <Clock className="h-3.5 w-3.5 text-slate-600" />
+                            <span className="text-sm font-semibold text-slate-600">Training Timeline</span>
                         </div>
                         <div className="p-4">
                             <div className="flex items-start gap-3">
-                                    <div className="flex flex-col items-center pt-1">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />
-                                        <div className="w-px flex-1 bg-slate-200 my-1.5" style={{ minHeight: 32 }} />
-                                        <div className={cn(
-                                            "h-2.5 w-2.5 rounded-full ring-4",
-                                            cell.status === "Required" ? "bg-red-500 ring-red-50"
-                                                : cell.status === "InProgress" ? "bg-amber-500 ring-amber-50"
-                                                    : "bg-slate-400 ring-slate-100"
-                                        )} />
-                                    </div>
+                                <div className="flex flex-col items-center pt-1">
+                                    <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-50" />
+                                    <div className="w-px flex-1 bg-slate-200 my-1.5" style={{ minHeight: 32 }} />
+                                    <div className={cn(
+                                        "h-2.5 w-2.5 rounded-full ring-4",
+                                        cell.status === "Required" ? "bg-red-500 ring-red-50"
+                                            : cell.status === "InProgress" ? "bg-amber-500 ring-amber-50"
+                                                : "bg-slate-400 ring-slate-100"
+                                    )} />
+                                </div>
 
-                                    {/* Labels */}
-                                    <div className="flex-1 space-y-4">
-                                        <div>
-                                            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wide flex items-center gap-1.5">
-                                                <CalendarCheck className="h-3 w-3" /> Last Trained
-                                            </p>
-                                            <p className="text-sm font-semibold text-slate-800 mt-0.5">
-                                                {formatDate(cell.lastTrainedDate)}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wide flex items-center gap-1.5">
-                                                <CalendarDays className="h-3 w-3" /> Latest Evaluated
-                                            </p>
-                                            <p className={cn(
-                                                "text-sm font-semibold mt-0.5",
-                                                cell.status === "Required" ? "text-red-600"
-                                                    : cell.status === "InProgress" ? "text-amber-600"
-                                                        : "text-slate-800"
-                                            )}>
-                                                {formatDate(cell.expiryDate)}
-                                            </p>
+                                {/* Labels */}
+                                <div className="flex-1 space-y-4">
+                                    <div>
+                                        <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wide flex items-center gap-1.5">
+                                            <CalendarCheck className="h-3 w-3" /> Last Trained
+                                        </p>
+                                        <p className="text-sm font-semibold text-slate-800 mt-0.5">
+                                            {formatDate(cell.lastTrainedDate)}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wide flex items-center gap-1.5">
+                                            <CalendarDays className="h-3 w-3" /> Latest Evaluated
+                                        </p>
+                                        <p className={cn(
+                                            "text-sm font-semibold mt-0.5",
+                                            cell.status === "Required" ? "text-red-600"
+                                                : cell.status === "InProgress" ? "text-amber-600"
+                                                    : "text-slate-800"
+                                        )}>
+                                            {formatDate(cell.expiryDate)}
+                                        </p>
                                         {/* Days remaining */}
                                         {cell.expiryDate && (() => {
                                             const m = cell.expiryDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
@@ -309,10 +309,10 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                     </div>
 
                     {/* ── SOP Information ── */}
-                    <div className="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden">
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                         <div className="px-4 pt-4 pb-3 border-b border-slate-100 flex items-center gap-2">
-                            <Layers className="h-3.5 w-3.5 text-slate-400" />
-                            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Document Info</span>
+                            <Layers className="h-3.5 w-3.5 text-slate-600" />
+                            <span className="text-sm font-semibold text-slate-600">Document Info</span>
                         </div>
                         <div className="p-4 grid grid-cols-2 gap-3">
                             <div className="bg-slate-50 rounded-lg px-3 py-2.5">

@@ -300,6 +300,27 @@ export const MaterialsView: React.FC = () => {
     }
   }, [activeTab, searchParams, setSearchParams]);
 
+  // Loading Effect to simulate search/tab changes
+  useEffect(() => {
+    if (activeTab === "overview") return;
+
+    setIsTableLoading(true);
+    const timer = setTimeout(() => {
+      setIsTableLoading(false);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [
+    filters.searchQuery,
+    filters.typeFilter,
+    filters.departmentFilter,
+    filters.statusFilter,
+    filters.uploadedByFilter,
+    filters.dateFrom,
+    filters.dateTo,
+    activeTab,
+    sortOrder
+  ]);
+
   const setActiveTab = (tab: "overview" | "all" | "pending-review" | "pending-approval") => {
     localStorage.setItem("training_materials_active_tab", tab);
     const newParams = new URLSearchParams(searchParams);
@@ -957,190 +978,167 @@ export const MaterialsView: React.FC = () => {
               )}
 
               <div className={cn(
-                "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
+                "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300",
                 isTableLoading && "blur-[2px] opacity-80"
               )}>
                 {/* Table wrapper — Scrollable */}
-                <div 
+                <div
                   ref={scrollerRef}
                   className={cn(
-                    "overflow-x-auto overflow-y-hidden flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full transition-colors",
+                    "overflow-x-auto overflow-y-hidden flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 transition-colors",
                     isDragging ? "cursor-grabbing select-none" : "cursor-grab"
                   )}
                   {...dragEvents}
                 >
-                  <table className="w-full">
-                    <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
+                  <table className="w-full border-separate border-spacing-0 text-left">
+                    <thead>
                       <tr>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">No.</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Material ID</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Material Title</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">File Type</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">File Size</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Version</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Department</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Status</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Courses Using</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Last Updated</th>
-                        <th className="px-2 py-2.5 sm:px-4 sm:py-3.5 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Uploaded By</th>
-                        <th className="sticky right-0 bg-slate-50 px-2 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-40 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200">Action</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">No.</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Material ID</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Material Title</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">File Type</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">File Size</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Version</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Department</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Status</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Courses Using</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Last Updated</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Uploaded By</th>
+                        <th className="sticky top-0 right-0 z-30 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200 bg-white">
-                      {paginatedData.map((m, index) => (
-                        <tr
-                          key={m.id}
-                          className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
-                          onClick={() => navigateTo(ROUTES.TRAINING.MATERIAL_DETAIL(m.id))}
-                        >
-                          {/* No. */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 whitespace-nowrap text-center">
-                            <div className="text-xs sm:text-sm text-slate-500">
-                              {(currentPage - 1) * itemsPerPage + index + 1}
-                            </div>
-                          </td>
-                          {/* Material ID */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 whitespace-nowrap">
-                            <span className="text-xs sm:text-sm font-medium text-emerald-600">{m.materialId}</span>
-                          </td>
-                          {/* Material Title */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 whitespace-nowrap">
-                            <div>
-                              <p
-                                className={cn(
-                                  "font-medium whitespace-nowrap text-xs sm:text-sm",
-                                  getEffectiveStatus(m) === "Obsoleted"
-                                    ? "text-slate-400 line-through"
-                                    : "text-slate-900"
-                                )}
-                              >
-                                {m.title}
-                              </p>
-                              <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5">
-                                {m.description}
-                              </p>
-                              {obsoleteOverrides[m.id]?.replacedBy && (
-                                <div className="flex items-center gap-1 mt-1">
-                                  <Link2 className="h-3 w-3 text-emerald-600 flex-shrink-0" />
-                                  <span className="text-xs text-emerald-700 font-medium">
-                                    Replaced by{" "}
-                                    <button
-                                      onClick={(e) => { e.stopPropagation(); }}
-                                      className="underline hover:text-emerald-800 transition-colors"
-                                    >
-                                      {obsoleteOverrides[m.id].replacedBy}
-                                    </button>
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                          {/* File Type (Text with icon) */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 whitespace-nowrap">
-                            <div className="flex items-center gap-1.5 sm:gap-2">
-                              {getTypeIcon(m.type)}
-                              <span className="text-xs sm:text-sm text-slate-700 font-medium">{m.type}</span>
-                            </div>
-                          </td>
-                          {/* File Size */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 text-center whitespace-nowrap">
-                            <span className="text-xs sm:text-sm text-slate-700 font-medium">{m.fileSize}</span>
-                          </td>
-                          {/* Version */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 text-xs sm:text-sm text-center whitespace-nowrap text-slate-700">
-                            {m.version}
-                          </td>
-                          {/* Department */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                            {m.department}
-                          </td>
-                          {/* Status */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 text-xs sm:text-sm whitespace-nowrap text-center">
-                            <StatusBadge status={mapMaterialStatusToStatusType(getEffectiveStatus(m) as TrainingMaterial["status"])} />
-                          </td>
-                          {/* Courses Using */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 text-xs sm:text-sm text-center whitespace-nowrap">
-                            <span className="text-slate-700 font-medium">{m.usageCount}</span>
-                          </td>
-                          {/* Last Updated */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                            {formatDateUS(m.uploadedAt)}
-                          </td>
-                          {/* Uploaded By */}
-                          <td className="px-2 py-2 sm:px-4 sm:py-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                            {m.uploadedBy}
-                          </td>
-                          {/* Action */}
-                          <td
-                            onClick={(e) => e.stopPropagation()}
-                            className="sticky right-0 bg-white px-2 py-2 sm:px-4 sm:py-4 text-center z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 group-hover:bg-slate-50"
-                          >
-                            <button
-                              ref={getRef(m.id)}
-                              onClick={(e) => handleDropdownToggle(m.id, e)}
-                              className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
-                              aria-label="More actions"
+                    <tbody className="bg-white">
+                      {paginatedData.length > 0 ? (
+                        paginatedData.map((m, index) => {
+                          const tdClass = "px-2 py-2 md:px-4 md:py-3.5 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                          return (
+                            <tr
+                              key={m.id}
+                              className="hover:bg-slate-50/80 transition-colors group"
                             >
-                              <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
-                            </button>
-                            <MaterialDropdownMenu
-                              material={m}
-                              effectiveStatus={getEffectiveStatus(m)}
-                              isOpen={openDropdownId === m.id}
-                              onClose={closeDropdown}
-                              position={dropdownPosition}
-                              onNavigate={navigateTo}
-                              onMarkObsolete={(id) => {
-                                setObsoleteTargetId(id);
-                                setObsoleteModalOpen(true);
-                              }}
-                              onOpenHistory={setHistoryDrawerMaterial}
+                              <td className={cn(tdClass, "text-center text-slate-500")}>
+                                {(currentPage - 1) * itemsPerPage + index + 1}
+                              </td>
+
+                              <td
+                                className={cn(tdClass, "cursor-pointer")}
+                                onClick={() => navigateTo(ROUTES.TRAINING.MATERIAL_DETAIL(m.id))}
+                              >
+                                <span className="font-medium text-emerald-600 hover:underline">{m.materialId}</span>
+                              </td>
+
+                              <td className={tdClass}>
+                                <div className="max-w-xs md:max-w-md">
+                                  <p
+                                    className={cn(
+                                      "font-medium truncate",
+                                      getEffectiveStatus(m) === "Obsoleted"
+                                        ? "text-slate-400 line-through"
+                                        : "text-slate-900"
+                                    )}
+                                  >
+                                    {m.title}
+                                  </p>
+                                  <p className="text-[10px] md:text-xs text-slate-500 mt-0.5">
+                                    {m.description}
+                                  </p>
+                                  {obsoleteOverrides[m.id]?.replacedBy && (
+                                    <div className="flex items-center gap-1 mt-1">
+                                      <Link2 className="h-3 w-3 text-emerald-600 flex-shrink-0" />
+                                      <span className="text-[10px] md:text-xs text-emerald-700 font-medium">
+                                        Replaced by{" "}
+                                        <button
+                                          onClick={(e) => { e.stopPropagation(); }}
+                                          className="underline hover:text-emerald-800 transition-colors"
+                                        >
+                                          {obsoleteOverrides[m.id].replacedBy}
+                                        </button>
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              </td>
+
+                              <td className={tdClass}>
+                                <div className="flex items-center gap-2">
+                                  {getTypeIcon(m.type)}
+                                  <span className="font-medium">{m.type}</span>
+                                </div>
+                              </td>
+
+                              <td className={cn(tdClass, "text-center font-medium")}>
+                                {m.fileSize}
+                              </td>
+
+                              <td className={cn(tdClass, "text-center")}>
+                                {m.version}
+                              </td>
+
+                              <td className={tdClass}>
+                                {m.department}
+                              </td>
+
+                              <td className={cn(tdClass, "text-center")}>
+                                <StatusBadge status={mapMaterialStatusToStatusType(getEffectiveStatus(m) as TrainingMaterial["status"])} />
+                              </td>
+
+                              <td className={cn(tdClass, "text-center")}>
+                                <span className="font-medium">{m.usageCount}</span>
+                              </td>
+
+                              <td className={tdClass}>
+                                {formatDateUS(m.uploadedAt)}
+                              </td>
+
+                              <td className={tdClass}>
+                                {m.uploadedBy}
+                              </td>
+
+                              <td
+                                className="sticky right-0 z-10 bg-white border-b border-slate-200 px-2 py-2.5 md:px-4 md:py-3 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                              >
+                                <button
+                                  ref={getRef(m.id)}
+                                  onClick={(e) => handleDropdownToggle(m.id, e)}
+                                  className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 transition-colors"
+                                  aria-label="More actions"
+                                >
+                                  <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-600" />
+                                </button>
+                                <MaterialDropdownMenu
+                                  material={m}
+                                  effectiveStatus={getEffectiveStatus(m)}
+                                  isOpen={openDropdownId === m.id}
+                                  onClose={closeDropdown}
+                                  position={dropdownPosition}
+                                  onNavigate={navigateTo}
+                                  onMarkObsolete={(id) => {
+                                    setObsoleteTargetId(id);
+                                    setObsoleteModalOpen(true);
+                                  }}
+                                  onOpenHistory={setHistoryDrawerMaterial}
+                                />
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={12}>
+                            <TableEmptyState
+                              title="No Training Materials Found"
+                              description="We couldn’t find any training materials matching your filters. Try adjusting your search criteria or clear filters."
+                              actionLabel="Clear Filters"
+                              onAction={clearFilters}
                             />
                           </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>
 
                 {filteredData.length > 0 && (
-                  <div className="hidden sm:block border-t border-slate-200 bg-white">
-                    <TablePagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={setCurrentPage}
-                      totalItems={filteredData.length}
-                      itemsPerPage={itemsPerPage}
-                      onItemsPerPageChange={setItemsPerPage}
-                      showItemCount={true}
-                    />
-                  </div>
-                )}
-
-                {filteredData.length === 0 && (
-                  <TableEmptyState
-                    title="No Training Materials Found"
-                    description="We couldn't find any training materials matching your filters. Try adjusting your search criteria or clear filters."
-                    actionLabel="Clear Filters"
-                    onAction={() => {
-                      setFilters({
-                        searchQuery: "",
-                        typeFilter: "All",
-                        departmentFilter: "All",
-                        statusFilter: "All",
-                        uploadedByFilter: "All",
-                        dateFrom: "",
-                        dateTo: "",
-                      });
-                      setCurrentPage(1);
-                    }}
-                  />
-                )}
-              </div>
-
-              {/* Pagination for mobile */}
-              {filteredData.length > 0 && (
-                <div className="mt-4 sm:mt-5 bg-white border border-slate-200 rounded-xl shadow-sm p-3 sm:hidden">
                   <TablePagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -1148,10 +1146,10 @@ export const MaterialsView: React.FC = () => {
                     totalItems={filteredData.length}
                     itemsPerPage={itemsPerPage}
                     onItemsPerPageChange={setItemsPerPage}
-                    showItemCount={false}
+                    showItemCount={true}
                   />
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -374,16 +374,14 @@ export const MyTasksView: React.FC = () => {
           {isLoading ? (
             <SectionLoading text="Loading tasks..." minHeight="400px" />
           ) : (
-            <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300 min-h-0">
+            <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300 min-h-0">
               {paginatedData.length > 0 ? (
                 <>
-                  <div className="overflow-x-auto overflow-y-hidden flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
-                    <TaskTable
-                      tasks={paginatedData}
-                      onTaskClick={setSelectedTask}
-                      startIndex={(currentPage - 1) * itemsPerPage + 1}
-                    />
-                  </div>
+                  <TaskTable
+                    tasks={paginatedData}
+                    onTaskClick={setSelectedTask}
+                    startIndex={(currentPage - 1) * itemsPerPage + 1}
+                  />
                   <TablePagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -396,7 +394,7 @@ export const MyTasksView: React.FC = () => {
               ) : (
                 <TableEmptyState
                   title="No Tasks Found"
-                  description="We couldn't find any tasks matching your filters. Try adjusting your search criteria or clear filters."
+                  description="We couldn’t find any tasks matching your filters. Try adjusting your search criteria or clear filters."
                   actionLabel="Clear Filters"
                   onAction={handleClearFilters}
                 />

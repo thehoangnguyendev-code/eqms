@@ -799,30 +799,30 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
               )}
 
               <div className={cn(
-                "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
-                isTableLoading && "blur-[2px] opacity-80"
+                "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300 relative",
+                isTableLoading && "blur-[2px] opacity-80 pointer-events-none"
               )}>
                 {paginatedDocuments.length > 0 ? (
                   <>
                     <div
                       ref={scrollerRef}
                       className={cn(
-                        "overflow-x-auto overflow-y-hidden transition-colors",
+                        "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
                         isDragging ? "cursor-grabbing select-none" : "cursor-grab"
                       )}
                       style={{ WebkitOverflowScrolling: 'touch' }}
                       {...dragEvents}
                     >
-                      <table className="w-full min-w-max">
-                        <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-30">
+                      <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                        <thead>
                           <tr>
-                            <th className="py-2.5 px-2 sm:py-3.5 sm:px-3 w-9 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap"></th>
+                            <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>
                             {visibleColumns.map(col => (
                               <th
                                 key={col.id}
                                 className={cn(
-                                  "py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap",
-                                  col.id === 'action' && "sticky right-0 bg-slate-50 text-center z-[1] shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200"
+                                  "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap",
+                                  col.id === 'action' && "right-0 z-30 text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
                                 )}
                               >
                                 {col.label}
@@ -830,175 +830,35 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                             ))}
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-200 bg-white">
+                        <tbody className="bg-white">
                           {paginatedDocuments.map((doc, index) => {
                             const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
+                            const isExpanded = expandedRowId === doc.id;
+                            const hasSubDocs = doc.hasRelatedDocuments || doc.hasCorrelatedDocuments;
+                            const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+
                             return (
                               <React.Fragment key={doc.id}>
-                                <tr className="hover:bg-slate-50/80 transition-colors group">
-                                  <td className="py-2 px-2 sm:py-3.5 sm:px-3 w-9 whitespace-nowrap"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      if (doc.hasRelatedDocuments || doc.hasCorrelatedDocuments) {
-                                        setExpandedRowId(expandedRowId === doc.id ? null : doc.id);
-                                      }
-                                    }}
-                                  >
-                                    {doc.hasRelatedDocuments || doc.hasCorrelatedDocuments ? (
-                                      <button
-                                        className="inline-flex items-center justify-center h-6 w-6 rounded-md hover:bg-slate-200 transition-colors"
-                                        aria-label={expandedRowId === doc.id ? "Collapse documents" : "Expand documents"}
-                                      >
-                                        <ChevronRight className={cn("h-3.5 w-3.5 text-slate-500 transition-transform duration-200", expandedRowId === doc.id && "rotate-90")} />
+                                <tr 
+                                  className="hover:bg-slate-50/80 transition-colors group"
+                                >
+                                  <td className="py-2.5 px-2 md:py-3 md:px-3 border-b border-slate-200 whitespace-nowrap" onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (hasSubDocs) setExpandedRowId(isExpanded ? null : doc.id);
+                                  }}>
+                                    {hasSubDocs && (
+                                      <button className="flex items-center justify-center h-5 w-5 md:h-6 md:w-6 rounded-md hover:bg-slate-200 transition-colors">
+                                        <ChevronRight className={cn("h-3.5 w-3.5 md:h-4 md:w-4 text-slate-500 transition-transform duration-200", isExpanded && "rotate-90")} />
                                       </button>
-                                    ) : (
-                                      <span className="inline-flex h-6 w-6" />
                                     )}
                                   </td>
                                   {visibleColumns.map(col => {
-                                    if (col.id === 'no') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                                          {globalIndex}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'documentId') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                                          <button
-                                            type="button"
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              handleViewDocument(doc.id);
-                                            }}
-                                            className="font-medium text-emerald-600 hover:underline transition-colors"
-                                          >
-                                            {doc.documentId}
-                                          </button>
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'created') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
-                                          {formatDateUS(doc.created)}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'openedBy') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
-                                          {doc.openedBy}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'title') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                                          <div className="font-medium text-slate-900">
-                                            {doc.title}
-                                          </div>
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'status') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                                          <StatusBadge status={mapDocumentStatusToStatusType(doc.status)} />
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'type') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                                          <span className={cn(
-                                            "inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border",
-                                            getDocumentTypeColorClass(doc.type)
-                                          )}>
-                                            {doc.type}
-                                          </span>
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'relatedDocuments' && config.showRelatedDocumentsColumn) {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
-                                          {doc.hasRelatedDocuments ? (
-                                            <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
-                                              Yes
-                                            </span>
-                                          ) : (
-                                            <span className="text-slate-600 font-medium">No</span>
-                                          )}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'correlatedDocuments') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
-                                          {doc.hasCorrelatedDocuments ? (
-                                            <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
-                                              Yes
-                                            </span>
-                                          ) : (
-                                            <span className="text-slate-600 font-medium">No</span>
-                                          )}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'template') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
-                                          {doc.isTemplate ? (
-                                            <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">Yes</span>
-                                          ) : (
-                                            <span className="text-slate-600 font-medium">No</span>
-                                          )}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'businessUnit') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
-                                          {doc.businessUnit}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'department') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
-                                          {doc.department}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'author') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
-                                          {doc.author}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'effectiveDate') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
-                                          {formatDateUS(doc.effectiveDate)}
-                                        </td>
-                                      );
-                                    }
-                                    if (col.id === 'validUntil') {
-                                      return (
-                                        <td key={col.id} className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
-                                          {formatDateUS(doc.validUntil)}
-                                        </td>
-                                      );
-                                    }
                                     if (col.id === 'action') {
                                       return (
                                         <td
                                           key={col.id}
                                           onClick={(e) => e.stopPropagation()}
-                                          className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)] group-hover:bg-slate-50"
+                                          className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
                                         >
                                           <button
                                             ref={getRef(doc.id)}
@@ -1006,9 +866,9 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                               e.stopPropagation();
                                               toggle(doc.id, e);
                                             }}
-                                            className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
+                                            className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
                                           >
-                                            <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
+                                            <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
                                           </button>
                                           <DropdownMenu
                                             document={doc}
@@ -1023,105 +883,128 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                         </td>
                                       );
                                     }
-                                    return null;
+                                    
+                                    let content;
+                                    if (col.id === 'no') content = globalIndex;
+                                    else if (col.id === 'documentId') content = null;
+                                    else if (col.id === 'title') content = <span className="font-medium text-slate-900">{doc.title}</span>;
+                                    else if (col.id === 'status') content = <StatusBadge status={mapDocumentStatusToStatusType(doc.status)} />;
+                                    else if (col.id === 'created') content = formatDateUS(doc.created);
+                                    else if (col.id === 'effectiveDate') content = formatDateUS(doc.effectiveDate);
+                                    else if (col.id === 'validUntil') content = formatDateUS(doc.validUntil);
+                                    else if (col.id === 'relatedDocuments') content = doc.hasRelatedDocuments ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>;
+                                    else if (col.id === 'correlatedDocuments') content = doc.hasCorrelatedDocuments ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>;
+                                    else if (col.id === 'template') content = doc.isTemplate ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>;
+                                    else content = doc[col.id as keyof Document] as string;
+
+                                    return (
+                                      <td 
+                                        key={col.id} 
+                                        className={cn(
+                                          tdClass, 
+                                          col.id === 'documentId' && "cursor-pointer"
+                                        )}
+                                        onClick={col.id === 'documentId' ? () => handleViewDocument(doc.id) : undefined}
+                                      >
+                                        {col.id === 'documentId' ? (
+                                          <span className="font-medium text-emerald-600 hover:underline">
+                                            {doc.documentId}
+                                          </span>
+                                        ) : content}
+                                      </td>
+                                    );
                                   })}
                                 </tr>
-                                {(doc.hasRelatedDocuments || doc.hasCorrelatedDocuments) &&
-                                  ((doc.relatedDocuments?.length ?? 0) > 0 || (doc.correlatedDocuments?.length ?? 0) > 0) && (
-                                    <tr>
-                                      <td colSpan={visibleColumns.length} className="p-0 border-0">
-                                        <div
-                                          className={cn("grid", expandedRowId === doc.id ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
-                                          style={{ transition: 'grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+                                <AnimatePresence initial={false}>
+                                  {isExpanded && hasSubDocs && (
+                                    <tr className="bg-slate-50/50">
+                                      <td colSpan={visibleColumns.length + 1} className="p-0 border-b border-slate-200">
+                                        <motion.div
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{ height: "auto", opacity: 1 }}
+                                          exit={{ height: 0, opacity: 0 }}
+                                          transition={{ duration: 0.2 }}
+                                          className="overflow-hidden"
                                         >
-                                          <div className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
-                                            <div className={cn("bg-slate-50/60 border-b border-slate-200 px-4 py-2 transition-opacity duration-200", expandedRowId === doc.id ? "opacity-100" : "opacity-0")}>
-                                              <div className="ml-9 flex flex-wrap gap-6">
-                                                {doc.relatedDocuments && doc.relatedDocuments.length > 0 && (
-                                                  <div>
-                                                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                                                      Related Documents ({doc.relatedDocuments.length})
-                                                    </p>
-                                                    <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
-                                                      <table className="text-xs table-auto">
-                                                        <thead>
-                                                          <tr className="bg-slate-100 border-b border-slate-200">
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
+                                          <div className="px-4 py-3">
+                                            <div className="ml-9 flex flex-wrap gap-6">
+                                              {doc.relatedDocuments && doc.relatedDocuments.length > 0 && (
+                                                <div>
+                                                  <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                                                    Related Documents ({doc.relatedDocuments.length})
+                                                  </p>
+                                                  <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
+                                                    <table className="text-xs table-auto">
+                                                      <thead>
+                                                        <tr className="bg-slate-100 border-b border-slate-200">
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody className="divide-y divide-slate-100 bg-white">
+                                                        {doc.relatedDocuments.map((rel: RelatedDocument) => (
+                                                          <tr key={rel.id} className="hover:bg-slate-50 transition-colors">
+                                                            <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{rel.documentNumber}</td>
+                                                            <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{rel.documentName}</td>
+                                                            <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{rel.revisionNumber}</td>
+                                                            <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{rel.type}</td>
+                                                            <td className="py-1.5 px-2.5 whitespace-nowrap">
+                                                              <StatusBadge status={mapDocumentStatusToStatusType(rel.state)} size="sm" />
+                                                            </td>
                                                           </tr>
-                                                        </thead>
-                                                        <tbody className="divide-y divide-slate-100 bg-white">
-                                                          {doc.relatedDocuments.map((rel: RelatedDocument) => (
-                                                            <tr key={rel.id} className="hover:bg-slate-50 transition-colors">
-                                                              <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{rel.documentNumber}</td>
-                                                              <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{rel.documentName}</td>
-                                                              <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{rel.revisionNumber}</td>
-                                                              <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{rel.type}</td>
-                                                              <td className="py-1.5 px-2.5 whitespace-nowrap">
-                                                                <StatusBadge status={mapDocumentStatusToStatusType(rel.state)} size="sm" />
-                                                              </td>
-                                                            </tr>
-                                                          ))}
-                                                        </tbody>
-                                                      </table>
-                                                    </div>
+                                                        ))}
+                                                      </tbody>
+                                                    </table>
                                                   </div>
-                                                )}
-                                                {doc.correlatedDocuments && doc.correlatedDocuments.length > 0 && (
-                                                  <div>
-                                                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                                                      Correlated Documents ({doc.correlatedDocuments.length})
-                                                    </p>
-                                                    <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
-                                                      <table className="text-xs table-auto">
-                                                        <thead>
-                                                          <tr className="bg-slate-100 border-b border-slate-200">
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
-                                                            <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Correlation Type</th>
+                                                </div>
+                                              )}
+                                              {doc.correlatedDocuments && doc.correlatedDocuments.length > 0 && (
+                                                <div>
+                                                  <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                                                    Correlated Documents ({doc.correlatedDocuments.length})
+                                                  </p>
+                                                  <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
+                                                    <table className="text-xs table-auto">
+                                                      <thead>
+                                                        <tr className="bg-slate-100 border-b border-slate-200">
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
+                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Correlation Type</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody className="divide-y divide-slate-100 bg-white">
+                                                        {doc.correlatedDocuments.map((cor: CorrelatedDocument) => (
+                                                          <tr key={cor.id} className="hover:bg-slate-50 transition-colors">
+                                                            <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{cor.documentNumber}</td>
+                                                            <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{cor.documentName}</td>
+                                                            <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{cor.revisionNumber}</td>
+                                                            <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{cor.type}</td>
+                                                            <td className="py-1.5 px-2.5 whitespace-nowrap">
+                                                              <StatusBadge status={mapDocumentStatusToStatusType(cor.state)} size="sm" />
+                                                            </td>
+                                                            <td className="py-1.5 px-2.5 text-slate-500 whitespace-nowrap">{cor.correlationType ?? "—"}</td>
                                                           </tr>
-                                                        </thead>
-                                                        <tbody className="divide-y divide-slate-100 bg-white">
-                                                          {doc.correlatedDocuments.map((cor: CorrelatedDocument) => (
-                                                            <tr key={cor.id} className="hover:bg-slate-50 transition-colors">
-                                                              <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{cor.documentNumber}</td>
-                                                              <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{cor.documentName}</td>
-                                                              <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{cor.revisionNumber}</td>
-                                                              <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{cor.type}</td>
-                                                              <td className="py-1.5 px-2.5 whitespace-nowrap">
-                                                                <StatusBadge status={mapDocumentStatusToStatusType(cor.state)} size="sm" />
-                                                              </td>
-                                                              <td className="py-1.5 px-2.5 text-slate-500 whitespace-nowrap">{cor.correlationType ?? "�"}</td>
-                                                            </tr>
-                                                          ))}
-                                                        </tbody>
-                                                      </table>
-                                                    </div>
+                                                        ))}
+                                                      </tbody>
+                                                    </table>
                                                   </div>
-                                                )}
-                                              </div>
+                                                </div>
+                                              )}
                                             </div>
                                           </div>
-                                        </div>
+                                        </motion.div>
                                       </td>
-                                      <td className="p-0 border-0 sticky right-0 z-30 bg-white before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)]">
-                                        <div
-                                          className={cn("grid", expandedRowId === doc.id ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
-                                          style={{ transition: 'grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}
-                                        >
-                                          <div className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
-                                            <div className="bg-slate-50/60 border-b border-slate-200 h-full w-full" />
-                                          </div>
-                                        </div>
+                                      <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-slate-50/50 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                                       </td>
                                     </tr>
                                   )}
+                                </AnimatePresence>
                               </React.Fragment>
                             );
                           })}

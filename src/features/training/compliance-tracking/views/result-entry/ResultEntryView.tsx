@@ -658,255 +658,242 @@ export const ResultEntryView: React.FC = () => {
         </div>
 
         {/* ===== Table Section ===== */}
-        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
-          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
-            <div 
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative min-h-0 text-left">
+          <div className={cn(
+            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300 min-h-0",
+            isDragging && "select-none"
+          )}>
+            <div
               ref={scrollerRef}
               className={cn(
-                "flex-1 overflow-auto flex-1 scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4 transition-colors",
+                "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 pb-1.5 transition-colors",
                 isDragging ? "cursor-grabbing select-none" : "cursor-grab"
               )}
               {...dragEvents}
             >
-              <table className="w-full">
-                <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
+              <table className="w-full border-separate border-spacing-0 text-left">
+                <thead>
                   <tr>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-[60px]">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                       No.
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Employee Code
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[180px]">
                       Name
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
                       Email
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden xl:table-cell">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden xl:table-cell">
                       Job Title
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden md:table-cell">
                       Department
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[140px]">
                       Business Unit
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-[140px] sm:w-[180px]">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[150px]">
                       Exam Date
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap min-w-[120px] sm:min-w-[130px]">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[130px]">
                       {course.passingGradeType === "pass_fail" ? "Result" : "Score"}
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-[80px] sm:w-[100px]">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-[100px]">
                       Status
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-[110px] sm:w-[140px]">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-[140px]">
                       Evidence
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 bg-white">
-                  {paginatedRows.map((row, index) => {
-                    const status = getScoreStatus(row);
-                    const hasError = hasValidationError(row);
-                    const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                <tbody className="bg-white">
+                  {paginatedRows.length === 0 ? (
+                    <tr>
+                      <td colSpan={11}>
+                        <TableEmptyState
+                          icon={<Search className="h-8 w-8 text-slate-300" />}
+                          title="No Results Found"
+                          description="We couldn't find any employees matching your current search and filters. Try adjusting your criteria or clear the search."
+                        />
+                      </td>
+                    </tr>
+                  ) : (
+                    paginatedRows.map((row, index) => {
+                      const status = getScoreStatus(row);
+                      const hasError = hasValidationError(row);
+                      const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                      const tdClass = "py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
-                    return (
-                      <tr
-                        key={row.userId}
-                        className={cn(
-                          "transition-colors",
-                          hasError && "bg-red-50/50"
-                        )}
-                      >
-                        {/* No. */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap text-slate-500 font-medium">
-                          {rowNumber}
-                        </td>
-
-                        {/* Employee Code */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                          <span className="font-medium text-emerald-600">{row.userId}</span>
-                        </td>
-
-                        {/* Employee Name */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                          <span className="font-medium text-slate-900">{row.name}</span>
-                        </td>
-
-                        {/* Email */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600 hidden lg:table-cell">
-                          {row.email}
-                        </td>
-
-                        {/* Job Title */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600 hidden xl:table-cell">
-                          {row.jobTitle}
-                        </td>
-
-                        {/* Department */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600 hidden md:table-cell">
-                          {row.department}
-                        </td>
-
-                        {/* Business Unit */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                          {row.businessUnit}
-                        </td>
-
-                        {/* Exam Date */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-3 whitespace-nowrap">
-                          <div className={cn(row.isReadonly && !isEditingAllowed && "opacity-60 pointer-events-none")}>
-                            <DateTimePicker
-                              value={row.examDate}
-                              onChange={(val) => updateRow(row.userId, { examDate: val })}
-                              placeholder="Select date"
-                            />
-                          </div>
-                        </td>
-
-                        {/* Score */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-3 whitespace-nowrap min-w-[120px] sm:min-w-[130px]">
-                          {course.passingGradeType === "pass_fail" ? (
-                            <div className={cn("flex items-center justify-center gap-1", row.isReadonly && !isEditingAllowed && "opacity-60 pointer-events-none")}>
-                              <button
-                                onClick={() => {
-                                  if (statusFilter !== "all") setStatusFilter("all");
-                                  updateRow(row.userId, { score: 1 });
-                                }}
-                                className={cn(
-                                  "h-9 w-9 rounded-lg flex items-center justify-center transition-colors",
-                                  row.score === 1
-                                    ? "bg-emerald-100 text-emerald-700 ring-2 ring-emerald-500"
-                                    : "bg-slate-50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600"
-                                )}
-                                aria-label="Pass"
-                              >
-                                <CheckCircle2 className="h-5 w-5" />
-                              </button>
-                              <button
-                                onClick={() => {
-                                  if (statusFilter !== "all") setStatusFilter("all");
-                                  updateRow(row.userId, { score: 0 });
-                                }}
-                                className={cn(
-                                  "h-9 w-9 rounded-lg flex items-center justify-center transition-colors",
-                                  row.score === 0
-                                    ? "bg-red-100 text-red-700 ring-2 ring-red-500"
-                                    : "bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-600"
-                                )}
-                                aria-label="Fail"
-                              >
-                                <XCircle className="h-5 w-5" />
-                              </button>
+                      return (
+                        <tr
+                          key={row.userId}
+                          className={cn(
+                            "transition-colors hover:bg-slate-50/80 group",
+                            hasError && "bg-red-50/50"
+                          )}
+                        >
+                          <td className={cn(tdClass, "text-center text-slate-500 font-medium")}>
+                            {rowNumber}
+                          </td>
+                          <td className={tdClass}>
+                            <span className="font-semibold text-emerald-600">{row.userId}</span>
+                          </td>
+                          <td className={tdClass}>
+                            <span className="font-bold text-slate-900">{row.name}</span>
+                          </td>
+                          <td className={cn(tdClass, "text-slate-600 hidden lg:table-cell")}>
+                            {row.email}
+                          </td>
+                          <td className={cn(tdClass, "text-slate-600 hidden xl:table-cell")}>
+                            {row.jobTitle}
+                          </td>
+                          <td className={cn(tdClass, "text-slate-600 hidden md:table-cell")}>
+                            {row.department}
+                          </td>
+                          <td className={tdClass}>
+                            {row.businessUnit}
+                          </td>
+                          <td className={cn(tdClass, "min-w-[150px]")}>
+                            <div className={cn(row.isReadonly && !isEditingAllowed && "opacity-60 pointer-events-none")}>
+                              <DateTimePicker
+                                value={row.examDate}
+                                onChange={(val) => updateRow(row.userId, { examDate: val })}
+                                placeholder="Select date"
+                              />
                             </div>
-                          ) : (
-                            <input
-                              type="number"
-                              min={0}
-                              max={getScoreMax()}
-                              step={course.passingGradeType === "score_10" ? 0.5 : 1}
-                              value={row.score ?? ""}
-                              onChange={(e) => handleScoreChange(row.userId, e.target.value)}
-                              disabled={row.isReadonly && !isEditingAllowed}
-                              placeholder={course.passingGradeType === "score_10" ? "0-10" : "0-100"}
-                              className={cn(
-                                "w-20 sm:w-24 mx-auto h-9 px-3 border rounded-lg text-sm text-center focus:outline-none focus:ring-1 transition-colors",
-                                hasError
-                                  ? "border-red-300 focus:ring-red-500 focus:border-red-500 bg-red-50"
-                                  : "border-slate-200 focus:ring-emerald-500 focus:border-emerald-500",
-                                row.isReadonly && !isEditingAllowed && "bg-slate-50 text-slate-500 cursor-not-allowed pointer-events-none"
-                              )}
-                            />
-                          )}
-                        </td>
-
-                        {/* Status */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap">
-                          {status === "none" ? (
-                            <span className="text-xs text-slate-400">—</span>
-                          ) : status === "pass" ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              <CheckCircle2 className="h-3 w-3" />
-                              Pass
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
-                              <XCircle className="h-3 w-3" />
-                              Fail
-                            </span>
-                          )}
-                        </td>
-
-                        {/* Evidence Image */}
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-3 whitespace-nowrap">
-                          <input
-                            ref={(el) => { fileInputRefs.current[row.userId] = el; }}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) handleImageUpload(row.userId, file);
-                              e.target.value = "";
-                            }}
-                          />
-                          {row.evidencePreview ? (
-                            <div className="flex items-center gap-2 justify-center">
-                              <button
-                                onClick={() => handlePreviewImage(row.evidencePreview!)}
-                                className="relative h-10 w-10 rounded-lg overflow-hidden border border-slate-200 hover:ring-2 hover:ring-emerald-400 transition-all group"
-                                aria-label="Preview evidence"
-                              >
-                                <img
-                                  src={row.evidencePreview}
-                                  alt="Evidence"
-                                  className="h-full w-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                  <ZoomIn className="h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </div>
-                              </button>
-                              <button
-                                onClick={() => (!row.isReadonly || isEditingAllowed) && handleRemoveImage(row.userId)}
+                          </td>
+                          <td className={cn(tdClass, "min-w-[130px]")}>
+                            {course.passingGradeType === "pass_fail" ? (
+                              <div className={cn("flex items-center justify-start gap-1", row.isReadonly && !isEditingAllowed && "opacity-60 pointer-events-none")}>
+                                <button
+                                  onClick={() => {
+                                    if (statusFilter !== "all") setStatusFilter("all");
+                                    updateRow(row.userId, { score: 1 });
+                                  }}
+                                  className={cn(
+                                    "h-9 w-9 rounded-lg flex items-center justify-center transition-colors",
+                                    row.score === 1
+                                      ? "bg-emerald-100 text-emerald-700 ring-2 ring-emerald-500"
+                                      : "bg-slate-50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600"
+                                  )}
+                                  aria-label="Pass"
+                                >
+                                  <CheckCircle2 className="h-5 w-5" />
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    if (statusFilter !== "all") setStatusFilter("all");
+                                    updateRow(row.userId, { score: 0 });
+                                  }}
+                                  className={cn(
+                                    "h-9 w-9 rounded-lg flex items-center justify-center transition-colors",
+                                    row.score === 0
+                                      ? "bg-red-100 text-red-700 ring-2 ring-red-500"
+                                      : "bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-600"
+                                  )}
+                                  aria-label="Fail"
+                                >
+                                  <XCircle className="h-5 w-5" />
+                                </button>
+                              </div>
+                            ) : (
+                              <input
+                                type="number"
+                                min={0}
+                                max={getScoreMax()}
+                                step={course.passingGradeType === "score_10" ? 0.5 : 1}
+                                value={row.score ?? ""}
+                                onChange={(e) => handleScoreChange(row.userId, e.target.value)}
                                 disabled={row.isReadonly && !isEditingAllowed}
-                                className={cn("h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors", row.isReadonly && !isEditingAllowed && "opacity-50 cursor-not-allowed")}
-                                aria-label="Remove evidence"
+                                placeholder={course.passingGradeType === "score_10" ? "0-10" : "0-100"}
+                                className={cn(
+                                  "w-20 md:w-24 h-9 px-3 border rounded-lg text-sm text-center focus:outline-none focus:ring-1 transition-colors font-semibold",
+                                  hasError
+                                    ? "border-red-300 focus:ring-red-500 focus:border-red-500 bg-red-50"
+                                    : "border-slate-200 focus:ring-emerald-500 focus:border-emerald-500",
+                                  row.isReadonly && !isEditingAllowed && "bg-slate-50 text-slate-500 cursor-not-allowed pointer-events-none"
+                                )}
+                              />
+                            )}
+                          </td>
+                          <td className={cn(tdClass, "text-center")}>
+                            {status === "none" ? (
+                              <span className="text-xs text-slate-400">—</span>
+                            ) : status === "pass" ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] md:text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                PASS
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] md:text-xs font-bold bg-red-50 text-red-700 border border-red-200">
+                                <XCircle className="h-3.5 w-3.5" />
+                                FAIL
+                              </span>
+                            )}
+                          </td>
+                          <td className={tdClass}>
+                            <input
+                              ref={(el) => { fileInputRefs.current[row.userId] = el; }}
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleImageUpload(row.userId, file);
+                                e.target.value = "";
+                              }}
+                            />
+                            {row.evidencePreview ? (
+                              <div className="flex items-center gap-2 justify-center">
+                                <button
+                                  onClick={() => handlePreviewImage(row.evidencePreview!)}
+                                  className="relative h-10 w-10 shrink-0 rounded-lg overflow-hidden border border-slate-200 hover:ring-2 hover:ring-emerald-400 transition-all group"
+                                  aria-label="Preview evidence"
+                                >
+                                  <img
+                                    src={row.evidencePreview}
+                                    alt="Evidence"
+                                    className="h-full w-full object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                    <ZoomIn className="h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </div>
+                                </button>
+                                <button
+                                  onClick={() => (!row.isReadonly || isEditingAllowed) && handleRemoveImage(row.userId)}
+                                  disabled={row.isReadonly && !isEditingAllowed}
+                                  className={cn("h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors", row.isReadonly && !isEditingAllowed && "opacity-50 cursor-not-allowed")}
+                                  aria-label="Remove evidence"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => (!row.isReadonly || isEditingAllowed) && fileInputRefs.current[row.userId]?.click()}
+                                disabled={row.isReadonly && !isEditingAllowed}
+                                className={cn(
+                                  "mx-auto flex items-center gap-1.5 h-9 px-3 rounded-lg border-2 border-dashed transition-colors text-xs font-bold",
+                                  hasError
+                                    ? "border-red-300 text-red-500 hover:bg-red-50 bg-red-50/50"
+                                    : "border-slate-200 text-slate-500 hover:bg-slate-100 hover:border-slate-300",
+                                  row.isReadonly && !isEditingAllowed && "opacity-50 cursor-not-allowed bg-slate-50"
+                                )}
                               >
-                                <Trash2 className="h-3.5 w-3.5" />
+                                <Upload className="h-4 w-4" />
+                                UPLOAD
                               </button>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => (!row.isReadonly || isEditingAllowed) && fileInputRefs.current[row.userId]?.click()}
-                              disabled={row.isReadonly && !isEditingAllowed}
-                              className={cn(
-                                "mx-auto flex items-center gap-1.5 h-9 px-3 rounded-lg border-2 border-dashed transition-colors text-xs font-medium",
-                                hasError
-                                  ? "border-red-300 text-red-500 hover:bg-red-50 bg-red-50/50"
-                                  : "border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300",
-                                row.isReadonly && !isEditingAllowed && "opacity-50 cursor-not-allowed bg-slate-50"
-                              )}
-                            >
-                              <Upload className="h-3.5 w-3.5" />
-                              Upload
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
-
-              {paginatedRows.length === 0 && (
-                <TableEmptyState
-                  icon={<Search className="h-8 w-8 text-slate-300" />}
-                  title="No Results Found"
-                  description="We couldn't find any employees matching your current search and filters. Try adjusting your criteria or clear the search."
-                />
-              )}
             </div>
 
             {/* Pagination */}

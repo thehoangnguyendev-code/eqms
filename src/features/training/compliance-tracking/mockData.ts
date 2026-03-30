@@ -238,10 +238,10 @@ export const JOB_TITLE_OPTIONS = [
 
 export const STATUS_OPTIONS = [
   { label: "All Statuses", value: "All" },
-  { label: "✅ Qualified", value: "Qualified" },
-  { label: "⏳ In Progress", value: "InProgress" },
-  { label: "❌ Required", value: "Required" },
-  { label: "⚪ Not Required", value: "NotRequired" },
+  { label: "Qualified", value: "Qualified" },
+  { label: "In Progress", value: "InProgress" },
+  { label: "Required", value: "Required" },
+  { label: "Not Required", value: "NotRequired" },
 ];
 // ─── Course Status ────────────────────────────────────────────────────────────
 
@@ -532,4 +532,4 @@ export const MOCK_COURSE_ASSIGNMENTS: Record<string, string[]> = {
   "course-4": ["qa", "qc", "production"],
   "TRN-2026-001": ["Quality Assurance", "Quality Control", "Production"],
   "TRN-2026-003": ["HSE", "Engineering"],
-};
+};

@@ -172,7 +172,7 @@ const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
         </div>
       </div>
     </>,
-    window.document.body
+    document.body
   );
 };
 
@@ -529,204 +529,208 @@ export const CourseProgressView: React.FC = () => {
         </div>
         </div>
 
-        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative min-h-0">
-          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300 min-h-0">
-            <div 
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative min-h-0 text-left">
+          <div className={cn(
+            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300 min-h-0",
+            isDragging && "select-none"
+          )}>
+            <div
               ref={scrollerRef}
               className={cn(
-                "flex-1 overflow-auto flex-1 scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4 transition-colors",
+                "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 pb-1.5 transition-colors",
                 isDragging ? "cursor-grabbing select-none" : "cursor-grab"
               )}
               {...dragEvents}
             >
-          <table className="w-full">
-            <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
-              <tr>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-[60px]">
-                  No.
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Employee Code
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Name
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
-                  Email
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
-                  Department
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
-                  Business Unit
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Enrollment
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Score
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Result
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
-                  Attempts
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden xl:table-cell">
-                  Completed At
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Evidence
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap sticky right-0 bg-slate-50 z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              {paginatedEmployees.map((emp, index) => {
-                const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
-                return (
-                  <tr key={emp.userId} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap text-slate-500 font-medium">
-                      {rowNumber}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                      <span className="font-medium text-emerald-600">{emp.userId}</span>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                      <div>
-                        <p className="font-medium text-slate-900">{emp.name}</p>
-                        <p className="text-[10px] sm:text-xs text-slate-500">{emp.jobTitle}</p>
-                      </div>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600 hidden lg:table-cell">
-                      {emp.email}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700 hidden md:table-cell">
-                      {emp.department}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700 hidden lg:table-cell">
-                      {emp.businessUnit}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap">
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border",
-                          getStatusColorClass(emp.enrollmentStatus)
-                        )}
-                      >
-                        {emp.enrollmentStatus}
-                      </span>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
-                      {emp.score !== null ? (
-                        <span
-                          className={cn(
-                            "font-semibold",
-                            emp.score >= info.passingScore
-                              ? "text-emerald-700"
-                              : "text-red-600"
-                          )}
-                        >
-                          {emp.score}/{info.passingGradeType === "percentage" ? 100 : 10}
-                        </span>
-                      ) : (
-                        <span className="text-slate-400">—</span>
-                      )}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap">
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border",
-                          getStatusColorClass(emp.resultStatus)
-                        )}
-                      >
-                        {emp.resultStatus === "Pass" && (
-                          <CheckCircle2 className="h-3 w-3" />
-                        )}
-                        {emp.resultStatus === "Fail" && (
-                          <XCircle className="h-3 w-3" />
-                        )}
-                        {emp.resultStatus}
-                      </span>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap text-slate-700 hidden lg:table-cell">
-                      {emp.attempts > 0 ? emp.attempts : "—"}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700 hidden xl:table-cell">
-                      {emp.completedAt ? formatDateUS(emp.completedAt) : "—"}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap">
-                      {emp.enrollmentStatus === "Completed" ? (
-                        <button
-                          className="p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 transition-colors"
-                          title="View Exam Scan"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            alert("Opening Exam Scan...");
-                          }}
-                        >
-                          <Paperclip className="h-4 w-4" />
-                        </button>
-                      ) : (
-                        <span className="text-slate-300">—</span>
-                      )}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap sticky right-0 bg-white group-hover:bg-slate-50 transition-colors z-30 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
-                      <button
-                        ref={getRef(emp.userId)}
-                        onClick={(e) => handleDropdownToggle(emp.userId, e)}
-                        className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-slate-100 transition-colors"
-                        aria-label="More actions"
-                      >
-                        <MoreVertical className="h-4 w-4 text-slate-600" />
-                      </button>
-                      <EmployeeDropdownMenu
-                        employee={emp}
-                        courseId={courseId || ""}
-                        isOpen={openDropdownId === emp.userId}
-                        onClose={() => closeDropdown()}
-                        position={dropdownPosition}
-                        onNavigate={navigate}
-                      />
-                    </td>
+              <table className="w-full border-separate border-spacing-0 text-left">
+                <thead>
+                  <tr>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
+                      No.
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
+                      Employee Code
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[200px]">
+                      Name
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
+                      Email
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden md:table-cell">
+                      Department
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
+                      Business Unit
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
+                      Enrollment
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
+                      Score
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
+                      Result
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
+                      Attempts
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden xl:table-cell">
+                      Completed At
+                    </th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
+                      Evidence
+                    </th>
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                      Action
+                    </th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody className="bg-white">
+                  {paginatedEmployees.length === 0 ? (
+                    <tr>
+                      <td colSpan={13}>
+                        <TableEmptyState
+                          title="No Results Found"
+                          description="No employees match your current filters. Try adjusting your search or filter criteria."
+                          actionLabel="Clear Filters"
+                          onAction={() => {
+                            setSearchQuery("");
+                            setEnrollmentFilter("All");
+                            setResultFilter("All");
+                            setDepartmentFilter("All");
+                            setBusinessUnitFilter("All");
+                            setCurrentPage(1);
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  ) : (
+                    paginatedEmployees.map((emp, index) => {
+                      const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                      const tdClass = "py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                      return (
+                        <tr key={emp.userId} className="hover:bg-slate-50/80 transition-colors group">
+                          <td className={cn(tdClass, "text-center text-slate-500 font-medium")}>
+                            {rowNumber}
+                          </td>
+                          <td className={tdClass}>
+                            <span className="font-semibold text-emerald-600">{emp.userId}</span>
+                          </td>
+                          <td className={tdClass}>
+                            <div>
+                              <p className="font-bold text-slate-900">{emp.name}</p>
+                              <p className="text-[10px] md:text-xs text-slate-500 font-medium uppercase tracking-tight">{emp.jobTitle}</p>
+                            </div>
+                          </td>
+                          <td className={cn(tdClass, "text-slate-600 hidden lg:table-cell")}>
+                            {emp.email}
+                          </td>
+                          <td className={cn(tdClass, "text-slate-700 hidden md:table-cell")}>
+                            {emp.department}
+                          </td>
+                          <td className={cn(tdClass, "text-slate-700 hidden lg:table-cell")}>
+                            {emp.businessUnit}
+                          </td>
+                          <td className={cn(tdClass, "text-center")}>
+                            <span
+                              className={cn(
+                                "inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border",
+                                getStatusColorClass(emp.enrollmentStatus)
+                              )}
+                            >
+                              {emp.enrollmentStatus}
+                            </span>
+                          </td>
+                          <td className={cn(tdClass, "text-center")}>
+                            {emp.score !== null ? (
+                              <span
+                                className={cn(
+                                  "font-bold",
+                                  emp.score >= info.passingScore
+                                    ? "text-emerald-700"
+                                    : "text-red-600"
+                                )}
+                              >
+                                {emp.score}/{info.passingGradeType === "percentage" ? 100 : 10}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400">—</span>
+                            )}
+                          </td>
+                          <td className={cn(tdClass, "text-center")}>
+                            <span
+                              className={cn(
+                                "inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border",
+                                getStatusColorClass(emp.resultStatus)
+                              )}
+                            >
+                              {emp.resultStatus === "Pass" && (
+                                <CheckCircle2 className="h-3 w-3" />
+                              )}
+                              {emp.resultStatus === "Fail" && (
+                                <XCircle className="h-3 w-3" />
+                              )}
+                              {emp.resultStatus}
+                            </span>
+                          </td>
+                          <td className={cn(tdClass, "text-center text-slate-700 hidden lg:table-cell")}>
+                            {emp.attempts > 0 ? emp.attempts : "—"}
+                          </td>
+                          <td className={cn(tdClass, "text-slate-700 hidden xl:table-cell")}>
+                            {emp.completedAt ? formatDateUS(emp.completedAt) : "—"}
+                          </td>
+                          <td className={cn(tdClass, "text-center")}>
+                            {emp.enrollmentStatus === "Completed" ? (
+                              <button
+                                className="p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-200 transition-colors"
+                                title="View Exam Scan"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  alert("Opening Exam Scan...");
+                                }}
+                              >
+                                <Paperclip className="h-4 w-4" />
+                              </button>
+                            ) : (
+                              <span className="text-slate-300">—</span>
+                            )}
+                          </td>
+                          <td className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3.5 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors">
+                            <button
+                              ref={getRef(emp.userId)}
+                              onClick={(e) => handleDropdownToggle(emp.userId, e)}
+                              className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-slate-200 transition-colors"
+                              aria-label="More actions"
+                            >
+                              <MoreVertical className="h-4 w-4 text-slate-600" />
+                            </button>
+                            <EmployeeDropdownMenu
+                              employee={emp}
+                              courseId={courseId || ""}
+                              isOpen={openDropdownId === emp.userId}
+                              onClose={() => closeDropdown()}
+                              position={dropdownPosition}
+                              onNavigate={navigateTo}
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-        {/* Pagination */}
-        {filteredEmployees.length > 0 && (
-          <TablePagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            totalItems={filteredEmployees.length}
-            itemsPerPage={itemsPerPage}
-            onItemsPerPageChange={setItemsPerPage}
-            showItemCount={true}
-          />
-        )}
-
-        {/* Empty State */}
-        {filteredEmployees.length === 0 && (
-          <TableEmptyState
-            title="No Results Found"
-            description="No employees match your current filters. Try adjusting your search or filter criteria."
-            actionLabel="Clear Filters"
-            onAction={() => {
-              setSearchQuery("");
-              setEnrollmentFilter("All");
-              setResultFilter("All");
-              setDepartmentFilter("All");
-              setBusinessUnitFilter("All");
-              setCurrentPage(1);
-            }}
-          />
-        )}
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filteredEmployees.length}
+              itemsPerPage={itemsPerPage}
+              onItemsPerPageChange={setItemsPerPage}
+              showItemCount={true}
+            />
           </div>
         </div>
       </div>

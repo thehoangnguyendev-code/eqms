@@ -547,47 +547,44 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
 
         {/* Table Section */}
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
-          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
-            <div 
+          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300">
+            <div
               ref={scrollerRef}
               className={cn(
-                "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
+                "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
                 isDragging ? "cursor-grabbing select-none" : "cursor-grab"
               )}
               {...dragEvents}
             >
-              <table className="w-full">
-                <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
+              <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                <thead>
                   <tr>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                       No.
                     </th>
                     {DEFAULT_COLUMNS.filter((c) => c.visible).map((col) => (
                       <th
                         key={col.id}
-                        className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap"
+                        className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap"
                       >
                         {col.label}
                       </th>
                     ))}
-                    <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 bg-white">
+                <tbody className="bg-white">
                   {paginatedData.length === 0 ? (
                     <tr>
                       <td
                         colSpan={DEFAULT_COLUMNS.filter((c) => c.visible).length + 2}
-                        className="py-12 text-center"
+                        className="py-12 text-center border-b border-slate-200"
                       >
-                        <div className="flex flex-col items-center justify-center gap-2.5">
-                          <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center">
-                            <Search className="h-6 w-6 text-slate-300" />
-                          </div>
-                          <p className="text-sm font-medium text-slate-500">No controlled copies found</p>
-                          <p className="text-xs text-slate-400">Try adjusting your filters</p>
+                        <div className="flex flex-col items-center justify-center gap-2.5 text-slate-400">
+                          <Search className="h-8 w-8 opacity-20" />
+                          <p className="text-sm font-medium">No controlled copies found</p>
                         </div>
                       </td>
                     </tr>
@@ -595,55 +592,53 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
                     paginatedData.map((copy, index) => {
                       const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
                       const statusConfig = getStatusConfig(copy.status);
+                      const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
                       return (
                         <tr
                           key={copy.id}
                           className="hover:bg-slate-50/80 transition-colors group"
                         >
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
+                          <td className={tdClass}>
                             {rowNumber}
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleViewRow(copy);
-                              }}
-                              className="font-medium text-emerald-600 hover:underline transition-colors"
-                            >
-                              {copy.documentNumber}
-                            </button>
+                          <td
+                            className={cn(tdClass, "cursor-pointer font-medium text-emerald-600 hover:underline transition-colors")}
+                            onClick={() => handleViewDetails(copy)}
+                          >
+                            {copy.documentNumber}
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
+                          <td className={tdClass}>
                             {formatDateTimeParts(copy.createdDate, copy.createdTime)}
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
+                          <td className={tdClass}>
                             {copy.openedBy}
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-900 whitespace-nowrap">
+                          <td className={cn(tdClass, "font-medium text-slate-900")}>
                             {copy.name}
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                          <td className={tdClass}>
                             <span
-                              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border ${statusConfig.color}`}
+                              className={cn(
+                                "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-medium border",
+                                statusConfig.color
+                              )}
                             >
                               {copy.status}
                             </span>
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
+                          <td className={tdClass}>
                             {formatDateUS(copy.validUntil)}
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                          <td className={tdClass}>
                             <span className="font-medium text-slate-900">{copy.document}</span>
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
+                          <td className={tdClass}>
                             {copy.distributionList}
                           </td>
                           <td
                             onClick={(e) => e.stopPropagation()}
-                            className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)] group-hover:bg-slate-50"
+                            className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
                           >
                             <button
                               ref={getRef(copy.id)}
@@ -651,10 +646,10 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
                                 e.stopPropagation();
                                 toggle(copy.id, e);
                               }}
-                              className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
+                              className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
                               aria-label="More actions"
                             >
-                              <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
+                              <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
                             </button>
                           </td>
                         </tr>
@@ -665,16 +660,14 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
               </table>
             </div>
 
-            {filteredData.length > 0 && (
-              <TablePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                totalItems={filteredData.length}
-                itemsPerPage={itemsPerPage}
-                onPageChange={setCurrentPage}
-                onItemsPerPageChange={setItemsPerPage}
-              />
-            )}
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredData.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+              onItemsPerPageChange={setItemsPerPage}
+            />
           </div>
         </div>
       </div>

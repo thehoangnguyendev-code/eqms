@@ -149,93 +149,92 @@ export const ArchivedDocumentsView: React.FC = () => {
 
                 {/* Table Section */}
                 <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
-                    <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
-                        <div 
+                    <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300">
+                        <div
                             ref={scrollerRef}
                             className={cn(
-                                "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-4 transition-colors",
+                                "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
                                 isDragging ? "cursor-grabbing select-none" : "cursor-grab"
                             )}
                             {...dragEvents}
                         >
-                            <table className="w-full">
-                                <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
+                            <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                                <thead>
                                     <tr>
-                                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap w-10 sm:w-16">
+                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16 text-center">
                                             No.
                                         </th>
-                                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-left whitespace-nowrap">
+                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                                             Document Code
                                         </th>
-                                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-left whitespace-nowrap">
+                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                                             Document Name
                                         </th>
-                                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-left whitespace-nowrap">
+                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                                             Version
                                         </th>
-                                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-left whitespace-nowrap">
+                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                                             Archived Date
                                         </th>
-                                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-left whitespace-nowrap">
+                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                                             Last Approver
                                         </th>
-                                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-left whitespace-nowrap">
+                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                                             Retention Period
                                         </th>
-                                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-left whitespace-nowrap">
+                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                                             Retention Status
                                         </th>
-                                        <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
+                                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                                             Actions
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-200 bg-white">
+                                <tbody className="bg-white">
                                     {paginatedDocuments.map((doc, index) => {
                                         const retentionStatus = calculateRetentionStatus(doc.retentionExpiry);
                                         const rowNumber = startIndex + index + 1;
+                                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+
                                         return (
-                                            <tr key={doc.id} className="hover:bg-slate-50/80 transition-colors group">
-                                                <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center text-slate-600">
+                                            <tr 
+                                              key={doc.id} 
+                                              className="hover:bg-slate-50/80 transition-colors group"
+                                            >
+                                                <td className={cn(tdClass, "text-center text-slate-600")}>
                                                     {rowNumber}
                                                 </td>
-                                                <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                                                    <button
-                                                      type="button"
-                                                      onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleView(doc);
-                                                      }}
-                                                      className="font-medium text-emerald-600 hover:underline transition-colors"
-                                                    >
-                                                      {doc.code}
-                                                    </button>
+                                                <td 
+                                                  className={cn(tdClass, "cursor-pointer font-medium text-emerald-600 hover:underline transition-colors")}
+                                                  onClick={() => handleView(doc)}
+                                                >
+                                                  {doc.code}
                                                 </td>
-                                                <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm">
+                                                <td className={tdClass}>
                                                     <div className="max-w-md">
                                                         <p className="font-medium text-slate-900 truncate">{doc.documentName}</p>
                                                         <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5">{doc.department}</p>
                                                     </div>
                                                 </td>
-                                                <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
+                                                <td className={cn(tdClass, "text-slate-600")}>
                                                     {doc.version}
                                                 </td>
-                                                <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
+                                                <td className={cn(tdClass, "text-slate-600")}>
                                                     {new Date(doc.archivedDate).toLocaleDateString("en-GB", {
                                                         day: "2-digit",
                                                         month: "2-digit",
                                                         year: "numeric",
                                                     })}
                                                 </td>
-                                                <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
+                                                <td className={cn(tdClass, "text-slate-600")}>
                                                     {doc.lastApprover}
                                                 </td>
-                                                <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
+                                                <td className={cn(tdClass, "text-slate-600")}>
                                                     {formatRetentionPeriod(doc.retentionPeriod)}
                                                 </td>
-                                                <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                                                <td className={tdClass}>
                                                     <span className={cn(
-                                                        "inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border w-fit",
+                                                        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-medium border w-fit",
                                                         getRetentionBadgeStyle(retentionStatus.status)
                                                     )}>
                                                         {retentionStatus.message}
@@ -243,7 +242,7 @@ export const ArchivedDocumentsView: React.FC = () => {
                                                 </td>
                                                 <td
                                                     onClick={(e) => e.stopPropagation()}
-                                                    className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)] group-hover:bg-slate-50"
+                                                    className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
                                                 >
                                                     <Button
                                                         variant="ghost"
@@ -251,9 +250,9 @@ export const ArchivedDocumentsView: React.FC = () => {
                                                         ref={getRef(doc.id)}
                                                         onClick={(e) => toggle(doc.id, e)}
                                                         aria-label="More actions"
-                                                        className="h-7 w-7 sm:h-8 sm:w-8"
+                                                        className="h-7 w-7 md:h-8 md:w-8"
                                                     >
-                                                        <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
+                                                        <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-600" />
                                                     </Button>
                                                 </td>
                                             </tr>
@@ -271,17 +270,14 @@ export const ArchivedDocumentsView: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Pagination */}
-                        {filteredDocuments.length > 0 && (
-                            <TablePagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                totalItems={filteredDocuments.length}
-                                itemsPerPage={itemsPerPage}
-                                onPageChange={setCurrentPage}
-                                onItemsPerPageChange={setItemsPerPage}
-                            />
-                        )}
+                        <TablePagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={filteredDocuments.length}
+                            itemsPerPage={itemsPerPage}
+                            onPageChange={setCurrentPage}
+                            onItemsPerPageChange={setItemsPerPage}
+                        />
                     </div>
                 </div>
             </div>

@@ -303,42 +303,43 @@ const NotificationRow: React.FC<{
 }) => {
   const Icon = getTypeIcon(notification.type);
   const colors = getTypeColor(notification.type);
+  const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
   return (
     <tr
-      onClick={() => onView(notification)}
       className={cn(
-        "group cursor-pointer transition-colors",
+        "group transition-colors",
         notification.status === "unread"
           ? "bg-emerald-50/30 hover:bg-emerald-50/50"
           : "hover:bg-slate-50/80",
       )}
     >
-      {/* No. */}
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-500 text-center whitespace-nowrap">
+      <td className={cn(tdClass, "text-center text-slate-500 w-14")}>
         {index}
       </td>
 
-      {/* Icon & Title */}
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
+      <td 
+        className={cn(tdClass, "cursor-pointer")}
+        onClick={() => onView(notification)}
+      >
         <div className="flex items-start gap-3">
           <div className="relative shrink-0">
             <div
               className={cn(
-                "h-10 w-10 rounded-full flex items-center justify-center",
+                "h-9 w-9 md:h-10 md:w-10 rounded-full flex items-center justify-center",
                 colors.bg,
               )}
             >
-              <Icon className={cn("h-5 w-5", colors.text)} />
+              <Icon className={cn("h-4 w-4 md:h-5 md:w-5", colors.text)} />
             </div>
             {notification.status === "unread" && (
-              <div className="absolute -top-0.5 -right-0.5 h-3 w-3 bg-emerald-500 rounded-full border-2 border-white" />
+              <div className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 md:h-3 md:w-3 bg-emerald-500 rounded-full border-2 border-white" />
             )}
           </div>
-          <div className="flex-1 min-w-full">
+          <div className="flex-1 min-w-0">
             <p
               className={cn(
-                "text-sm whitespace-nowrap",
+                "text-sm hover:underline",
                 notification.status === "unread"
                   ? "font-semibold text-slate-900"
                   : "font-medium text-slate-700",
@@ -346,15 +347,14 @@ const NotificationRow: React.FC<{
             >
               {notification.title}
             </p>
-            <p className="text-sm text-slate-500 mt-0.5 whitespace-nowrap">
+            <p className="text-xs md:text-sm text-slate-500 mt-0.5 max-w-md truncate">
               {notification.description}
             </p>
           </div>
         </div>
       </td>
 
-      {/* Module */}
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 hidden md:table-cell whitespace-nowrap">
+      <td className={cn(tdClass, "hidden md:table-cell")}>
         <StatusBadge
           status="draft"
           label={notification.module}
@@ -363,22 +363,20 @@ const NotificationRow: React.FC<{
         />
       </td>
 
-      {/* Related Item */}
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 hidden lg:table-cell whitespace-nowrap">
+      <td className={cn(tdClass, "hidden lg:table-cell")}>
         {notification.relatedItem ? (
-          <span className="text-xs sm:text-sm font-medium text-emerald-600">
+          <span className="font-medium text-emerald-600">
             {notification.relatedItem.code}
           </span>
         ) : (
-          <span className="text-xs sm:text-sm text-slate-400">—</span>
+          <span className="text-slate-400">—</span>
         )}
       </td>
 
-      {/* Priority */}
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 hidden md:table-cell">
+      <td className={cn(tdClass, "hidden md:table-cell")}>
         <span
           className={cn(
-            "inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border capitalize",
+            "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium border capitalize",
             getPriorityStyles(notification.priority),
           )}
         >
@@ -386,23 +384,21 @@ const NotificationRow: React.FC<{
         </span>
       </td>
 
-      {/* Time */}
-      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-500 hidden sm:table-cell whitespace-nowrap">
+      <td className={cn(tdClass, "hidden sm:table-cell text-slate-500")}>
         {formatTimeAgo(notification.createdAt)}
       </td>
 
-      {/* Actions */}
       <td
         onClick={(e) => e.stopPropagation()}
-        className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50"
+        className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
       >
         <button
           ref={getRef(notification.id)}
           onClick={(e) => onToggle(notification.id, e)}
-          className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
+          className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
           aria-label="More actions"
         >
-          <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
+          <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
         </button>
       </td>
     </tr>
@@ -832,42 +828,42 @@ export const NotificationsView: React.FC = () => {
 
         {/* Table Section */}
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
-          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
-            <div 
+          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300">
+            <div
               ref={scrollerRef}
               className={cn(
-                "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
+                "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
                 isDragging ? "cursor-grabbing select-none" : "cursor-grab"
               )}
               {...dragEvents}
             >
-              <table className="w-full min-w-max table-auto whitespace-nowrap">
-                <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
+              <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                <thead>
                   <tr>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap w-10 sm:w-14">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-14 text-center">
                       No.
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Notification
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden md:table-cell">
                       Module
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
                       Related Item
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden md:table-cell">
                       Priority
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden sm:table-cell">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden sm:table-cell">
                       Time
                     </th>
-                    <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 bg-white">
+                <tbody className="bg-white">
                   {paginatedNotifications.length > 0 ? (
                     paginatedNotifications.map((notification, idx) => (
                       <NotificationRow
@@ -883,7 +879,7 @@ export const NotificationsView: React.FC = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={7}>
+                      <td colSpan={7} className="border-b border-slate-200">
                         <EmptyState
                           type={activeTab}
                           hasActiveFilters={hasActiveFilters}
@@ -896,17 +892,14 @@ export const NotificationsView: React.FC = () => {
               </table>
             </div>
 
-            {/* Pagination */}
-            {filteredNotifications.length > 0 && (
-              <TablePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-                itemsPerPage={itemsPerPage}
-                totalItems={filteredNotifications.length}
-                onItemsPerPageChange={setItemsPerPage}
-              />
-            )}
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={filteredNotifications.length}
+              onItemsPerPageChange={setItemsPerPage}
+            />
           </div>
         </div>
       </div>

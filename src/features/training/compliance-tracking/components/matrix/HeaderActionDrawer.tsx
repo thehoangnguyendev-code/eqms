@@ -13,7 +13,6 @@ import {
     Calendar,
     Hash,
     TrendingUp,
-    Zap,
     ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
@@ -23,6 +22,7 @@ import { ROUTES } from "@/app/routes.constants";
 import { DRAWER_STYLES, formatDate } from "./constants";
 import type { EmployeeRow, SOPColumn } from "../../types";
 import { MOCK_SOPS, MOCK_EMPLOYEES, getCell } from "../../mockData";
+import { IconBook, IconInfoCircle, IconLocation } from "@tabler/icons-react";
 
 // ─── Props ────────────────────────────────────────────────────────────
 export interface HeaderActionDrawerProps {
@@ -40,8 +40,8 @@ const EMPLOYEE_ACTIONS = [
 ] as const;
 
 const SOP_ACTIONS = [
-    { icon: FileText, label: "View Details" },
-    { icon: BookOpen, label: "Assign Training" },
+    { icon: IconInfoCircle, label: "View Details" },
+    { icon: IconBook, label: "Assign Training" },
     { icon: Download, label: "Export Report" },
 ] as const;
 
@@ -62,23 +62,28 @@ const getRateColors = (rate: number) => {
     return { text: "text-red-600", bar: "bg-red-500" };
 };
 
+const READ_ONLY_CLASS =
+    "w-full h-9 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-default";
+
 // ─── Sub-components ───────────────────────────────────────────────────
-const InfoTile: React.FC<{
-    icon: React.FC<{ className?: string }>;
+const ReadOnlyField: React.FC<{
+    icon?: React.FC<{ className?: string }>;
     label: string;
     value: string;
-    mono?: boolean;
-}> = ({ icon: Icon, label, value, mono }) => (
-    <div className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm">
-        <div className="flex items-center gap-1.5 mb-1.5">
-            <Icon className="h-3.5 w-3.5 text-slate-400" />
-            <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">
+}> = ({ icon: Icon, label, value }) => (
+    <div className="flex flex-col gap-1.5">
+        <div className="flex items-center gap-1.5">
+            <label className="text-xs sm:text-sm font-medium text-slate-700">
                 {label}
-            </span>
+            </label>
         </div>
-        <p className={cn("text-sm font-semibold text-slate-800 truncate", mono && "")}>
-            {value}
-        </p>
+        <input
+            type="text"
+            readOnly
+            value={value || ""}
+            placeholder="—"
+            className={READ_ONLY_CLASS}
+        />
     </div>
 );
 
@@ -235,71 +240,91 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                 </div>
 
                 {/* ── Scrollable Body ──────────────────────────────────────── */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/40">
+                <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth" style={{ WebkitOverflowScrolling: "touch" }}>
+                    {/* Identification / Info Card */}
+                    <div className="border border-slate-200 rounded-xl shadow-sm overflow-hidden bg-white">
+                        <div className="px-4 py-3 border-b border-slate-200 flex items-center gap-2">
+                            {empData ? <User className="h-3.5 w-3.5 text-slate-600" /> : <FileText className="h-3.5 w-3.5 text-slate-600" />}
+                            <span className="text-sm font-semibold text-slate-600">
+                                {empData ? "Personnel Information" : "Material Information"}
+                            </span>
+                        </div>
+                        <div className="p-4 space-y-4">
+                            {empData ? (
+                                <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <ReadOnlyField icon={Briefcase} label="Job Title" value={empData.jobTitle} />
+                                        <ReadOnlyField icon={Building2} label="Department" value={empData.department} />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <ReadOnlyField icon={Hash} label="Employee Code" value={empData.employeeCode} />
+                                        <ReadOnlyField icon={Calendar} label="Hire Date" value={formatDate(empData.hireDate)} />
+                                    </div>
+                                </>
+                            ) : sopData ? (
+                                <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <ReadOnlyField icon={BookOpen} label="Category" value={sopData.category} />
+                                        <ReadOnlyField icon={Hash} label="Version" value={`${sopData.version}`} />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <ReadOnlyField icon={Hash} label="Course Code" value={sopData.code} />
+                                        <ReadOnlyField icon={Calendar} label="Effective Date" value={formatDate(sopData.effectiveDate)} />
+                                    </div>
+                                </>
+                            ) : null}
+                        </div>
+                    </div>
 
-                    {/* Detail info grid */}
-                    {empData ? (
-                        <section className="grid grid-cols-2 gap-3">
-                            <InfoTile icon={Briefcase} label="Job Title" value={empData.jobTitle} />
-                            <InfoTile icon={Building2} label="Department" value={empData.department} />
-                            <InfoTile icon={Hash} label="Employee Code" value={empData.employeeCode} mono />
-                            <InfoTile icon={Calendar} label="Hire Date" value={formatDate(empData.hireDate)} />
-                        </section>
-                    ) : sopData ? (
-                        <section className="grid grid-cols-2 gap-3">
-                            <InfoTile icon={BookOpen} label="Category" value={sopData.category} />
-                            <InfoTile icon={Hash} label="Version" value={sopData.version} mono />
-                            <InfoTile icon={Calendar} label="Effective Date" value={formatDate(sopData.effectiveDate)} />
-                            <InfoTile icon={Hash} label="Course Code" value={sopData.code} mono />
-                        </section>
-                    ) : null}
-
-                    {/* Compliance summary */}
+                    {/* Compliance summary card */}
                     {stats && (
-                        <section className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                            <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                                <TrendingUp className="h-3.5 w-3.5" />
-                                Training Compliance
-                            </h3>
-
-                            {/* Rate bar */}
-                            <div className="mb-4">
-                                <div className="flex items-center justify-between mb-1.5">
-                                    <span className="text-xs text-slate-500">Compliance Rate</span>
-                                    <span className={cn("text-sm font-bold tabular-nums", rateColors.text)}>
-                                        {stats.rate}%
-                                    </span>
-                                </div>
-                                <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                    <div
-                                        className={cn("h-full rounded-full transition-all duration-700", rateColors.bar)}
-                                        style={{ width: `${stats.rate}%` }}
-                                    />
-                                </div>
-                                <p className="mt-1.5 text-[10px] text-slate-400">
-                                    {stats.qualified} qualified out of {stats.total} required{""}
-                                    {type === "employee" ? "trainings" : "employees"}
-                                </p>
+                        <section className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                            <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2">
+                                <TrendingUp className="h-3.5 w-3.5 text-slate-600" />
+                                <span className="text-sm font-semibold text-slate-600">
+                                    Training Compliance
+                                </span>
                             </div>
+                            <div className="p-4">
 
-                            {/* Stat tiles */}
-                            <div className="grid grid-cols-3 gap-3">
-                                <StatTile value={stats.qualified} label="Qualified" color="text-emerald-600" bg="bg-emerald-50" />
-                                <StatTile value={stats.overdue} label="Required" color="text-red-600" bg="bg-red-50" />
-                                <StatTile value={stats.inProgress} label="In Progress" color="text-amber-600" bg="bg-amber-50" />
+                                {/* Rate bar */}
+                                <div className="mb-4">
+                                    <div className="flex items-center justify-between mb-1.5">
+                                        <span className="text-xs text-slate-500">Compliance Rate</span>
+                                        <span className={cn("text-sm font-bold tabular-nums", rateColors.text)}>
+                                            {stats.rate}%
+                                        </span>
+                                    </div>
+                                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                        <div
+                                            className={cn("h-full rounded-full transition-all duration-700", rateColors.bar)}
+                                            style={{ width: `${stats.rate}%` }}
+                                        />
+                                    </div>
+                                    <p className="mt-1.5 text-[10px] text-slate-400">
+                                        {stats.qualified} qualified out of {stats.total} required{""}
+                                        {type === "employee" ? "trainings" : "employees"}
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-3">
+                                    <StatTile value={stats.qualified} label="Qualified" color="text-emerald-600" bg="bg-emerald-50" />
+                                    <StatTile value={stats.overdue} label="Required" color="text-red-600" bg="bg-red-50" />
+                                    <StatTile value={stats.inProgress} label="In Progress" color="text-amber-600" bg="bg-amber-50" />
+                                </div>
                             </div>
                         </section>
                     )}
 
-                    {/* Quick Actions */}
+                    {/* Quick Actions card */}
                     <section className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                         <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2">
-                            <Zap className="h-3.5 w-3.5 text-slate-400" />
-                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <IconLocation className="h-3.5 w-3.5 text-slate-600" />
+                            <span className="text-sm font-semibold text-slate-600">
                                 Quick Actions
                             </span>
                         </div>
-                        <div className="px-2 py-1">
+                        <div className="px-2 py-2">
                             {actions.map(({ icon: Icon, label: actionLabel }) => (
                                 <button
                                     key={actionLabel}

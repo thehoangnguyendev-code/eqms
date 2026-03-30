@@ -405,192 +405,197 @@ export const CourseListView: React.FC = () => {
           )}
 
           <div className={cn(
-            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
+            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300",
             isTableLoading && "blur-[2px] opacity-80"
           )}>
-            <div 
+            <div
               ref={scrollerRef}
               className={cn(
-                "flex-1 overflow-auto scrollbar-always-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full pb-1.5 transition-colors",
+                "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 pb-1.5 transition-colors",
                 isDragging ? "cursor-grabbing select-none" : "cursor-grab"
               )}
               {...dragEvents}
             >
-              <table className="w-full">
-                <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
+              <table className="w-full border-separate border-spacing-0 text-left">
+                <thead>
                   <tr>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-[60px]">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                       No.
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Course ID
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[200px]">
                       Course Name
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Type
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Method
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Status
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Instructor
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Periodic Retraining
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Scheduled Date
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
                       Enrolled
                     </th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap text-center sticky right-0 bg-slate-50 z-[1] before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 bg-white">
-                  {paginatedSortedData.map((training, index) => (
-                    <tr
-                      key={training.id}
-                      className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
-                      onClick={() => navigateTo(ROUTES.TRAINING.COURSE_DETAIL(training.id))}
-                    >
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap text-slate-500 font-medium">
-                        {startIndex + index + 1}
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        <span className="font-medium text-emerald-600">
-                          {training.trainingId}
-                        </span>
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        <div className="flex items-start gap-1.5 sm:gap-2">
-                          <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-medium text-slate-900">
-                              {training.title}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5">
-                              {training.description}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border bg-blue-50 text-blue-700 border-blue-200">
-                          {training.type}
-                        </span>
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        {training.trainingMethod && (() => {
-                          const cfg = getTrainingMethodConfig(training.trainingMethod);
-                          return (
-                            <span className={cn(
-                              "inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border",
-                              cfg.className
-                            )}>
-                              {cfg.label}
-                            </span>
-                          );
-                        })()}
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        <span className={cn(
-                          "inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border",
-                          getStatusColorClass(training.status)
-                        )}>
-                          {training.status}
-                        </span>
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                        {training.instructor}
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        {training.recurrence?.enabled ? (
-                          <span className="inline-flex items-center gap-1.5 text-emerald-600 font-medium">
-                            <IconChecks className="h-4 w-4" />
-                            Every {training.recurrence.intervalMonths}m
-                            <span className="text-[10px] text-slate-400 font-normal">(WP: {training.recurrence.warningPeriodDays}d)</span>
-                          </span>
-                        ) : (
-                          <span className="text-slate-400 italic">Disabled</span>
-                        )}
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                        {formatDate(training.scheduledDate)}
-                      </td>
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 sm:gap-2">
-                          <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
-                          <span className="text-slate-900 font-medium">
-                            {training.enrolled}/{training.capacity}
-                          </span>
-                        </div>
-                      </td>
-                      <td
-                        onClick={(e) => e.stopPropagation()}
-                        className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-8px_0_16px_-2px_rgba(0,0,0,0.12)] group-hover:bg-slate-50"
-                      >
-                        <button
-                          ref={getRef(training.id)}
-                          onClick={(e) => handleDropdownToggle(training.id, e)}
-                          className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
-                          aria-label="More actions"
+                <tbody className="bg-white">
+                  {paginatedSortedData.length > 0 ? (
+                    paginatedSortedData.map((training, index) => {
+                      const tdClass = "py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                      return (
+                        <tr
+                          key={training.id}
+                          className="hover:bg-slate-50/80 transition-colors group"
                         >
-                          <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
-                        </button>
-                        <CourseDropdownMenu
-                          training={training}
-                          isOpen={openDropdownId === training.id}
-                          onClose={closeDropdown}
-                          position={dropdownPosition}
-                          onNavigate={navigateTo}
+                          <td className={cn(tdClass, "text-center text-slate-500 font-medium")}>
+                            {startIndex + index + 1}
+                          </td>
+                          <td
+                            className={cn(tdClass, "cursor-pointer")}
+                            onClick={() => navigateTo(ROUTES.TRAINING.COURSE_DETAIL(training.id))}
+                          >
+                            <span className="font-medium text-emerald-600 hover:underline">
+                              {training.trainingId}
+                            </span>
+                          </td>
+                          <td className={tdClass}>
+                            <div className="flex items-start gap-2">
+                              <GraduationCap className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                              <div className="max-w-[200px] md:max-w-md">
+                                <p className="font-medium text-slate-900">
+                                  {training.title}
+                                </p>
+                                <p className="text-[10px] md:text-xs text-slate-500 mt-0.5">
+                                  {training.description}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className={tdClass}>
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border bg-blue-50 text-blue-700 border-blue-200">
+                              {training.type}
+                            </span>
+                          </td>
+                          <td className={tdClass}>
+                            {training.trainingMethod && (() => {
+                              const cfg = getTrainingMethodConfig(training.trainingMethod);
+                              return (
+                                <span className={cn(
+                                  "inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border",
+                                  cfg.className
+                                )}>
+                                  {cfg.label}
+                                </span>
+                              );
+                            })()}
+                          </td>
+                          <td className={tdClass}>
+                            <span className={cn(
+                              "inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border",
+                              getStatusColorClass(training.status)
+                            )}>
+                              {training.status}
+                            </span>
+                          </td>
+                          <td className={tdClass}>
+                            {training.instructor}
+                          </td>
+                          <td className={tdClass}>
+                            {training.recurrence?.enabled ? (
+                              <span className="inline-flex items-center gap-1.5 text-emerald-600 font-medium">
+                                <IconChecks className="h-4 w-4" />
+                                Every {training.recurrence.intervalMonths}m
+                                <span className="text-[10px] text-slate-400 font-normal ml-1">(WP: {training.recurrence.warningPeriodDays}d)</span>
+                              </span>
+                            ) : (
+                              <span className="text-slate-400 italic">Disabled</span>
+                            )}
+                          </td>
+                          <td className={tdClass}>
+                            {formatDate(training.scheduledDate)}
+                          </td>
+                          <td className={tdClass}>
+                            <div className="flex items-center gap-2">
+                              <Users className="h-4 w-4 text-slate-400" />
+                              <span className="text-slate-900 font-medium">
+                                {training.enrolled}/{training.capacity}
+                              </span>
+                            </div>
+                          </td>
+                          <td
+                            onClick={(e) => e.stopPropagation()}
+                            className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3.5 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                          >
+                            <button
+                              ref={getRef(training.id)}
+                              onClick={(e) => handleDropdownToggle(training.id, e)}
+                              className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 transition-colors"
+                              aria-label="More actions"
+                            >
+                              <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-600" />
+                            </button>
+                            <CourseDropdownMenu
+                              training={training}
+                              isOpen={openDropdownId === training.id}
+                              onClose={closeDropdown}
+                              position={dropdownPosition}
+                              onNavigate={navigateTo}
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={11}>
+                        <TableEmptyState
+                          title="No Training Records Found"
+                          description="We couldn’t find any training records matching your filters. Try adjusting your search criteria or clear filters."
+                          actionLabel="Clear Filters"
+                          onAction={() => {
+                            setFilters({
+                              typeFilter: "All",
+                              statusFilter: "All",
+                              dateFrom: "",
+                              dateTo: "",
+                            });
+                            setMethodFilter("All");
+                            setSearchQuery("");
+                            setCurrentPage(1);
+                          }}
                         />
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
 
-            {/* Pagination */}
-            {sortedData.length > 0 && (
-              <TablePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-                totalItems={sortedData.length}
-                itemsPerPage={itemsPerPage}
-                onItemsPerPageChange={setItemsPerPage}
-                showItemCount={true}
-              />
-            )}
-
-            {/* Empty State */}
-            {sortedData.length === 0 && (
-              <TableEmptyState
-                title="No Training Records Found"
-                description="We couldn't find any training records matching your filters. Try adjusting your search criteria or clear filters."
-                actionLabel="Clear Filters"
-                onAction={() => {
-                  setFilters({
-                    typeFilter: "All",
-                    statusFilter: "All",
-                    dateFrom: "",
-                    dateTo: "",
-                  });
-                  setMethodFilter("All");
-                  setSearchQuery("");
-                  setCurrentPage(1);
-                }}
-              />
-            )}
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={sortedData.length}
+              itemsPerPage={itemsPerPage}
+              onItemsPerPageChange={setItemsPerPage}
+              showItemCount={true}
+            />
           </div>
         </div>
       </div>

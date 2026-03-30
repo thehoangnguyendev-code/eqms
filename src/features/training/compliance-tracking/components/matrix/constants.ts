@@ -1,10 +1,8 @@
-import { Hourglass, ClipboardList, Repeat2, type LucideIcon } from "lucide-react";
+import { Hourglass, type LucideIcon } from "lucide-react";
 import {
   IconAlertTriangle,
   IconCheck,
-  IconHourglassEmpty,
   IconMinus,
-  IconX,
 } from "@tabler/icons-react";
 import type { CellStatus } from "../../types";
 
