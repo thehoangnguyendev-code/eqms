@@ -596,8 +596,8 @@ export const RevisionListView: React.FC = () => {
                                 )}
                               </td>
                               <td className={tdClass}>{startIndex + index + 1}</td>
-                              <td 
-                                onClick={() => handleViewRevision(revision.id)} 
+                              <td
+                                onClick={() => handleViewRevision(revision.id)}
                                 className={cn(tdClass, "font-medium text-emerald-600 cursor-pointer hover:underline")}
                               >
                                 {revision.documentNumber}
@@ -736,7 +736,7 @@ export const RevisionListView: React.FC = () => {
                                   </td>
 
                                   {/* Cột Action giả để giữ cấu trúc bảng không bị vỡ */}
-                                  <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-slate-50/50 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                                  <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-white before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                                   </td>
                                 </tr>
                               )}

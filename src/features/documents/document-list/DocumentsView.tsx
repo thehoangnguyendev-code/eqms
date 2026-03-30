@@ -263,7 +263,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
           authorFilterDisabled: false,
           defaultAuthorFilter: "All" as string,
           allowedStatuses: ["Draft", "Active", "Obsoleted", "Closed - Cancelled"] as DocumentStatus[],
-                    defaultColumns: [
+          defaultColumns: [
             { id: 'no', label: 'No.', visible: true, order: 0, locked: true },
             { id: 'documentId', label: 'Document Number', visible: true, order: 1 },
             { id: 'created', label: 'Created', visible: true, order: 2 },
@@ -292,7 +292,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
           authorFilterDisabled: true,
           defaultAuthorFilter: CURRENT_USER.name,
           allowedStatuses: ["Draft", "Active", "Obsoleted", "Closed - Cancelled"] as DocumentStatus[],
-                    defaultColumns: [
+          defaultColumns: [
             { id: 'no', label: 'No.', visible: true, order: 0, locked: true },
             { id: 'documentId', label: 'Document Number', visible: true, order: 1 },
             { id: 'created', label: 'Created', visible: true, order: 2 },
@@ -839,7 +839,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
 
                             return (
                               <React.Fragment key={doc.id}>
-                                <tr 
+                                <tr
                                   className="hover:bg-slate-50/80 transition-colors group"
                                 >
                                   <td className="py-2.5 px-2 md:py-3 md:px-3 border-b border-slate-200 whitespace-nowrap" onClick={(e) => {
@@ -883,7 +883,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                         </td>
                                       );
                                     }
-                                    
+
                                     let content;
                                     if (col.id === 'no') content = globalIndex;
                                     else if (col.id === 'documentId') content = null;
@@ -898,10 +898,10 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                     else content = doc[col.id as keyof Document] as string;
 
                                     return (
-                                      <td 
-                                        key={col.id} 
+                                      <td
+                                        key={col.id}
                                         className={cn(
-                                          tdClass, 
+                                          tdClass,
                                           col.id === 'documentId' && "cursor-pointer"
                                         )}
                                         onClick={col.id === 'documentId' ? () => handleViewDocument(doc.id) : undefined}

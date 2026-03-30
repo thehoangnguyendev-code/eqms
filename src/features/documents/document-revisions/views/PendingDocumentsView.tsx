@@ -983,8 +983,8 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                                 )}
                               </td>
                               <td className={tdClass}>{startIndex + index + 1}</td>
-                              <td 
-                                onClick={() => (viewType === 'review' ? navigateTo(ROUTES.DOCUMENTS.REVISIONS.REVIEW(rev.id)) : navigateTo(ROUTES.DOCUMENTS.REVISIONS.APPROVAL(rev.id)))} 
+                              <td
+                                onClick={() => (viewType === 'review' ? navigateTo(ROUTES.DOCUMENTS.REVISIONS.REVIEW(rev.id)) : navigateTo(ROUTES.DOCUMENTS.REVISIONS.APPROVAL(rev.id)))}
                                 className={cn(tdClass, "cursor-pointer")}
                               >
                                 <span className="font-medium text-emerald-600 hover:underline">
@@ -1131,7 +1131,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                                       </div>
                                     </motion.div>
                                   </td>
-                                  <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-slate-50/50 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                                  <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-white before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                                   </td>
                                 </tr>
                               )}
