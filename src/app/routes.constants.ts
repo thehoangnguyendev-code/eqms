@@ -6,6 +6,7 @@
 export const ROUTES = {
   // Auth
   LOGIN: '/login',
+  TWO_FACTOR: '/login/2fa',
   FORGOT_PASSWORD: '/forgot-password',
   CONTACT_ADMIN: '/contact-admin',
 

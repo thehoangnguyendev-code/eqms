@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 // Layout
@@ -17,7 +17,7 @@ import { ROUTES } from './routes.constants';
 import { Loading } from '@/components/ui/loading/Loading';
 
 // Features - Auth (eager load for login page)
-import { LoginView, ForgotPasswordView, ContactAdminView } from '@/features/auth';
+import { LoginView, ForgotPasswordView, ContactAdminView, TwoFactorView } from '@/features/auth';
 import { UnderConstruction } from './UnderConstruction';
 
 // ==================== LAZY LOADED FEATURES ====================
@@ -197,13 +197,30 @@ const LoadingFallback: React.FC = () => (
 export const AppRoutes: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [pendingCredentials, setPendingCredentials] = useState<{username: string, password: string, rememberMe: boolean} | null>(null);
+  
+  const handleLogin = async (username: string, password: string, rememberMe: boolean) => {
+    // Stage 1: Store credentials and move to 2FA
+    setPendingCredentials({ username, password, rememberMe });
+    navigate(ROUTES.TWO_FACTOR);
+  };
 
-  const handleLogin = async (username: string, password: string, _rememberMe: boolean) => {
+  const handleVerify2FA = async (code: string) => {
+    if (!pendingCredentials) {
+      navigate(ROUTES.LOGIN);
+      return;
+    }
+
     try {
-      await login({ username, password });
+      // Stage 2: Verification success, perform actual login
+      await login({ 
+        username: pendingCredentials.username, 
+        password: pendingCredentials.password 
+      });
+      setPendingCredentials(null);
       navigate(ROUTES.DASHBOARD);
-    } catch {
-      // Login simulation handles its own errors in LoginView
+    } catch (error) {
+      console.error("2FA Login failed:", error);
     }
   };
 
@@ -232,6 +249,7 @@ export const AppRoutes: React.FC = () => {
       {/* ==================== PUBLIC ROUTES ==================== */}
       <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
       <Route path="/login" element={<LoginView onLogin={handleLogin} onForgotPassword={handleForgotPassword} onContactAdmin={handleContactAdmin} />} />
+      <Route path="/login/2fa" element={<TwoFactorView onVerify={handleVerify2FA} onBackToLogin={handleBackToLogin} />} />
       <Route path="/forgot-password" element={<ForgotPasswordView onBackToLogin={handleBackToLogin} onRequestSubmit={handlePasswordResetRequest} />} />
       <Route path="/contact-admin" element={<ContactAdminView onBackToLogin={handleBackToLogin} onRequestSubmit={handleAccountRequest} />} />
       
