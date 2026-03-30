@@ -679,7 +679,7 @@ export const ContactAdminView: React.FC<ContactAdminViewProps> = ({
                     <Button
                       type="submit"
                       size="default"
-                      className="rounded-xl w-full h-12 mt-6 text-base font-semibold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+                      className="rounded-xl w-full h-12 mt-6 text-base font-semibold shadow-md shadow-emerald-500/10 active:translate-y-0 transition-all duration-200"
                       disabled={isLoading}
                       aria-busy={isLoading}
                     >

@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, AlertTriangle, PlusCircle } from "lucide-react";
+import { Search, AlertTriangle, PlusCircle, FilterX, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
 import { ROUTES } from "@/app/routes.constants";
@@ -28,36 +28,103 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
   onSOPHeaderClick,
   navigateTo,
 }) => {
+  const [showScrollHint, setShowScrollHint] = React.useState(true);
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowScrollHint(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col flex-1">
-      {/* Scrollable grid — max 10 rows visible, scroll when exceeding */}
-      <div className="overflow-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative">
-        <table className="border-separate border-spacing-0">
-          <MatrixHead onSOPHeaderClick={onSOPHeaderClick} />
-          <MatrixBody
-            employees={employees}
-            filters={filters}
-            hasActiveFilters={hasActiveFilters}
-            onClearFilters={onClearFilters}
-            onCellClick={onCellClick}
-            onEmployeeClick={onEmployeeClick}
-            navigateTo={navigateTo}
-          />
-        </table>
+    <div className="border border-slate-200/80 rounded-2xl bg-white shadow-lg shadow-slate-200/50 overflow-hidden flex flex-col flex-1 transition-all duration-200">
+      {/* Mobile scroll controls */}
+      <div className="relative">
+        <div className="absolute left-2 top-1/2 -translate-y-1/2 z-20 md:hidden">
+          <button
+            onClick={scrollLeft}
+            className="bg-white/90 backdrop-blur-sm rounded-full p-1.5 shadow-md border border-slate-200 hover:bg-white transition-colors"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft className="h-4 w-4 text-slate-600" />
+          </button>
+        </div>
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 z-20 md:hidden">
+          <button
+            onClick={scrollRight}
+            className="bg-white/90 backdrop-blur-sm rounded-full p-1.5 shadow-md border border-slate-200 hover:bg-white transition-colors"
+            aria-label="Scroll right"
+          >
+            <ChevronRight className="h-4 w-4 text-slate-600" />
+          </button>
+        </div>
+
+        {/* Scrollable grid - optimized for mobile */}
+        <div
+          ref={scrollContainerRef}
+          className="overflow-x-auto overflow-y-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative 
+            [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 
+            [&::-webkit-scrollbar-track]:bg-slate-100 
+            [&::-webkit-scrollbar-thumb]:bg-slate-300 
+            [&::-webkit-scrollbar-thumb]:rounded-full
+            touch-pan-x"
+        >
+          {/* Scroll hint for mobile */}
+          {showScrollHint && (
+            <div className="absolute bottom-2 right-2 z-20 md:hidden bg-slate-800/80 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded-full pointer-events-none animate-pulse">
+              Swipe to scroll →
+            </div>
+          )}
+
+          <table className="w-full border-separate border-spacing-0 text-sm md:text-base">
+            <MatrixHead onSOPHeaderClick={onSOPHeaderClick} />
+            <MatrixBody
+              employees={employees}
+              filters={filters}
+              hasActiveFilters={hasActiveFilters}
+              onClearFilters={onClearFilters}
+              onCellClick={onCellClick}
+              onEmployeeClick={onEmployeeClick}
+              navigateTo={navigateTo}
+            />
+          </table>
+        </div>
       </div>
 
-      {/* Summary bar */}
-      <div className="flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3.5 border-t border-slate-200 bg-slate-50/50">
-        <span className="text-[10px] sm:text-xs text-slate-500">
-          Showing{" "}
+      {/* Summary bar - responsive */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-t border-slate-200/60 bg-gradient-to-r from-slate-50/90 to-white/80 backdrop-blur-sm">
+        <span className="text-[11px] sm:text-xs text-slate-500 flex items-center gap-1.5">
           <span className="font-semibold text-slate-700">{employees.length}</span> employees ×{" "}
           <span className="font-semibold text-slate-700">{MOCK_SOPS.length}</span> SOPs
         </span>
         {filters.gapAnalysis && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border bg-red-50 text-red-700 border-red-200">
-            <AlertTriangle className="h-3 w-3" />
-            Gap Analysis Active
+          <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold border bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-200 shadow-sm">
+            <AlertTriangle className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            Gap Analysis
           </span>
+        )}
+        {hasActiveFilters && !filters.gapAnalysis && (
+          <Button
+            variant="ghost"
+            size="xs"
+            onClick={onClearFilters}
+            className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-full text-[11px] sm:text-xs"
+          >
+            <FilterX className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
+            Clear
+          </Button>
         )}
       </div>
     </div>
@@ -72,37 +139,35 @@ interface MatrixHeadProps {
 const MatrixHead: React.FC<MatrixHeadProps> = React.memo(({ onSOPHeaderClick }) => (
   <thead>
     <tr>
-      {/* No. */}
-      <th className="sticky top-0 left-0 z-30 bg-white border-b-2 border-r border-slate-200 px-1.5 sm:px-2 py-2.5 sm:py-4 min-w-[36px] sm:min-w-[52px] max-w-[36px] sm:max-w-[52px] text-center shadow-[0_2px_6px_-2px_rgba(0,0,0,0.1)]">
-        <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
+      {/* No. column - smaller on mobile */}
+      <th className="sticky top-0 left-0 z-30 bg-white/95 backdrop-blur-sm border-b border-r border-slate-200/80 px-1.5 sm:px-2 py-2 sm:py-3 min-w-[36px] sm:min-w-[44px] max-w-[36px] sm:max-w-[44px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+        <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
           No.
         </span>
       </th>
 
-      {/* Employee */}
-      <th className="sticky top-0 left-[36px] sm:left-[52px] z-30 bg-white border-b-2 border-r border-slate-200 px-2 sm:px-4 py-2.5 sm:py-4 min-w-[120px] sm:min-w-[150px] md:min-w-[180px] max-w-[120px] sm:max-w-[150px] md:max-w-[180px] shadow-[0_2px_6px_-2px_rgba(0,0,0,0.1)]">
-        <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
+      {/* Employee column - responsive width */}
+      <th className="sticky top-0 left-[36px] sm:left-[44px] z-30 bg-white/95 backdrop-blur-sm border-b border-r border-slate-200/80 px-2 sm:px-3 py-2 sm:py-3 min-w-[120px] sm:min-w-[140px] md:min-w-[180px] text-left shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+        <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
           Employee
         </span>
       </th>
 
-      {/* SOP columns */}
+      {/* SOP columns - responsive widths and fonts */}
       {MOCK_SOPS.map((sop) => (
         <th
           key={sop.id}
-          className="sticky top-0 z-20 bg-slate-50 border-b-2 border-r border-slate-200 px-1.5 sm:px-2 md:px-3 py-2 sm:py-3 min-w-[64px] sm:min-w-[90px] md:min-w-[130px] max-w-[64px] sm:max-w-[90px] md:max-w-[130px] cursor-pointer hover:bg-slate-100 transition-colors group/sop text-left shadow-[0_2px_6px_-2px_rgba(0,0,0,0.1)]"
+          className="sticky top-0 z-20 bg-slate-50/90 backdrop-blur-sm border-b border-r border-slate-200/80 px-1 sm:px-1.5 py-2 sm:py-3 min-w-[55px] sm:min-w-[70px] md:min-w-[90px] max-w-[80px] sm:max-w-[100px] md:max-w-[130px] cursor-pointer hover:bg-slate-100/90 transition-all duration-200 group/sop text-left shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
           onClick={(e) => onSOPHeaderClick(e, sop)}
           title={`${sop.code}: ${sop.title}`}
         >
-          <div className="flex flex-col gap-1.5 overflow-hidden">
-            <div className="flex items-center gap-2 overflow-hidden">
-              <span className="text-[10px] sm:text-[12px] font-bold text-emerald-600 leading-tight block truncate w-full">
-                {sop.code}
-              </span>
-            </div>
-            <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium leading-snug truncate group-hover/sop:text-slate-500 transition-colors">
+          <div className="flex flex-col gap-0.5 sm:gap-1">
+            <span className="text-[9px] sm:text-[10px] md:text-[12px] font-bold text-emerald-600 tracking-tight truncate block max-w-full">
+              {sop.code}
+            </span>
+            <span className="text-[7px] sm:text-[8px] md:text-[10px] text-slate-500 font-medium truncate group-hover/sop:text-slate-700 transition-colors hidden sm:block max-w-full break-words">
               {sop.title}
-            </p>
+            </span>
           </div>
         </th>
       ))}
@@ -134,15 +199,23 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
     return (
       <tbody>
         <tr>
-          <td colSpan={MOCK_SOPS.length + 2} className="py-20 text-center">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center">
-                <Search className="h-6 w-6 text-slate-300" />
+          <td colSpan={MOCK_SOPS.length + 2} className="py-16 sm:py-20 text-center">
+            <div className="flex flex-col items-center gap-2 sm:gap-3">
+              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-slate-100 flex items-center justify-center shadow-inner">
+                <Search className="h-6 w-6 sm:h-7 sm:w-7 text-slate-400" />
               </div>
-              <p className="text-sm font-medium text-slate-900">No employees found</p>
-              <p className="text-xs text-slate-500">Try adjusting your filters</p>
+              <p className="text-sm font-semibold text-slate-800">No matching employees</p>
+              <p className="text-[11px] sm:text-xs text-slate-500 max-w-[200px] sm:max-w-[240px] mx-auto">
+                Try adjusting your filters
+              </p>
               {hasActiveFilters && (
-                <Button className="whitespace-nowrap" variant="outline" size="xs" onClick={onClearFilters}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onClearFilters}
+                  className="mt-1 sm:mt-2 rounded-full border-slate-200 hover:bg-slate-50 text-xs"
+                >
+                  <FilterX className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
                   Clear filters
                 </Button>
               )}
@@ -156,30 +229,36 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
   return (
     <tbody>
       {employees.map((emp, index) => (
-        <tr key={emp.id} className="group/row">
+        <tr key={emp.id} className="group/row transition-colors duration-150 hover:bg-slate-50/60">
           {/* No. */}
-          <td className="sticky left-0 z-10 bg-white border-b border-r border-slate-200 px-1.5 sm:px-2 py-1 sm:py-1.5 min-w-[36px] sm:min-w-[52px] max-w-[36px] sm:max-w-[52px] text-center group-hover/row:bg-white">
-            <span className="text-xs font-medium text-slate-400">{index + 1}</span>
+          <td className="sticky left-0 z-10 bg-white border-b border-r border-slate-200/60 px-1.5 sm:px-2 py-1.5 sm:py-2 min-w-[36px] sm:min-w-[44px] max-w-[36px] sm:max-w-[44px] text-center group-hover/row:bg-slate-50/60">
+            <span className="text-[10px] sm:text-xs font-medium text-slate-400">{index + 1}</span>
           </td>
 
-          {/* Employee name */}
+          {/* Employee name - responsive with department hidden on very small screens */}
           <td
-            className="sticky left-[36px] sm:left-[52px] z-10 bg-white border-b border-r border-slate-200 px-2 sm:px-3 py-1 sm:py-1.5 min-w-[120px] sm:min-w-[150px] md:min-w-[180px] max-w-[120px] sm:max-w-[150px] md:max-w-[180px] cursor-pointer hover:bg-slate-50 transition-colors group-hover/row:bg-white"
+            className="sticky left-[36px] sm:left-[44px] z-10 bg-white border-b border-r border-slate-200/60 px-2 sm:px-3 py-1.5 sm:py-2 min-w-[120px] sm:min-w-[140px] md:min-w-[180px] cursor-pointer hover:bg-slate-50 transition-colors group-hover/row:bg-slate-50/60"
             onClick={(e) => onEmployeeClick(e, emp)}
+            title={`View details for ${emp.name}`}
           >
-            <p className="text-[11px] sm:text-[13px] font-semibold text-slate-900 truncate leading-tight">
-              {emp.name}
-            </p>
+            <div className="flex flex-col">
+              <span className="text-[12px] sm:text-sm font-semibold text-slate-800 truncate">
+                {emp.name}
+              </span>
+              <span className="text-[9px] sm:text-[11px] text-slate-500 truncate hidden xs:block">
+                {emp.department}
+              </span>
+            </div>
           </td>
 
-          {/* Status cells */}
+          {/* Status cells - optimized for touch */}
           {MOCK_SOPS.map((sop) => {
             const cell = getCell(emp.id, sop.id);
             if (!cell) {
               return (
                 <td
                   key={sop.id}
-                  className="border-b border-r border-slate-200 min-w-[64px] sm:min-w-[90px] md:min-w-[130px]"
+                  className="border-b border-r border-slate-200/60 p-0 min-w-[70px] sm:min-w-[85px] md:min-w-[120px]"
                 />
               );
             }
@@ -190,15 +269,19 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
             return (
               <td
                 key={sop.id}
-                className="border-b border-r border-slate-200 p-0 min-w-[64px] sm:min-w-[90px] md:min-w-[130px] max-w-[64px] sm:max-w-[90px] md:max-w-[130px] h-px"
+                className="border-b border-r border-slate-200/60 p-0 min-w-[70px] sm:min-w-[85px] md:min-w-[120px] h-px"
               >
                 <button
                   className={cn(
-                    "w-full h-full flex items-center justify-center gap-2 text-base transition-all duration-100 touch-manipulation group/cell",
+                    "w-full h-full flex items-center justify-center gap-1 sm:gap-2 py-2 sm:py-2.5 transition-all duration-150 touch-manipulation group/cell min-h-[44px]",
                     isGapHidden
-                      ? "bg-white text-slate-200 cursor-default"
-                      : cn(cfg.bg, cfg.hoverBg, "cursor-pointer active:scale-95"),
-                    cell.status !== "NotRequired" && !isGapHidden && "hover:shadow-inner"
+                      ? "bg-white text-slate-300 cursor-default"
+                      : cn(
+                        cfg.bg,
+                        cfg.hoverBg,
+                        "cursor-pointer active:scale-95 hover:scale-105"
+                      ),
+                    cell.status !== "NotRequired" && !isGapHidden && "shadow-sm"
                   )}
                   onClick={(e) => {
                     if (cell.status === "NotRequired") {
@@ -209,20 +292,39 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
                       onCellClick(e, emp, sop);
                     }
                   }}
-                  title={isGapHidden ? "Qualified (hidden)" : cell.status === "NotRequired" ? `Assign training to ${emp.name} for ${sop.title}` : `${cfg.label} – ${sop.title}`}
+                  title={
+                    isGapHidden
+                      ? "Qualified (hidden)"
+                      : cell.status === "NotRequired"
+                        ? `Assign "${sop.title}" to ${emp.name}`
+                        : `${cfg.label}: ${sop.title}`
+                  }
                   aria-label={`${emp.name} - ${sop.code}: ${cfg.label}`}
                 >
                   {isGapHidden ? (
-                    <span className="text-slate-200 text-sm">—</span>
+                    <span className="text-slate-300 text-xs sm:text-sm font-medium">—</span>
                   ) : cell.status === "NotRequired" ? (
                     <>
-                      <cfg.Icon className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 group-hover/cell:opacity-0 transition-opacity", cfg.iconColor)} />
-                      <PlusCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500 absolute opacity-0 group-hover/cell:opacity-100 transition-opacity" aria-hidden />
+                      <cfg.Icon
+                        className={cn(
+                          "h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 transition-all duration-200 group-hover/cell:opacity-0 group-hover/cell:scale-90",
+                          cfg.iconColor
+                        )}
+                      />
+                      <PlusCircle
+                        className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500 absolute opacity-0 group-hover/cell:opacity-100 transition-all duration-200 group-hover/cell:scale-110"
+                        aria-hidden
+                      />
                     </>
                   ) : (
                     <>
-                      <cfg.Icon className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0", cfg.iconColor)} />
-                      <span className="hidden md:inline text-[11px] font-semibold text-slate-600 select-none">
+                      <cfg.Icon
+                        className={cn(
+                          "h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0",
+                          cfg.iconColor
+                        )}
+                      />
+                      <span className="hidden sm:inline-block text-[9px] sm:text-[10px] md:text-[11px] font-semibold text-slate-600 select-none">
                         {cfg.label}
                       </span>
                     </>

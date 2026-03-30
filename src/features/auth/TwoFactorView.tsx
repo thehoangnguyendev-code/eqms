@@ -304,28 +304,28 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setMethod('email')}
-                  className="group relative flex items-center gap-4 p-5 rounded-2xl border border-slate-300 bg-slate-50 hover:bg-white hover:border-emerald-200 hover:shadow-emerald-500/5 transition-all duration-300 text-left"
+                  className="group relative flex items-center gap-4 p-3 rounded-2xl border border-slate-300 bg-slate-50 hover:bg-white hover:border-emerald-200 hover:shadow-emerald-500/5 transition-all duration-300 text-left"
                 >
                   <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 group-hover:border-emerald-100 group-hover:bg-emerald-50 transition-all duration-300">
                     <Mail size={24} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900">Email Verification</h3>
-                    <p className="text-sm text-slate-500 mt-0.5">Send a code to {email}</p>
+                    <h3 className="font-bold text-base text-slate-900">Email Verification</h3>
+                    <p className="text-xs sm:text-sm text-slate-500 mt-0.5">Send a code to {email}</p>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setMethod('app')}
-                  className="group relative flex items-center gap-4 p-5 rounded-2xl border border-slate-300 bg-slate-50 hover:bg-white hover:border-emerald-200 hover:shadow-emerald-500/5 transition-all duration-300 text-left"
+                  className="group relative flex items-center gap-4 p-3 rounded-2xl border border-slate-300 bg-slate-50 hover:bg-white hover:border-emerald-200 hover:shadow-emerald-500/5 transition-all duration-300 text-left"
                 >
                   <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 group-hover:border-emerald-100 group-hover:bg-emerald-50 transition-all duration-300">
                     <ShieldCheck size={24} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900">Authenticator App</h3>
-                    <p className="text-sm text-slate-500 mt-0.5">Use Google Authenticator or similar</p>
+                    <h3 className="font-bold text-base text-slate-900">Authenticator App</h3>
+                    <p className="text-xs sm:text-sm text-slate-500 mt-0.5">Use Google Authenticator or similar</p>
                   </div>
                 </button>
 
@@ -377,7 +377,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                 <div className="space-y-4">
                   <Button
                     type="submit"
-                    className="rounded-xl w-full h-12 mt-3 text-base font-semibold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 group flex items-center justify-center gap-2"
+                    className="rounded-xl w-full h-12 mt-3 text-base font-semibold shadow-md shadow-emerald-500/10 active:translate-y-0 transition-all duration-200 group flex items-center justify-center gap-2"
                     disabled={isLoading || otp.join("").length < OTP_LENGTH}
                   >
                     <span>Verify Account</span>
