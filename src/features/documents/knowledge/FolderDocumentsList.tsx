@@ -9,7 +9,6 @@ import {
 } from "@tabler/icons-react";
 import { Search } from "lucide-react";
 import { cn } from "@/components/ui/utils";
-import { motion, AnimatePresence } from "framer-motion";
 
 // Dynamically import all file icons from the assets folder
 const ALL_ICONS = import.meta.glob("@/assets/images/image-file/*.png", { eager: true, import: "default" }) as Record<string, string>;
@@ -42,19 +41,67 @@ const MOCK_FOLDER_DOCUMENTS: Record<string, DocumentItem[]> = {
         { id: "qa-2", name: "Quality Manual 2026", fileType: "PDF", lastOpened: "30/03/2026", fileSize: "5.1 MB" },
         { id: "qa-3", name: "Audit Checklist v2.1", fileType: "DOCX", lastOpened: "25/03/2026", fileSize: "840 KB" },
         { id: "qa-4", name: "Supplier Qualification Form", fileType: "XLSX", lastOpened: "15/03/2026", fileSize: "1.2 MB" },
-        { id: "qa-5", name: "Validation Master Plan", fileType: "PDF", lastOpened: "10/03/2026", fileSize: "3.8 MB" },
+        { id: "qa-5", name: "Validation Master Plan Status", fileType: "PDF", lastOpened: "10/03/2026", fileSize: "3.8 MB" },
         { id: "qa-6", name: "CAPA Management Procedure", fileType: "DOCX", lastOpened: "05/03/2026", fileSize: "1.1 MB" },
-        { id: "qa-7", name: "Software Requirements Specs", fileType: "XML", lastOpened: "12/03/2026", fileSize: "150 KB" },
-        { id: "qa-8", name: "Audit evidence - photos", fileType: "ZIP", lastOpened: "08/03/2026", fileSize: "45.2 MB" },
-        { id: "qa-9", name: "Process Flow Animation", fileType: "MP4", lastOpened: "02/03/2026", fileSize: "125 MB" },
-        { id: "qa-10", name: "System Log Export", fileType: "CSV", lastOpened: "01/03/2026", fileSize: "2.8 MB" },
+        { id: "qa-7", name: "Software Requirements Specs - LIMS", fileType: "XML", lastOpened: "12/03/2026", fileSize: "150 KB" },
+        { id: "qa-8", name: "Audit evidence - raw photos", fileType: "ZIP", lastOpened: "08/03/2026", fileSize: "45.2 MB" },
+        { id: "qa-9", name: "Process Flow Animation - Final", fileType: "MP4", lastOpened: "02/03/2026", fileSize: "125 MB" },
+        { id: "qa-10", name: "System Log Export - Feb 2026", fileType: "CSV", lastOpened: "01/03/2026", fileSize: "2.8 MB" },
+        { id: "qa-11", name: "Change Control Log 2026", fileType: "XLSX", lastOpened: "22/03/2026", fileSize: "1.5 MB" },
+        { id: "qa-12", name: "Documentation Standard Operating Procedure", fileType: "PDF", lastOpened: "18/03/2026", fileSize: "2.1 MB" },
+        { id: "qa-13", name: "Deviations Summary Report Q1", fileType: "PDF", lastOpened: "05/03/2026", fileSize: "4.2 MB" },
     ],
     qc: [
-        { id: "qc-1", name: "QC Calibration Schedule", fileType: "XLSX", lastOpened: "29/03/2026", fileSize: "450 KB" },
+        { id: "qc-1", name: "QC Calibration Schedule 2026", fileType: "XLSX", lastOpened: "29/03/2026", fileSize: "450 KB" },
         { id: "qc-2", name: "Raw Material Testing Protocol", fileType: "PDF", lastOpened: "27/03/2026", fileSize: "1.8 MB" },
         { id: "qc-3", name: "Finished Product Specs - Batch A", fileType: "PDF", lastOpened: "20/03/2026", fileSize: "2.2 MB" },
-        { id: "qc-4", name: "Test Report Export", fileType: "TXT", lastOpened: "15/03/2026", fileSize: "15 KB" },
-        { id: "qc-5", name: "Material Safety Data Sheet", fileType: "JPG", lastOpened: "10/03/2026", fileSize: "1.2 MB" },
+        { id: "qc-4", name: "Test Report Export - Lab-04", fileType: "TXT", lastOpened: "15/03/2026", fileSize: "15 KB" },
+        { id: "qc-5", name: "Material Safety Data Sheet (MSDS)", fileType: "JPG", lastOpened: "10/03/2026", fileSize: "1.2 MB" },
+        { id: "qc-6", name: "Spectroscopy Analysis Results", fileType: "PDF", lastOpened: "12/03/2026", fileSize: "3.5 MB" },
+        { id: "qc-7", name: "Stability Testing Log Book", fileType: "XLSX", lastOpened: "08/03/2026", fileSize: "2.2 MB" },
+        { id: "qc-8", name: "Laboratory Safety Guidelines", fileType: "PDF", lastOpened: "01/03/2026", fileSize: "1.1 MB" },
+        { id: "qc-9", name: "Sample Retention Policy", fileType: "DOCX", lastOpened: "25/02/2026", fileSize: "540 KB" },
+    ],
+    production: [
+        { id: "prod-1", name: "Production Line A Efficiency Report", fileType: "XLSX", lastOpened: "31/03/2026", fileSize: "2.5 MB" },
+        { id: "prod-2", name: "Manufacturing Batch Record - SKU102", fileType: "PDF", lastOpened: "30/03/2026", fileSize: "8.2 MB" },
+        { id: "prod-3", name: "Sterilization Log - Autoclave 4", fileType: "PDF", lastOpened: "28/03/2026", fileSize: "1.2 MB" },
+        { id: "prod-4", name: "Machine Maintenance Photo Log", fileType: "ZIP", lastOpened: "25/03/2026", fileSize: "85 MB" },
+        { id: "prod-5", name: "Packing Instructions - Large Bottles", fileType: "DOCX", lastOpened: "20/03/2026", fileSize: "1.1 MB" },
+        { id: "prod-6", name: "Shift Handover Notes - March", fileType: "TXT", lastOpened: "31/03/2026", fileSize: "120 KB" },
+        { id: "prod-7", name: "Equipment Setup Video Guide", fileType: "MP4", lastOpened: "15/03/2026", fileSize: "320 MB" },
+        { id: "prod-8", name: "Environmental Monitoring Data", fileType: "CSV", lastOpened: "12/03/2026", fileSize: "4.5 MB" },
+        { id: "prod-9", name: "Cleaning Validation Protocol", fileType: "PDF", lastOpened: "10/03/2026", fileSize: "2.8 MB" },
+    ],
+    rnd: [
+        { id: "rnd-1", name: "New Compound Synthesis Research", fileType: "PDF", lastOpened: "31/03/2026", fileSize: "12.4 MB" },
+        { id: "rnd-2", name: "Patent Application - Project Zenith", fileType: "DOCX", lastOpened: "30/03/2026", fileSize: "4.5 MB" },
+        { id: "rnd-3", name: "Clinical Trial Phase 1 - Raw Data", fileType: "XLSX", lastOpened: "25/03/2026", fileSize: "32.1 MB" },
+        { id: "rnd-4", name: "Microscopic Imagery Analysis", fileType: "PNG", lastOpened: "22/03/2026", fileSize: "15.8 MB" },
+        { id: "rnd-5", name: "Lab Notebook Scans - Book 42", fileType: "ZIP", lastOpened: "18/03/2026", fileSize: "145 MB" },
+        { id: "rnd-6", name: "Literature Review - Biologics", fileType: "PDF", lastOpened: "10/03/2026", fileSize: "2.1 MB" },
+        { id: "rnd-7", name: "Meeting Minutes with FDA Consultants", fileType: "DOCX", lastOpened: "05/03/2026", fileSize: "180 KB" },
+    ],
+    regulatory: [
+        { id: "reg-1", name: "FDA Audit Prep Checklist 2026", fileType: "XLSX", lastOpened: "31/03/2026", fileSize: "1.2 MB" },
+        { id: "reg-2", name: "ISO 13485:2016 Compliance Matrix", fileType: "PDF", lastOpened: "28/03/2026", fileSize: "2.8 MB" },
+        { id: "reg-3", name: "Product License - EU Renewal", fileType: "PDF", lastOpened: "25/03/2026", fileSize: "4.5 MB" },
+        { id: "reg-4", name: "Recall Strategy & Mock Trial", fileType: "DOCX", lastOpened: "20/03/2026", fileSize: "1.1 MB" },
+        { id: "reg-5", name: "Adverse Events Log - Q1", fileType: "XLSX", lastOpened: "15/03/2026", fileSize: "850 KB" },
+    ],
+    it: [
+        { id: "it-1", name: "Network Infrastructure Diagram", fileType: "PNG", lastOpened: "31/03/2026", fileSize: "3.2 MB" },
+        { id: "it-2", name: "Server Backup Log - Production Hub", fileType: "TXT", lastOpened: "31/03/2026", fileSize: "840 KB" },
+        { id: "it-3", name: "Disaster Recovery Workflow", fileType: "PDF", lastOpened: "25/03/2026", fileSize: "1.4 MB" },
+        { id: "it-4", name: "Software Asset Inventory", fileType: "XLSX", lastOpened: "20/03/2026", fileSize: "2.8 MB" },
+        { id: "it-5", name: "EQMS System Update Brief", fileType: "DOCX", lastOpened: "15/03/2026", fileSize: "920 KB" },
+    ],
+    hr: [
+        { id: "hr-1", name: "Employee Handbook v4.2", fileType: "PDF", lastOpened: "31/03/2026", fileSize: "5.4 MB" },
+        { id: "hr-2", name: "Training Matrix Master File", fileType: "XLSX", lastOpened: "31/03/2026", fileSize: "12.1 MB" },
+        { id: "hr-3", name: "Onboarding Presentation", fileType: "PDF", lastOpened: "25/03/2026", fileSize: "15.2 MB" },
+        { id: "hr-4", name: "Annual Performance Review Form", fileType: "DOCX", lastOpened: "20/03/2026", fileSize: "1.2 MB" },
+        { id: "hr-5", name: "Benefits Policy - 2026 Update", fileType: "PDF", lastOpened: "15/03/2026", fileSize: "2.1 MB" },
     ]
 };
 
@@ -126,17 +173,20 @@ export const FolderDocumentsList: React.FC<FolderDocumentsListProps> = ({
     return (
         <div className="flex flex-col gap-6 animate-in fade-in duration-500">
             {/* Folder Header */}
-            <div className="bg-white border border-slate-200 rounded-xl p-4 md:p-5 shadow-sm">
-                <div className="flex items-center gap-4">
+            <div className="sticky top-0 z-40 -mx-4 sm:mx-0 px-4 py-3 sm:p-5 mb-2 bg-white/80 backdrop-blur-md border-b border-slate-200/60 sm:border sm:rounded-xl shadow-sm transition-all duration-300">
+                <div className="flex items-center gap-3 md:gap-4 max-w-full overflow-hidden">
                     <button
                         onClick={onBack}
-                        className="h-9 w-9 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+                        className="h-8 w-8 md:h-9 md:w-9 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-all shrink-0 active:scale-90"
                     >
-                        <IconChevronLeft className="h-5 w-5" />
+                        <IconChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
                     </button>
-                    <div>
-                        <h2 className="text-lg md:text-xl font-bold text-slate-900">{departmentName}</h2>
-                        <p className="text-xs text-slate-500">{filteredAndSortedDocs.length} documents in this folder</p>
+                    <div className="min-w-0 flex-1">
+                        <h2 className="text-base md:text-xl font-bold text-slate-900 truncate tracking-tight">{departmentName}</h2>
+                        <p className="text-[10px] md:text-xs text-slate-500 font-medium truncate flex items-center gap-1.5">
+                            <span className="h-1 w-1 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+                            {filteredAndSortedDocs.length} documents in this folder
+                        </p>
                     </div>
                 </div>
             </div>
