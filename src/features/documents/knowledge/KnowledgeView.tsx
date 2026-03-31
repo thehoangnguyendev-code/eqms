@@ -9,7 +9,8 @@ import { Select } from "@/components/ui/select/Select";
 import { cn } from "@/components/ui/utils";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Search } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
 
 interface Department {
     id: string;
@@ -37,23 +38,43 @@ const DEPARTMENTS: Department[] = [
     { id: "management", name: "Management", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 42, color: "text-slate-600" },
 ];
 
+import { FolderDocumentsList } from "./FolderDocumentsList";
+
 export const KnowledgeView: React.FC = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState("");
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [isNavigating, setIsNavigating] = useState(false);
+    const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
 
     const handleNavigate = (path: string) => {
         setIsNavigating(true);
         setTimeout(() => navigate(path), 600);
     };
 
+    const handleFolderClick = (dept: Department) => {
+        setIsNavigating(true);
+        setTimeout(() => {
+            setSelectedDepartment(dept);
+            setIsNavigating(false);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }, 500);
+    };
+
+    const handleBackToFolders = () => {
+        setIsNavigating(true);
+        setTimeout(() => {
+            setSelectedDepartment(null);
+            setIsNavigating(false);
+        }, 400);
+    };
+
     const filteredDepartments = useMemo(() => {
         const filtered = DEPARTMENTS.filter(dept =>
             dept.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
-        
+
         return filtered.sort((a, b) => {
             if (sortOrder === "asc") {
                 return a.name.localeCompare(b.name);
@@ -66,203 +87,205 @@ export const KnowledgeView: React.FC = () => {
     const totalDocuments = DEPARTMENTS.reduce((sum, dept) => sum + dept.documentCount, 0);
 
     return (
-        <div className="space-y-6 w-full flex-1 flex flex-col">
+        <div className="space-y-6 w-full flex-1 flex flex-col min-h-0">
             {/* Header: Title + Breadcrumb */}
-            <div 
-                className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4"
+            <div
+                className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4 shrink-0"
             >
                 <div className="min-w-[200px] flex-1">
                     <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
                         Knowledge Base
                     </h1>
-                    <Breadcrumb items={knowledgeBase()} />
-                </div>
-            </div>
-
-            {/* Stats Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4">
-                <div className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
-                            <IconFolderFilled className="h-5 w-5 md:h-6 md:w-6 text-emerald-600" />
-                        </div>
-                        <div>
-                            <p className="text-xs md:text-sm text-slate-600">Total Departments</p>
-                            <p className="text-xl md:text-2xl font-bold text-slate-900">
-                                {DEPARTMENTS.length}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-                            <IconFile className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
-                        </div>
-                        <div>
-                            <p className="text-xs md:text-sm text-slate-600">Total Documents</p>
-                            <p className="text-xl md:text-2xl font-bold text-slate-900">
-                                {totalDocuments}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Search Bar */}
-            <div className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm">
-                <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
-                    Search
-                </label>
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <input
-                        type="text"
-                        placeholder="Search departments..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 h-9 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                    <Breadcrumb
+                        items={
+                            selectedDepartment
+                                ? [...knowledgeBase(), { label: selectedDepartment.name }]
+                                : knowledgeBase()
+                        }
                     />
                 </div>
             </div>
 
-            {/* Department Folders Grid */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex-1">
-                <div className="border-b border-slate-200 px-4 md:px-6 py-4">
-                    <div className="space-y-3">
-                        <div>
-                            <h2 className="text-base md:text-lg font-semibold text-slate-900">Department Folders</h2>
+            <AnimatePresence mode="wait">
+                {!selectedDepartment ? (
+                    <motion.div
+                        key="folders"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="space-y-6 flex-1 flex flex-col min-h-0"
+                    >
+                        {/* Stats Overview */}
+                        <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4 shrink-0">
+                            <div className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+                                        <IconFolderFilled className="h-5 w-5 md:h-6 md:w-6 text-emerald-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs md:text-sm text-slate-600">Total Departments</p>
+                                        <p className="text-xl md:text-2xl font-bold text-slate-900">
+                                            {DEPARTMENTS.length}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
+                                        <IconFile className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs md:text-sm text-slate-600">Total Documents</p>
+                                        <p className="text-xl md:text-2xl font-bold text-slate-900">
+                                            {totalDocuments}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex items-center justify-between gap-2">
-                            {/* Sort Order Select */}
-                            <div className="flex-1 sm:flex-none sm:min-w-[160px]">
-                                <Select
-                                    value={sortOrder}
-                                    onChange={(value) => setSortOrder(value as "asc" | "desc")}
-                                    options={[
-                                        { label: "Sort A-Z", value: "asc" },
-                                        { label: "Sort Z-A", value: "desc" },
-                                    ]}
-                                    placeholder="Sort order..."
-                                    enableSearch={false}
+
+                        {/* Unified Knowledge Base Card */}
+                        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
+                            {/* 1. Header Row */}
+                            <div className="border-b border-slate-100 px-4 md:px-6 py-4 flex items-center justify-between bg-slate-50/20">
+                                <h2 className="text-base font-semibold text-slate-900">
+                                    Department Folders
+                                </h2>
+                                <StatusBadge
+                                    status="draft"
+                                    label={`${filteredDepartments.length} folders`}
+                                    size="sm"
+                                    className="bg-slate-100/80 border-slate-200/60"
                                 />
                             </div>
-                            
-                            {/* View Mode Toggle */}
-                            <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1 shrink-0 relative overflow-hidden">
-                                <button
-                                    onClick={() => setViewMode("grid")}
-                                    className={cn(
-                                        "flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all relative z-10",
-                                        viewMode === "grid"
-                                            ? "text-slate-900"
-                                            : "text-slate-600 hover:text-slate-900"
-                                    )}
-                                >
-                                    {viewMode === "grid" && (
-                                        <motion.div
-                                            layoutId="activeViewModeIndicator"
-                                            className="absolute inset-0 bg-white rounded-lg shadow-sm pointer-events-none"
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
-                                        />
-                                    )}
-                                    <span className="relative z-20 flex items-center gap-1.5">
-                                        <IconLayoutGrid className="h-4 w-4" />
-                                        <span>Grid</span>
-                                    </span>
-                                </button>
-                                <button
-                                    onClick={() => setViewMode("list")}
-                                    className={cn(
-                                        "flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all relative z-10",
-                                        viewMode === "list"
-                                            ? "text-slate-900"
-                                            : "text-slate-600 hover:text-slate-900"
-                                    )}
-                                >
-                                    {viewMode === "list" && (
-                                        <motion.div
-                                            layoutId="activeViewModeIndicator"
-                                            className="absolute inset-0 bg-white rounded-lg shadow-sm pointer-events-none"
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
-                                        />
-                                    )}
-                                    <span className="relative z-20 flex items-center gap-1.5">
-                                        <IconLayoutList className="h-4 w-4" />
-                                        <span>List</span>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="p-4 md:p-6">
-                    {filteredDepartments.length === 0 ? (
-                        <div className="text-center py-8 md:py-12">
-                            <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3 md:mb-4">
-                                <IconFolderFilled className="h-6 w-6 md:h-7 md:w-7 text-slate-300" />
+                            {/* 2. Actions Row (Search + Sort + View) */}
+                            <div className="p-4 md:p-5 border-b border-slate-100 bg-white">
+                                <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center">
+                                    {/* Search input */}
+                                    <div className="w-full sm:flex-1 group">
+                                        <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+                                            Search
+                                        </label>
+                                        <div className="relative">
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                                            <input
+                                                type="text"
+                                                placeholder="Type to filter folders..."
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400 shadow-sm"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Sort + View Controls */}
+                                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                                        {/* Sort Select */}
+                                        <div className="flex-1 sm:w-[150px]">
+                                            <Select
+                                                label="Order"
+                                                value={sortOrder}
+                                                onChange={(value) => setSortOrder(value as "asc" | "desc")}
+                                                options={[
+                                                    { label: "Name A-Z", value: "asc" },
+                                                    { label: "Name Z-A", value: "desc" },
+                                                ]}
+                                                placeholder="Order..."
+                                                enableSearch={false}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <p className="text-sm md:text-base text-slate-900 font-semibold">No departments found</p>
-                            <p className="text-xs md:text-sm text-slate-500 mt-1">Try adjusting your search query</p>
-                        </div>
-                    ) : viewMode === "grid" ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-                            {filteredDepartments.map((dept, index) => (
-                                <button
-                                    key={dept.id}
-                                    onClick={() => handleNavigate(`${ROUTES.DOCUMENTS.ALL}?department=${dept.id}`)}
-                                    className="group relative bg-white border-2 border-slate-200 rounded-xl p-4 md:p-5 hover:border-emerald-500 hover:shadow-lg transition-all duration-200 text-left"
-                                >
-                                    <div className="flex flex-col items-center gap-2 md:gap-3">
-                                        <div className={cn("transition-colors", dept.color)}>
-                                            <IconFolderFilled className="h-10 w-10 md:h-12 md:w-12" />
+
+                            {/* 3. Main Content Area */}
+                            <div className="p-4 md:p-6 overflow-auto flex-1 min-h-0">
+                                {filteredDepartments.length === 0 ? (
+                                    <div className="text-center py-8 md:py-12">
+                                        <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3 md:mb-4">
+                                            <IconFolderFilled className="h-6 w-6 md:h-7 md:w-7 text-slate-300" />
                                         </div>
-                                        <div className="text-center w-full">
-                                            <p className="font-semibold text-slate-900 text-xs md:text-sm line-clamp-2 mb-1">
-                                                {dept.name}
-                                            </p>
-                                            <p className="text-xs text-slate-500">
-                                                {dept.documentCount} {dept.documentCount === 1 ? 'doc' : 'docs'}
-                                            </p>
-                                        </div>
+                                        <p className="text-sm md:text-base text-slate-900 font-semibold">No departments found</p>
+                                        <p className="text-xs md:text-sm text-slate-500 mt-1">Try adjusting your search query</p>
                                     </div>
-                                    <div className="absolute top-2 md:top-3 right-2 md:right-3">
-                                        <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                ) : viewMode === "grid" ? (
+                                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+                                        {filteredDepartments.map((dept, index) => (
+                                            <button
+                                                key={dept.id}
+                                                onClick={() => handleFolderClick(dept)}
+                                                className="group relative bg-white border border-slate-200 rounded-xl p-4 md:p-5 hover:border-emerald-500 hover:shadow-lg transition-all duration-200 text-left"
+                                            >
+                                                <div className="flex flex-col items-center gap-2 md:gap-3">
+                                                    <div className={cn("transition-colors", dept.color)}>
+                                                        <IconFolderFilled className="h-10 w-10 md:h-12 md:w-12" />
+                                                    </div>
+                                                    <div className="text-center w-full min-w-0">
+                                                        <p className="font-semibold text-slate-900 text-[11px] md:text-sm truncate mb-1 px-1">
+                                                            {dept.name}
+                                                        </p>
+                                                        <p className="text-[10px] md:text-xs text-slate-500">
+                                                            {dept.documentCount} {dept.documentCount === 1 ? 'doc' : 'docs'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="absolute top-2 md:top-3 right-2 md:right-3">
+                                                    <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                </div>
+                                            </button>
+                                        ))}
                                     </div>
-                                </button>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="space-y-2">
-                            {filteredDepartments.map((dept, index) => (
-                                <button
-                                    key={dept.id}
-                                    onClick={() => handleNavigate(`${ROUTES.DOCUMENTS.ALL}?department=${dept.id}`)}
-                                    className="group w-full bg-white border border-slate-200 rounded-lg p-3 md:p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200 text-left"
-                                >
-                                    <div className="flex items-center gap-3 md:gap-4">
-                                        <div className={cn("transition-colors shrink-0", dept.color)}>
-                                            <IconFolderFilled className="h-8 w-8 md:h-10 md:w-10" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-semibold text-slate-900 text-xs md:text-sm mb-0.5">
-                                                {dept.name}
-                                            </p>
-                                            <p className="text-xs text-slate-500">
-                                                {dept.documentCount} {dept.documentCount === 1 ? 'document' : 'documents'}
-                                            </p>
-                                        </div>
-                                        <div className="shrink-0">
-                                            <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {filteredDepartments.map((dept, index) => (
+                                            <button
+                                                key={dept.id}
+                                                onClick={() => handleFolderClick(dept)}
+                                                className="group w-full bg-white border border-slate-200 rounded-lg p-3 md:p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200 text-left"
+                                            >
+                                                <div className="flex items-center gap-3 md:gap-4">
+                                                    <div className={cn("transition-colors shrink-0", dept.color)}>
+                                                        <IconFolderFilled className="h-8 w-8 md:h-10 md:w-10" />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-semibold text-slate-900 text-xs md:text-sm mb-0.5">
+                                                            {dept.name}
+                                                        </p>
+                                                        <p className="text-xs text-slate-500">
+                                                            {dept.documentCount} {dept.documentCount === 1 ? 'document' : 'documents'}
+                                                        </p>
+                                                    </div>
+                                                    <div className="shrink-0">
+                                                        <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        ))}
                                     </div>
-                                </button>
-                            ))}
+                                )}
+                            </div>
                         </div>
-                    )}
-                </div>
-            </div>
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="documents"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.4 }}
+                        className="flex-1 min-h-0"
+                    >
+                        <FolderDocumentsList
+                            departmentId={selectedDepartment.id}
+                            departmentName={selectedDepartment.name}
+                            onBack={handleBackToFolders}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {isNavigating && <FullPageLoading text="Loading..." />}
         </div>
