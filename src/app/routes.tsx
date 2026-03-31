@@ -249,7 +249,7 @@ export const AppRoutes: React.FC = () => {
       {/* ==================== PUBLIC ROUTES ==================== */}
       <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
       <Route path="/login" element={<LoginView onLogin={handleLogin} onForgotPassword={handleForgotPassword} onContactAdmin={handleContactAdmin} />} />
-      <Route path="/login/2fa" element={<TwoFactorView onVerify={handleVerify2FA} onBackToLogin={handleBackToLogin} />} />
+      <Route path="/login/2fa" element={<TwoFactorView onVerify={handleVerify2FA} onBackToLogin={handleBackToLogin} username={pendingCredentials?.username} />} />
       <Route path="/forgot-password" element={<ForgotPasswordView onBackToLogin={handleBackToLogin} onRequestSubmit={handlePasswordResetRequest} />} />
       <Route path="/contact-admin" element={<ContactAdminView onBackToLogin={handleBackToLogin} onRequestSubmit={handleAccountRequest} />} />
       

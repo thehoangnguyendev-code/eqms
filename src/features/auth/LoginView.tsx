@@ -8,7 +8,9 @@ import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
 import { IconArrowBigUpFilled } from "@tabler/icons-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { AuthBranding } from "./AuthBranding";
+
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -168,7 +170,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [isCapsLockOn, setIsCapsLockOn] = useState(false);
 
   // ========================================================================
@@ -176,19 +177,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
   // ========================================================================
 
   const hasFormErrors = useMemo(() => !isFormValid(errors), [errors]);
-
-  // ========================================================================
-  // EFFECTS
-  // ========================================================================
-
-  // Auto-play carousel
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % AUTH_SLIDE_IMAGES.length);
-    }, CAROUSEL_INTERVAL);
-
-    return () => clearInterval(timer);
-  }, []);
 
   // ========================================================================
   // EVENT HANDLERS
@@ -209,10 +197,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
 
   const handleTogglePassword = useCallback(() => {
     setShowPassword((prev) => !prev);
-  }, []);
-
-  const handleSlideChange = useCallback((index: number) => {
-    setCurrentSlide(index);
   }, []);
 
   const handleCapsLockCheck = useCallback((e: React.KeyboardEvent) => {
@@ -289,92 +273,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
       {/* ====================================================================
           LEFT SIDE - BRANDING & IMAGE (Desktop Only)
           ==================================================================== */}
-      <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 p-4 lg:p-6 items-center justify-center bg-white">
-        {/* Branding Card with Carousel */}
-        <div className="relative w-full h-full rounded-[1.5rem] overflow-hidden bg-slate-900 ring-1 ring-slate-900/5">
-          {/* Carousel Container */}
-          <div className="absolute inset-0 z-0" role="region" aria-label="Product showcase carousel">
-            {AUTH_SLIDE_IMAGES.map((slide, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "absolute inset-0 transition-all duration-[1500ms] ease-out",
-                  index === currentSlide
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-110"
-                )}
-                aria-hidden={index !== currentSlide}
-              >
-                <img
-                  src={slide}
-                  alt={`Product showcase ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-                {/* Subtle Overlay */}
-                <div className="absolute inset-0 bg-black/10" />
-              </div>
-            ))}
-          </div>
-
-          {/* Gradient Overlay for Text Readability */}
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950/95 via-slate-900/60 to-transparent pointer-events-none" />
-
-          {/* Content Overlay - Modern Clean Style */}
-          <div className="absolute inset-x-0 bottom-0 z-20 p-8 lg:p-12 xl:p-16 flex flex-col justify-end pointer-events-none">
-            <div className="max-w-3xl pointer-events-auto">
-              {/* Animated Text Content */}
-              <div className="relative h-[220px] mb-6">
-                {AUTH_SLIDE_IMAGES.map((_, index) => {
-                  const content = SLIDE_CONTENT[index % SLIDE_CONTENT.length];
-                  return (
-                    <div
-                      key={index}
-                      className={cn(
-                        "absolute bottom-0 left-0 w-full flex flex-col justify-end transition-all duration-700 ease-out transform",
-                        index === currentSlide
-                          ? "opacity-100 translate-y-0"
-                          : "opacity-0 translate-y-8"
-                      )}
-                    >
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="w-8 h-0.5 bg-emerald-500 rounded-full"></span>
-                        <span className="text-emerald-400 font-bold tracking-wider text-xs uppercase">{content.tag}</span>
-                      </div>
-
-                      <h2 className="text-4xl lg:text-5xl font-bold leading-tight text-white mb-4 tracking-tight drop-shadow-sm">
-                        {content.title}
-                      </h2>
-
-                      <p className="text-lg text-slate-300/90 leading-relaxed font-light max-w-xl">
-                        {content.description}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Modern Indicators */}
-              <div className="flex gap-4">
-                {AUTH_SLIDE_IMAGES.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleSlideChange(index)}
-                    className="group focus:outline-none p-1"
-                    aria-label={`Go to slide ${index + 1}`}
-                  >
-                    <div className={cn(
-                      "h-2 w-2 rounded-full transition-all duration-300 ease-out",
-                      index === currentSlide
-                        ? "bg-emerald-500 scale-125"
-                        : "bg-white/30 group-hover:bg-white/60"
-                    )} />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AuthBranding slides={SLIDE_CONTENT} />
 
       {/* ====================================================================
           RIGHT SIDE - LOGIN FORM
@@ -391,7 +290,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
         </div>
 
         {/* Form Container */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
@@ -413,9 +312,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                     }}
                   />
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-                  Sign in with your{" "}
-                  <span className="block sm:inline">EQMS account</span>
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                  Sign in with your EQMS account
                 </h1>
               </div>
             </div>
