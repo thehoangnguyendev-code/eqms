@@ -115,9 +115,9 @@ export const FullPageLoading: React.FC<Omit<LoadingProps, 'fullPage'>> = (props)
 /**
  * Button Loading - Specifically for button loading states
  */
-export const ButtonLoading: React.FC<{ text?: string; light?: boolean }> = ({ 
-  text = 'Loading...', 
-  light = false 
+export const ButtonLoading: React.FC<{ text?: string; light?: boolean }> = ({
+  text = 'Loading...',
+  light = false
 }) => (
   <div className="flex items-center justify-center gap-2">
     <DashLoading color={light ? '#ffffff' : '#059669'} size={32} />
@@ -128,19 +128,19 @@ export const ButtonLoading: React.FC<{ text?: string; light?: boolean }> = ({
 /**
  * Card/Section Loading - For loading states in cards or sections
  */
-export const SectionLoading: React.FC<{ 
-  text?: string; 
+export const SectionLoading: React.FC<{
+  text?: string;
   minHeight?: string;
   className?: string;
-}> = ({ 
-  text = 'Loading...', 
+}> = ({
+  text = 'Loading...',
   minHeight = '200px',
   className
 }) => (
-  <div 
-    className={cn("flex flex-col items-center justify-center w-full", className)}
-    style={{ minHeight }}
-  >
-    <Loading text={text} size="default" />
-  </div>
-);
+    <div
+      className={cn("flex flex-col items-center justify-center w-full", className)}
+      style={{ minHeight }}
+    >
+      <Loading text={text} size="default" />
+    </div>
+  );

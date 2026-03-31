@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
 
@@ -13,6 +13,10 @@ interface AuthBrandingProps {
   interval?: number;
 }
 
+/**
+ * Optimized Branding Carousel for Auth pages.
+ * Prioritizes GPU-accelerated transforms and memoization for smooth performance on all devices.
+ */
 export const AuthBranding: React.FC<AuthBrandingProps> = ({
   slides,
   interval = CAROUSEL_INTERVAL
@@ -36,88 +40,96 @@ export const AuthBranding: React.FC<AuthBrandingProps> = ({
 
   const totalImages = AUTH_SLIDE_IMAGES.length;
 
+  // Memoize active slide content to prevent recalculation
+  const activeSlide = useMemo(() => 
+    slides[currentSlide % slides.length], 
+    [slides, currentSlide]
+  );
+
   if (!totalImages || !slides || slides.length === 0) {
     return null;
   }
 
   return (
-    <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 p-4 lg:p-6 items-center justify-center bg-white self-stretch">
-      <div className="relative w-full h-full rounded-[1.2rem] overflow-hidden bg-slate-900 min-h-[600px]">
-        {/* Carousel Images with motion effects */}
-        <div className="absolute inset-0">
+    <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 p-4 lg:p-6 items-center justify-center bg-white self-stretch overflow-hidden">
+      <div className="relative w-full h-full rounded-[1.2rem] overflow-hidden bg-slate-900 shadow-xl min-h-[600px] flex flex-col">
+        
+        {/* Optimized Carousel Background - Uses opacity and simple scale for GPU efficiency */}
+        <div className="absolute inset-0 pointer-events-none">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
               className="absolute inset-0"
-              initial={{ scale: 1.1, opacity: 0 }}
+              initial={{ scale: 1.05, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.05, opacity: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
+              exit={{ opacity: 0 }}
+              transition={{ 
+                duration: 0.8, 
+                ease: [0.33, 1, 0.68, 1] // Custom ease-out cubic
+              }}
             >
               <img
                 src={AUTH_SLIDE_IMAGES[currentSlide]}
-                alt={`Product showcase ${currentSlide + 1}`}
-                className="w-full h-full object-cover"
+                alt=""
+                className="w-full h-full object-cover select-none"
+                loading="eager"
               />
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Modern gradient overlays */}
+        {/* Modern high-performance overlays */}
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent pointer-events-none" />
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-slate-950/30 via-transparent to-transparent pointer-events-none" />
 
-        {/* main content */}
-        <div className="absolute inset-0 z-20 flex flex-col justify-end p-10 lg:p-14 xl:p-20 pointer-events-none">
+        {/* content layer */}
+        <div className="relative z-20 flex-1 flex flex-col justify-end p-10 lg:p-14 xl:p-16 pointer-events-none">
           <div className="max-w-2xl pointer-events-auto">
-            <div className="relative h-[220px] mb-6 flex flex-col justify-end">
+            {/* Height-stable content area */}
+            <div className="min-h-[180px] flex flex-col justify-end mb-8">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
                   className="space-y-4"
                 >
-                  {/* Tag with line */}
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-0.5 bg-emerald-500 rounded-full" />
-                    <span className="text-emerald-400 font-semibold tracking-wider text-sm uppercase">
-                      {slides[currentSlide % slides.length].tag}
+                    <div className="w-10 h-0.5 bg-emerald-500 rounded-full" />
+                    <span className="text-emerald-400 font-bold tracking-widest text-[10px] uppercase">
+                      {activeSlide.tag}
                     </span>
                   </div>
 
-                  {/* Title */}
-                  <h2 className="text-4xl lg:text-5xl font-bold leading-tight text-white tracking-tight drop-shadow-lg">
-                    {slides[currentSlide % slides.length].title}
+                  <h2 className="text-4xl xl:text-5xl font-bold leading-[1.1] text-white tracking-tight drop-shadow-md">
+                    {activeSlide.title}
                   </h2>
 
-                  {/* Description */}
-                  <p className="text-lg text-slate-200/90 leading-relaxed font-light max-w-lg">
-                    {slides[currentSlide % slides.length].description}
+                  <p className="text-base text-slate-200/90 leading-relaxed font-light max-w-lg">
+                    {activeSlide.description}
                   </p>
                 </motion.div>
               </AnimatePresence>
             </div>
 
-            {/* Indicators with progress bar style */}
-            <div className="flex gap-3 mt-12">
+            {/* Pagination Indicators - Uses scaleX for layout-thrashing-free animation */}
+            <div className="flex gap-2.5 mb-8">
               {AUTH_SLIDE_IMAGES.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => handleSlideChange(index)}
-                  className="group focus:outline-none py-2"
+                  className="group flex-1 max-w-[40px] focus:outline-none"
                   aria-label={`Go to slide ${index + 1}`}
                 >
-                  <div className="relative h-1 w-8 rounded-full bg-white/20 transition-all group-hover:bg-white/40 overflow-hidden">
+                  <div className="relative h-1 w-full rounded-full bg-white/20 transition-colors group-hover:bg-white/40 overflow-hidden">
                     {index === currentSlide && (
                       <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: "100%" }}
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
                         transition={{ duration: interval / 1000, ease: "linear" }}
-                        className="absolute inset-0 bg-emerald-500 rounded-full"
-                        style={{ originX: 0 }}
+                        className="absolute inset-0 bg-emerald-500 rounded-full origin-left"
                       />
                     )}
                   </div>
@@ -125,40 +137,24 @@ export const AuthBranding: React.FC<AuthBrandingProps> = ({
               ))}
             </div>
 
-            {/* Navigation buttons Prev / Next */}
-            <div className="flex gap-4 mt-6">
+            {/* High-performance Navigation controls */}
+            <div className="flex gap-4">
               <button
-                onClick={() =>
-                  handleSlideChange((currentSlide - 1 + totalImages) % totalImages)
-                }
-                className="p-2.5 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all border border-white/10"
+                onClick={() => handleSlideChange((currentSlide - 1 + totalImages) % totalImages)}
+                className="p-3 rounded-full bg-white/5 backdrop-blur-md text-white hover:bg-white/20 transition-all border border-white/5 active:scale-95"
                 aria-label="Previous slide"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m15 18-6-6 6-6"/>
                 </svg>
               </button>
               <button
                 onClick={() => handleSlideChange((currentSlide + 1) % totalImages)}
-                className="p-2.5 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all border border-white/10"
+                className="p-3 rounded-full bg-white/5 backdrop-blur-md text-white hover:bg-white/20 transition-all border border-white/5 active:scale-95"
                 aria-label="Next slide"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m9 18 6-6-6-6"/>
                 </svg>
               </button>
             </div>
