@@ -49,7 +49,7 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
     });
 
   return (
-    <div className="bg-white p-4 lg:p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+    <div className="p-4 lg:p-5 space-y-4 bg-slate-50/30 border-b border-slate-100">
       {/* Row 1: Search + action buttons */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
         {/* Search */}

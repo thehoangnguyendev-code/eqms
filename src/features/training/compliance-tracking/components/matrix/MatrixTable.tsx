@@ -49,7 +49,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
   };
 
   return (
-    <div className="border border-slate-200/80 rounded-2xl bg-white shadow-lg shadow-slate-200/50 overflow-hidden flex flex-col flex-1 transition-all duration-200">
+    <div className="flex flex-col flex-1 min-h-0 bg-white">
       {/* Mobile scroll controls */}
       <div className="relative">
         <div className="absolute left-2 top-1/2 -translate-y-1/2 z-20 md:hidden">
@@ -107,7 +107,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-t border-slate-200/60 bg-gradient-to-r from-slate-50/90 to-white/80 backdrop-blur-sm">
         <span className="text-[11px] sm:text-xs text-slate-500 flex items-center gap-1.5">
           <span className="font-semibold text-slate-700">{employees.length}</span> employees ×{" "}
-          <span className="font-semibold text-slate-700">{MOCK_SOPS.length}</span> SOPs
+          <span className="font-semibold text-slate-700">{MOCK_SOPS.length}</span> Courses
         </span>
         {filters.gapAnalysis && (
           <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold border bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-200 shadow-sm">
@@ -141,14 +141,14 @@ const MatrixHead: React.FC<MatrixHeadProps> = React.memo(({ onSOPHeaderClick }) 
     <tr>
       {/* No. column - smaller on mobile */}
       <th className="sticky top-0 left-0 z-30 bg-white/95 backdrop-blur-sm border-b border-r border-slate-200/80 px-1.5 sm:px-2 py-2 sm:py-3 min-w-[36px] sm:min-w-[44px] max-w-[36px] sm:max-w-[44px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-        <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
           No.
         </span>
       </th>
 
       {/* Employee column - responsive width */}
       <th className="sticky top-0 left-[36px] sm:left-[44px] z-30 bg-white/95 backdrop-blur-sm border-b border-r border-slate-200/80 px-2 sm:px-3 py-2 sm:py-3 min-w-[120px] sm:min-w-[140px] md:min-w-[180px] text-left shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-        <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
           Employee
         </span>
       </th>
@@ -232,7 +232,7 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
         <tr key={emp.id} className="group/row transition-colors duration-150 hover:bg-slate-50/60">
           {/* No. */}
           <td className="sticky left-0 z-10 bg-white border-b border-r border-slate-200/60 px-1.5 sm:px-2 py-1.5 sm:py-2 min-w-[36px] sm:min-w-[44px] max-w-[36px] sm:max-w-[44px] text-center group-hover/row:bg-slate-50/60">
-            <span className="text-[10px] sm:text-xs font-medium text-slate-400">{index + 1}</span>
+            <span className="text-[10px] sm:text-xs text-slate-500 font-medium">{index + 1}</span>
           </td>
 
           {/* Employee name - responsive with department hidden on very small screens */}
@@ -242,7 +242,7 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
             title={`View details for ${emp.name}`}
           >
             <div className="flex flex-col">
-              <span className="text-[12px] sm:text-sm font-semibold text-slate-800 truncate">
+              <span className="text-[12px] sm:text-sm font-medium text-slate-800 truncate">
                 {emp.name}
               </span>
               <span className="text-[9px] sm:text-[11px] text-slate-500 truncate hidden xs:block">
@@ -324,7 +324,7 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
                           cfg.iconColor
                         )}
                       />
-                      <span className="hidden sm:inline-block text-[9px] sm:text-[10px] md:text-[11px] font-semibold text-slate-600 select-none">
+                      <span className="hidden sm:inline-block text-[9px] sm:text-[10px] md:text-[11px] font-medium select-none">
                         {cfg.label}
                       </span>
                     </>

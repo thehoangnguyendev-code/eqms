@@ -20,22 +20,7 @@ import {
   CELL_CONFIG,
 } from "../../components/matrix";
 
-const HERO_BANNER_STYLES = `
-  @keyframes border-rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-  }
-  .animate-border-rotate {
-    animation: border-rotate 4s linear infinite;
-  }
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-`;
+
 
 
 
@@ -223,80 +208,63 @@ export const TrainingMatrixView: React.FC = () => {
         }
       />
 
-      {/* Filter Bar */}
-      <FilterBar
-        filters={filters}
-        onChange={setFilters}
-        showFilters={showFilters}
-        onToggleFilters={handleToggleFilters}
-      />
-
       {/* New Employee Hero Banner */}
       {heroBannerStats && (
-        <div className="relative p-[1px] overflow-hidden rounded-xl shadow-md animate-in fade-in slide-in-from-top-4 duration-500 mb-5 animate-float">
-          <style>{HERO_BANNER_STYLES}</style>
-
-          
-          {/* Running Border Glow effect */}
-          <div 
-            className="absolute inset-[-200%] animate-border-rotate opacity-70"
-            style={{ 
-              background: 'conic-gradient(from 0deg, transparent 70%, #ef4444 100%)' 
-            }} 
-          />
-
-          {/* Actual Banner Content */}
-          <div className="relative z-10 bg-red-50 border border-red-100 rounded-[calc(0.75rem-1px)] p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-            <div className="flex items-start sm:items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
-                <AlertTriangle className="h-5 w-5 text-red-600 animate-pulse" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-red-800">
-                  New Employee Missing Training
-                </h3>
-                <p className="text-xs text-red-600 mt-0.5 max-w-xl leading-relaxed">
-                  <span className="font-semibold text-red-700">Alex Turner</span> (QA Specialist) was recently added to the system and has <span className="font-bold underline">{heroBannerStats.newEmpMissingCount} missing</span> mandatory course{heroBannerStats.newEmpMissingCount !== 1 ? "s" : ""}. Click their red cells or start an assignment now.
-                </p>
-              </div>
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between mb-5 shadow-sm">
+          <div className="flex items-start sm:items-center gap-4">
+            <div>
+              <h3 className="text-sm font-bold text-red-800">
+                New Employee Missing Training
+              </h3>
+              <p className="text-xs text-red-600 mt-0.5 max-w-xl leading-relaxed">
+                <span className="font-semibold text-red-700">Alex Turner</span> (QA Specialist) was recently added to the system and has <span className="font-bold underline">{heroBannerStats.newEmpMissingCount} missing</span> mandatory course{heroBannerStats.newEmpMissingCount !== 1 ? "s" : ""}. Click their red cells or start an assignment now.
+              </p>
             </div>
-            <Button
-              size="sm"
-              onClick={() => {
-                navigateTo(`${ROUTES.TRAINING.ASSIGNMENT_NEW}?employeeId=EMP-NEW`);
-              }}
-              className="shrink-0 bg-red-600 hover:bg-red-700 text-white shadow-sm gap-2 relative z-20 group"
-            >
-              Assign Training Now
-              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </Button>
           </div>
+          <Button
+            size="sm"
+            onClick={() => {
+              navigateTo(`${ROUTES.TRAINING.ASSIGNMENT_NEW}?employeeId=EMP-NEW`);
+            }}
+            className="shrink-0 bg-red-600 hover:bg-red-700 text-white shadow-sm gap-2 group"
+          >
+            Assign Training Now
+          </Button>
         </div>
       )}
 
+      {/* Unified Matrix Card */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col flex-1 min-h-0">
+        <FilterBar
+          filters={filters}
+          onChange={setFilters}
+          showFilters={showFilters}
+          onToggleFilters={handleToggleFilters}
+        />
 
-      {/* Color Legend */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm px-4 py-2.5 flex items-center gap-3 flex-wrap">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap shrink-0">
-          Legend
-        </span>
-        <div className="w-px h-3.5 bg-slate-200 shrink-0" />
-        <div className="flex items-center gap-2 flex-wrap">
-          {legendItems}
+        {/* Color Legend Bar */}
+        <div className="px-5 py-2.5 bg-slate-50/50 border-b border-slate-200/60 flex items-center gap-3 flex-wrap">
+          <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap shrink-0">
+            Legend
+          </span>
+          <div className="w-px h-3.5 bg-slate-200 shrink-0" />
+          <div className="flex items-center gap-2 flex-wrap">
+            {legendItems}
+          </div>
         </div>
-      </div>
 
-      {/* Matrix Table */}
-      <MatrixTable
-        employees={filteredEmployees}
-        filters={filters}
-        hasActiveFilters={hasActiveFilters}
-        onClearFilters={clearFilters}
-        onCellClick={handleCellClick}
-        onEmployeeClick={handleEmployeeClick}
-        onSOPHeaderClick={handleSOPHeaderClick}
-        navigateTo={navigateTo}
-      />
+        {/* Matrix Table */}
+        <MatrixTable
+          employees={filteredEmployees}
+          filters={filters}
+          hasActiveFilters={hasActiveFilters}
+          onClearFilters={clearFilters}
+          onCellClick={handleCellClick}
+          onEmployeeClick={handleEmployeeClick}
+          onSOPHeaderClick={handleSOPHeaderClick}
+          navigateTo={navigateTo}
+        />
+      </div>
 
       {/* Cell detail drawer */}
       {activeCellDrawer && (
