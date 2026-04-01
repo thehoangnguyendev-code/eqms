@@ -23,6 +23,18 @@ export const CertAddModal: React.FC<CertAddModalProps> = ({ isOpen, onClose, onS
   const [errors, setErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Reset state when modal opens or editing changes
+  React.useEffect(() => {
+    if (isOpen) {
+      setName(editing?.name ?? "");
+      setIssuingOrg(editing?.issuingOrg ?? "");
+      setIssueDate(editing?.issueDate ?? "");
+      setExpiryDate(editing?.expiryDate ?? "");
+      setFile(null);
+      setErrors({});
+    }
+  }, [isOpen, editing]);
+
   const validate = () => {
     const errs: Record<string, string> = {};
     if (!name.trim()) errs.name = "Certificate name is required";
@@ -82,7 +94,6 @@ export const CertAddModal: React.FC<CertAddModalProps> = ({ isOpen, onClose, onS
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white min-h-[56px] shrink-0">
               <div className="flex items-center gap-2.5">
-                <span className="text-emerald-600"><Award className="h-4 w-4" /></span>
                 <h3 className="text-sm font-semibold text-slate-800">
                   {editing ? "Edit Certificate" : "Add Certificate"}
                 </h3>

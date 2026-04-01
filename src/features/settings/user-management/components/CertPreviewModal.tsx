@@ -65,7 +65,6 @@ export const CertPreviewModal: React.FC<CertPreviewModalProps> = ({ isOpen, cert
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white min-h-[56px] shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
-                <span className="text-emerald-600 flex-shrink-0"><Award className="h-4 w-4" /></span>
                 <div className="min-w-0">
                   <h3 className="text-sm font-semibold text-slate-800 truncate leading-tight">{cert.name}</h3>
                   <p className="text-[10px] sm:text-xs text-slate-500">{cert.issuingOrg}</p>
@@ -73,8 +72,8 @@ export const CertPreviewModal: React.FC<CertPreviewModalProps> = ({ isOpen, cert
               </div>
               <div className="flex items-center gap-2 flex-shrink-0 ml-3">
                 {cert.fileObjectUrl && cert.fileName && (
-                  <Button variant="outline" size="xs" onClick={handleDownload} className="hidden sm:flex">
-                    <Download className="h-3.5 w-3.5" />
+                  <Button variant="outline" size="sm" onClick={handleDownload} className="hidden sm:flex">
+                    <Download className="h-3.5 w-3.5 mr-1.5" />
                     Download
                   </Button>
                 )}

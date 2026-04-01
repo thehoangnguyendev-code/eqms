@@ -332,19 +332,17 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
       </div>
 
       {/* Cert modals managed locally */}
-      {certAddOpen && (
-        <CertAddModal
-          onClose={() => { setCertAddOpen(false); setCertEditing(null); }}
-          onSave={handleCertSave}
-          editing={certEditing}
-        />
-      )}
-      {certPreview && (
-        <CertPreviewModal
-          cert={certPreview}
-          onClose={() => setCertPreview(null)}
-        />
-      )}
+      <CertAddModal
+        isOpen={certAddOpen}
+        onClose={() => { setCertAddOpen(false); setCertEditing(null); }}
+        onSave={handleCertSave}
+        editing={certEditing}
+      />
+      <CertPreviewModal
+        isOpen={!!certPreview}
+        cert={certPreview}
+        onClose={() => setCertPreview(null)}
+      />
 
       <AlertModal
         isOpen={certDeleteId !== null}
