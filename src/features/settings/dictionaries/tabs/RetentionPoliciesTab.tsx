@@ -12,6 +12,7 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Select } from "@/components/ui/select/Select";
 import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker";
 import { cn } from "@/components/ui/utils";
@@ -328,80 +329,98 @@ export const RetentionPoliciesTab = React.forwardRef<{ openAddModal: () => void 
         )}
       </div>
 
-      {openDropdownId &&
-        createPortal(
-          <>
-            <div
-              className="fixed inset-0 z-40 animate-in fade-in duration-150"
-              onClick={(e) => {
-                e.stopPropagation();
-                closeDropdown();
-              }}
-              aria-hidden="true"
-            />
-            <div
-              className="fixed z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-              style={{
-                top: `${dropdownPosition.top}px`,
-                left: `${dropdownPosition.left}px`,
-              }}
-            >
-              <div className="py-1">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const item = filteredItems.find(
-                      (i) => i.id === openDropdownId,
-                    )!;
-                    handleEdit(item);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                >
-                  <Edit className="h-3.5 w-3.5" />
-                  <span>Edit</span>
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const item = filteredItems.find(
-                      (i) => i.id === openDropdownId,
-                    )!;
-                    handleToggleStatus(item);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                >
-                  {filteredItems.find((i) => i.id === openDropdownId)
-                    ?.isActive ? (
-                    <>
-                      <PowerOff className="h-3.5 w-3.5" />
-                      <span>Disable</span>
-                    </>
-                  ) : (
-                    <>
-                      <Power className="h-3.5 w-3.5" />
-                      <span>Enable</span>
-                    </>
-                  )}
-                </button>
-                <div className="border-t border-slate-100 my-1"></div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const item = filteredItems.find(
-                      (i) => i.id === openDropdownId,
-                    )!;
-                    handleDelete(item);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  <span>Delete</span>
-                </button>
-              </div>
+      {createPortal(
+        <AnimatePresence>
+          {openDropdownId && (
+            <div className="fixed inset-0 z-50 pointer-events-none">
+              <motion.div
+                key="dropdown-backdrop"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="fixed inset-0 bg-transparent pointer-events-auto"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeDropdown();
+                }}
+              />
+              <motion.div
+                key="dropdown-menu"
+                initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                transition={{
+                  type: "spring",
+                  damping: 25,
+                  stiffness: 400
+                }}
+                className="fixed pointer-events-auto min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl overflow-hidden"
+                style={{
+                  top: `${dropdownPosition.top}px`,
+                  left: `${dropdownPosition.left}px`,
+                  transformOrigin: dropdownPosition.showAbove ? "bottom" : "top",
+                  transform: dropdownPosition.showAbove ? "translateY(-100%)" : "none",
+                }}
+              >
+                <div className="py-1">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const item = filteredItems.find(
+                        (i) => i.id === openDropdownId,
+                      )!;
+                      handleEdit(item);
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                  >
+                    <Edit className="h-3.5 w-3.5" />
+                    <span>Edit Retention Policy</span>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const item = filteredItems.find(
+                        (i) => i.id === openDropdownId,
+                      )!;
+                      handleToggleStatus(item);
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                  >
+                    {filteredItems.find((i) => i.id === openDropdownId)
+                      ?.isActive ? (
+                      <>
+                        <PowerOff className="h-3.5 w-3.5" />
+                        <span>Disable</span>
+                      </>
+                    ) : (
+                      <>
+                        <Power className="h-3.5 w-3.5" />
+                        <span>Enable</span>
+                      </>
+                    )}
+                  </button>
+                  <div className="border-t border-slate-100 my-1"></div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const item = filteredItems.find(
+                        (i) => i.id === openDropdownId,
+                      )!;
+                      handleDelete(item);
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </motion.div>
             </div>
-          </>,
-          document.body,
-        )}
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
 
       <RetentionPolicyModal
         isOpen={showAddModal || showEditModal}

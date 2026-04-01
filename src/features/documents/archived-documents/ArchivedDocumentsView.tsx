@@ -9,6 +9,7 @@ import {
     MoreVertical
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button/Button';
 import { TablePagination } from '@/components/ui/table/TablePagination';
 import { TableEmptyState } from '@/components/ui/table/TableEmptyState';
@@ -337,42 +338,56 @@ export const ArchivedDocumentsView: React.FC = () => {
             </div>
 
             {/* Dropdown Menu */}
-            {openId && createPortal(
-                <>
-                    <div
-                        className="fixed inset-0 z-40 animate-in fade-in duration-150"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            close();
-                        }}
-                        aria-hidden="true"
-                    />
-                    <div
-                        className="fixed z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-                        style={{
-                            top: `${position.top}px`,
-                            left: `${position.left}px`,
-                            transform: position.showAbove ? "translateY(-100%)" : "none",
-                        }}
-                    >
-                        <div className="py-1">
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    const doc = paginatedDocuments.find(d => d.id === openId);
-                                    if (doc) handleView(doc);
-                                    close();
-                                }}
-                                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                            >
-                                <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
-                                <span className="font-medium">View Detail</span>
-                            </button>
-                        </div>
-                    </div>
-                </>,
-                window.document.body
-            )}
+            <AnimatePresence>
+                {openId && createPortal(
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
+                            className="fixed inset-0 z-40"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                close();
+                            }}
+                            aria-hidden="true"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                            transition={{
+                              type: "spring",
+                              damping: 25,
+                              stiffness: 400
+                            }}
+                            className="fixed z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl overflow-hidden"
+                            style={{
+                                top: `${position.top}px`,
+                                left: `${position.left}px`,
+                                transformOrigin: position.showAbove ? "bottom" : "top",
+                            }}
+                        >
+                            <div className="py-1">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        const doc = paginatedDocuments.find(d => d.id === openId);
+                                        if (doc) handleView(doc);
+                                        close();
+                                    }}
+                                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                                >
+                                    <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
+                                    <span className="font-medium">View Detail</span>
+                                </button>
+                            </div>
+                        </motion.div>
+                    </>,
+                    document.body
+                )}
+            </AnimatePresence>
 
         </div>
     );

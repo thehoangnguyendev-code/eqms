@@ -45,10 +45,11 @@ export const FormModal: React.FC<FormModalProps> = ({
   size = 'xl',
   className,
 }) => {
-  return createPortal(
-    <AnimatePresence>
+  const portalContent = createPortal(
+    <AnimatePresence mode="wait">
       {isOpen && (
-        <div
+        <motion.div
+          key="form-modal-wrapper"
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-hidden"
           style={{
             paddingTop: `max(0.75rem, env(safe-area-inset-top))`,
@@ -59,6 +60,7 @@ export const FormModal: React.FC<FormModalProps> = ({
         >
           {/* Backdrop */}
           <motion.div
+            key="form-modal-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -69,13 +71,14 @@ export const FormModal: React.FC<FormModalProps> = ({
 
           {/* Modal Content */}
           <motion.div
+            key="form-modal-content"
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
             transition={{
               type: "spring",
               damping: 25,
-              stiffness: 300,
+              stiffness: 350,
               duration: 0.3
             }}
             className={cn(
@@ -84,8 +87,9 @@ export const FormModal: React.FC<FormModalProps> = ({
               className
             )}
             style={{ maxHeight: 'calc(100dvh - 2rem)' }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3 border-b border-slate-100 bg-white shrink-0">
+            <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3 border-b border-slate-100 bg-white min-h-[64px] shrink-0">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   {title && (
@@ -104,9 +108,11 @@ export const FormModal: React.FC<FormModalProps> = ({
                 <div className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">{description}</div>
               )}
             </div>
+            
             <div className="px-4 sm:px-6 py-4 sm:py-5 bg-white overflow-y-auto flex-1 min-h-0">
               {children}
             </div>
+
             <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-2 sm:gap-3 shrink-0">
               {showCancel && (
                 <Button size="sm" variant="outline" onClick={onClose} disabled={isLoading}>
@@ -118,9 +124,11 @@ export const FormModal: React.FC<FormModalProps> = ({
               </Button>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>,
     document.body
   );
+
+  return portalContent;
 };

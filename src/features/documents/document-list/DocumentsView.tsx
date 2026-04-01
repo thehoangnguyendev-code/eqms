@@ -103,7 +103,6 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   onNavigateTo,
   onCreateLink,
 }) => {
-  if (!isOpen) return null;
 
   // Dynamic menu items based on document status
   const getMenuItems = () => {
@@ -195,48 +194,69 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   const menuItems = getMenuItems();
 
   return createPortal(
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 animate-in fade-in duration-150"
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}
-        aria-hidden="true"
-      />
-      {/* Menu */}
-      <div
-        className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-        style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          transform: position.showAbove ? 'translateY(-100%)' : 'none'
-        }}
-      >
-        <div className="py-1">
-          {menuItems.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={index}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  item.onClick();
-                }}
-                className={cn(
-                  "flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 active:bg-slate-100 transition-colors",
-                  item.color
-                )}
-              >
-                <Icon className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </>,
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          key="dropdown-menu-wrapper"
+          className="fixed inset-0 z-50 pointer-events-none"
+        >
+          {/* Backdrop */}
+          <motion.div
+            key="dropdown-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="fixed inset-0 z-40 pointer-events-auto"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            aria-hidden="true"
+          />
+          {/* Menu */}
+          <motion.div
+            key="dropdown-menu-content"
+            initial={{ opacity: 0, scale: 0.95, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 4 }}
+            transition={{
+              type: "spring",
+              damping: 25,
+              stiffness: 350,
+            }}
+            className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl pointer-events-auto"
+            style={{
+              top: `${position.top}px`,
+              left: `${position.left}px`,
+              transform: position.showAbove ? 'translateY(-100%)' : 'none',
+            }}
+          >
+            <div className="py-1">
+              {menuItems.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      item.onClick();
+                    }}
+                    className={cn(
+                      "flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 active:bg-slate-100 transition-colors",
+                      item.color
+                    )}
+                  >
+                    <Icon className="h-4 w-4 flex-shrink-0" />
+                    <span className="font-medium">{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
     window.document.body
   );
 };
@@ -1077,17 +1097,18 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
       )}
 
       {/* Create Shareable Link Modal */}
-      {selectedDocumentForLink && (
-        <CreateLinkModal
-          isOpen={isCreateLinkModalOpen}
-          onClose={() => {
-            setIsCreateLinkModalOpen(false);
-            setSelectedDocumentForLink(null);
-          }}
-          documentId={selectedDocumentForLink.documentId}
-          documentTitle={selectedDocumentForLink.title}
-        />
-      )}
+      <CreateLinkModal
+        isOpen={isCreateLinkModalOpen && !!selectedDocumentForLink}
+        onClose={() => {
+          setIsCreateLinkModalOpen(false);
+          // We can't set it to null immediately or the modal will unmount instantly.
+          // However, we need to clear it eventually. 
+          // Suggestion: Clear it on animation complete or keep the modal definition 
+          // with empty data while it's closing.
+        }}
+        documentId={selectedDocumentForLink?.documentId || ""}
+        documentTitle={selectedDocumentForLink?.title || ""}
+      />
     </div>
   );
 };

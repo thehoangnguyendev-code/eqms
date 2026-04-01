@@ -804,106 +804,119 @@ export const RevisionListView: React.FC = () => {
       </div>
 
       {/* Dropdown Menu (Portal) */}
-      {openId && (() => {
-        const currentRevision = MOCK_REVISIONS.find(r => r.id === openId);
-        const isPendingReview = currentRevision?.state === "Pending Review";
-        const isPendingApproval = currentRevision?.state === "Pending Approval";
-        const isEffective = currentRevision?.state === "Effective";
+      <AnimatePresence>
+        {openId && (() => {
+          const currentRevision = MOCK_REVISIONS.find(r => r.id === openId);
+          const isPendingReview = currentRevision?.state === "Pending Review";
+          const isPendingApproval = currentRevision?.state === "Pending Approval";
+          const isEffective = currentRevision?.state === "Effective";
 
-        return createPortal(
-          <>
-            <div
-              className="fixed inset-0 z-40 animate-in fade-in duration-150"
-              onClick={(e) => {
-                e.stopPropagation();
-                close();
-              }}
-              aria-hidden="true"
-            />
-            <div
-              className="fixed z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-              style={{
-                top: `${position.top}px`,
-                left: `${position.left}px`,
-                transform: position.showAbove ? 'translateY(-100%)' : 'none',
-                transformOrigin: "top right",
-              }}
-            >
-              <div className="py-1">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMenuAction("view", openId);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                >
-                  <IconInfoCircle className="h-4 w-4 text-slate-500" />
-                  <span>View Details</span>
-                </button>
-                {isPendingReview && (
+          return createPortal(
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="fixed inset-0 z-40"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  close();
+                }}
+                aria-hidden="true"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                transition={{
+                  type: "spring",
+                  damping: 25,
+                  stiffness: 400
+                }}
+                className="fixed z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl overflow-hidden"
+                style={{
+                  top: `${position.top}px`,
+                  left: `${position.left}px`,
+                  transformOrigin: position.showAbove ? "bottom" : "top",
+                }}
+              >
+                <div className="py-1">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleMenuAction("review", openId);
+                      handleMenuAction("view", openId);
                     }}
                     className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
                   >
-                    <IconEyeCheck className="h-4 w-4 text-slate-500" />
-                    <span>Review Revision</span>
+                    <IconInfoCircle className="h-4 w-4 text-slate-500" />
+                    <span>View Details</span>
                   </button>
-                )}
-                {isPendingApproval && (
+                  {isPendingReview && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMenuAction("review", openId);
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                    >
+                      <IconEyeCheck className="h-4 w-4 text-slate-500" />
+                      <span>Review Revision</span>
+                    </button>
+                  )}
+                  {isPendingApproval && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMenuAction("approve", openId);
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                    >
+                      <IconChecks className="h-4 w-4 text-slate-500" />
+                      <span>Approve Revision</span>
+                    </button>
+                  )}
+                  {isEffective && currentRevision && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleNewRevision(currentRevision);
+                        }}
+                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                      >
+                        <FilePlusCorner className="h-4 w-4 text-slate-500" />
+                        <span>Upgrade Revision</span>
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePrintControlledCopy(currentRevision);
+                        }}
+                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                      >
+                        <FileStack className="h-4 w-4 text-slate-500" />
+                        <span>Request Controlled Copy</span>
+                      </button>
+                    </>
+                  )}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleMenuAction("approve", openId);
+                      handleMenuAction("audit", openId);
                     }}
                     className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
                   >
-                    <IconChecks className="h-4 w-4 text-slate-500" />
-                    <span>Approve Revision</span>
+                    <History className="h-4 w-4 text-slate-500" />
+                    <span>View Audit Trail</span>
                   </button>
-                )}
-                {isEffective && currentRevision && (
-                  <>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNewRevision(currentRevision);
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                    >
-                      <FilePlusCorner className="h-4 w-4 text-slate-500" />
-                      <span>Upgrade Revision</span>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePrintControlledCopy(currentRevision);
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                    >
-                      <FileStack className="h-4 w-4 text-slate-500" />
-                      <span>Request Controlled Copy</span>
-                    </button>
-                  </>
-                )}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMenuAction("audit", openId);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                >
-                  <History className="h-4 w-4 text-slate-500" />
-                  <span>View Audit Trail</span>
-                </button>
-              </div>
-            </div>
-          </>,
-          document.body
-        );
-      })()}
+                </div>
+              </motion.div>
+            </>,
+            document.body
+          );
+        })()}
+      </AnimatePresence>
     </div>
   );
 };

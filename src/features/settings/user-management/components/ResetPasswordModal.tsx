@@ -22,7 +22,6 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
 }) => {
  const { showToast } = useToast();
  
- if (!isOpen) return null;
 
  const handleCopyPassword = async () => {
  try {

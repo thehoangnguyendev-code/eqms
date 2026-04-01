@@ -1,5 +1,6 @@
 import React, { useState, useMemo, createRef, useRef } from "react";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from '@/app/routes.constants';
 import {
@@ -98,129 +99,151 @@ const DropdownMenu: React.FC<{
   onViewAuditTrail,
   viewType,
 }) => {
-    if (!isOpen) return null;
-
+  
     return createPortal(
-      <>
-        <div
-          className="fixed inset-0 z-40 animate-in fade-in duration-150"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-          style={{
-            top: `${position.top}px`,
-            left: `${position.left}px`,
-            transform: position.showAbove ? "translateY(-100%)" : "none",
-          }}
-        >
-          <div className="py-1">
-            <button
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="controlled-copies-dropdown-wrapper"
+            className="fixed inset-0 z-50 pointer-events-none"
+          >
+            {/* Backdrop */}
+            <motion.div
+              key="controlled-copies-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="fixed inset-0 z-40 pointer-events-auto"
               onClick={(e) => {
                 e.stopPropagation();
-                onViewDetails();
                 onClose();
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-            >
-              <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium">View Details</span>
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit();
-                onClose();
+              aria-hidden="true"
+            />
+            {/* Menu */}
+            <motion.div
+              key="controlled-copies-menu-content"
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 4 }}
+              transition={{
+                type: "spring",
+                damping: 25,
+                stiffness: 350,
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-            >
-              <Edit className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium">Edit Controlled Copy</span>
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onViewAuditTrail();
-                onClose();
+              className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl pointer-events-auto"
+              style={{
+                top: `${position.top}px`,
+                left: `${position.left}px`,
+                transform: position.showAbove ? "translateY(-100%)" : "none",
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
             >
-              <History className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium">View Audit Trail</span>
-            </button>
-            {onDistribute && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDistribute();
-                  onClose();
-                }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-              >
-                <IconShare3 className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium">Distribute</span>
-              </button>
-            )}
-            {onCreateLink && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCreateLink();
-                  onClose();
-                }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-              >
-                <Link2 className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium">Create Shareable Link</span>
-              </button>
-            )}
-            {viewType === "ready" && onCancel && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCancel();
-                  onClose();
-                }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-              >
-                <FileX className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium">Cancel Distribution</span>
-              </button>
-            )}
-            {(viewType === "distributed" || (viewType === "all" && onReportLostDamaged)) && onReportLostDamaged && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onReportLostDamaged();
-                  onClose();
-                }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-              >
-                <Shredder className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium">Report Lost/Damaged</span>
-              </button>
-            )}
-            {viewType === "all" && onCancel && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCancel();
-                  onClose();
-                }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-              >
-                <FileX className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium">Cancel Distribution</span>
-              </button>
-
-            )}
-          </div>
-        </div>
-      </>,
+              <div className="py-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onViewDetails();
+                    onClose();
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                >
+                  <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
+                  <span className="font-medium">View Details</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit();
+                    onClose();
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                >
+                  <Edit className="h-4 w-4 flex-shrink-0" />
+                  <span className="font-medium">Edit Controlled Copy</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onViewAuditTrail();
+                    onClose();
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                >
+                  <History className="h-4 w-4 flex-shrink-0" />
+                  <span className="font-medium">View Audit Trail</span>
+                </button>
+                {onDistribute && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDistribute();
+                      onClose();
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                  >
+                    <IconShare3 className="h-4 w-4 flex-shrink-0" />
+                    <span className="font-medium">Distribute</span>
+                  </button>
+                )}
+                {onCreateLink && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCreateLink();
+                      onClose();
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                  >
+                    <Link2 className="h-4 w-4 flex-shrink-0" />
+                    <span className="font-medium">Create Shareable Link</span>
+                  </button>
+                )}
+                {viewType === "ready" && onCancel && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCancel();
+                      onClose();
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                  >
+                    <FileX className="h-4 w-4 flex-shrink-0" />
+                    <span className="font-medium">Cancel Distribution</span>
+                  </button>
+                )}
+                {(viewType === "distributed" || (viewType === "all" && onReportLostDamaged)) && onReportLostDamaged && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onReportLostDamaged();
+                      onClose();
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                  >
+                    <Shredder className="h-4 w-4 flex-shrink-0" />
+                    <span className="font-medium">Report Lost/Damaged</span>
+                  </button>
+                )}
+                {viewType === "all" && onCancel && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCancel();
+                      onClose();
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                  >
+                    <FileX className="h-4 w-4 flex-shrink-0" />
+                    <span className="font-medium">Cancel Distribution</span>
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+,
       window.document.body
     );
   };
@@ -790,17 +813,15 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
       })()}
 
       {/* Create Shareable Link Modal */}
-      {selectedCopyForLink && (
-        <CreateLinkModal
-          isOpen={isCreateLinkModalOpen}
-          onClose={() => {
-            setIsCreateLinkModalOpen(false);
-            setSelectedCopyForLink(null);
-          }}
-          documentId={selectedCopyForLink.documentNumber}
-          documentTitle={selectedCopyForLink.name}
-        />
-      )}
+      <CreateLinkModal
+        isOpen={isCreateLinkModalOpen && !!selectedCopyForLink}
+        onClose={() => {
+          setIsCreateLinkModalOpen(false);
+          // Suggestion: Clear it after a delay or on animation complete
+        }}
+        documentId={selectedCopyForLink?.documentNumber || ""}
+        documentTitle={selectedCopyForLink?.name || ""}
+      />
 
       {/* Cancel Distribution Modal */}
       {selectedCopyForCancel && (

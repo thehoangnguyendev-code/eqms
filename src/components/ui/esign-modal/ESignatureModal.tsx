@@ -64,11 +64,12 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
     setError('');
   };
 
-  return createPortal(
-    <AnimatePresence>
+  const portalContent = createPortal(
+    <AnimatePresence mode="wait">
       {isOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        <motion.div
+          key="esign-modal-wrapper"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden"
           style={{
             // iOS Safari safe area support
             paddingTop: 'max(1rem, env(safe-area-inset-top, 1rem))',
@@ -79,6 +80,7 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
         >
           {/* Backdrop */}
           <motion.div
+            key="esign-modal-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -89,6 +91,7 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
 
           {/* Modal content */}
           <motion.div
+            key="esign-modal-content"
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
@@ -101,18 +104,19 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
             className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-slate-200 overflow-hidden relative z-10 flex flex-col"
             style={{
               // Ensure modal doesn't exceed viewport on mobile
-              maxHeight: 'calc(100dvh - 4rem)',
+              maxHeight: 'calc(100dvh - 2rem)',
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header - Fixed */}
-            <div className="flex-shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50/50">
+            <div className="flex-shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50/50 min-h-[56px]">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
                   <PenTool className="h-4 w-4 text-emerald-700 -rotate-[90deg] transition-transform" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 leading-tight">Electronic Signature</h3>
-                  <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium">Complies with FDA 21 CFR Part 11 and EU Annex 11</p>
+                  <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium font-mono">21 CFR Part 11 COMPLIANT</p>
                 </div>
               </div>
               <button
@@ -129,15 +133,15 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
               {/* Change Details Table */}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs sm:text-sm font-medium text-slate-700">Meaning of Signature</span>
+                  <span className="text-xs sm:text-sm font-semibold text-slate-700">Audit Trail Summary</span>
                 </div>
                 <div className="border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-slate-50 border-b border-slate-200">
-                        <th className="px-3 py-2 text-xs font-bold text-slate-500">Action</th>
-                        <th className="px-3 py-2 text-xs font-bold text-slate-500">Old Value</th>
-                        <th className="px-3 py-2 text-xs font-bold text-slate-500">New Value</th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Property</th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Old Value</th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">New Value</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -221,14 +225,16 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
             </div>
 
             {/* Footer - Fixed */}
-            <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-slate-50/30 flex justify-end gap-2">
+            <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-slate-50/30 flex justify-end gap-2 min-h-[56px]">
               <Button type="button" size='sm' variant="outline" onClick={onClose} className="min-w-[5rem]">Cancel</Button>
               <Button type="submit" onClick={handleSubmit} size='sm' className="min-w-[5rem]">Sign & Confirm</Button>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>,
     document.body
   );
+
+  return portalContent;
 };

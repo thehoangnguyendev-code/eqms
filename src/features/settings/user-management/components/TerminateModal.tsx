@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { UserX, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
@@ -33,8 +34,6 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
   const [errors, setErrors] = useState<{ reason?: string; date?: string }>({});
   const [eSignOpen, setESignOpen] = useState(false);
 
-  if (!isOpen) return null;
-
   const resetForm = () => {
     setReason("");
     setTerminationDate("");
@@ -63,18 +62,42 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
     onClose();
   };
 
-  return (
-    <>
-      {createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
+  const portalContent = createPortal(
+    <AnimatePresence mode="wait">
+      {isOpen && (
+        <motion.div
+          key="terminate-modal-wrapper"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden"
+        >
+          {/* Backdrop */}
+          <motion.div
+            key="terminate-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             onClick={handleClose}
-            aria-hidden="true"
+            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
           />
-          <div className="relative z-50 w-full max-w-md bg-white rounded-xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+
+          {/* Modal Content */}
+          <motion.div
+            key="terminate-modal-content"
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{
+              type: "spring",
+              damping: 25,
+              stiffness: 350,
+              duration: 0.3
+            }}
+            className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-slate-200 overflow-hidden relative z-10 flex flex-col"
+            style={{ maxHeight: 'calc(100dvh - 2rem)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Header */}
-            <div className="flex items-start gap-3 p-5 border-b border-slate-100">
+            <div className="flex items-start gap-3 p-5 border-b border-slate-100 bg-white min-h-[64px] shrink-0">
               <div className="h-10 w-10 rounded-full bg-rose-100 flex items-center justify-center flex-shrink-0">
                 <UserX className="h-5 w-5 text-rose-600" />
               </div>
@@ -94,7 +117,7 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
             </div>
 
             {/* Body */}
-            <div className="p-5 space-y-4">
+            <div className="p-5 space-y-4 overflow-y-auto flex-1 min-h-0">
               <div>
                 <Select
                   label={<>Reason <span className="text-red-500">*</span></>}
@@ -128,7 +151,7 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end gap-2 px-5 pb-5">
+            <div className="flex justify-end gap-2 px-5 pb-5 pt-2 bg-white shrink-0">
               <Button variant="outline" size="sm" onClick={handleClose}>
                 Cancel
               </Button>
@@ -136,10 +159,16 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
                 Terminate Employee
               </Button>
             </div>
-          </div>
-        </div>,
-        document.body
+          </motion.div>
+        </motion.div>
       )}
+    </AnimatePresence>,
+    document.body
+  );
+
+  return (
+    <>
+      {portalContent}
       <ESignatureModal
         isOpen={eSignOpen}
         onClose={() => setESignOpen(false)}
@@ -149,6 +178,3 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
     </>
   );
 };
-
-
-

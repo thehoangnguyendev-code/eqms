@@ -5,7 +5,6 @@ import {
   AlertTriangle,
   BookOpen,
   CheckCircle,
-  XCircle,
   Clock,
   Activity,
   Lock,
@@ -13,11 +12,12 @@ import {
   Link2,
   ShieldAlert,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { cn } from "@/components/ui/utils";
 import { InlineLoading } from "@/components/ui/loading/Loading";
-import { IconCheck, IconCircleCheck } from "@tabler/icons-react";
+import { IconCheck } from "@tabler/icons-react";
 
 // ─── Types ───────────────────────────────────────────────────────────
 export interface ObsoleteMaterial {
@@ -91,18 +91,16 @@ const getCourseStatusConfig = (status: CourseStatus) => {
     case "Completed":
       return { classes: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: <IconCheck className="h-3 w-3" /> };
     case "Cancelled":
-      return { classes: "bg-red-50 text-red-700 border-red-200", icon: <XCircle className="h-3 w-3" /> };
+      return { classes: "bg-red-50 text-red-700 border-red-200", icon: <AlertTriangle className="h-3 w-3" /> };
   }
 };
 
-// ─── Step Indicator ──────────────────────────────────────────────────
 const STEPS = [
   { label: "Impact Analysis", short: "Impact" },
   { label: "Justification", short: "Reason" },
   { label: "E-Signature", short: "Sign" },
 ];
 
-// ─── Main Component ──────────────────────────────────────────────────
 export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
   isOpen,
   material,
@@ -111,18 +109,15 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
 }) => {
   const [step, setStep] = useState(0);
 
-  // Step 2 state
   const [justificationCode, setJustificationCode] = useState("");
   const [justificationNote, setJustificationNote] = useState("");
   const [replacedByCode, setReplacedByCode] = useState("");
 
-  // Step 3 state
   const [password, setPassword] = useState("");
   const [signReason, setSignReason] = useState("");
   const [signError, setSignError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Reset on open
   useEffect(() => {
     if (isOpen) {
       setStep(0);
@@ -136,10 +131,7 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
     }
   }, [isOpen]);
 
-  if (!isOpen || !material) return null;
-
-  // Compute linked course details
-  const linkedDetails: LinkedCourseDetail[] = material.linkedCourses
+  const linkedDetails: LinkedCourseDetail[] = (material?.linkedCourses || [])
     .map((id) => MOCK_COURSE_DETAILS[id])
     .filter(Boolean);
 
@@ -149,13 +141,11 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
   const hasActiveCourses = activeCourses.length > 0;
   const isReplacedByVersion = justificationCode === "replaced_new_version";
 
-  // ── Step 2 validation
   const step2Valid =
     !!justificationCode &&
     (justificationCode !== "other" || justificationNote.trim().length > 0) &&
     (!isReplacedByVersion || replacedByCode.trim().length > 0);
 
-  // ── Step 3 submit
   const handleESign = () => {
     if (!password.trim()) { setSignError("Password is required."); return; }
     if (!signReason.trim()) { setSignError("Reason is required for audit trail."); return; }
@@ -175,423 +165,264 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
     if (!isSubmitting) onClose();
   };
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
-      onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
-    >
-      <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-        {/* ── Header ───────────────────────────────────────────── */}
-        <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-slate-200 flex-shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="min-w-0">
-              <h2 className="text-base font-semibold text-slate-900">Mark as Obsolete</h2>
-              <p className="text-xs text-slate-500 mt-0.5 truncate">
-                {material.materialId} · {material.title} · v{material.version}
-              </p>
-            </div>
-          </div>
-          <button
+  const portalContent = createPortal(
+    <AnimatePresence mode="wait">
+      {isOpen && material && (
+        <motion.div
+          key="mark-obsolete-modal-wrapper"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden"
+        >
+          {/* Backdrop */}
+          <motion.div
+            key="mark-obsolete-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             onClick={handleClose}
-            disabled={isSubmitting}
-            className="flex-shrink-0 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-            aria-label="Close"
+            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+          />
+
+          {/* Modal Content */}
+          <motion.div
+            key="mark-obsolete-modal-content"
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{
+              type: "spring",
+              damping: 25,
+              stiffness: 350,
+              duration: 0.3
+            }}
+            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl border border-slate-200 overflow-hidden relative z-10 flex flex-col max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
           >
-            <X className="h-4 w-4 text-slate-500" />
-          </button>
-        </div>
-
-        {/* ── Step Indicator ────────────────────────────────────── */}
-        <div className="flex items-center justify-center gap-0 px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
-          {STEPS.map((s, i) => {
-            const isDone = i < step;
-            const isCurrent = i === step;
-            return (
-              <React.Fragment key={s.label}>
-                <div className="flex flex-col items-center gap-2">
-                  <div className="relative">
-                    {isCurrent && (
-                      <span className="absolute inset-0 rounded-full bg-red-400 opacity-75 animate-ping" />
-                    )}
-                    <div className={cn(
-                      "relative w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all shadow-sm",
-                      isDone ? "bg-emerald-600 text-white" :
-                      isCurrent ? "bg-red-600 text-white ring-4 ring-red-100 scale-110" :
-                      "bg-slate-100 text-slate-400 border border-slate-200"
-                    )}>
-                      {isDone ? <IconCheck className="h-5 w-5" /> : i + 1}
-                    </div>
-                  </div>
-                  <span className={cn(
-                    "text-xs font-semibold text-center leading-tight transition-colors",
-                    isCurrent ? "text-red-700" : isDone ? "text-emerald-700" : "text-slate-400"
-                  )}>
-                    {s.label}
-                  </span>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <div className={cn(
-                    "flex-1 mx-3 h-0.5 transition-all max-w-[60px] mb-6 rounded-full",
-                    isDone ? "bg-emerald-500" : "bg-slate-200"
-                  )} />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-
-        {/* ── Body ─────────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-6 py-5">
-
-          {/* ── STEP 1: Impact Analysis ──────────────────────────── */}
-          {step === 0 && (
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                  <ShieldAlert className="h-4 w-4 text-red-600" />
-                  Impact Analysis
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  The system has scanned all training courses currently using this material.
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-slate-200 shrink-0 bg-white min-h-[64px]">
+              <div className="min-w-0">
+                <h2 className="text-base font-bold text-slate-900">Mark as Obsolete</h2>
+                <p className="text-xs text-slate-500 mt-0.5 truncate leading-tight">
+                  {material.materialId} · {material.title} · v{material.version}
                 </p>
               </div>
-
-              {/* Warning banner – only if active courses exist */}
-              {hasActiveCourses && (
-                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-                  <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-semibold text-red-800">
-                      High Impact — {activeCourses.length} active course{activeCourses.length > 1 ? "s" : ""} will be affected
-                    </p>
-                    <p className="text-xs text-red-700 mt-1">
-                      This material is currently used in{" "}
-                      <span className="font-bold">{activeCourses.length}</span> active / in-progress course{activeCourses.length > 1 ? "s" : ""} with a total of{" "}
-                      <span className="font-bold">{totalAffectedLearners}</span> enrolled learner{totalAffectedLearners !== 1 ? "s" : ""}.
-                      Marking it as obsolete will disrupt these courses — coordinators will need to update or replace the material.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* No courses — safe */}
-              {linkedDetails.length === 0 && (
-                <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-                  <CheckCircle className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-semibold text-emerald-800">No active courses affected</p>
-                    <p className="text-xs text-emerald-700 mt-1">
-                      This material is not linked to any active or in-progress courses. It is safe to mark as obsolete.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Only completed courses */}
-              {linkedDetails.length > 0 && !hasActiveCourses && (
-                <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                  <AlertCircle className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-semibold text-amber-800">Low impact — all linked courses are completed</p>
-                    <p className="text-xs text-amber-700 mt-1">
-                      This material was used in {linkedDetails.length} course{linkedDetails.length > 1 ? "s" : ""}, all of which are completed. No active learners will be disrupted.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Active courses list */}
-              {activeCourses.length > 0 && (
-                <div>
-                  <p className="text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-red-500" />
-                    Active / In-Progress Courses ({activeCourses.length})
-                  </p>
-                  <div className="border border-red-200 rounded-xl overflow-hidden divide-y divide-red-100">
-                    {activeCourses.map((course) => {
-                      const cfg = getCourseStatusConfig(course.status);
-                      return (
-                        <div key={course.courseId} className="flex items-center gap-3 px-4 py-3 bg-red-50/30">
-                          <BookOpen className="h-4 w-4 text-red-500 flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-slate-900 truncate">{course.title}</p>
-                            <p className="text-xs text-slate-500">{course.courseId} · {course.department}</p>
-                          </div>
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className="text-xs text-slate-600">{course.learnersEnrolled} learners</span>
-                            <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border", cfg.classes)}>
-                              {cfg.icon} {course.status}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Completed courses list (collapsed style) */}
-              {completedCourses.length > 0 && (
-                <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    Completed / Historical Courses ({completedCourses.length})
-                  </p>
-                  <div className="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
-                    {completedCourses.map((course) => {
-                      const cfg = getCourseStatusConfig(course.status);
-                      return (
-                        <div key={course.courseId} className="flex items-center gap-3 px-4 py-3 bg-slate-50/30">
-                          <BookOpen className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-slate-700 truncate">{course.title}</p>
-                            <p className="text-xs text-slate-400">{course.courseId} · {course.department}</p>
-                          </div>
-                          <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border flex-shrink-0", cfg.classes)}>
-                            {cfg.icon} {course.status}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {linkedDetails.length === 0 && (
-                <p className="text-xs text-slate-400 italic text-center py-4">
-                  This material has no linked courses in the system.
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* ── STEP 2: Justification ─────────────────────────────── */}
-          {step === 1 && (
-            <div className="space-y-5">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-amber-600" />
-                  Justification
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  You must provide a reason before proceeding. This will be recorded in the audit trail.
-                </p>
-              </div>
-
-              {/* Reason select */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">
-                  Select Reason <span className="text-red-500">*</span>
-                </label>
-                <Select
-                  value={justificationCode}
-                  onChange={(val) => {
-                    setJustificationCode(val);
-                    if (val !== "replaced_new_version") setReplacedByCode("");
-                  }}
-                  options={JUSTIFICATION_OPTIONS}
-                  placeholder="Choose a reason..."
-                />
-              </div>
-
-              {/* Replaced-by code – only visible when "replaced_new_version" selected */}
-              {isReplacedByVersion && (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-700">
-                    New Version Material Code <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <input
-                      type="text"
-                      value={replacedByCode}
-                      onChange={(e) => setReplacedByCode(e.target.value)}
-                      placeholder="e.g. TM-PDF-003 v2.0"
-                      className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-sm placeholder:text-slate-400"
-                    />
-                  </div>
-                  <p className="text-xs text-slate-500">
-                    A link to this replacement will be shown on the obsoleted material's profile.
-                  </p>
-                </div>
-              )}
-
-              {/* Optional additional notes */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">
-                  Additional Notes
-                  {justificationCode === "other" && <span className="text-red-500 ml-1">*</span>}
-                </label>
-                <textarea
-                  value={justificationNote}
-                  onChange={(e) => setJustificationNote(e.target.value)}
-                  rows={3}
-                  placeholder="Provide any additional context or notes about this decision..."
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm placeholder:text-slate-400 resize-none"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* ── STEP 3: E-Signature ───────────────────────────────── */}
-          {step === 2 && (
-            <div className="space-y-5">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                  <Lock className="h-4 w-4 text-slate-600" />
-                  Electronic Signature
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Your signature is required to authorize this irreversible action. This confirms your identity and intent.
-                </p>
-              </div>
-
-              {/* Summary before signing */}
-              <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-2">
-                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Action Summary</p>
-                <div className="space-y-1.5 text-sm">
-                  <div className="flex gap-2">
-                    <span className="text-slate-500 flex-shrink-0 w-24">Material:</span>
-                    <span className="font-medium text-slate-900">{material.materialId} · v{material.version}</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <span className="text-slate-500 flex-shrink-0 w-24">Action:</span>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-200">
-                      <XCircle className="h-3 w-3" /> Mark as Obsolete
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    <span className="text-slate-500 flex-shrink-0 w-24">Reason:</span>
-                    <span className="font-medium text-slate-900">
-                      {JUSTIFICATION_OPTIONS.find((o) => o.value === justificationCode)?.label}
-                    </span>
-                  </div>
-                  {isReplacedByVersion && replacedByCode && (
-                    <div className="flex gap-2">
-                      <span className="text-slate-500 flex-shrink-0 w-24">Replaced by:</span>
-                      <span className="font-medium text-emerald-700 flex items-center gap-1">
-                        <Link2 className="h-3.5 w-3.5" /> {replacedByCode}
-                      </span>
-                    </div>
-                  )}
-                  {hasActiveCourses && (
-                    <div className="flex gap-2">
-                      <span className="text-slate-500 flex-shrink-0 w-24">Impact:</span>
-                      <span className="font-medium text-red-700">
-                        {activeCourses.length} active course{activeCourses.length > 1 ? "s" : ""} · {totalAffectedLearners} learners
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {signError && (
-                <div className="flex items-center gap-2 px-3 py-2.5 bg-red-50 border border-red-200 rounded-lg">
-                  <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
-                  <p className="text-xs text-red-700">{signError}</p>
-                </div>
-              )}
-
-              {/* Credentials */}
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs sm:text-sm font-medium text-slate-700">
-                    Username <span className="text-xs text-slate-400 font-normal">(auto-filled from session)</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value="Dr. A. Smith"
-                      disabled
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs sm:text-sm font-medium text-slate-700">
-                    Password <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => { setPassword(e.target.value); setSignError(""); }}
-                    placeholder="Enter your password to confirm"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
-                    autoComplete="current-password"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs sm:text-sm font-medium text-slate-700">
-                    Reason for Change <span className="text-red-500">*</span>
-                    <span className="text-slate-400 font-normal ml-1">(Audit Trail)</span>
-                  </label>
-                  <textarea
-                    value={signReason}
-                    onChange={(e) => { setSignReason(e.target.value); setSignError(""); }}
-                    rows={2}
-                    placeholder="Briefly state why you are authorizing this action..."
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm min-h-[80px]"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ── Footer ───────────────────────────────────────────── */}
-        <div className={cn(
-          "flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200 flex-shrink-0",
-          step === 0 && hasActiveCourses && "border-t"
-        )}>
-          {/* Cancel / Back */}
-          {step === 0 ? (
-            <Button variant="outline" size="sm" onClick={handleClose} disabled={isSubmitting}>
-              Cancel
-            </Button>
-          ) : (
-            <Button variant="outline" size="sm" onClick={() => setStep((s) => s - 1)} disabled={isSubmitting} className="gap-1.5">
-              Back
-            </Button>
-          )}
-
-          {/* Next / Confirm */}
-          <div className="flex items-center gap-2">
-            {step < 2 ? (
-              <Button
-                size="sm"
-                variant={step === 0 ? (hasActiveCourses ? "default" : "default") : "default"}
-                onClick={() => setStep((s) => s + 1)}
-                disabled={step === 1 && !step2Valid}
-                className={cn("gap-1.5", step === 0 && hasActiveCourses
-                  ? "bg-red-600 hover:bg-red-700 text-white"
-                  : ""
-                )}
-              >
-                {step === 0 ? (hasActiveCourses ? "I Understand, Continue" : "Continue") : "Next"}
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                onClick={handleESign}
+              <button
+                onClick={handleClose}
                 disabled={isSubmitting}
-                className="gap-2 bg-red-600 hover:bg-red-700 text-white"
+                className="flex-shrink-0 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                aria-label="Close"
               >
-                {isSubmitting ? (
-                  <>
-                    <InlineLoading size="xs" color="#ffffff" />
-                    <span className="ml-2">Processing...</span>
-                  </>
-                ) : (
-                  <>
-                    Confirm & Sign
-                  </>
-                )}
+                <X className="h-4 w-4 text-slate-500" />
+              </button>
+            </div>
+
+            {/* Indicator */}
+            <div className="flex items-center justify-center gap-0 px-6 py-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
+              {STEPS.map((s, i) => {
+                const isDone = i < step;
+                const isCurrent = i === step;
+                return (
+                  <React.Fragment key={s.label}>
+                    <div className="flex flex-col items-center gap-2">
+                        <div className={cn(
+                          "relative w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all shadow-sm",
+                          isDone ? "bg-emerald-600 text-white" :
+                          isCurrent ? "bg-red-600 text-white ring-4 ring-red-100" :
+                          "bg-slate-100 text-slate-400 border border-slate-200"
+                        )}>
+                          {isDone ? <IconCheck className="h-4 w-4" /> : i + 1}
+                        </div>
+                      <span className={cn(
+                        "text-[10px] font-semibold text-center leading-tight transition-colors",
+                        isCurrent ? "text-red-700" : isDone ? "text-emerald-700" : "text-slate-400"
+                      )}>
+                        {s.short}
+                      </span>
+                    </div>
+                    {i < STEPS.length - 1 && (
+                      <div className={cn(
+                        "flex-1 mx-2 h-0.5 transition-all max-w-[40px] mb-4 rounded-full",
+                        isDone ? "bg-emerald-500" : "bg-slate-200"
+                      )} />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+              {step === 0 && (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                      <ShieldAlert className="h-4 w-4 text-red-600" />
+                      Impact Analysis
+                    </h3>
+                  </div>
+
+                  {hasActiveCourses && (
+                    <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+                      <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-bold text-red-800">
+                          {activeCourses.length} active course{activeCourses.length > 1 ? "s" : ""} will be affected
+                        </p>
+                        <p className="text-xs text-red-700 mt-1 leading-relaxed">
+                          This material is used in {activeCourses.length} active courses with {totalAffectedLearners} learners. Marking as obsolete will disrupt these courses.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {!linkedDetails.length && (
+                    <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                      <CheckCircle className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium text-emerald-800 italic">No active courses affected. Safe to proceed.</p>
+                    </div>
+                  )}
+
+                  {activeCourses.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active Courses</p>
+                      <div className="border border-slate-100 rounded-xl overflow-hidden divide-y divide-slate-100">
+                        {activeCourses.map((c) => {
+                          const cfg = getCourseStatusConfig(c.status);
+                          return (
+                            <div key={c.courseId} className="flex items-center gap-3 px-4 py-3 bg-white">
+                              <BookOpen className="h-4 w-4 text-slate-300" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-slate-900 truncate">{c.title}</p>
+                                <p className="text-[10px] text-slate-400">{c.courseId} · {c.department}</p>
+                              </div>
+                              <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border", cfg?.classes)}>
+                                {c.status}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {step === 1 && (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 text-amber-600" />
+                      Justification
+                    </h3>
+                  </div>
+
+                  <div className="space-y-4">
+                    <Select
+                      label={<>Reason <span className="text-red-500">*</span></>}
+                      value={justificationCode}
+                      onChange={(val) => {
+                        setJustificationCode(val);
+                        if (val !== "replaced_new_version") setReplacedByCode("");
+                      }}
+                      options={JUSTIFICATION_OPTIONS}
+                      placeholder="Choose a reason..."
+                    />
+
+                    {isReplacedByVersion && (
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-700">New Version Material ID <span className="text-red-500">*</span></label>
+                        <input
+                          type="text"
+                          value={replacedByCode}
+                          onChange={(e) => setReplacedByCode(e.target.value)}
+                          placeholder="e.g. TRN-TM-001 v2.0"
+                          className="w-full h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm"
+                        />
+                      </div>
+                    )}
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-slate-700">Notes {justificationCode === "other" && "*"}</label>
+                      <textarea
+                        value={justificationNote}
+                        onChange={(e) => setJustificationNote(e.target.value)}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm resize-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="space-y-5">
+                  <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-3">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Confirmation Summary</p>
+                    <div className="space-y-2 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Material:</span>
+                        <span className="font-bold text-slate-900">{material.materialId} v{material.version}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Reason:</span>
+                        <span className="font-bold text-slate-900">{JUSTIFICATION_OPTIONS.find(o => o.value === justificationCode)?.label}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-slate-700">Password <span className="text-red-500">*</span></label>
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => { setPassword(e.target.value); setSignError(""); }}
+                        className="w-full h-10 px-4 border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-emerald-500"
+                        autoComplete="current-password"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-slate-700">Regulatory Reason <span className="text-red-500">*</span></label>
+                      <textarea
+                        value={signReason}
+                        onChange={(e) => { setSignReason(e.target.value); setSignError(""); }}
+                        rows={2}
+                        className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm resize-none"
+                      />
+                    </div>
+                    {signError && <p className="text-xs text-red-600 font-medium">{signError}</p>}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-between shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={step === 0 ? handleClose : () => setStep(s => s - 1)}
+                disabled={isSubmitting}
+              >
+                {step === 0 ? "Cancel" : "Back"}
               </Button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>,
+              <Button
+                size="sm"
+                onClick={step < 2 ? () => setStep(s => s + 1) : handleESign}
+                disabled={(step === 1 && !step2Valid) || isSubmitting}
+                className={cn(
+                  step === 2 || (step === 0 && hasActiveCourses) ? "bg-red-600 hover:bg-red-700 text-white border-red-600" : ""
+                )}
+              >
+                {isSubmitting ? <InlineLoading size="xs" color="white" /> : (step === 2 ? "Confirm & Sign" : "Continue")}
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
     document.body
   );
+
+  return portalContent;
 };
