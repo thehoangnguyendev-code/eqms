@@ -1,5 +1,4 @@
-import React from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from '@/components/ui/button/Button';
 import { TaskStatusBadge, PriorityBadge, ModuleBadge } from '@/components/ui/badge';
 import { cn } from '@/components/ui/utils';
@@ -55,7 +54,9 @@ export const TaskTable: React.FC<{
   tasks: Task[];
   onTaskClick: (task: Task) => void;
   startIndex: number;
-}> = ({ tasks, onTaskClick, startIndex }) => {
+  sortConfig?: { key: string; direction: "asc" | "desc" };
+  onSort?: (key: string) => void;
+}> = ({ tasks, onTaskClick, startIndex, sortConfig, onSort }) => {
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   return (
@@ -75,36 +76,41 @@ export const TaskTable: React.FC<{
               <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16 text-center">
                 No.
               </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Task ID
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Task Name
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Module
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Assignee
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Reporter
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Days Left
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Status
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Progress
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Due Date
-              </th>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                Priority
-              </th>
+              {[
+                { id: "taskId", label: "Task ID", sortable: true },
+                { id: "title", label: "Task Name", sortable: true },
+                { id: "module", label: "Module", sortable: true },
+                { id: "assignee", label: "Assignee", sortable: true },
+                { id: "reporter", label: "Reporter", sortable: true },
+                { id: "daysLeft", label: "Days Left", sortable: false },
+                { id: "status", label: "Status", sortable: true },
+                { id: "progress", label: "Progress", sortable: true },
+                { id: "dueDate", label: "Due Date", sortable: true },
+                { id: "priority", label: "Priority", sortable: true },
+              ].map((col) => {
+                const isSorted = sortConfig?.key === col.id;
+                const canSort = col.sortable && onSort;
+                return (
+                  <th
+                    key={col.id}
+                    onClick={canSort ? () => onSort(col.id) : undefined}
+                    className={cn(
+                      "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                      canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group"
+                    )}
+                  >
+                    <div className="flex items-center justify-between gap-2 w-full">
+                      <span className="truncate">{col.label}</span>
+                      {canSort && (
+                        <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                          <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig?.direction === 'asc' ? "text-emerald-600" : "")} />
+                          <ChevronDown className={cn("h-3.5 w-3.5", isSorted && sortConfig?.direction === 'desc' ? "text-emerald-600" : "")} />
+                        </div>
+                      )}
+                    </div>
+                  </th>
+                );
+              })}
               <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                 Action
               </th>
@@ -128,11 +134,11 @@ export const TaskTable: React.FC<{
                     {startIndex + idx}
                   </td>
 
-                  <td 
+                  <td
                     className={cn(tdClass, "cursor-pointer")}
                     onClick={() => onTaskClick(task)}
                   >
-                    <span className="font-semibold text-emerald-600 hover:underline">
+                    <span className="font-medium text-emerald-600 hover:underline">
                       {task.taskId}
                     </span>
                   </td>

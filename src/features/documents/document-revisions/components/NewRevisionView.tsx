@@ -7,6 +7,8 @@ import {
   AlertTriangle,
   Check,
   Info,
+  Paperclip,
+  ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
@@ -86,7 +88,7 @@ export const NewRevisionView: React.FC = () => {
 
   const handleSubmit = () => {
     // Validate reason for change
-    if (!reasonForChange.trim() || reasonForChange.length < 50) {
+    if (!reasonForChange.trim()) {
       setShowError(true);
       return;
     }
@@ -129,7 +131,7 @@ export const NewRevisionView: React.FC = () => {
               size="sm"
               variant="outline-emerald"
               onClick={handleSubmit}
-              disabled={!reasonForChange.trim() || reasonForChange.length < 50}
+              disabled={!reasonForChange.trim()}
               className="shadow-sm whitespace-nowrap"
             >
               Continue
@@ -176,44 +178,32 @@ export const NewRevisionView: React.FC = () => {
         </div>
       </div>
 
-      {/* Info Banner */}
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 lg:p-4 flex items-start gap-2 lg:gap-3">
-        <Info className="h-4 w-4 lg:h-5 lg:w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-        <div className="flex-1">
-          <h3 className="text-xs lg:text-sm font-semibold text-blue-900 mb-1">
-            Impact analysis of Related Documents
-          </h3>
-          <p className="text-xs lg:text-sm text-blue-700">
-            Review all related documents (Forms, Annexes, References) and decide
-            whether to keep the current version or upgrade to the new revision.
-            Documents marked for upgrade will be highlighted below.
-          </p>
-        </div>
-      </div>
-
       {/* Impact Analysis Table */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         {/* Table Header */}
-        <div className="bg-white border-b border-slate-200 px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 lg:py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <span className="text-emerald-600">
+              <Paperclip className="h-4 w-4" />
+            </span>
             <div>
-              <h2 className="text-xs sm:text-sm lg:text-base font-semibold text-slate-900">
+              <h2 className="text-sm font-semibold text-slate-800">
                 Related Documents ({MOCK_LINKED_DOCUMENTS.length})
               </h2>
-              <p className="text-[10px] sm:text-xs lg:text-sm text-slate-500 mt-0.5 sm:mt-1">
+              <p className="text-[11px] text-slate-500 font-medium">
                 {upgradeCount} document(s) selected for upgrade
               </p>
             </div>
-            <div className="flex items-center gap-2 text-[10px] sm:text-xs lg:text-sm flex-wrap">
-              <span className="text-slate-600">Legend:</span>
-              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-100">
-                <div className="w-3 h-3 rounded-full bg-slate-300"></div>
-                <span className="text-xs text-slate-700">Keep</span>
-              </div>
-              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-100">
-                <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                <span className="text-xs text-emerald-700">Upgrade</span>
-              </div>
+          </div>
+          <div className="flex items-center gap-2 text-[10px] sm:text-xs lg:text-sm flex-wrap">
+            <span className="text-slate-600 font-medium mr-1">Legend:</span>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-100">
+              <div className="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+              <span className="text-[11px] text-slate-600 font-medium">Keep</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-emerald-50 border border-emerald-100">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+              <span className="text-[11px] text-emerald-700 font-medium">Upgrade</span>
             </div>
           </div>
         </div>
@@ -342,28 +332,34 @@ export const NewRevisionView: React.FC = () => {
           </table>
         </div>
       </div>
+
       {/* Summary Footer */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 lg:p-6">
-        <div>
-          <h3 className="text-xs lg:text-sm font-semibold text-slate-900 mb-1.5 lg:mb-2">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+          <span className="text-emerald-600">
+            <Info className="h-4 w-4" />
+          </span>
+          <h3 className="text-sm font-semibold text-slate-800">
             Impact Analysis Summary
           </h3>
-          <div className="flex flex-wrap items-center gap-3 lg:gap-4 text-xs lg:text-sm">
+        </div>
+        <div className="p-5">
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-xs lg:text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-slate-600">Total Related Documents:</span>
-              <span className="font-semibold text-slate-900">
+              <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Total Related Documents:</span>
+              <span className="font-bold text-slate-900">
                 {MOCK_LINKED_DOCUMENTS.length}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-600">To be Upgraded:</span>
-              <span className="font-semibold text-emerald-600">
+              <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">To be Upgraded:</span>
+              <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
                 {upgradeCount}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-600">Keep Current:</span>
-              <span className="font-semibold text-slate-600">
+              <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Keep Current:</span>
+              <span className="font-bold text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
                 {MOCK_LINKED_DOCUMENTS.length - upgradeCount}
               </span>
             </div>
@@ -372,69 +368,52 @@ export const NewRevisionView: React.FC = () => {
       </div>
 
       {/* Reason for Change */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 lg:p-6">
-        <div className="flex items-start gap-2 lg:gap-3 mb-3 lg:mb-4">
-          <div className="flex-1">
-            <label className="block text-xs lg:text-sm font-semibold text-slate-900 mb-1">
-              Reason for Change <span className="text-red-500">*</span>
-            </label>
-            <p className="text-xs lg:text-xs text-slate-500 mb-2">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+          <span className="text-emerald-600">
+            <ClipboardList className="h-4 w-4" />
+          </span>
+          <h3 className="text-sm font-semibold text-slate-800">
+            Reason for Change <span className="text-red-500">*</span>
+          </h3>
+        </div>
+        <div className="p-5 space-y-4">
+          <div>
+            <p className="text-xs text-slate-500 mb-3 leading-relaxed">
               Provide a detailed explanation for creating this revision and the
               impact on related documents.
             </p>
+            <textarea
+              value={reasonForChange}
+              onChange={(e) => {
+                setReasonForChange(e.target.value);
+                setShowError(false);
+              }}
+              placeholder="e.g., Updated testing procedures to comply with new regulatory requirements. Forms FORM.0001.01 and FORM.0002.01 require updates to reflect new data fields..."
+              className={cn(
+                "w-full px-3 lg:px-4 py-2 lg:py-3 border rounded-lg text-xs lg:text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all placeholder:text-slate-400",
+                showError && !reasonForChange.trim()
+                  ? "border-red-300 bg-red-50 focus:ring-red-500/20"
+                  : "border-slate-200 bg-white focus:ring-emerald-500/20",
+              )}
+              rows={5}
+              maxLength={2000}
+            />
+            {showError && !reasonForChange.trim() && (
+              <p className="text-[11px] font-medium text-red-600 mt-2 flex items-center gap-1.5">
+                <AlertCircle className="h-3.5 w-3.5" />
+                Reason for change is required before submitting
+              </p>
+            )}
           </div>
-        </div>
-        <textarea
-          value={reasonForChange}
-          onChange={(e) => {
-            setReasonForChange(e.target.value);
-            setShowError(false);
-          }}
-          placeholder="e.g., Updated testing procedures to comply with new regulatory requirements. Forms FORM.0001.01 and FORM.0002.01 require updates to reflect new data fields..."
-          className={cn(
-            "w-full px-3 lg:px-4 py-2 lg:py-3 border rounded-lg text-xs lg:text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 resize-none",
-            showError && reasonForChange.length < 50
-              ? "border-red-300 bg-red-50"
-              : "border-slate-200 bg-white",
-          )}
-          rows={4}
-          maxLength={2000}
-        />
-        {showError && reasonForChange.length < 50 && (
-          <p className="text-sm text-red-600 mt-2 flex items-center gap-1">
-            <AlertCircle className="h-4 w-4" />
-            {!reasonForChange.trim()
-              ? "Reason for change is required before submitting"
-              : `Minimum 50 characters required (${reasonForChange.length}/50)`}
-          </p>
-        )}
-        <div className="flex items-center justify-between">
-          <p
-            className={cn(
-              "text-xs",
-              reasonForChange.length < 50
-                ? "text-amber-600 font-medium"
-                : "text-slate-500",
-            )}
-          >
-            {reasonForChange.length} / 2000 characters
-          </p>
-          <p
-            className={cn(
-              "text-xs",
-              reasonForChange.length < 50
-                ? "text-amber-600 font-medium"
-                : "text-emerald-600",
-            )}
-          >
-            {reasonForChange.length >= 50 ? (
-              <>
-                <Check className="h-3.5 w-3.5 inline shrink-0" /> Minimum met
-              </>
-            ) : (
-              "Minimum 50 characters required"
-            )}
-          </p>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <p className="text-xs font-medium text-slate-400">
+                {reasonForChange.length} / 2000 characters
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -452,7 +431,7 @@ export const NewRevisionView: React.FC = () => {
           size="sm"
           variant="outline-emerald"
           onClick={handleSubmit}
-          disabled={!reasonForChange.trim() || reasonForChange.length < 50}
+          disabled={!reasonForChange.trim()}
           className="shadow-sm whitespace-nowrap"
         >
           Continue

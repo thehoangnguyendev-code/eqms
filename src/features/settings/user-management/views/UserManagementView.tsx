@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/toast";
 import {
   Search,
   Plus,
@@ -14,6 +15,8 @@ import {
   ArrowDownAZ,
   ArrowDownZA,
   X,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconTrash, IconUserX } from "@tabler/icons-react";
@@ -30,6 +33,7 @@ import { cn } from "@/components/ui/utils";
 import { ResetPasswordModal } from "../components/ResetPasswordModal";
 import { SuspendModal } from "../components/SuspendModal";
 import { TerminateModal } from "../components/TerminateModal";
+import { ESignatureModal } from "@/components/ui/esign-modal/ESignatureModal";
 import { User, UserRole, UserStatus, TableColumn } from "../types";
 import { BUSINESS_UNIT_DEPARTMENTS, DEFAULT_COLUMNS, getRoleColor, USER_MANAGEMENT_ROUTES } from "../constants";
 import { generatePassword } from "../utils";
@@ -43,6 +47,7 @@ import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@
 
 export const UserManagementView: React.FC = () => {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const {
     users,
@@ -82,9 +87,10 @@ export const UserManagementView: React.FC = () => {
   const [suspendModal, setSuspendModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [terminateModal, setTerminateModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [reinstateModal, setReinstateModal] = useState({ isOpen: false, userId: "", userName: "" });
+  const [esignModal, setEsignModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const { sortConfig, handleSort } = useUserList();
 
   // Handle loading state on filter changes
   React.useEffect(() => {
@@ -100,6 +106,15 @@ export const UserManagementView: React.FC = () => {
     .sort((a, b) => a.order - b.order);
 
   const handleDelete = (user: User) => {
+    if (user.role === "Admin") {
+      showToast({
+        type: "error",
+        title: "Action Restricted",
+        message: "Administrators cannot be deleted for security and system integrity reasons.",
+      });
+      closeDropdown();
+      return;
+    }
     setDeleteModal({ isOpen: true, userId: user.id, userName: user.fullName });
     closeDropdown();
   };
@@ -125,8 +140,14 @@ export const UserManagementView: React.FC = () => {
   };
 
   const confirmDelete = () => {
-    deleteUser(deleteModal.userId, deleteModal.userName);
-    setDeleteModal({ isOpen: false, userId: "", userName: "" });
+    // Instead of deleting directly, open E-Signature modal
+    setDeleteModal({ isOpen: false, userId: deleteModal.userId, userName: deleteModal.userName });
+    setEsignModal({ isOpen: true, userId: deleteModal.userId, userName: deleteModal.userName });
+  };
+
+  const handleESignDelete = (reason: string) => {
+    deleteUser(esignModal.userId, esignModal.userName, reason);
+    setEsignModal({ isOpen: false, userId: "", userName: "" });
   };
 
   const confirmSuspend = (reason: string, suspendedUntil: string) => {
@@ -217,19 +238,6 @@ export const UserManagementView: React.FC = () => {
               >
                 <SlidersHorizontal className="h-4 w-4" />
                 Filters
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
-                className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
-                size="sm"
-              >
-                {sortOrder === "asc" ? (
-                  <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
-                ) : (
-                  <ArrowDownZA className="h-4 w-4 text-emerald-600" />
-                )}
               </Button>
             </div>
           </div>
@@ -363,128 +371,144 @@ export const UserManagementView: React.FC = () => {
           )}>
             {currentUsers.length > 0 ? (
               <>
-                  <div
-                    ref={scrollerRef}
-                    className={cn(
-                      "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
-                      isDragging ? "cursor-grabbing select-none" : "cursor-grab"
-                    )}
-                    {...dragEvents}
-                  >
-                    <table className="w-full min-w-max border-separate border-spacing-0 text-left">
-                      <thead>
-                        <tr>
-                          {visibleColumns.map((col) => (
+                <div
+                  ref={scrollerRef}
+                  className={cn(
+                    "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
+                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                  )}
+                  {...dragEvents}
+                >
+                  <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                    <thead>
+                      <tr>
+                        {visibleColumns.map((col) => {
+                          const isSorted = sortConfig.key === col.id;
+                          const canSort = col.id !== "no";
+                          return (
                             <th
                               key={col.id}
-                              className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap"
+                              onClick={canSort ? () => handleSort(col.id) : undefined}
+                              className={cn(
+                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group"
+                              )}
                             >
-                              {col.label}
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <span className="truncate">{col.label}</span>
+                                {canSort && (
+                                  <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                                  </div>
+                                )}
+                              </div>
                             </th>
-                          ))}
-                          <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
-                            Action
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white">
-                        {currentUsers.map((user, index) => {
-                          const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
-
-                          return (
-                            <tr
-                              key={user.id}
-                              className="hover:bg-slate-50/80 transition-colors group"
-                            >
-                              {visibleColumns.map((col) => (
-                                <td key={col.id} className={tdClass}>
-                                  {col.id === "no" && (
-                                    <span className="font-medium text-slate-900">{startIndex + index + 1}</span>
-                                  )}
-                                  {col.id === "status" && (
-                                    <Badge
-                                      color={
-                                        user.status === "Active" ? "emerald" :
-                                          user.status === "Inactive" ? "slate" :
-                                            user.status === "Pending" ? "amber" :
-                                              user.status === "Suspended" ? "orange" :
-                                                "red"
-                                      }
-                                      size="sm"
-                                      pill
-                                    >
-                                      {user.status}
-                                    </Badge>
-                                  )}
-                                  {col.id === "role" && (
-                                    <Badge
-                                      color={
-                                        user.role === "Admin" ? "purple" :
-                                          user.role === "QA Manager" ? "emerald" :
-                                            user.role === "Approver" ? "blue" :
-                                              user.role === "Reviewer" ? "cyan" :
-                                                user.role === "Document Owner" ? "indigo" :
-                                                  "slate"
-                                      }
-                                      size="sm"
-                                    >
-                                      {user.role}
-                                    </Badge>
-                                  )}
-                                  {col.id === "email" && (
-                                    <div className="flex items-center gap-2 text-slate-700">
-                                      {user.email}
-                                    </div>
-                                  )}
-                                  {col.id === "phone" && (
-                                    <div className="flex items-center gap-2 text-slate-700">
-                                      {user.phone}
-                                    </div>
-                                  )}
-                                  {col.id === "fullName" && (
-                                    <span className="font-medium text-slate-900">{user.fullName}</span>
-                                  )}
-                                  {col.id === "employeeCode" && (
-                                    <span 
-                                      className="font-medium text-emerald-600 cursor-pointer hover:underline"
-                                      onClick={() => navigateTo(USER_MANAGEMENT_ROUTES.PROFILE(user.id))}
-                                    >
-                                      {user.employeeCode}
-                                    </span>
-                                  )}
-                                  {col.id === "suspendedUntil" && (
-                                    <span className="text-slate-700">
-                                      {user.suspendedUntil ? formatDateNumeric(user.suspendedUntil) : "-"}
-                                    </span>
-                                  )}
-                                  {col.id === "terminationDate" && (
-                                    <span className="text-slate-700">
-                                      {user.terminationDate ? formatDateNumeric(user.terminationDate) : "-"}
-                                    </span>
-                                  )}
-                                  {!["status", "role", "email", "phone", "fullName", "employeeCode", "no", "suspendedUntil", "terminationDate"].includes(col.id) && (
-                                    <span className="text-slate-700">{String(user[col.id as keyof User] ?? "")}</span>
-                                  )}
-                                </td>
-                              ))}
-                              <td
-                                onClick={(e) => e.stopPropagation()}
-                                className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
-                              >
-                                <button
-                                  ref={getRef(user.id)}
-                                  onClick={(e) => handleDropdownToggle(user.id, e)}
-                                  className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
-                                >
-                                  <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                                </button>
-                              </td>
-                            </tr>
                           );
                         })}
-                      </tbody>
-                    </table>
-                  </div>
+                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white">
+                      {currentUsers.map((user, index) => {
+                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+
+                        return (
+                          <tr
+                            key={user.id}
+                            className="hover:bg-slate-50/80 transition-colors group"
+                          >
+                            {visibleColumns.map((col) => (
+                              <td key={col.id} className={tdClass}>
+                                {col.id === "no" && (
+                                  <span className="font-medium text-slate-900">{startIndex + index + 1}</span>
+                                )}
+                                {col.id === "status" && (
+                                  <Badge
+                                    color={
+                                      user.status === "Active" ? "emerald" :
+                                        user.status === "Inactive" ? "slate" :
+                                          user.status === "Pending" ? "amber" :
+                                            user.status === "Suspended" ? "orange" :
+                                              "red"
+                                    }
+                                    size="sm"
+                                    pill
+                                  >
+                                    {user.status}
+                                  </Badge>
+                                )}
+                                {col.id === "role" && (
+                                  <Badge
+                                    color={
+                                      user.role === "Admin" ? "purple" :
+                                        user.role === "QA Manager" ? "emerald" :
+                                          user.role === "Approver" ? "blue" :
+                                            user.role === "Reviewer" ? "cyan" :
+                                              user.role === "Document Owner" ? "indigo" :
+                                                "slate"
+                                    }
+                                    size="sm"
+                                  >
+                                    {user.role}
+                                  </Badge>
+                                )}
+                                {col.id === "email" && (
+                                  <div className="flex items-center gap-2 text-slate-700">
+                                    {user.email}
+                                  </div>
+                                )}
+                                {col.id === "phone" && (
+                                  <div className="flex items-center gap-2 text-slate-700">
+                                    {user.phone}
+                                  </div>
+                                )}
+                                {col.id === "fullName" && (
+                                  <span className="font-medium text-slate-900">{user.fullName}</span>
+                                )}
+                                {col.id === "employeeCode" && (
+                                  <span
+                                    className="font-medium text-emerald-600 cursor-pointer hover:underline"
+                                    onClick={() => navigateTo(USER_MANAGEMENT_ROUTES.PROFILE(user.id))}
+                                  >
+                                    {user.employeeCode}
+                                  </span>
+                                )}
+                                {col.id === "suspendedUntil" && (
+                                  <span className="text-slate-700">
+                                    {user.suspendedUntil ? formatDateNumeric(user.suspendedUntil) : "-"}
+                                  </span>
+                                )}
+                                {col.id === "terminationDate" && (
+                                  <span className="text-slate-700">
+                                    {user.terminationDate ? formatDateNumeric(user.terminationDate) : "-"}
+                                  </span>
+                                )}
+                                {!["status", "role", "email", "phone", "fullName", "employeeCode", "no", "suspendedUntil", "terminationDate"].includes(col.id) && (
+                                  <span className="text-slate-700">{String(user[col.id as keyof User] ?? "")}</span>
+                                )}
+                              </td>
+                            ))}
+                            <td
+                              onClick={(e) => e.stopPropagation()}
+                              className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                            >
+                              <button
+                                ref={getRef(user.id)}
+                                onClick={(e) => handleDropdownToggle(user.id, e)}
+                                className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
+                              >
+                                <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
 
                 {/* Pagination */}
                 <TablePagination
@@ -587,11 +611,15 @@ export const UserManagementView: React.FC = () => {
                     )}
                     <div className="border-t border-slate-100 my-1" />
                     <button
-                      onClick={() => handleDelete(activeUser)}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                      onClick={() => activeUser.role !== "Admin" && handleDelete(activeUser)}
+                      disabled={activeUser.role === "Admin"}
+                      className={cn(
+                        "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors font-medium",
+                        activeUser.role === "Admin" ? "text-slate-300 cursor-not-allowed" : "text-slate-500 hover:bg-slate-50 active:bg-slate-100"
+                      )}
                     >
                       <IconTrash className="h-4 w-4 flex-shrink-0" />
-                      <span className="font-medium">Delete User</span>
+                      <span>Delete User</span>
                     </button>
                   </>
                 );
@@ -610,6 +638,17 @@ export const UserManagementView: React.FC = () => {
         type="error"
         title="Delete User"
         description={`Are you sure you want to delete "${deleteModal.userName}"? This action cannot be undone.`}
+        confirmText="Confirm"
+        cancelText="Cancel"
+        showCancel
+      />
+
+      {/* E-Signature for Delete */}
+      <ESignatureModal
+        isOpen={esignModal.isOpen}
+        onClose={() => setEsignModal({ isOpen: false, userId: "", userName: "" })}
+        onConfirm={handleESignDelete}
+        actionTitle={`Delete User: ${esignModal.userName}`}
       />
 
       {/* Reset Password Modal */}

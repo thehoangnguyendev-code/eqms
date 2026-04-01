@@ -233,6 +233,7 @@ export interface CourseComplianceRecord {
   id: string;
   courseId: string;
   courseTitle: string;
+  description: string;
   courseType: string;
   totalAssigned: number;
   completed: number;

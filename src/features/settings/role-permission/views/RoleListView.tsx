@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
-import { Plus, Search, MoreVertical, Users, Lock, Download } from "lucide-react";
+import { Plus, Search, MoreVertical, Users, Lock, Download, ChevronUp, ChevronDown } from "lucide-react";
 import { IconEye, IconEdit, IconTrash } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button/Button";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
@@ -129,7 +129,20 @@ export const RoleListView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: "asc" | "desc" }>({
+    key: "name",
+    direction: "asc",
+  });
+
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+
+  // Sorting Handler
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
   const { navigateTo, isNavigating } = useNavigateWithLoading();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -147,12 +160,33 @@ export const RoleListView: React.FC = () => {
     });
   }, [roles, searchQuery]);
 
+  const sortedRoles = useMemo(() => {
+    if (!sortConfig.key) return filteredRoles;
+
+    return [...filteredRoles].sort((a, b) => {
+      let aVal: any = (a as any)[sortConfig.key!];
+      let bVal: any = (b as any)[sortConfig.key!];
+
+      if (sortConfig.key === "permissions") {
+        aVal = a.permissions.length;
+        bVal = b.permissions.length;
+      } else if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      }
+
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredRoles, sortConfig]);
+
   // Pagination
   const totalPages = Math.ceil(filteredRoles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedRoles = useMemo(() => {
-    return filteredRoles.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredRoles, startIndex, itemsPerPage]);
+    return sortedRoles.slice(startIndex, startIndex + itemsPerPage);
+  }, [sortedRoles, startIndex, itemsPerPage]);
 
   // Handlers
   const handleViewRole = (id: string) => {
@@ -280,21 +314,30 @@ export const RoleListView: React.FC = () => {
                         <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                           No.
                         </th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                          Role Name
-                        </th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                          Description
-                        </th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                          Type
-                        </th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                          Users
-                        </th>
-                        <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                          Permissions
-                        </th>
+                        {[
+                          { label: "Role Name", id: "name" },
+                          { label: "Description", id: "description" },
+                          { label: "Type", id: "type" },
+                          { label: "Users", id: "userCount" },
+                          { label: "Permissions", id: "permissions" }
+                        ].map((col, idx) => {
+                          const isSorted = sortConfig.key === col.id;
+                          return (
+                            <th
+                              key={idx}
+                              onClick={() => handleSort(col.id)}
+                              className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group"
+                            >
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <span className="truncate">{col.label}</span>
+                                <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
+                                  <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                  <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                                </div>
+                              </div>
+                            </th>
+                          );
+                        })}
                         <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
                           Action
                         </th>

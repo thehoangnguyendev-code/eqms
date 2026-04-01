@@ -3,6 +3,21 @@ import { ChevronDown, ChevronUp, Calendar, Tag, CheckCircle2, Wrench, Bug } from
 import { MOCK_CHANGELOG } from "../mockData";
 import { formatDateLong } from "@/utils/format";
 
+const SettingsCard: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  noPadding?: boolean;
+}> = ({ title, icon, children, noPadding = false }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className={noPadding ? "" : "p-5"}>{children}</div>
+  </div>
+);
+
 export const ChangelogTab: React.FC = () => {
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(
     new Set([MOCK_CHANGELOG[0]?.version])
@@ -26,31 +41,25 @@ export const ChangelogTab: React.FC = () => {
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 text-center">
           <div className="text-2xl font-bold text-slate-900">{MOCK_CHANGELOG.length}</div>
-          <div className="text-xs text-slate-500 mt-0.5">Total Releases</div>
+          <div className="text-[10px] sm:text-xs font-bold text-slate-500 mt-1 uppercase tracking-wider">Total Releases</div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 text-center">
           <div className="text-2xl font-bold text-emerald-600">
             {MOCK_CHANGELOG.reduce((sum, e) => sum + (e.changes.features?.length ?? 0), 0)}
           </div>
-          <div className="text-xs text-slate-500 mt-0.5">New Features</div>
+          <div className="text-[10px] sm:text-xs font-bold text-emerald-600/70 mt-1 uppercase tracking-wider">New Features</div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 text-center">
           <div className="text-2xl font-bold text-amber-600">
             {MOCK_CHANGELOG.reduce((sum, e) => sum + (e.changes.bugFixes?.length ?? 0), 0)}
           </div>
-          <div className="text-xs text-slate-500 mt-0.5">Bug Fixes</div>
+          <div className="text-[10px] sm:text-xs font-bold text-amber-600/70 mt-1 uppercase tracking-wider">Bug Fixes</div>
         </div>
       </div>
 
       {/* Changelog entries */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-100 flex-shrink-0">
-            <Tag className="h-4 w-4 text-emerald-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Version History</h3>
-        </div>
-        <div className="divide-y divide-slate-200">
+      <SettingsCard title="Version History" icon={<Tag className="h-4 w-4" />} noPadding>
+        <div className="divide-y divide-slate-100">
           {MOCK_CHANGELOG.map((entry) => {
             const isExpanded = expandedVersions.has(entry.version);
             const hasFeatures = entry.changes.features && entry.changes.features.length > 0;
@@ -59,60 +68,62 @@ export const ChangelogTab: React.FC = () => {
             const hasBugFixes = entry.changes.bugFixes && entry.changes.bugFixes.length > 0;
 
             return (
-              <div key={entry.version} className="transition-colors hover:bg-slate-50/50">
+              <div key={entry.version} className="transition-colors hover:bg-slate-50/30">
                 <button
                   onClick={() => toggleVersion(entry.version)}
                   className="w-full px-5 py-4 flex items-center justify-between gap-4 text-left"
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
-                    <span className=" font-semibold text-slate-900">
+                    <span className="text-base font-bold text-slate-900">
                       v{entry.version}
                     </span>
-                    <div className="flex items-center gap-1.5 text-slate-500">
+                    <div className="flex items-center gap-1.5 text-slate-500 font-medium">
                       <Calendar className="h-3.5 w-3.5" />
-                      <span className="text-sm">{formatDateLong(entry.releaseDate)}</span>
+                      <span className="text-xs sm:text-sm">{formatDateLong(entry.releaseDate)}</span>
                     </div>
                     <div className="hidden sm:flex items-center gap-2">
                       {hasFeatures && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <CheckCircle2 className="h-3 w-3" />
-                          {entry.changes.features!.length} feature{entry.changes.features!.length !== 1 ? "s" : ""}
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-tighter">
+                          <CheckCircle2 className="h-2.5 w-2.5" />
+                          {entry.changes.features!.length} New
                         </span>
                       )}
                       {hasImprovements && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                          <Wrench className="h-3 w-3" />
-                          {entry.changes.improvements!.length} improvement{entry.changes.improvements!.length !== 1 ? "s" : ""}
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-tighter">
+                          <Wrench className="h-2.5 w-2.5" />
+                          {entry.changes.improvements!.length} Imp.
                         </span>
                       )}
                       {hasBugFixes && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                          <Bug className="h-3 w-3" />
-                          {entry.changes.bugFixes!.length} fix{entry.changes.bugFixes!.length !== 1 ? "es" : ""}
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-tighter">
+                          <Bug className="h-2.5 w-2.5" />
+                          {entry.changes.bugFixes!.length} Fix
                         </span>
                       )}
                     </div>
                   </div>
-                  {isExpanded ? (
-                    <ChevronUp className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                  )}
+                  <div className="p-1.5 rounded-lg border border-slate-100 bg-white shadow-sm flex items-center justify-center">
+                    {isExpanded ? (
+                      <ChevronUp className="h-3.5 w-3.5 text-emerald-600" />
+                    ) : (
+                      <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                    )}
+                  </div>
                 </button>
 
                 {isExpanded && (
                   <div className="px-5 pb-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     {hasFeatures && (
-                      <div className="bg-emerald-50/50 border border-emerald-100 rounded-lg p-4">
-                        <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                      <div className="bg-emerald-50/30 border border-emerald-100 rounded-xl p-4">
+                        <h4 className="text-xs font-bold text-emerald-900 mb-2.5 flex items-center gap-2 uppercase tracking-tight">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                           New Features
                         </h4>
-                        <ul className="space-y-1.5 ml-6">
+                        <ul className="space-y-2 ml-1">
                           {entry.changes.features!.map((feature, idx) => (
-                            <li key={idx} className="text-sm text-slate-700 flex items-center gap-2">
-                              <span className="text-emerald-600 flex-shrink-0">•</span>
-                              <span>{feature}</span>
+                            <li key={idx} className="text-sm text-slate-600 flex items-start gap-2.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 flex-shrink-0 mt-1.5" />
+                              <span className="leading-relaxed">{feature}</span>
                             </li>
                           ))}
                         </ul>
@@ -120,16 +131,16 @@ export const ChangelogTab: React.FC = () => {
                     )}
 
                     {hasImprovements && (
-                      <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-4">
-                        <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                          <Wrench className="h-4 w-4 text-blue-600" />
+                      <div className="bg-blue-50/30 border border-blue-100 rounded-xl p-4">
+                        <h4 className="text-xs font-bold text-blue-900 mb-2.5 flex items-center gap-2 uppercase tracking-tight">
+                          <Wrench className="h-3.5 w-3.5 text-blue-600" />
                           Improvements
                         </h4>
-                        <ul className="space-y-1.5 ml-6">
+                        <ul className="space-y-2 ml-1">
                           {entry.changes.improvements!.map((improvement, idx) => (
-                            <li key={idx} className="text-sm text-slate-700 flex items-center gap-2">
-                              <span className="text-blue-600 flex-shrink-0">•</span>
-                              <span>{improvement}</span>
+                            <li key={idx} className="text-sm text-slate-600 flex items-start gap-2.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0 mt-1.5" />
+                              <span className="leading-relaxed">{improvement}</span>
                             </li>
                           ))}
                         </ul>
@@ -137,16 +148,16 @@ export const ChangelogTab: React.FC = () => {
                     )}
 
                     {hasBugFixes && (
-                      <div className="bg-amber-50/50 border border-amber-100 rounded-lg p-4">
-                        <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                          <Bug className="h-4 w-4 text-amber-600" />
+                      <div className="bg-amber-50/30 border border-amber-100 rounded-xl p-4">
+                        <h4 className="text-xs font-bold text-amber-900 mb-2.5 flex items-center gap-2 uppercase tracking-tight">
+                          <Bug className="h-3.5 w-3.5 text-amber-600" />
                           Bug Fixes
                         </h4>
-                        <ul className="space-y-1.5 ml-6">
+                        <ul className="space-y-2 ml-1">
                           {entry.changes.bugFixes!.map((fix, idx) => (
-                            <li key={idx} className="text-sm text-slate-700 flex items-center gap-2">
-                              <span className="text-amber-600 flex-shrink-0">•</span>
-                              <span>{fix}</span>
+                            <li key={idx} className="text-sm text-slate-600 flex items-start gap-2.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0 mt-1.5" />
+                              <span className="leading-relaxed">{fix}</span>
                             </li>
                           ))}
                         </ul>
@@ -158,7 +169,7 @@ export const ChangelogTab: React.FC = () => {
             );
           })}
         </div>
-      </div>
+      </SettingsCard>
     </div>
   );
 };

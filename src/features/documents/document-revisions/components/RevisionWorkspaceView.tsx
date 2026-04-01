@@ -361,29 +361,29 @@ export const RevisionWorkspaceView: React.FC = () => {
   const handleBackToImpactAnalysis = () => {
     setIsNavigating(true);
     setTimeout(() => {
-    // Navigate back based on document type
-    if (state?.isStandalone) {
-      // Standalone: Navigate back to StandaloneRevisionView
-      navigate(
-        `/documents/revisions/standalone?sourceDocId=${state.sourceDocument?.code}`,
-        {
-          state: {
-            sourceDocument: state.sourceDocument,
-            reasonForChange: state.reasonForChange,
+      // Navigate back based on document type
+      if (state?.isStandalone) {
+        // Standalone: Navigate back to StandaloneRevisionView
+        navigate(
+          `/documents/revisions/standalone?sourceDocId=${state.sourceDocument?.code}`,
+          {
+            state: {
+              sourceDocument: state.sourceDocument,
+              reasonForChange: state.reasonForChange,
+            },
           },
-        },
-      );
-    } else {
-      // Parent-Child: Navigate back to Impact Analysis
-      navigate(ROUTES.DOCUMENTS.REVISIONS.NEW, {
-        state: {
-          sourceDocument: state?.sourceDocument,
-          impactDecisions: state?.impactDecisions,
-          linkedDocuments: state?.linkedDocuments,
-          reasonForChange: state?.reasonForChange,
-        },
-      });
-    }
+        );
+      } else {
+        // Parent-Child: Navigate back to Impact Analysis
+        navigate(ROUTES.DOCUMENTS.REVISIONS.NEW, {
+          state: {
+            sourceDocument: state?.sourceDocument,
+            impactDecisions: state?.impactDecisions,
+            linkedDocuments: state?.linkedDocuments,
+            reasonForChange: state?.reasonForChange,
+          },
+        });
+      }
     }, 600);
   };
 
@@ -935,96 +935,103 @@ export const RevisionWorkspaceView: React.FC = () => {
       </div>
 
       {/* Documents Table Card */}
-      <div className="border rounded-xl bg-white shadow-sm overflow-hidden">
-        <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
-          <h3 className="text-sm font-semibold text-slate-700">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+          <span className="text-emerald-600">
+            <Layers className="h-4 w-4" />
+          </span>
+          <h3 className="text-sm font-semibold text-slate-800">
             Documents in Workspace
           </h3>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="py-3.5 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-12">
-                  No.
-                </th>
-                <th className="py-3.5 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Document Number
-                </th>
-                <th className="py-3.5 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
-                  Created
-                </th>
-                <th className="py-3.5 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
-                  Opened by
-                </th>
-                <th className="py-3.5 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Document Name
-                </th>
-                <th className="py-3.5 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  State
-                </th>
-                <th className="py-3.5 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
-                  Author
-                </th>
-                <th className="py-3.5 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
-                  Valid Until
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              {workspaceDocuments.length > 0 ? (
-                workspaceDocuments.map((doc, index) => (
-                  <tr
-                    key={doc.id}
-                    className="hover:bg-slate-50/80 transition-colors"
-                  >
-                    <td className="py-3.5 px-4 text-sm text-slate-500 whitespace-nowrap">
-                      {index + 1}
-                    </td>
-                    <td className="py-3.5 px-4 text-sm whitespace-nowrap">
-                      <button
-                        onClick={() => {
-                          setIsNavigating(true);
-                          setTimeout(() => navigate(-1), 600);
-                        }}
-                        className="font-medium text-emerald-600 hover:text-emerald-700 hover:underline underline-offset-2 transition-colors cursor-pointer"
-                      >
-                        {doc.code}
-                      </button>
-                    </td>
-                    <td className="py-3.5 px-4 text-sm text-slate-600 whitespace-nowrap hidden md:table-cell">
-                      {state?.documentCreated || state?.revisionCreated || "—"}
-                    </td>
-                    <td className="py-3.5 px-4 text-sm text-slate-600 whitespace-nowrap hidden md:table-cell">
-                      {currentUserName}
-                    </td>
-                    <td className="py-3.5 px-4 text-sm text-slate-900 whitespace-nowrap max-w-[200px] truncate">
-                      {doc.name}
-                    </td>
-                    <td className="py-3.5 px-4 text-sm whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-100 text-slate-700 border-slate-200">
-                        {state?.documentStatus || "Draft"}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 text-sm text-slate-600 whitespace-nowrap hidden lg:table-cell">
-                      {state?.documentAuthor || "—"}
-                    </td>
-                    <td className="py-3.5 px-4 text-sm text-slate-600 whitespace-nowrap hidden lg:table-cell">
-                      —
-                    </td>
+        <div className="p-5">
+          <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-slate-50/10">
+            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50">
+              <table className="w-full border-separate border-spacing-0">
+                <thead>
+                  <tr className="bg-slate-50">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 w-12">
+                      No.
+                    </th>
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                      Document Number
+                    </th>
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden md:table-cell">
+                      Created
+                    </th>
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden md:table-cell">
+                      Opened by
+                    </th>
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                      Document Name
+                    </th>
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                      State
+                    </th>
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden lg:table-cell">
+                      Author
+                    </th>
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden lg:table-cell">
+                      Valid Until
+                    </th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={8} className="py-12 text-center">
-                    <p className="text-sm text-slate-500">
-                      No documents in workspace.
-                    </p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-slate-200">
+                  {workspaceDocuments.length > 0 ? (
+                    workspaceDocuments.map((doc, index) => (
+                      <tr
+                        key={doc.id}
+                        className="hover:bg-slate-50/80 transition-colors group"
+                      >
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-500 font-medium">
+                          {index + 1}
+                        </td>
+                        <td className="py-3 px-4 text-xs md:text-sm">
+                          <button
+                            onClick={() => {
+                              setIsNavigating(true);
+                              setTimeout(() => navigate(-1), 600);
+                            }}
+                            className="font-medium text-emerald-600 ld-600 hover:text-emerald-700 hover:underline underline-offset-4 decoration-2 transition-all cursor-pointer"
+                          >
+                            {doc.code}
+                          </button>
+                        </td>
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
+                          {state?.documentCreated || state?.revisionCreated || "—"}
+                        </td>
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
+                          {currentUserName}
+                        </td>
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-900 font-medium max-w-[200px] truncate">
+                          {doc.name}
+                        </td>
+                        <td className="py-3 px-4 text-xs md:text-sm">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-tight border bg-slate-50 text-slate-700 border-slate-200 shadow-sm">
+                            {state?.documentStatus || "Draft"}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden lg:table-cell">
+                          {state?.documentAuthor || "—"}
+                        </td>
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden lg:table-cell">
+                          —
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={8} className="py-12 text-center bg-slate-50/50">
+                        <p className="text-sm text-slate-500 font-medium italic">
+                          No documents in workspace.
+                        </p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

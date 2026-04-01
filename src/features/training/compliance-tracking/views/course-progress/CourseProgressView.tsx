@@ -26,6 +26,8 @@ import {
   Repeat,
   ShieldCheck,
   MoreVertical,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
@@ -203,6 +205,18 @@ export const CourseProgressView: React.FC = () => {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: "asc" | "desc" }>({
+    key: "userId",
+    direction: "asc",
+  });
+
+  // Sorting Handler
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
 
   // Derived data
   const uniqueDepartments = useMemo(
@@ -249,10 +263,35 @@ export const CourseProgressView: React.FC = () => {
     return filtered;
   }, [searchQuery, enrollmentFilter, resultFilter, departmentFilter, businessUnitFilter]);
 
+  const sortedEmployees = useMemo(() => {
+    if (!sortConfig.key) return filteredEmployees;
+
+    return [...filteredEmployees].sort((a, b) => {
+      let aVal: any = (a as any)[sortConfig.key!];
+      let bVal: any = (b as any)[sortConfig.key!];
+
+      if (sortConfig.key === "completedAt") {
+        aVal = aVal ? new Date(aVal).getTime() : 0;
+        bVal = bVal ? new Date(bVal).getTime() : 0;
+      } else if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      } else if (aVal === null) {
+        aVal = sortConfig.direction === "asc" ? Infinity : -Infinity;
+      } else if (bVal === null) {
+        bVal = sortConfig.direction === "asc" ? Infinity : -Infinity;
+      }
+
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredEmployees, sortConfig]);
+
   const paginatedEmployees = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return filteredEmployees.slice(start, start + itemsPerPage);
-  }, [filteredEmployees, currentPage, itemsPerPage]);
+    return sortedEmployees.slice(start, start + itemsPerPage);
+  }, [sortedEmployees, currentPage, itemsPerPage]);
 
   const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
 
@@ -436,97 +475,97 @@ export const CourseProgressView: React.FC = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col flex-1 min-h-0">
         <div className="p-4 md:p-5 flex flex-col">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-3 lg:gap-4 items-end">
-          {/* Search */}
-          <div className="xl:col-span-4">
-            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
-              Search
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search by name, ID, email..."
-                className="w-full h-10 pl-10 pr-4 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm"
-                value={searchQuery}
+            {/* Search */}
+            <div className="xl:col-span-4">
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+                Search
+              </label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search by name, ID, email..."
+                  className="w-full h-10 pl-10 pr-4 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Enrollment Filter */}
+            <div className="xl:col-span-2">
+              <Select
+                label="Enrollment"
+                value={enrollmentFilter}
                 onChange={(e) => {
-                  setSearchQuery(e.target.value);
+                  setEnrollmentFilter(e.target.value as typeof enrollmentFilter);
                   setCurrentPage(1);
                 }}
+                options={[
+                  { label: "All Enrollments", value: "All" },
+                  { label: "Completed", value: "Completed" },
+                  { label: "In-Progress", value: "In-Progress" },
+                  { label: "Not Started", value: "Not Started" },
+                  { label: "Overdue", value: "Overdue" },
+                  { label: "Exempt", value: "Exempt" },
+                ]}
+              />
+            </div>
+
+            {/* Result Status */}
+            <div className="xl:col-span-2">
+              <Select
+                label="Result"
+                value={resultFilter}
+                onChange={(e) => {
+                  setResultFilter(e.target.value as typeof resultFilter);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: "All Results", value: "All" },
+                  { label: "Pass", value: "Pass" },
+                  { label: "Fail", value: "Fail" },
+                  { label: "Pending", value: "Pending" },
+                  { label: "N/A", value: "N/A" },
+                ]}
+              />
+            </div>
+
+            {/* Department */}
+            <div className="xl:col-span-2">
+              <Select
+                label="Department"
+                value={departmentFilter}
+                onChange={(e) => {
+                  setDepartmentFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: "All Depts", value: "All" },
+                  ...uniqueDepartments.map((d) => ({ label: String(d), value: String(d) })),
+                ]}
+              />
+            </div>
+
+            {/* Business Unit */}
+            <div className="xl:col-span-2">
+              <Select
+                label="Business Unit"
+                value={businessUnitFilter}
+                onChange={(e) => {
+                  setBusinessUnitFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: "All BUs", value: "All" },
+                  ...uniqueBusinessUnits.map((bu) => ({ label: String(bu), value: String(bu) })),
+                ]}
               />
             </div>
           </div>
-
-          {/* Enrollment Filter */}
-          <div className="xl:col-span-2">
-            <Select
-              label="Enrollment"
-              value={enrollmentFilter}
-              onChange={(e) => {
-                setEnrollmentFilter(e.target.value as typeof enrollmentFilter);
-                setCurrentPage(1);
-              }}
-              options={[
-                { label: "All Enrollments", value: "All" },
-                { label: "Completed", value: "Completed" },
-                { label: "In-Progress", value: "In-Progress" },
-                { label: "Not Started", value: "Not Started" },
-                { label: "Overdue", value: "Overdue" },
-                { label: "Exempt", value: "Exempt" },
-              ]}
-            />
-          </div>
-
-          {/* Result Status */}
-          <div className="xl:col-span-2">
-            <Select
-              label="Result"
-              value={resultFilter}
-              onChange={(e) => {
-                setResultFilter(e.target.value as typeof resultFilter);
-                setCurrentPage(1);
-              }}
-              options={[
-                { label: "All Results", value: "All" },
-                { label: "Pass", value: "Pass" },
-                { label: "Fail", value: "Fail" },
-                { label: "Pending", value: "Pending" },
-                { label: "N/A", value: "N/A" },
-              ]}
-            />
-          </div>
-
-          {/* Department */}
-          <div className="xl:col-span-2">
-            <Select
-              label="Department"
-              value={departmentFilter}
-              onChange={(e) => {
-                setDepartmentFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              options={[
-                { label: "All Depts", value: "All" },
-                ...uniqueDepartments.map((d) => ({ label: String(d), value: String(d) })),
-              ]}
-            />
-          </div>
-
-          {/* Business Unit */}
-          <div className="xl:col-span-2">
-            <Select
-              label="Business Unit"
-              value={businessUnitFilter}
-              onChange={(e) => {
-                setBusinessUnitFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              options={[
-                { label: "All BUs", value: "All" },
-                ...uniqueBusinessUnits.map((bu) => ({ label: String(bu), value: String(bu) })),
-              ]}
-            />
-          </div>
-        </div>
         </div>
 
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative min-h-0 text-left">
@@ -548,39 +587,44 @@ export const CourseProgressView: React.FC = () => {
                     <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                       No.
                     </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Employee Code
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[200px]">
-                      Name
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
-                      Email
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden md:table-cell">
-                      Department
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
-                      Business Unit
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Enrollment
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Score
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Result
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
-                      Attempts
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden xl:table-cell">
-                      Completed At
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Evidence
-                    </th>
+                    {[
+                      { label: "Employee Code", id: "userId" },
+                      { label: "Name", id: "name" },
+                      { label: "Email", id: "email", hidden: "hidden lg:table-cell" },
+                      { label: "Department", id: "department", hidden: "hidden md:table-cell" },
+                      { label: "Business Unit", id: "businessUnit", hidden: "hidden lg:table-cell" },
+                      { label: "Enrollment", id: "enrollmentStatus", align: "text-center" },
+                      { label: "Score", id: "score", align: "text-center" },
+                      { label: "Result", id: "resultStatus", align: "text-center" },
+                      { label: "Attempts", id: "attempts", align: "text-center", hidden: "hidden lg:table-cell" },
+                      { label: "Completed At", id: "completedAt", hidden: "hidden xl:table-cell" },
+                      { label: "Evidence", id: null, align: "text-center", sortable: false }
+                    ].map((col, idx) => {
+                      const isSorted = sortConfig.key === col.id;
+                      const canSort = col.id !== null && col.sortable !== false;
+                      return (
+                        <th
+                          key={idx}
+                          onClick={canSort ? () => handleSort(col.id!) : undefined}
+                          className={cn(
+                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                            canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
+                            col.align || "text-left",
+                            col.hidden
+                          )}
+                        >
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span className="truncate">{col.label}</span>
+                            {canSort && (
+                              <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                                <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                                <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                              </div>
+                            )}
+                          </div>
+                        </th>
+                      );
+                    })}
                     <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>
@@ -615,12 +659,12 @@ export const CourseProgressView: React.FC = () => {
                             {rowNumber}
                           </td>
                           <td className={tdClass}>
-                            <span className="font-semibold text-emerald-600">{emp.userId}</span>
+                            <span className="font-medium text-emerald-600 hover:underline hover:underline">{emp.userId}</span>
                           </td>
                           <td className={tdClass}>
                             <div>
-                              <p className="font-bold text-slate-900">{emp.name}</p>
-                              <p className="text-[10px] md:text-xs text-slate-500 font-medium uppercase tracking-tight">{emp.jobTitle}</p>
+                              <p className="font-medium text-slate-900">{emp.name}</p>
+                              <p className="text-[10px] md:text-xs text-slate-500 mt-0.5">{emp.jobTitle}</p>
                             </div>
                           </td>
                           <td className={cn(tdClass, "text-slate-600 hidden lg:table-cell")}>

@@ -19,6 +19,8 @@ import {
   Info,
   ShieldCheck,
   AlertCircle,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { IconTimeline } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
@@ -88,18 +90,23 @@ const CourseRow: React.FC<{
       <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm text-center text-slate-500 font-medium border-b border-slate-200">
         {rowNumber}
       </td>
-      <td 
+      <td
         className={cn("py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm whitespace-nowrap border-b border-slate-200 cursor-pointer")}
         onClick={() => onViewProgress(course.id)}
       >
-        <span className="font-semibold text-emerald-600 hover:underline">{course.courseId}</span>
+        <span className="font-medium text-emerald-600 hover:underline hover:underline">{course.courseId}</span>
       </td>
       <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200">
-        <div className="flex items-start gap-2 max-w-[200px] lg:max-w-[300px]">
-          <GraduationCap className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />
-          <span className="font-bold text-slate-900 truncate">
-            {course.courseTitle}
-          </span>
+        <div className="flex items-start gap-2">
+          <GraduationCap className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+          <div className="max-w-[200px] md:max-w-md">
+            <p className="font-medium text-slate-900">
+              {course.courseTitle}
+            </p>
+            <p className="text-[10px] md:text-xs text-slate-500 mt-0.5">
+              {course.description}
+            </p>
+          </div>
         </div>
       </td>
       <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200">
@@ -307,8 +314,20 @@ export const CourseStatusView: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: "asc" | "desc" }>({
+    key: "courseId",
+    direction: "asc",
+  });
 
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+
+  // Sorting Handler
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
 
 
   // Details Modal State
@@ -373,12 +392,33 @@ export const CourseStatusView: React.FC = () => {
     });
   }, [filters]);
 
+  const sortedData = useMemo(() => {
+    if (!sortConfig.key) return filteredData;
+
+    return [...filteredData].sort((a, b) => {
+      let aVal: any = (a as any)[sortConfig.key!];
+      let bVal: any = (b as any)[sortConfig.key!];
+
+      if (sortConfig.key === "completion") {
+        aVal = a.completed / a.totalAssigned;
+        bVal = b.completed / b.totalAssigned;
+      } else if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      }
+
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredData, sortConfig]);
+
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return filteredData.slice(start, start + itemsPerPage);
-  }, [filteredData, currentPage, itemsPerPage]);
+    return sortedData.slice(start, start + itemsPerPage);
+  }, [sortedData, currentPage, itemsPerPage]);
 
   // Memoized stats for dashboard
   const stats = useMemo(() => {
@@ -614,33 +654,37 @@ export const CourseStatusView: React.FC = () => {
                 <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                   No.
                 </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                  Course ID
-                </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[200px]">
-                  Course Name
-                </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                  Type
-                </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                  Total Assigned
-                </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-emerald-700">
-                  Completed
-                </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-blue-700">
-                  In Progress
-                </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-red-700">
-                  Overdue
-                </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                  Avg. Score
-                </th>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                  Completion
-                </th>
+                {[
+                  { label: "Course ID", id: "courseId" },
+                  { label: "Course Name", id: "courseTitle" },
+                  { label: "Type", id: "courseType" },
+                  { label: "Total Assigned", id: "totalAssigned" },
+                  { label: "Completed", id: "completed", color: "text-emerald-700" },
+                  { label: "In Progress", id: "inProgress", color: "text-blue-700" },
+                  { label: "Overdue", id: "overdue", color: "text-red-700" },
+                  { label: "Avg. Score", id: "averageScore" },
+                  { label: "Completion", id: "completion" }
+                ].map((col, idx) => {
+                  const isSorted = sortConfig.key === col.id;
+                  return (
+                    <th
+                      key={idx}
+                      onClick={() => handleSort(col.id)}
+                      className={cn(
+                        "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group",
+                        col.color || "text-slate-500"
+                      )}
+                    >
+                      <div className="flex items-center justify-between gap-2 w-full">
+                        <span className="truncate">{col.label}</span>
+                        <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                          <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                          <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                        </div>
+                      </div>
+                    </th>
+                  );
+                })}
                 <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                   Action
                 </th>

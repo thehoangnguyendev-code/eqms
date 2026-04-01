@@ -15,9 +15,26 @@ import {
   Send,
   Link2,
   ExternalLink,
+  Activity,
+  Info,
+  GitBranch,
 } from "lucide-react";
 import { IconChecks } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
+
+const FormSection: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
 import { materialReview } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { AlertModal, AlertModalType } from "@/components/ui/modal/AlertModal";
@@ -189,7 +206,7 @@ export const MaterialReviewView: React.FC = () => {
             "Material has been returned to Draft. The author will be notified to make the necessary revisions.",
           );
           setModalAction(
-            () => () => navigate(ROUTES.TRAINING.TRAINING_MATERIALS),
+            () => () => navigate(ROUTES.TRAINING.MATERIALS),
           );
           break;
       }
@@ -302,14 +319,7 @@ export const MaterialReviewView: React.FC = () => {
         {/* Left: Material Info */}
         <div className="xl:col-span-7 space-y-5">
           {/* Material Information Card */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Material Information
-              </h3>
-            </div>
-            <div className="p-5 space-y-4">
-              {/* File preview card */}
+          <FormSection title="Material Information" icon={<Info className="h-4 w-4" />}>
               <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-slate-50/80 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors group">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center flex-shrink-0 shadow-sm group-hover:border-emerald-200 transition-colors">
                   {material.externalUrl ? (
@@ -383,8 +393,7 @@ export const MaterialReviewView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Details Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
                     <Hash className="h-3.5 w-3.5" /> Material Code
@@ -435,8 +444,7 @@ export const MaterialReviewView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Description */}
-              <div className="pt-2 border-t border-slate-100">
+              <div className="pt-2 border-t border-slate-100 mt-5">
                 <p className="text-xs text-slate-500 font-medium mb-1.5">
                   Description
                 </p>
@@ -444,17 +452,10 @@ export const MaterialReviewView: React.FC = () => {
                   {material.description}
                 </p>
               </div>
-            </div>
-          </div>
+          </FormSection>
 
           {/* Workflow Assignment Card */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Workflow Assignment
-              </h3>
-            </div>
-            <div className="p-5">
+          <FormSection title="Workflow Assignment" icon={<GitBranch className="h-4 w-4" />}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Reviewer */}
                 <div className="p-4 rounded-lg border border-amber-200 bg-amber-50/40">
@@ -522,19 +523,12 @@ export const MaterialReviewView: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
+          </FormSection>
         </div>
 
         {/* Right: Activity Log */}
         <div className="xl:col-span-5">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Activity Log
-              </h3>
-            </div>
-            <div className="p-5">
+          <FormSection title="Activity Log" icon={<Activity className="h-4 w-4" />}>
               <div className="relative">
                 <div className="absolute left-4 top-6 bottom-6 w-px bg-slate-200" />
                 <div className="space-y-5">
@@ -572,7 +566,7 @@ export const MaterialReviewView: React.FC = () => {
 
               {canReview && (
                 <div className="mt-5 pt-5 border-t border-slate-200">
-                  <label className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2 block">
+                  <label className="text-xs sm:text-sm font-medium text-slate-700 mb-2 block">
                     Review Comment
                   </label>
                   <textarea
@@ -584,8 +578,7 @@ export const MaterialReviewView: React.FC = () => {
                   />
                 </div>
               )}
-            </div>
-          </div>
+          </FormSection>
         </div>
       </div>
 
@@ -629,10 +622,10 @@ export const MaterialReviewView: React.FC = () => {
         onConfirm={
           modalAction
             ? () => {
-                setIsModalOpen(false);
-                setIsNavigating(true);
-                setTimeout(() => modalAction(), 600);
-              }
+              setIsModalOpen(false);
+              setIsNavigating(true);
+              setTimeout(() => modalAction(), 600);
+            }
             : undefined
         }
         type={modalType}

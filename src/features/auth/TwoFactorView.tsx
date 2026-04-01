@@ -259,7 +259,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                     >
                       <div className="group relative flex items-center justify-between p-4 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition-all duration-300 shadow-sm overflow-hidden">
                         <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 mr-3">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-600">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-500">
                             <IconMailOpened size={32} className="w-8 h-8 sm:w-10 sm:h-10" />
                           </div>
                           <div className="min-w-0 flex-1">
@@ -281,7 +281,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
 
                       <div className="group relative flex items-center justify-between p-4 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition-all duration-300 shadow-sm overflow-hidden">
                         <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 mr-3">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-600">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-500">
                             <IconQrcode size={32} className="w-8 h-8 sm:w-10 sm:h-10" />
                           </div>
                           <div className="min-w-0 flex-1">

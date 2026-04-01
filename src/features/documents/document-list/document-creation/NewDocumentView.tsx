@@ -472,9 +472,9 @@ export const NewDocumentView: React.FC = () => {
                           : "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%, 20px 50%)",
                       ...(isSkipped
                         ? {
-                            background:
-                              "repeating-linear-gradient(135deg, #e2e8f0, #e2e8f0 8px, #f1f5f9 8px, #f1f5f9 16px)",
-                          }
+                          background:
+                            "repeating-linear-gradient(135deg, #e2e8f0, #e2e8f0 8px, #f1f5f9 8px, #f1f5f9 16px)",
+                        }
                         : {}),
                     }}
                   />
@@ -869,7 +869,7 @@ export const NewDocumentView: React.FC = () => {
         description={
           <div className="text-xs bg-amber-50 border border-amber-200 rounded-lg p-3">
             <p className="text-amber-800">
-              <AlertTriangle className="h-3.5 w-3.5 text-amber-600 inline shrink-0" />{" "}
+              {" "}
               <span className="font-semibold">Note:</span> The document will be
               moved to <strong>Closed - Cancelled</strong> status.
             </p>

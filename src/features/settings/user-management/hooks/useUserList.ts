@@ -58,6 +58,19 @@ export function useUserList() {
   const [terminateFrom, setTerminateFrom] = useState("");
   const [terminateTo, setTerminateTo] = useState("");
 
+  // === Sorting ===
+  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: "asc" | "desc" }>({
+    key: "employeeCode",
+    direction: "asc",
+  });
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
   // === Use shared Table Filter hook ===
   const {
     searchQuery,
@@ -67,7 +80,6 @@ export function useUserList() {
     itemsPerPage,
     setItemsPerPage,
     totalPages,
-    paginatedItems: currentUsers,
     filteredItems: filteredUsers,
     resetFilter: resetTableFilter,
   } = useTableFilter(users, {
@@ -105,6 +117,32 @@ export function useUserList() {
     }
   });
 
+  const sortedUsers = useMemo(() => {
+    if (!sortConfig.key) return filteredUsers;
+
+    return [...filteredUsers].sort((a, b) => {
+      let aVal: any = (a as any)[sortConfig.key!];
+      let bVal: any = (b as any)[sortConfig.key!];
+
+      if (["createdDate", "suspendedUntil", "terminationDate"].includes(sortConfig.key!)) {
+        aVal = aVal ? new Date(aVal).getTime() : 0;
+        bVal = bVal ? new Date(bVal).getTime() : 0;
+      } else if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      }
+
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredUsers, sortConfig]);
+
+  const currentUsers = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return sortedUsers.slice(start, start + itemsPerPage);
+  }, [sortedUsers, currentPage, itemsPerPage]);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
 
   // Manual reset of page when custom filters change
@@ -134,8 +172,9 @@ export function useUserList() {
   // Each action shows toast feedback. Replace the setUsers mutation with the
   // corresponding userApi call + refetch() when the API is ready.
 
-  const deleteUser = (userId: string, userName: string) => {
-    // TODO: await userApi.deleteUser(userId); refetch();
+  const deleteUser = (userId: string, userName: string, reason: string) => {
+    // TODO: await userApi.deleteUser(userId, { reason }); refetch();
+    console.log(`Deleting user ${userName} (${userId}) with reason: ${reason}`);
     setUsers((prev) => prev.filter((u) => u.id !== userId));
     showToast({ type: "success", title: "User Deleted", message: `${userName} has been successfully deleted` });
   };
@@ -263,5 +302,8 @@ export function useUserList() {
     exportToExcel,
     clearFilters,
     generateResetPassword,
+    // Sorting
+    sortConfig,
+    handleSort,
   };
 }

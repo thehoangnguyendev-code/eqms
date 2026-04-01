@@ -11,6 +11,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ROUTES } from '@/app/routes.constants';
 import {
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   MoreVertical,
   Download,
   History,
@@ -109,7 +111,10 @@ export const RevisionsOwnedByMeView: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "revisionName",
+    direction: "asc",
+  });
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
@@ -224,33 +229,61 @@ export const RevisionsOwnedByMeView: React.FC = () => {
         matchesRelatedDocument &&
         matchesCorrelatedDocument &&
         matchesTemplate
-      );
-    });
-
-    // Apply sorting
-    return [...filtered].sort((a, b) => {
-      const nameA = a.revisionName.toLowerCase();
-      const nameB = b.revisionName.toLowerCase();
-      if (sortOrder === "asc") return nameA.localeCompare(nameB);
-      return nameB.localeCompare(nameA);
-    });
-  }, [
-    searchQuery,
-    statusFilter,
-    typeFilter,
-    departmentFilter,
-    authorFilter,
-    createdFromDate,
-    createdToDate,
-    effectiveFromDate,
-    effectiveToDate,
-    validFromDate,
-    validToDate,
-    relatedDocumentFilter,
-    correlatedDocumentFilter,
-    templateFilter,
-    sortOrder,
-  ]);
+        );
+      });
+  
+      const parseDate = (dStr: string) => {
+        if (!dStr) return 0;
+        const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (parts) {
+          return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
+        }
+        return new Date(dStr).getTime();
+      };
+  
+      // Apply sorting
+      return [...filtered].sort((a, b) => {
+        const key = sortConfig.key as keyof Revision;
+        let valA: any = a[key] || "";
+        let valB: any = b[key] || "";
+  
+        if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
+          valA = parseDate(valA);
+          valB = parseDate(valB);
+        } else if (typeof valA === 'string') {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+  
+        if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }, [
+      searchQuery,
+      statusFilter,
+      typeFilter,
+      departmentFilter,
+      authorFilter,
+      createdFromDate,
+      createdToDate,
+      effectiveFromDate,
+      effectiveToDate,
+      validFromDate,
+      validToDate,
+      relatedDocumentFilter,
+      correlatedDocumentFilter,
+      templateFilter,
+      sortConfig,
+    ]);
+  
+    const handleSort = (key: string) => {
+      setSortConfig((prev) => ({
+        key,
+        direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+      }));
+      setCurrentPage(1);
+    };
 
   // Handle loading state on filter changes
   React.useEffect(() => {
@@ -272,7 +305,7 @@ export const RevisionsOwnedByMeView: React.FC = () => {
     relatedDocumentFilter,
     correlatedDocumentFilter,
     templateFilter,
-    sortOrder,
+    sortConfig,
   ]);
 
   // Pagination
@@ -357,8 +390,8 @@ export const RevisionsOwnedByMeView: React.FC = () => {
       case "download":
         // TODO: Implement download functionality
         break;
-      case "history":
-        // TODO: Implement version history functionality
+      case "audit":
+        navigateTo(`${ROUTES.DOCUMENTS.REVISIONS.DETAIL(id)}?tab=audit`);
         break;
       default:
         break;
@@ -507,11 +540,11 @@ export const RevisionsOwnedByMeView: React.FC = () => {
 
               <Button
                 variant="outline"
-                onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+                onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === "asc" ? "desc" : "asc" }))}
                 className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
                 size="sm"
               >
-                {sortOrder === "asc" ? (
+                {sortConfig.direction === "asc" ? (
                   <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
                 ) : (
                   <ArrowDownZA className="h-4 w-4 text-emerald-600" />
@@ -651,19 +684,34 @@ export const RevisionsOwnedByMeView: React.FC = () => {
                     <thead>
                       <tr>
                         <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>
-                        {visibleColumns.map((column) => (
-                          <th
-                            key={column.id}
-                            className={cn(
-                              "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap",
-                              column.id === "action"
-                                ? "right-0 z-30 text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
-                                : "text-left",
-                            )}
-                          >
-                            {column.label}
-                          </th>
-                        ))}
+                        {visibleColumns.map((column) => {
+                          const isSorted = sortConfig.key === column.id;
+                          const canSort = column.id !== 'action' && column.id !== 'no' && column.id !== 'relatedDocuments' && column.id !== 'correlatedDocuments' && column.id !== 'template';
+
+                          return (
+                            <th
+                              key={column.id}
+                              onClick={canSort ? () => handleSort(column.id) : undefined}
+                              className={cn(
+                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
+                                column.id === "action"
+                                  ? "right-0 z-30 text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
+                                  : "text-left",
+                              )}
+                            >
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <span className="truncate">{column.label}</span>
+                                {canSort && (
+                                  <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
+                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                                  </div>
+                                )}
+                              </div>
+                            </th>
+                          );
+                        })}
                       </tr>
                     </thead>
                     <tbody className="bg-white">

@@ -24,8 +24,8 @@ import {
   History,
   X,
   SlidersHorizontal,
-  ArrowDownAZ,
-  ArrowDownZA,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MarkObsoleteModal, ObsoleteResult } from "../../components/MarkObsoleteModal";
@@ -174,7 +174,10 @@ export const MaterialsView: React.FC = () => {
   // Filters
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortConfig, setSortConfig] = useState<{ key: keyof TrainingMaterial | null; direction: "asc" | "desc" }>({
+    key: "uploadedAt",
+    direction: "desc",
+  });
 
   const [filters, setFilters] = useState<MaterialFilters>({
     searchQuery: "",
@@ -318,7 +321,7 @@ export const MaterialsView: React.FC = () => {
     filters.dateFrom,
     filters.dateTo,
     activeTab,
-    sortOrder
+    sortConfig
   ]);
 
   const setActiveTab = (tab: "overview" | "all" | "pending-review" | "pending-approval") => {
@@ -339,10 +342,24 @@ export const MaterialsView: React.FC = () => {
         ? "Pending Approval"
         : filters.statusFilter;
 
+  // Global handleSort
+  const handleSort = (key: keyof TrainingMaterial) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  const parseDate = (dateStr: string) => {
+    if (!dateStr) return 0;
+    const [day, month, year] = dateStr.split("/").map(Number);
+    return new Date(year, month - 1, day).getTime();
+  };
+
   // Filtered & Paginated
   const filteredData = useMemo(() => {
 
-    const filtered = MOCK_MATERIALS.filter((m) => {
+    let filtered = MOCK_MATERIALS.filter((m) => {
       const effectiveStatus = obsoleteOverrides[m.id] !== undefined ? "Obsoleted" : m.status;
       const matchesSearch =
         m.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
@@ -356,18 +373,14 @@ export const MaterialsView: React.FC = () => {
       // Date filtering
       let matchesDate = true;
       if (filters.dateFrom || filters.dateTo) {
-        // m.uploadedAt is in dd/MM/yyyy format according to mockData.ts
-        const [day, month, year] = m.uploadedAt.split("/").map(Number);
-        const materialDate = new Date(year, month - 1, day).getTime();
+        const materialDate = parseDate(m.uploadedAt);
 
         if (filters.dateFrom) {
-          const [fDay, fMonth, fYear] = filters.dateFrom.split("/").map(Number);
-          const fromDate = new Date(fYear, fMonth - 1, fDay).getTime();
+          const fromDate = parseDate(filters.dateFrom);
           if (materialDate < fromDate) matchesDate = false;
         }
         if (filters.dateTo) {
-          const [tDay, tMonth, tYear] = filters.dateTo.split("/").map(Number);
-          const toDate = new Date(tYear, tMonth - 1, tDay).getTime();
+          const toDate = parseDate(filters.dateTo);
           if (materialDate > toDate) matchesDate = false;
         }
       }
@@ -375,13 +388,29 @@ export const MaterialsView: React.FC = () => {
       return matchesSearch && matchesType && matchesDepartment && matchesStatus && matchesUploadedBy && matchesDate;
     });
 
-    return [...filtered].sort((a, b) => {
-      const titleA = a.title.toLowerCase();
-      const titleB = b.title.toLowerCase();
-      if (sortOrder === "asc") return titleA.localeCompare(titleB);
-      return titleB.localeCompare(titleA);
-    });
-  }, [filters, obsoleteOverrides, statusFilterEffective, sortOrder]);
+    // Sorting
+    if (sortConfig.key) {
+      filtered = [...filtered].sort((a, b) => {
+        const key = sortConfig.key!;
+        let aVal = (a[key] as any);
+        let bVal = (b[key] as any);
+
+        if (key === "uploadedAt") {
+          aVal = parseDate(aVal);
+          bVal = parseDate(bVal);
+        } else if (typeof aVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
+
+        if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filtered;
+  }, [filters, obsoleteOverrides, statusFilterEffective, sortConfig]);
 
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
@@ -851,19 +880,6 @@ export const MaterialsView: React.FC = () => {
                     <SlidersHorizontal className="h-4 w-4" />
                     Filters
                   </Button>
-
-                  <Button
-                    variant="outline"
-                    onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
-                    className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
-                    size="sm"
-                  >
-                    {sortOrder === "asc" ? (
-                      <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
-                    ) : (
-                      <ArrowDownZA className="h-4 w-4 text-emerald-600" />
-                    )}
-                  </Button>
                 </div>
               </div>
 
@@ -993,18 +1009,46 @@ export const MaterialsView: React.FC = () => {
                   <table className="w-full border-separate border-spacing-0 text-left">
                     <thead>
                       <tr>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">No.</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Material ID</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Material Title</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">File Type</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">File Size</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Version</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Department</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Status</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Courses Using</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Last Updated</th>
-                        <th className="sticky top-0 z-20 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">Uploaded By</th>
-                        <th className="sticky top-0 right-0 z-30 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">Action</th>
+                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16 text-center">
+                          No.
+                        </th>
+                        {[
+                          { label: "Material ID", id: "materialId" as keyof TrainingMaterial, sortable: true },
+                          { label: "Title", id: "title" as keyof TrainingMaterial, sortable: true },
+                          { label: "Type", id: "type" as keyof TrainingMaterial, sortable: true },
+                          { label: "Version", id: "version" as keyof TrainingMaterial, sortable: true },
+                          { label: "Uploaded At", id: "uploadedAt" as keyof TrainingMaterial, sortable: true },
+                          { label: "Uploaded By", id: "uploadedBy" as keyof TrainingMaterial, sortable: true },
+                          { label: "Usage", id: "usageCount" as keyof TrainingMaterial, sortable: true, align: "text-center" },
+                          { label: "Status", id: "status" as keyof TrainingMaterial, sortable: true, align: "text-center" }
+                        ].map((col, idx) => {
+                          const isSorted = sortConfig.key === col.id;
+                          const canSort = col.sortable;
+                          return (
+                            <th
+                              key={idx}
+                              onClick={canSort ? () => handleSort(col.id!) : undefined}
+                              className={cn(
+                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
+                                col.align || "text-left"
+                              )}
+                            >
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <span className="truncate">{col.label}</span>
+                                {canSort && (
+                                  <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                                  </div>
+                                )}
+                              </div>
+                            </th>
+                          );
+                        })}
+                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white">
@@ -1028,7 +1072,7 @@ export const MaterialsView: React.FC = () => {
                               </td>
 
                               <td className={tdClass}>
-                                <div className="max-w-xs md:max-w-md">
+                                <div className="max-w-[200px] md:max-w-md">
                                   <p
                                     className={cn(
                                       "font-medium truncate",
@@ -1039,23 +1083,9 @@ export const MaterialsView: React.FC = () => {
                                   >
                                     {m.title}
                                   </p>
-                                  <p className="text-[10px] md:text-xs text-slate-500 mt-0.5">
+                                  <p className="text-[10px] md:text-xs text-slate-500 mt-0.5 truncate">
                                     {m.description}
                                   </p>
-                                  {obsoleteOverrides[m.id]?.replacedBy && (
-                                    <div className="flex items-center gap-1 mt-1">
-                                      <Link2 className="h-3 w-3 text-emerald-600 flex-shrink-0" />
-                                      <span className="text-[10px] md:text-xs text-emerald-700 font-medium">
-                                        Replaced by{" "}
-                                        <button
-                                          onClick={(e) => { e.stopPropagation(); }}
-                                          className="underline hover:text-emerald-800 transition-colors"
-                                        >
-                                          {obsoleteOverrides[m.id].replacedBy}
-                                        </button>
-                                      </span>
-                                    </div>
-                                  )}
                                 </div>
                               </td>
 
@@ -1066,24 +1096,8 @@ export const MaterialsView: React.FC = () => {
                                 </div>
                               </td>
 
-                              <td className={cn(tdClass, "text-center font-medium")}>
-                                {m.fileSize}
-                              </td>
-
-                              <td className={cn(tdClass, "text-center")}>
+                              <td className={cn(tdClass, "font-medium")}>
                                 {m.version}
-                              </td>
-
-                              <td className={tdClass}>
-                                {m.department}
-                              </td>
-
-                              <td className={cn(tdClass, "text-center")}>
-                                <StatusBadge status={mapMaterialStatusToStatusType(getEffectiveStatus(m) as TrainingMaterial["status"])} />
-                              </td>
-
-                              <td className={cn(tdClass, "text-center")}>
-                                <span className="font-medium">{m.usageCount}</span>
                               </td>
 
                               <td className={tdClass}>
@@ -1092,6 +1106,14 @@ export const MaterialsView: React.FC = () => {
 
                               <td className={tdClass}>
                                 {m.uploadedBy}
+                              </td>
+
+                              <td className={cn(tdClass, "text-center")}>
+                                <span className="font-medium">{m.usageCount}</span>
+                              </td>
+
+                              <td className={cn(tdClass, "text-center")}>
+                                <StatusBadge status={mapMaterialStatusToStatusType(getEffectiveStatus(m) as TrainingMaterial["status"])} />
                               </td>
 
                               <td

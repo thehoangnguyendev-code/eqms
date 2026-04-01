@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   Edit,
@@ -9,6 +9,8 @@ import {
   PowerOff,
   Search,
   AlertTriangle,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { Select } from "@/components/ui/select/Select";
 import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker";
@@ -57,7 +59,6 @@ export const DepartmentsTab = React.forwardRef<
     itemsPerPage,
     setItemsPerPage,
     totalPages,
-    paginatedItems,
     filteredItems,
   } = useTableFilter(mockData, {
     filterFn: (item, query) => {
@@ -100,6 +101,47 @@ export const DepartmentsTab = React.forwardRef<
       return matchesSearch && matchesBusinessUnit && matchesStatus && matchesModifiedFrom && matchesModifiedTo;
     }
   });
+
+  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: "asc" | "desc" }>({
+    key: "name",
+    direction: "asc",
+  });
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  const sortedItems = useMemo(() => {
+    if (!sortConfig.key) return filteredItems;
+
+    return [...filteredItems].sort((a, b) => {
+      let aVal: any = (a as any)[sortConfig.key!];
+      let bVal: any = (b as any)[sortConfig.key!];
+
+      if (sortConfig.key === "modifiedDate") {
+        aVal = aVal ? new Date(aVal).getTime() : 0;
+        bVal = bVal ? new Date(bVal).getTime() : 0;
+      } else if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      } else if (typeof aVal === 'boolean') {
+        aVal = aVal ? 1 : 0;
+        bVal = bVal ? 1 : 0;
+      }
+
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredItems, sortConfig]);
+
+  const paginatedItemsFromSorted = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return sortedItems.slice(start, start + itemsPerPage);
+  }, [sortedItems, currentPage, itemsPerPage]);
 
   React.useEffect(() => {
     setCurrentPage(1);
@@ -213,35 +255,42 @@ export const DepartmentsTab = React.forwardRef<
           <table className="w-full">
             <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
               <tr>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-16">
                   No.
                 </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Name
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Abbreviation
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Business Unit
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Description
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Status
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Modified Date
-                </th>
+                {[
+                  { label: "Name", id: "name" },
+                  { label: "Abbreviation", id: "abbreviation" },
+                  { label: "Business Unit", id: "businessUnit" },
+                  { label: "Description", id: "description" },
+                  { label: "Status", id: "isActive" },
+                  { label: "Modified Date", id: "modifiedDate" }
+                ].map((col) => {
+                  const isSorted = sortConfig.key === col.id;
+                  return (
+                    <th
+                      key={col.id}
+                      onClick={() => handleSort(col.id)}
+                      className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group"
+                    >
+                      <div className="flex items-center justify-between gap-2 w-full">
+                        <span className="truncate">{col.label}</span>
+                        <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
+                          <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                          <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                        </div>
+                      </div>
+                    </th>
+                  );
+                })}
                 <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white">
-              {filteredItems.length > 0 ? (
-                paginatedItems.map((item, index) => (
+              {sortedItems.length > 0 ? (
+                paginatedItemsFromSorted.map((item, index) => (
                   <tr
                     key={item.id}
                     className="hover:bg-slate-50/80 transition-colors group"

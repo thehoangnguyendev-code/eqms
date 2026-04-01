@@ -173,7 +173,7 @@ export const FolderDocumentsList: React.FC<FolderDocumentsListProps> = ({
     return (
         <div className="flex flex-col gap-6 animate-in fade-in duration-500">
             {/* Folder Header */}
-            <div className="sticky top-0 z-40 -mx-4 sm:mx-0 px-4 py-3 sm:p-5 mb-2 bg-white/80 backdrop-blur-md border-b border-slate-200/60 sm:border sm:rounded-xl shadow-sm transition-all duration-300">
+            <div className="sticky sm:static top-0 z-40 -mx-4 sm:mx-0 px-4 py-3 sm:p-5 mb-2 sm:mb-0 bg-white/80 backdrop-blur-md sm:backdrop-blur-none sm:bg-white border-b border-slate-200/60 sm:border sm:rounded-xl shadow-sm transition-all duration-300">
                 <div className="flex items-center gap-3 md:gap-4 max-w-full overflow-hidden">
                     <button
                         onClick={onBack}

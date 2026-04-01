@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ROUTES } from '@/app/routes.constants';
 import {
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   MoreVertical,
   History,
   Download,
@@ -60,7 +62,10 @@ export const RevisionListView: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "revisionName",
+    direction: "asc",
+  });
 
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
@@ -172,34 +177,62 @@ export const RevisionListView: React.FC = () => {
         matchesRelatedDocument &&
         matchesCorrelatedDocument &&
         matchesTemplate
-      );
-    });
-
-    // Apply sorting
-    return [...filtered].sort((a, b) => {
-      const nameA = a.revisionName.toLowerCase();
-      const nameB = b.revisionName.toLowerCase();
-      if (sortOrder === "asc") return nameA.localeCompare(nameB);
-      return nameB.localeCompare(nameA);
-    });
-  }, [
-    searchQuery,
-    statusFilter,
-    typeFilter,
-    businessUnitFilter,
-    departmentFilter,
-    authorFilter,
-    createdFromDate,
-    createdToDate,
-    effectiveFromDate,
-    effectiveToDate,
-    validFromDate,
-    validToDate,
-    relatedDocumentFilter,
-    correlatedDocumentFilter,
-    templateFilter,
-    sortOrder,
-  ]);
+        );
+      });
+  
+      const parseDate = (dStr: string) => {
+        if (!dStr) return 0;
+        const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (parts) {
+          return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
+        }
+        return new Date(dStr).getTime();
+      };
+  
+      // Apply sorting
+      return [...filtered].sort((a, b) => {
+        const key = sortConfig.key as keyof Revision;
+        let valA: any = a[key] || "";
+        let valB: any = b[key] || "";
+  
+        if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
+          valA = parseDate(valA);
+          valB = parseDate(valB);
+        } else if (typeof valA === 'string') {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+  
+        if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }, [
+      searchQuery,
+      statusFilter,
+      typeFilter,
+      businessUnitFilter,
+      departmentFilter,
+      authorFilter,
+      createdFromDate,
+      createdToDate,
+      effectiveFromDate,
+      effectiveToDate,
+      validFromDate,
+      validToDate,
+      relatedDocumentFilter,
+      correlatedDocumentFilter,
+      templateFilter,
+      sortConfig,
+    ]);
+  
+    const handleSort = (key: string) => {
+      setSortConfig((prev) => ({
+        key,
+        direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+      }));
+      setCurrentPage(1);
+    };
 
   // Handle loading state on filter changes
   React.useEffect(() => {
@@ -222,7 +255,7 @@ export const RevisionListView: React.FC = () => {
     relatedDocumentFilter,
     correlatedDocumentFilter,
     templateFilter,
-    sortOrder,
+    sortConfig,
   ]);
 
   // Pagination
@@ -388,11 +421,11 @@ export const RevisionListView: React.FC = () => {
 
               <Button
                 variant="outline"
-                onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+                onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === "asc" ? "desc" : "asc" }))}
                 className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
                 size="sm"
               >
-                {sortOrder === "asc" ? (
+                {sortConfig.direction === "asc" ? (
                   <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
                 ) : (
                   <ArrowDownZA className="h-4 w-4 text-emerald-600" />
@@ -533,37 +566,51 @@ export const RevisionListView: React.FC = () => {
                     <thead>
                       <tr>
                         {[
-                          { label: "", width: "w-8 md:w-10" },
-                          { label: "No." },
-                          { label: "Document Number" },
-                          { label: "Revision Number" },
-                          { label: "Created" },
-                          { label: "Opened By" },
-                          { label: "Revision Name" },
-                          { label: "State" },
-                          { label: "Document Name" },
-                          { label: "Document Type" },
-                          { label: "Related Document", align: "text-center" },
-                          { label: "Correlated Document", align: "text-center" },
-                          { label: "Template", align: "text-center" },
-                          { label: "Business Unit" },
-                          { label: "Department" },
-                          { label: "Author" },
-                          { label: "Effective Date" },
-                          { label: "Valid Until" }
-                        ].map((col, idx) => (
-                          <th
-                            key={idx}
-                            className={cn(
-                              // Responsive text & padding: nhỏ trên mobile, lớn hơn trên desktop (md)
-                              "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap",
-                              col.width,
-                              col.align || "text-left"
-                            )}
-                          >
-                            {col.label}
-                          </th>
-                        ))}
+                          { label: "", id: "expander", width: "w-8 md:w-10" },
+                          { label: "No.", id: "no" },
+                          { label: "Document Number", id: "documentNumber", sortable: true },
+                          { label: "Revision Number", id: "revisionNumber", sortable: true },
+                          { label: "Created", id: "created", sortable: true },
+                          { label: "Opened By", id: "openedBy", sortable: true },
+                          { label: "Revision Name", id: "revisionName", sortable: true },
+                          { label: "State", id: "state", sortable: true },
+                          { label: "Document Name", id: "documentName", sortable: true },
+                          { label: "Document Type", id: "type", sortable: true },
+                          { label: "Related Document", id: "relatedDocument", align: "text-center" },
+                          { label: "Correlated Document", id: "correlatedDocument", align: "text-center" },
+                          { label: "Template", id: "template", align: "text-center" },
+                          { label: "Business Unit", id: "businessUnit", sortable: true },
+                          { label: "Department", id: "department", sortable: true },
+                          { label: "Author", id: "author", sortable: true },
+                          { label: "Effective Date", id: "effectiveDate", sortable: true },
+                          { label: "Valid Until", id: "validUntil", sortable: true }
+                        ].map((col, idx) => {
+                          const isSorted = sortConfig.key === col.id;
+                          const canSort = col.sortable;
+
+                          return (
+                            <th
+                              key={idx}
+                              onClick={canSort ? () => handleSort(col.id!) : undefined}
+                              className={cn(
+                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
+                                col.width,
+                                col.align || "text-left"
+                              )}
+                            >
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <span className="truncate">{col.label}</span>
+                                {canSort && (
+                                  <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
+                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                                  </div>
+                                )}
+                              </div>
+                            </th>
+                          );
+                        })}
                         {/* Cột Action Sticky */}
                         <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                           Action

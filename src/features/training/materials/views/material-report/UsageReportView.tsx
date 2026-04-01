@@ -408,7 +408,7 @@ export const UsageReportView: React.FC = () => {
       {/* ─── Course History Table ─────────────────────────────────── */}
       <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col">
         {/* Table header with filters */}
-        <div className="px-5 py-4 border-b border-slate-200">
+        <div className="px-5 py-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
               <h3 className="text-sm font-semibold text-slate-900">Course History</h3>
@@ -453,151 +453,155 @@ export const UsageReportView: React.FC = () => {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-12">No.</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Course ID</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Course Name</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Department</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Version Used</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Instructor</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Period</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Learners</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Completion</th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              {filteredRecords.length === 0 ? (
-                <tr>
-                  <td colSpan={10} className="py-16 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center">
-                        <BarChart3 className="h-6 w-6 text-slate-300" />
-                      </div>
-                      <p className="text-sm font-medium text-slate-900">No records found</p>
-                      <p className="text-xs text-slate-500">Try adjusting your filters.</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredRecords.map((record, index) => {
-                  const completionRate = record.learnersEnrolled > 0
-                    ? Math.round((record.learnersCompleted / record.learnersEnrolled) * 100)
-                    : 0;
-                  const statusConfig = getCourseStatusConfig(record.courseStatus);
-                  return (
-                    <tr key={record.courseId} className="hover:bg-slate-50/80 transition-colors">
-                      {/* No */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center text-slate-500 font-medium">{index + 1}</td>
-                      {/* Course ID */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        <span className="font-medium text-emerald-700">{record.courseId}</span>
-                      </td>
-                      {/* Course Name */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm">
-                        <p className="font-medium text-slate-900">{record.courseName}</p>
-                      </td>
-                      {/* Department */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{record.department}</td>
-                      {/* Version Used */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
-                        <span className={cn(
-                          "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border",
-                          record.isCurrentVersion
-                            ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                            : "bg-slate-100 text-slate-600 border-slate-200"
-                        )}>
-                          v{record.materialVersion}
-                          {record.isCurrentVersion && <Check className="h-3 w-3 text-emerald-600" />}
-                        </span>
-                      </td>
-                      {/* Instructor */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{record.instructor}</td>
-                      {/* Period */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                        <div className="text-slate-700">{formatDateUS(record.startDate)}</div>
-                        {record.endDate ? (
-                          <div className="text-xs text-slate-500">→ {formatDateUS(record.endDate)}</div>
-                        ) : (
-                          <div className="text-xs text-blue-500 font-medium">Ongoing</div>
-                        )}
-                      </td>
-                      {/* Learners */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
-                        <span className="font-semibold text-slate-900">{record.learnersCompleted}</span>
-                        <span className="text-slate-400 text-xs"> / {record.learnersEnrolled}</span>
-                      </td>
-                      {/* Completion Rate */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
-                        <div className="flex flex-col items-center gap-1">
-                          <span className={cn(
-                            "text-sm font-bold",
-                            completionRate === 100 ? "text-emerald-600" :
-                              completionRate >= 70 ? "text-emerald-600" :
-                                completionRate >= 40 ? "text-amber-600" : "text-slate-500"
-                          )}>
-                            {completionRate}%
-                          </span>
-                          <div className="w-16 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className={cn(
-                                "h-full rounded-full transition-all",
-                                completionRate === 100 ? "bg-emerald-500" :
-                                  completionRate >= 70 ? "bg-emerald-400" :
-                                    completionRate >= 40 ? "bg-amber-400" : "bg-slate-400"
-                              )}
-                              style={{ width: `${completionRate}%` }}
-                            />
+        {/* Table Container */}
+        <div className="p-5 flex-1 flex flex-col relative">
+          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col bg-white">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-12">No.</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Course ID</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Course Name</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Department</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Version Used</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Instructor</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Period</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Learners</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Completion</th>
+                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 bg-white">
+                  {filteredRecords.length === 0 ? (
+                    <tr>
+                      <td colSpan={10} className="py-16 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center">
+                            <BarChart3 className="h-6 w-6 text-slate-300" />
                           </div>
+                          <p className="text-sm font-medium text-slate-900">No records found</p>
+                          <p className="text-xs text-slate-500">Try adjusting your filters.</p>
                         </div>
                       </td>
-                      {/* Status */}
-                      <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
-                        <StatusBadge
-                          status={statusConfig.type}
-                          label={statusConfig.label}
-                          size="sm"
-                        />
-                      </td>
                     </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Footer summary */}
-        {filteredRecords.length > 0 && (
-          <div className="px-5 py-3 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between flex-wrap gap-2">
-            <p className="text-xs text-slate-500">
-              Showing <span className="font-semibold text-slate-700">{filteredRecords.length}</span> record{filteredRecords.length !== 1 ? "s" : ""}
-              {filteredRecords.length !== allRecords.length && <> of <span className="font-semibold text-slate-700">{allRecords.length}</span></>}
-            </p>
-            <div className="flex items-center gap-4 text-xs text-slate-500">
-              <span>Total learners in view: <span className="font-semibold text-slate-700">{filteredRecords.reduce((s, r) => s + r.learnersEnrolled, 0).toLocaleString()}</span></span>
-              <span>Avg. completion: <span className={cn(
-                "font-semibold",
-                (() => {
-                  const total = filteredRecords.reduce((s, r) => s + r.learnersEnrolled, 0);
-                  const done = filteredRecords.reduce((s, r) => s + r.learnersCompleted, 0);
-                  const rate = total > 0 ? Math.round((done / total) * 100) : 0;
-                  return rate >= 70 ? "text-emerald-700" : rate >= 40 ? "text-amber-700" : "text-slate-700";
-                })()
-              )}>
-                {(() => {
-                  const total = filteredRecords.reduce((s, r) => s + r.learnersEnrolled, 0);
-                  const done = filteredRecords.reduce((s, r) => s + r.learnersCompleted, 0);
-                  return total > 0 ? `${Math.round((done / total) * 100)}%` : "—";
-                })()}
-              </span></span>
+                  ) : (
+                    filteredRecords.map((record, index) => {
+                      const completionRate = record.learnersEnrolled > 0
+                        ? Math.round((record.learnersCompleted / record.learnersEnrolled) * 100)
+                        : 0;
+                      const statusConfig = getCourseStatusConfig(record.courseStatus);
+                      return (
+                        <tr key={record.courseId} className="hover:bg-slate-50/80 transition-colors">
+                          {/* No */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center text-slate-500 font-medium">{index + 1}</td>
+                          {/* Course ID */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                            <span className="font-medium text-emerald-700">{record.courseId}</span>
+                          </td>
+                          {/* Course Name */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                            <p className="font-medium text-slate-900">{record.courseName}</p>
+                          </td>
+                          {/* Department */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{record.department}</td>
+                          {/* Version Used */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
+                            <span className={cn(
+                              "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border",
+                              record.isCurrentVersion
+                                ? "bg-emerald-100 text-emerald-800 border-emerald-200"
+                                : "bg-slate-100 text-slate-600 border-slate-200"
+                            )}>
+                              v{record.materialVersion}
+                              {record.isCurrentVersion && <Check className="h-3 w-3 text-emerald-600" />}
+                            </span>
+                          </td>
+                          {/* Instructor */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{record.instructor}</td>
+                          {/* Period */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                            <div className="text-slate-700">{formatDateUS(record.startDate)}</div>
+                            {record.endDate ? (
+                              <div className="text-xs text-slate-500">→ {formatDateUS(record.endDate)}</div>
+                            ) : (
+                              <div className="text-xs text-blue-500 font-medium">Ongoing</div>
+                            )}
+                          </td>
+                          {/* Learners */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
+                            <span className="font-semibold text-slate-900">{record.learnersCompleted}</span>
+                            <span className="text-slate-400 text-xs"> / {record.learnersEnrolled}</span>
+                          </td>
+                          {/* Completion Rate */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
+                            <div className="flex flex-col items-center gap-1">
+                              <span className={cn(
+                                "text-sm font-bold",
+                                completionRate === 100 ? "text-emerald-600" :
+                                  completionRate >= 70 ? "text-emerald-600" :
+                                    completionRate >= 40 ? "text-amber-600" : "text-slate-500"
+                              )}>
+                                {completionRate}%
+                              </span>
+                              <div className="w-16 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                <div
+                                  className={cn(
+                                    "h-full rounded-full transition-all",
+                                    completionRate === 100 ? "bg-emerald-500" :
+                                      completionRate >= 70 ? "bg-emerald-400" :
+                                        completionRate >= 40 ? "bg-amber-400" : "bg-slate-400"
+                                  )}
+                                  style={{ width: `${completionRate}%` }}
+                                />
+                              </div>
+                            </div>
+                          </td>
+                          {/* Status */}
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
+                            <StatusBadge
+                              status={statusConfig.type}
+                              label={statusConfig.label}
+                              size="sm"
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
+
+            {/* Footer summary */}
+            {filteredRecords.length > 0 && (
+              <div className="px-5 py-3 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between flex-wrap gap-2">
+                <p className="text-xs text-slate-500">
+                  Showing <span className="font-semibold text-slate-700">{filteredRecords.length}</span> record{filteredRecords.length !== 1 ? "s" : ""}
+                  {filteredRecords.length !== allRecords.length && <> of <span className="font-semibold text-slate-700">{allRecords.length}</span></>}
+                </p>
+                <div className="flex items-center gap-4 text-xs text-slate-500">
+                  <span>Total learners in view: <span className="font-semibold text-slate-700">{filteredRecords.reduce((s, r) => s + r.learnersEnrolled, 0).toLocaleString()}</span></span>
+                  <span>Avg. completion: <span className={cn(
+                    "font-semibold",
+                    (() => {
+                      const total = filteredRecords.reduce((s, r) => s + r.learnersEnrolled, 0);
+                      const done = filteredRecords.reduce((s, r) => s + r.learnersCompleted, 0);
+                      const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+                      return rate >= 70 ? "text-emerald-700" : rate >= 40 ? "text-amber-700" : "text-slate-700";
+                    })()
+                  )}>
+                    {(() => {
+                      const total = filteredRecords.reduce((s, r) => s + r.learnersEnrolled, 0);
+                      const done = filteredRecords.reduce((s, r) => s + r.learnersCompleted, 0);
+                      return total > 0 ? `${Math.round((done / total) * 100)}%` : "—";
+                    })()}
+                  </span></span>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* ─── Loading Overlay ──────────────────────────────────── */}

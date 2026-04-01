@@ -5,6 +5,8 @@ import { ROUTES } from '@/app/routes.constants';
 import { createPortal } from "react-dom";
 import {
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   MoreVertical,
   Download,
   History,
@@ -342,7 +344,10 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
   const [selectedDocumentForLink, setSelectedDocumentForLink] = useState<Document | null>(null);
   const [isLocalNavigating, setIsLocalNavigating] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "title",
+    direction: "asc",
+  });
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
@@ -414,6 +419,14 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
   const handleCreateLink = (document: Document) => {
     setSelectedDocumentForLink(document);
     setIsCreateLinkModalOpen(true);
+  };
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+    setCurrentPage(1);
   };
 
 
@@ -527,14 +540,37 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
         matchesCreatedFrom && matchesCreatedTo && matchesEffectiveFrom && matchesEffectiveTo &&
         matchesValidFrom && matchesValidTo && matchesRelatedDocument && matchesCorrelatedDocument && matchesTemplate;
     }).sort((a, b) => {
-      const fieldA = a.title.toLowerCase();
-      const fieldB = b.title.toLowerCase();
-      if (sortOrder === "asc") return fieldA > fieldB ? 1 : -1;
-      return fieldA < fieldB ? 1 : -1;
+      const key = sortConfig.key as keyof Document;
+
+      const parseDate = (dStr: string) => {
+        if (!dStr) return 0;
+        const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (parts) {
+          return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
+        }
+        return new Date(dStr).getTime();
+      };
+
+      // Handle special cases or default values
+      let valA: any = a[key];
+      let valB: any = b[key];
+
+      // Convert to comparison-friendly format
+      if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
+        valA = parseDate(valA);
+        valB = parseDate(valB);
+      } else if (typeof valA === 'string') {
+        valA = valA.toLowerCase();
+        valB = valB.toLowerCase();
+      }
+
+      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
     });
   }, [searchQuery, statusFilter, typeFilter, departmentFilter, authorFilter, versionFilter,
     createdFromDate, createdToDate, effectiveFromDate, effectiveToDate, validFromDate, validToDate,
-    relatedDocumentFilter, correlatedDocumentFilter, templateFilter, config, sortOrder, businessUnitFilter]);
+    relatedDocumentFilter, correlatedDocumentFilter, templateFilter, config, sortConfig, businessUnitFilter]);
 
   const visibleColumns = useMemo(() => {
     return columns.filter(col => col.visible).sort((a, b) => a.order - b.order);
@@ -670,11 +706,11 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
 
                   <Button
                     variant="outline"
-                    onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+                    onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === "asc" ? "desc" : "asc" }))}
                     className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
                     size="sm"
                   >
-                    {sortOrder === "asc" ? (
+                    {sortConfig.direction === "asc" ? (
                       <>
                         <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
                       </>
@@ -817,17 +853,32 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                         <thead>
                           <tr>
                             <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>
-                            {visibleColumns.map(col => (
-                              <th
-                                key={col.id}
-                                className={cn(
-                                  "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap",
-                                  col.id === 'action' && "right-0 z-30 text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
-                                )}
-                              >
-                                {col.label}
-                              </th>
-                            ))}
+                            {visibleColumns.map(col => {
+                              const isSorted = sortConfig.key === col.id;
+                              const canSort = col.id !== 'action' && col.id !== 'no' && col.id !== 'relatedDocuments' && col.id !== 'correlatedDocuments' && col.id !== 'template';
+
+                              return (
+                                <th
+                                  key={col.id}
+                                  onClick={canSort ? () => handleSort(col.id) : undefined}
+                                  className={cn(
+                                    "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                    canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
+                                    col.id === 'action' && "right-0 z-30 text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
+                                  )}
+                                >
+                                  <div className="flex items-center justify-between gap-2 md:gap-3 w-full">
+                                    <span className="truncate">{col.label}</span>
+                                    {canSort && (
+                                      <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
+                                        <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                        <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                                      </div>
+                                    )}
+                                  </div>
+                                </th>
+                              );
+                            })}
                           </tr>
                         </thead>
                         <tbody className="bg-white">

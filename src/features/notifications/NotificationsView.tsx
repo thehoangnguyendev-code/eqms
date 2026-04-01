@@ -22,8 +22,8 @@ import {
   Download,
   X,
   SlidersHorizontal,
-  ArrowDownAZ,
-  ArrowDownZA,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
@@ -214,75 +214,75 @@ const NotificationActionsDropdown: React.FC<{
   onDelete,
   onView,
 }) => {
-  if (!isOpen) return null;
+    if (!isOpen) return null;
 
-  return createPortal(
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 animate-in fade-in duration-150"
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}
-        aria-hidden="true"
-        style={{
-          // Allow scroll on touch devices
-          touchAction: "auto",
-          // Make backdrop invisible but still clickable
-          backgroundColor: "transparent",
-        }}
-      />
-      <div
-        className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-        style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          transform: position.showAbove ? "translateY(-100%)" : "none",
-        }}
-      >
-        <div className="py-1">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onView();
-              onClose();
-            }}
-            className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-          >
-            <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
-            <span className="font-medium">View Details</span>
-          </button>
-          {notification.status === "unread" && (
+    return createPortal(
+      <>
+        {/* Backdrop */}
+        <div
+          className="fixed inset-0 z-40 animate-in fade-in duration-150"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          aria-hidden="true"
+          style={{
+            // Allow scroll on touch devices
+            touchAction: "auto",
+            // Make backdrop invisible but still clickable
+            backgroundColor: "transparent",
+          }}
+        />
+        <div
+          className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+          style={{
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+            transform: position.showAbove ? "translateY(-100%)" : "none",
+          }}
+        >
+          <div className="py-1">
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onMarkAsRead();
+                onView();
                 onClose();
               }}
               className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
             >
-              <Eye className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium">Mark as Read</span>
+              <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">View Details</span>
             </button>
-          )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-              onClose();
-            }}
-            className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-          >
-            <Trash2 className="h-4 w-4 flex-shrink-0" />
-            <span className="font-medium">Delete</span>
-          </button>
+            {notification.status === "unread" && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMarkAsRead();
+                  onClose();
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+              >
+                <Eye className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium">Mark as Read</span>
+              </button>
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+                onClose();
+              }}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <Trash2 className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">Delete</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </>,
-    document.body,
-  );
-};
+      </>,
+      document.body,
+    );
+  };
 
 const NotificationRow: React.FC<{
   notification: Notification;
@@ -301,109 +301,109 @@ const NotificationRow: React.FC<{
   getRef,
   onToggle,
 }) => {
-  const Icon = getTypeIcon(notification.type);
-  const colors = getTypeColor(notification.type);
-  const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+    const Icon = getTypeIcon(notification.type);
+    const colors = getTypeColor(notification.type);
+    const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
-  return (
-    <tr
-      className={cn(
-        "group transition-colors",
-        notification.status === "unread"
-          ? "bg-emerald-50/30 hover:bg-emerald-50/50"
-          : "hover:bg-slate-50/80",
-      )}
-    >
-      <td className={cn(tdClass, "text-center text-slate-500 w-14")}>
-        {index}
-      </td>
-
-      <td 
-        className={cn(tdClass, "cursor-pointer")}
-        onClick={() => onView(notification)}
-      >
-        <div className="flex items-start gap-3">
-          <div className="relative shrink-0">
-            <div
-              className={cn(
-                "h-9 w-9 md:h-10 md:w-10 rounded-full flex items-center justify-center",
-                colors.bg,
-              )}
-            >
-              <Icon className={cn("h-4 w-4 md:h-5 md:w-5", colors.text)} />
-            </div>
-            {notification.status === "unread" && (
-              <div className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 md:h-3 md:w-3 bg-emerald-500 rounded-full border-2 border-white" />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p
-              className={cn(
-                "text-sm hover:underline",
-                notification.status === "unread"
-                  ? "font-semibold text-slate-900"
-                  : "font-medium text-slate-700",
-              )}
-            >
-              {notification.title}
-            </p>
-            <p className="text-xs md:text-sm text-slate-500 mt-0.5 max-w-md truncate">
-              {notification.description}
-            </p>
-          </div>
-        </div>
-      </td>
-
-      <td className={cn(tdClass, "hidden md:table-cell")}>
-        <StatusBadge
-          status="draft"
-          label={notification.module}
-          className="text-slate-700 bg-slate-100 border-slate-200"
-          size="sm"
-        />
-      </td>
-
-      <td className={cn(tdClass, "hidden lg:table-cell")}>
-        {notification.relatedItem ? (
-          <span className="font-medium text-emerald-600">
-            {notification.relatedItem.code}
-          </span>
-        ) : (
-          <span className="text-slate-400">—</span>
+    return (
+      <tr
+        className={cn(
+          "group transition-colors",
+          notification.status === "unread"
+            ? "bg-emerald-50/30 hover:bg-emerald-50/50"
+            : "hover:bg-slate-50/80",
         )}
-      </td>
-
-      <td className={cn(tdClass, "hidden md:table-cell")}>
-        <span
-          className={cn(
-            "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium border capitalize",
-            getPriorityStyles(notification.priority),
-          )}
-        >
-          {notification.priority}
-        </span>
-      </td>
-
-      <td className={cn(tdClass, "hidden sm:table-cell text-slate-500")}>
-        {formatTimeAgo(notification.createdAt)}
-      </td>
-
-      <td
-        onClick={(e) => e.stopPropagation()}
-        className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
       >
-        <button
-          ref={getRef(notification.id)}
-          onClick={(e) => onToggle(notification.id, e)}
-          className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
-          aria-label="More actions"
+        <td className={cn(tdClass, "text-center text-slate-500 w-14")}>
+          {index}
+        </td>
+
+        <td
+          className={cn(tdClass, "cursor-pointer")}
+          onClick={() => onView(notification)}
         >
-          <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
-        </button>
-      </td>
-    </tr>
-  );
-};
+          <div className="flex items-start gap-3">
+            <div className="relative shrink-0">
+              <div
+                className={cn(
+                  "h-9 w-9 md:h-10 md:w-10 rounded-full flex items-center justify-center",
+                  colors.bg,
+                )}
+              >
+                <Icon className={cn("h-4 w-4 md:h-5 md:w-5", colors.text)} />
+              </div>
+              {notification.status === "unread" && (
+                <div className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 md:h-3 md:w-3 bg-emerald-500 rounded-full border-2 border-white" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p
+                className={cn(
+                  "text-sm hover:underline",
+                  notification.status === "unread"
+                    ? "font-semibold text-slate-900"
+                    : "font-medium text-slate-700",
+                )}
+              >
+                {notification.title}
+              </p>
+              <p className="text-xs md:text-sm text-slate-500 mt-0.5 max-w-md truncate">
+                {notification.description}
+              </p>
+            </div>
+          </div>
+        </td>
+
+        <td className={cn(tdClass, "hidden md:table-cell")}>
+          <StatusBadge
+            status="draft"
+            label={notification.module}
+            className="text-slate-700 bg-slate-100 border-slate-200"
+            size="sm"
+          />
+        </td>
+
+        <td className={cn(tdClass, "hidden lg:table-cell")}>
+          {notification.relatedItem ? (
+            <span className="font-medium text-emerald-600">
+              {notification.relatedItem.code}
+            </span>
+          ) : (
+            <span className="text-slate-400">—</span>
+          )}
+        </td>
+
+        <td className={cn(tdClass, "hidden md:table-cell")}>
+          <span
+            className={cn(
+              "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium border capitalize",
+              getPriorityStyles(notification.priority),
+            )}
+          >
+            {notification.priority}
+          </span>
+        </td>
+
+        <td className={cn(tdClass, "hidden sm:table-cell text-slate-500")}>
+          {formatTimeAgo(notification.createdAt)}
+        </td>
+
+        <td
+          onClick={(e) => e.stopPropagation()}
+          className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+        >
+          <button
+            ref={getRef(notification.id)}
+            onClick={(e) => onToggle(notification.id, e)}
+            className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
+            aria-label="More actions"
+          >
+            <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          </button>
+        </td>
+      </tr>
+    );
+  };
 
 // Empty State Component
 const EmptyState: React.FC<{
@@ -464,7 +464,10 @@ export const NotificationsView: React.FC = () => {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Notification | null; direction: "asc" | "desc" }>({
+    key: "createdAt",
+    direction: "desc",
+  });
   const [isTableLoading, setIsTableLoading] = useState(false);
 
   // Pagination
@@ -484,9 +487,30 @@ export const NotificationsView: React.FC = () => {
     };
   }, [notifications]);
 
+  // Sorting Handler
+  const handleSort = (key: keyof Notification) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  // Date parser for DD/MM/YYYY if needed but createdAt is ISO for sorting usually
+  const parseDate = (dateStr: string) => {
+    if (!dateStr) return 0;
+    if (dateStr.includes('/')) {
+      const parts = dateStr.split('/');
+      if (parts.length === 3) {
+        return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])).getTime();
+      }
+    }
+    const d = new Date(dateStr).getTime();
+    return isNaN(d) ? 0 : d;
+  };
+
   // Filtered notifications
   const filteredNotifications = useMemo(() => {
-    return notifications.filter((notification) => {
+    let filtered = notifications.filter((notification) => {
       // Tab filter
       if (activeTab === "unread" && notification.status !== "unread")
         return false;
@@ -527,6 +551,33 @@ export const NotificationsView: React.FC = () => {
 
       return true;
     });
+
+    // Sorting
+    if (sortConfig.key) {
+      filtered = [...filtered].sort((a, b) => {
+        const key = sortConfig.key!;
+        let aValue: any = a[key];
+        let bValue: any = b[key];
+
+        // Handle nested relatedItem.code
+        if (key === "relatedItem") {
+          aValue = a.relatedItem?.code || "";
+          bValue = b.relatedItem?.code || "";
+        }
+
+        // Date sorting for createdAt
+        if (key === "createdAt") {
+          aValue = parseDate(aValue);
+          bValue = parseDate(bValue);
+        }
+
+        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filtered;
   }, [
     notifications,
     activeTab,
@@ -536,6 +587,8 @@ export const NotificationsView: React.FC = () => {
     priority,
     dateFrom,
     dateTo,
+    sortConfig,
+    parseDate,
   ]);
 
   // Paginated notifications
@@ -687,21 +740,6 @@ export const NotificationsView: React.FC = () => {
                 <SlidersHorizontal className="h-4 w-4" />
                 Filters
               </Button>
-
-              <Button
-                variant="outline"
-                onClick={() =>
-                  setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-                }
-                className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
-                size="sm"
-              >
-                {sortOrder === "asc" ? (
-                  <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
-                ) : (
-                  <ArrowDownZA className="h-4 w-4 text-emerald-600" />
-                )}
-              </Button>
             </div>
           </div>
 
@@ -843,21 +881,39 @@ export const NotificationsView: React.FC = () => {
                     <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-14 text-center">
                       No.
                     </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Notification
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden md:table-cell">
-                      Module
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
-                      Related Item
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden md:table-cell">
-                      Priority
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden sm:table-cell">
-                      Time
-                    </th>
+                    {[
+                      { label: "Notification", id: "title", sortable: true },
+                      { label: "Module", id: "module", sortable: true, hideMobile: true },
+                      { label: "Related Item", id: "relatedItem", sortable: true, hideLg: true },
+                      { label: "Priority", id: "priority", sortable: true, hideMobile: true },
+                      { label: "Time", id: "createdAt", sortable: true, hideSm: true }
+                    ].map((col, idx) => {
+                      const isSorted = sortConfig.key === col.id;
+                      const canSort = col.sortable;
+                      return (
+                        <th
+                          key={idx}
+                          onClick={canSort ? () => handleSort(col.id as keyof Notification) : undefined}
+                          className={cn(
+                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                            canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
+                            col.hideMobile && "hidden md:table-cell",
+                            col.hideLg && "hidden lg:table-cell",
+                            col.hideSm && "hidden sm:table-cell"
+                          )}
+                        >
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span className="truncate">{col.label}</span>
+                            {canSort && (
+                              <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                                <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                                <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                              </div>
+                            )}
+                          </div>
+                        </th>
+                      );
+                    })}
                     <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>

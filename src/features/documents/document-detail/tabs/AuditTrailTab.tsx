@@ -424,14 +424,12 @@ export const AuditTrailTab: React.FC = () => {
                     {/* Timestamp */}
                     <td className="px-2 py-2 sm:px-4 sm:py-4 whitespace-nowrap">
                       <div className="flex items-center gap-1.5 sm:gap-2">
-                        <div>
-                          <div className="text-xs sm:text-sm font-medium text-slate-900">
-                            {entry.timestamp.split("")[1]}
-                          </div>
-                          <div className="text-[10px] sm:text-xs text-slate-500">
-                            {entry.timestamp.split("")[0]}
-                          </div>
-                        </div>
+                        <span className="text-xs sm:text-sm font-medium text-slate-900">
+                          {entry.timestamp.split(" ")[0]}
+                        </span>
+                        <span className="text-xs sm:text-sm font-medium text-slate-900">
+                          {entry.timestamp.split(" ")[1]}
+                        </span>
                       </div>
                     </td>
 

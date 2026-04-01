@@ -12,6 +12,8 @@ import {
   ShieldCheck,
   Star,
   Award,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { Button } from "@/components/ui/button/Button";
@@ -164,6 +166,10 @@ export const MyTrainingView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "title",
+    direction: "asc",
+  });
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   // Filter states
@@ -218,17 +224,74 @@ export const MyTrainingView: React.FC = () => {
     [searchQuery, typeFilter],
   );
 
+  const parseDate = (dStr: string) => {
+    if (!dStr) return 0;
+    const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (parts) {
+      return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
+    }
+    return new Date(dStr).getTime();
+  };
+
+  const sortedTasks = useMemo(() => {
+    return [...filteredTasks].sort((a, b) => {
+      const key = sortConfig.key as keyof TrainingTask;
+      let valA: any = a[key] || "";
+      let valB: any = b[key] || "";
+
+      if (key === 'deadline') {
+        valA = parseDate(valA);
+        valB = parseDate(valB);
+      } else if (typeof valA === 'string') {
+        valA = valA.toLowerCase();
+        valB = valB.toLowerCase();
+      }
+
+      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredTasks, sortConfig]);
+
+  const sortedTranscript = useMemo(() => {
+    return [...filteredTranscript].sort((a, b) => {
+      const key = sortConfig.key as keyof TranscriptRecord;
+      let valA: any = a[key] || "";
+      let valB: any = b[key] || "";
+
+      if (key === 'completedDate') {
+        valA = parseDate(valA);
+        valB = parseDate(valB);
+      } else if (typeof valA === 'string') {
+        valA = valA.toLowerCase();
+        valB = valB.toLowerCase();
+      }
+
+      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredTranscript, sortConfig]);
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+    setCurrentPage(1);
+  };
+
   // Pagination
-  const activeData = activeTab === "todo" ? filteredTasks : filteredTranscript;
+  const activeData = activeTab === "todo" ? sortedTasks : sortedTranscript;
   const totalPages = Math.ceil(activeData.length / itemsPerPage);
   const paginatedTasks = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return filteredTasks.slice(start, start + itemsPerPage);
-  }, [filteredTasks, currentPage, itemsPerPage]);
+    return sortedTasks.slice(start, start + itemsPerPage);
+  }, [sortedTasks, currentPage, itemsPerPage]);
   const paginatedTranscript = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return filteredTranscript.slice(start, start + itemsPerPage);
-  }, [filteredTranscript, currentPage, itemsPerPage]);
+    return sortedTranscript.slice(start, start + itemsPerPage);
+  }, [sortedTranscript, currentPage, itemsPerPage]);
 
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col pb-8">
@@ -363,9 +426,9 @@ export const MyTrainingView: React.FC = () => {
               />
             </div>
 
-            {/* Table container — identical structure to TaskTable (MyTasks) */}
+            {/* Table container */}
             <div className="flex-1 overflow-hidden border border-slate-200 rounded-xl bg-white shadow-sm flex flex-col">
-              <div 
+              <div
                 ref={scrollerRef}
                 className={cn(
                   "overflow-x-auto flex-1 transition-colors",
@@ -379,27 +442,39 @@ export const MyTrainingView: React.FC = () => {
                       <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
                         No.
                       </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Course ID
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Course Title
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Material
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Type
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Assessment
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Deadline
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Status
-                      </th>
+                      {[
+                        { label: "Course ID", id: "id", sortable: true },
+                        { label: "Course Title", id: "title", sortable: true },
+                        { label: "Material", id: "materialType", sortable: true },
+                        { label: "Type", id: "type", sortable: true },
+                        { label: "Assessment", id: "testType", sortable: true },
+                        { label: "Deadline", id: "deadline", sortable: true },
+                        { label: "Status", id: "status", sortable: true, align: "text-center" }
+                      ].map((col, idx) => {
+                        const isSorted = sortConfig.key === col.id;
+                        const canSort = col.sortable;
+                        return (
+                          <th
+                            key={idx}
+                            onClick={canSort ? () => handleSort(col.id!) : undefined}
+                            className={cn(
+                              "py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
+                              canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
+                              col.align || "text-left"
+                            )}
+                          >
+                            <div className="flex items-center justify-between gap-2 w-full">
+                              <span className="truncate">{col.label}</span>
+                              {canSort && (
+                                <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                                  <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                                  <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                                </div>
+                              )}
+                            </div>
+                          </th>
+                        );
+                      })}
                       <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px]">
                         Action
                       </th>
@@ -414,19 +489,16 @@ export const MyTrainingView: React.FC = () => {
                           key={task.id}
                           className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
                         >
-                          {/* No. */}
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap text-center">
                             <div className="text-xs sm:text-sm text-slate-500">
                               {(currentPage - 1) * itemsPerPage + index + 1}
                             </div>
                           </td>
-                          {/* Course ID */}
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
                             <span className="text-xs sm:text-sm font-medium text-emerald-600">
                               {task.id}
                             </span>
                           </td>
-                          {/* Course Title */}
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
                             <div className="flex items-center gap-1.5 sm:gap-2">
                               <div
@@ -450,23 +522,17 @@ export const MyTrainingView: React.FC = () => {
                               </div>
                             </div>
                           </td>
-                          {/* Material */}
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
-                            <div className="flex items-center gap-1.5 sm:gap-2">
-                              <span className="text-xs sm:text-sm text-slate-700 font-medium">
-                                {task.materialType}
-                              </span>
-                            </div>
+                            <span className="text-xs sm:text-sm text-slate-700 font-medium">
+                              {task.materialType}
+                            </span>
                           </td>
-                          {/* Type */}
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
                             {task.type}
                           </td>
-                          {/* Assessment */}
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
                             {task.testType}
                           </td>
-                          {/* Deadline */}
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
                             <div
                               className={cn(
@@ -487,7 +553,6 @@ export const MyTrainingView: React.FC = () => {
                               {task.deadline}
                             </div>
                           </td>
-                          {/* Status */}
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
                             <Badge
                               color={statusStyle.color}
@@ -515,19 +580,19 @@ export const MyTrainingView: React.FC = () => {
                 </table>
               </div>
 
-              {filteredTasks.length > 0 && (
+              {sortedTasks.length > 0 && (
                 <TablePagination
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onPageChange={setCurrentPage}
-                  totalItems={filteredTasks.length}
+                  totalItems={sortedTasks.length}
                   itemsPerPage={itemsPerPage}
                   onItemsPerPageChange={setItemsPerPage}
                   showItemCount={true}
                 />
               )}
 
-              {filteredTasks.length === 0 && (
+              {sortedTasks.length === 0 && (
                 <TableEmptyState
                   icon={<CheckCircle2 className="h-8 w-8 text-emerald-400" />}
                   title="All caught up!"
@@ -578,9 +643,9 @@ export const MyTrainingView: React.FC = () => {
               />
             </div>
 
-            {/* Table container — identical structure to TaskTable (MyTasks) */}
+            {/* Table container */}
             <div className="flex-1 overflow-hidden border border-slate-200 rounded-xl bg-white shadow-sm flex flex-col">
-              <div 
+              <div
                 ref={scrollerRef}
                 className={cn(
                   "overflow-x-auto flex-1 transition-colors",
@@ -594,21 +659,37 @@ export const MyTrainingView: React.FC = () => {
                       <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
                         No.
                       </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Course ID
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Course Title
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Type
-                      </th>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Completed Date
-                      </th>
-                      <th className="py-2.5 px-1 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Score
-                      </th>
+                      {[
+                        { label: "Course ID", id: "id", sortable: true },
+                        { label: "Course Title", id: "title", sortable: true },
+                        { label: "Type", id: "type", sortable: true },
+                        { label: "Completed Date", id: "completedDate", sortable: true },
+                        { label: "Score", id: "score", sortable: true, align: "text-center" }
+                      ].map((col, idx) => {
+                        const isSorted = sortConfig.key === col.id;
+                        const canSort = col.sortable;
+                        return (
+                          <th
+                            key={idx}
+                            onClick={canSort ? () => handleSort(col.id!) : undefined}
+                            className={cn(
+                              "py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
+                              canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
+                              col.align || "text-left"
+                            )}
+                          >
+                            <div className="flex items-center justify-between gap-2 w-full">
+                              <span className="truncate">{col.label}</span>
+                              {canSort && (
+                                <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
+                                  <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                  <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                                </div>
+                              )}
+                            </div>
+                          </th>
+                        );
+                      })}
                       <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px]">
                         E-Certificate
                       </th>
@@ -620,19 +701,16 @@ export const MyTrainingView: React.FC = () => {
                         key={record.id}
                         className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
                       >
-                        {/* No. */}
                         <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap text-center">
                           <div className="text-xs sm:text-sm text-slate-500">
                             {(currentPage - 1) * itemsPerPage + index + 1}
                           </div>
                         </td>
-                        {/* Course ID */}
                         <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
                           <span className="text-xs sm:text-sm font-medium text-emerald-600">
                             {record.id}
                           </span>
                         </td>
-                        {/* Course Title */}
                         <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
                           <div className="flex items-center gap-1.5 sm:gap-2">
                             <div className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-105 transition-transform">
@@ -645,15 +723,12 @@ export const MyTrainingView: React.FC = () => {
                             </div>
                           </div>
                         </td>
-                        {/* Type */}
                         <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
                           {record.type}
                         </td>
-                        {/* Completed Date */}
                         <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
                           {record.completedDate}
                         </td>
-                        {/* Score */}
                         <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap">
                           <Badge
                             color={record.score >= 90 ? "emerald" : "blue"}
@@ -664,7 +739,6 @@ export const MyTrainingView: React.FC = () => {
                             {record.score}%
                           </Badge>
                         </td>
-                        {/* E-Certificate - Sticky */}
                         <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px]">
                           <Button
                             size="sm"
@@ -681,19 +755,19 @@ export const MyTrainingView: React.FC = () => {
                 </table>
               </div>
 
-              {filteredTranscript.length > 0 && (
+              {sortedTranscript.length > 0 && (
                 <TablePagination
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onPageChange={setCurrentPage}
-                  totalItems={filteredTranscript.length}
+                  totalItems={sortedTranscript.length}
                   itemsPerPage={itemsPerPage}
                   onItemsPerPageChange={setItemsPerPage}
                   showItemCount={true}
                 />
               )}
 
-              {filteredTranscript.length === 0 && (
+              {sortedTranscript.length === 0 && (
                 <TableEmptyState
                   icon={<Trophy className="h-8 w-8 text-slate-300" />}
                   title="No records found"

@@ -4,6 +4,8 @@ import { ROUTES } from '@/app/routes.constants';
 import {
     Archive,
     Download,
+    ChevronUp,
+    ChevronDown,
     MoreVertical
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
@@ -36,6 +38,10 @@ export const ArchivedDocumentsView: React.FC = () => {
     const [endDate, setEndDate] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+        key: "code",
+        direction: "asc",
+    });
 
     const { openId, position, getRef, toggle, close } = usePortalDropdown();
 
@@ -43,7 +49,7 @@ export const ArchivedDocumentsView: React.FC = () => {
     const userRole = 'Admin'; // or 'QA Manager', 'Quality Assurance', 'User'
 
     const filteredDocuments = useMemo(() => {
-        return MOCK_ARCHIVED_DOCS.filter(doc => {
+        const filtered = MOCK_ARCHIVED_DOCS.filter(doc => {
             // Search filter
             if (searchQuery && !doc.code.toLowerCase().includes(searchQuery.toLowerCase()) &&
                 !doc.documentName.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -85,7 +91,43 @@ export const ArchivedDocumentsView: React.FC = () => {
 
             return true;
         });
-    }, [searchQuery, lastApproverFilter, retentionFilter, startDate, endDate]);
+
+        const parseDate = (dStr: string) => {
+            if (!dStr) return 0;
+            const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            if (parts) {
+                return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
+            }
+            return new Date(dStr).getTime();
+        };
+
+        // Apply sorting
+        return [...filtered].sort((a, b) => {
+            const key = sortConfig.key as keyof ArchivedDocument;
+            let valA: any = a[key] || "";
+            let valB: any = b[key] || "";
+
+            if (key === 'archivedDate' || key === 'retentionExpiry') {
+                valA = parseDate(valA);
+                valB = parseDate(valB);
+            } else if (typeof valA === 'string') {
+                valA = valA.toLowerCase();
+                valB = valB.toLowerCase();
+            }
+
+            if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+            if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+            return 0;
+        });
+    }, [searchQuery, lastApproverFilter, retentionFilter, startDate, endDate, sortConfig]);
+
+    const handleSort = (key: string) => {
+        setSortConfig((prev) => ({
+            key,
+            direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+        }));
+        setCurrentPage(1);
+    };
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
@@ -164,27 +206,39 @@ export const ArchivedDocumentsView: React.FC = () => {
                                         <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16 text-center">
                                             No.
                                         </th>
-                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                                            Document Code
-                                        </th>
-                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                                            Document Name
-                                        </th>
-                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                                            Version
-                                        </th>
-                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                                            Archived Date
-                                        </th>
-                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                                            Last Approver
-                                        </th>
-                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                                            Retention Period
-                                        </th>
-                                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                                            Retention Status
-                                        </th>
+                                        {[
+                                            { label: "Document Code", id: "code", sortable: true },
+                                            { label: "Document Name", id: "documentName", sortable: true },
+                                            { label: "Version", id: "version", sortable: true },
+                                            { label: "Archived Date", id: "archivedDate", sortable: true },
+                                            { label: "Last Approver", id: "lastApprover", sortable: true },
+                                            { label: "Retention Period", id: "retentionPeriod", sortable: true },
+                                            { label: "Retention Status", id: "retentionStatus" }
+                                        ].map((col, idx) => {
+                                            const isSorted = sortConfig.key === col.id;
+                                            const canSort = col.sortable;
+
+                                            return (
+                                                <th
+                                                    key={idx}
+                                                    onClick={canSort ? () => handleSort(col.id!) : undefined}
+                                                    className={cn(
+                                                        "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                                        canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group"
+                                                    )}
+                                                >
+                                                    <div className="flex items-center justify-between gap-2 w-full">
+                                                        <span className="truncate">{col.label}</span>
+                                                        {canSort && (
+                                                            <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                                                                <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                                                                <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </th>
+                                            );
+                                        })}
                                         <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                                             Actions
                                         </th>
@@ -197,18 +251,18 @@ export const ArchivedDocumentsView: React.FC = () => {
                                         const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
                                         return (
-                                            <tr 
-                                              key={doc.id} 
-                                              className="hover:bg-slate-50/80 transition-colors group"
+                                            <tr
+                                                key={doc.id}
+                                                className="hover:bg-slate-50/80 transition-colors group"
                                             >
                                                 <td className={cn(tdClass, "text-center text-slate-600")}>
                                                     {rowNumber}
                                                 </td>
-                                                <td 
-                                                  className={cn(tdClass, "cursor-pointer font-medium text-emerald-600 hover:underline transition-colors")}
-                                                  onClick={() => handleView(doc)}
+                                                <td
+                                                    className={cn(tdClass, "cursor-pointer font-medium text-emerald-600 hover:underline transition-colors")}
+                                                    onClick={() => handleView(doc)}
                                                 >
-                                                  {doc.code}
+                                                    {doc.code}
                                                 </td>
                                                 <td className={tdClass}>
                                                     <div className="max-w-md">

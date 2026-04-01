@@ -43,6 +43,7 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
 }) => {
   const [username, setUsername] = useState('Dr. A. Smith'); // Simulated logged-in user
   const [password, setPassword] = useState('');
+  const [reason, setReason] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -51,10 +52,15 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
       setError('Username and Password are mandatory for Audit Trail.');
       return;
     }
+    if (!reason.trim()) {
+      setError('Please provide a reason for signing.');
+      return;
+    }
     // Simulate verification
-    onConfirm('');
+    onConfirm(reason);
     // Reset
     setPassword('');
+    setReason('');
     setError('');
   };
 
@@ -62,7 +68,7 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
     <AnimatePresence>
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{
             // iOS Safari safe area support
             paddingTop: 'max(1rem, env(safe-area-inset-top, 1rem))',
@@ -92,21 +98,21 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
               stiffness: 350,
               duration: 0.3
             }}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-slate-200 overflow-hidden relative z-10"
+            className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-slate-200 overflow-hidden relative z-10 flex flex-col"
             style={{
               // Ensure modal doesn't exceed viewport on mobile
-              maxHeight: 'calc(100dvh - 2rem)',
+              maxHeight: 'calc(100dvh - 4rem)',
             }}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 bg-slate-50/50">
+            {/* Header - Fixed */}
+            <div className="flex-shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
                   <PenTool className="h-4 w-4 text-emerald-700 -rotate-[90deg] transition-transform" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 leading-tight">Electronic Signature</h3>
-                  <p className="text-[10px] text-slate-500 font-medium">Complies with FDA 21 CFR Part 11 and EU Annex 11</p>
+                  <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium">Complies with FDA 21 CFR Part 11 and EU Annex 11</p>
                 </div>
               </div>
               <button
@@ -118,10 +124,10 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
               </button>
             </div>
 
-            {/* Body */}
-            <div className="p-6 space-y-5">
+            {/* Body - Scrollable */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
               {/* Change Details Table */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs sm:text-sm font-medium text-slate-700">Meaning of Signature</span>
                 </div>
@@ -165,19 +171,31 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="bg-emerald-50/30 p-3 rounded-lg border border-emerald-100/50 mb-2">
-                  <p className="text-[11px] sm:text-xs text-emerald-700 leading-relaxed font-medium">
+              <div className="space-y-3">
+                <div className="bg-emerald-50/30 p-2.5 rounded-lg border border-emerald-100/50 mb-1">
+                  <p className="text-[10px] sm:text-xs text-emerald-700 leading-relaxed font-medium">
                     Electronic signature via credentials is legally binding and equivalent to a handwritten signature.
                   </p>
                 </div>
+                
+                <div className="space-y-1">
+                  <label className="text-xs sm:text-sm font-medium text-slate-700">Signing Reason <span className="text-red-500">*</span></label>
+                  <textarea
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    rows={2}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm resize-none"
+                    placeholder="Provide a justification for this action..."
+                  />
+                </div>
+
                 <div className="space-y-1">
                   <label className="text-xs sm:text-sm font-medium text-slate-700">Username <span className="text-red-500">*</span></label>
                   <input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                    className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
                     placeholder="Enter your username"
                   />
                 </div>
@@ -188,18 +206,24 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                    className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
                     placeholder="Enter your password"
                   />
                 </div>
 
-                {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
+                {error && (
+                  <div className="flex items-center gap-1.5 text-xs text-red-600 font-medium bg-red-50 p-2 rounded-lg border border-red-100">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    {error}
+                  </div>
+                )}
+              </div>
+            </div>
 
-                <div className="flex justify-end gap-2">
-                  <Button type="button" size='sm' variant="outline" onClick={onClose} className="min-w-[5rem]">Cancel</Button>
-                  <Button type="submit" size='sm' className="min-w-[5rem]">Sign & Confirm</Button>
-                </div>
-              </form>
+            {/* Footer - Fixed */}
+            <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-slate-50/30 flex justify-end gap-2">
+              <Button type="button" size='sm' variant="outline" onClick={onClose} className="min-w-[5rem]">Cancel</Button>
+              <Button type="submit" onClick={handleSubmit} size='sm' className="min-w-[5rem]">Sign & Confirm</Button>
             </div>
           </motion.div>
         </div>

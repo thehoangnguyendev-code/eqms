@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Check,
 } from "lucide-react";
@@ -61,15 +61,17 @@ export const DetailRevisionView: React.FC<DetailRevisionViewProps> = ({
   initialStatus,
 }) => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { navigateTo, isNavigating } = useNavigateWithLoading();
   const state = location.state as { initialStatus?: DocumentStatus };
+  const urlTab = searchParams.get('tab') as TabType;
 
   // In real app, fetch revision by documentId
   const document = {
     ...MOCK_REVISION,
     status: initialStatus || state?.initialStatus || MOCK_REVISION.status,
   };
-  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+  const [activeTab, setActiveTab] = useState<TabType>(urlTab || initialTab || "general");
 
   const handleBack = () => {
     onBack();

@@ -9,6 +9,20 @@ interface GeneralTabProps {
   onChange: (config: GeneralConfig) => void;
 }
 
+const SettingsCard: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
+
 export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
   const [timeZones, setTimeZones] = useState<Array<{ label: string; value: string }>>([]);
 
@@ -100,59 +114,44 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
   return (
     <div className="p-5 space-y-4">
       {/* Branding */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-100 flex-shrink-0">
-            <Palette className="h-4 w-4 text-emerald-600" />
+      <SettingsCard title="Branding" icon={<Palette className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
+              System Name (Internal)
+            </label>
+            <input
+              type="text"
+              value={config.systemName}
+              onChange={(e) => handleChange('systemName', e.target.value)}
+              className="w-full h-9 px-3.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="EQMS Enterprise"
+            />
+            <p className="text-xs text-slate-500 mt-1">
+              Internal system identifier
+            </p>
           </div>
-          <h3 className="text-sm font-semibold text-slate-900">Branding</h3>
-        </div>
-        <div className="space-y-4 p-5">
-          {/* System Names */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
-                System Name (Internal)
-              </label>
-              <input
-                type="text"
-                value={config.systemName}
-                onChange={(e) => handleChange('systemName', e.target.value)}
-                className="w-full h-9 px-3.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                placeholder="EQMS Enterprise"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Internal system identifier
-              </p>
-            </div>
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
-                Display Name (Browser Tab)
-              </label>
-              <input
-                type="text"
-                value={config.systemDisplayName}
-                onChange={(e) => handleChange('systemDisplayName', e.target.value)}
-                className="w-full h-9 px-3.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                placeholder="EQMS - Quality Management System"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Displayed in browser tab title
-              </p>
-            </div>
+          <div>
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
+              Display Name (Browser Tab)
+            </label>
+            <input
+              type="text"
+              value={config.systemDisplayName}
+              onChange={(e) => handleChange('systemDisplayName', e.target.value)}
+              className="w-full h-9 px-3.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="EQMS - Quality Management System"
+            />
+            <p className="text-xs text-slate-500 mt-1">
+              Displayed in browser tab title
+            </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* System Information */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-blue-100 flex-shrink-0">
-            <Phone className="h-4 w-4 text-blue-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Contact Information</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+      <SettingsCard title="Contact Information" icon={<Phone className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
               Admin Email
@@ -169,17 +168,11 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Company Information */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 flex-shrink-0">
-            <Building2 className="h-4 w-4 text-slate-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Company Information</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+      <SettingsCard title="Company Information" icon={<Building2 className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
               Company Name
@@ -268,17 +261,11 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Backup & Data Management */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-amber-100 flex-shrink-0">
-            <Database className="h-4 w-4 text-amber-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Backup &amp; Data Management</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="Backup & Data Management" icon={<Database className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enableAutoBackup"
@@ -358,17 +345,11 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Localization */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-teal-100 flex-shrink-0">
-            <Globe className="h-4 w-4 text-teal-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Localization</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+      <SettingsCard title="Localization" icon={<Globe className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             label="Date & Time Format"
             value={config.dateTimeFormat}
@@ -444,17 +425,11 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
             ]}
           />
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Appearance */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-purple-100 flex-shrink-0">
-            <Monitor className="h-4 w-4 text-purple-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Appearance &amp; UI Preferences</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="Appearance & UI Preferences" icon={<Monitor className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select
               label="Theme"
@@ -507,17 +482,11 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
             />
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* System Maintenance */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 flex-shrink-0">
-            <Wrench className="h-4 w-4 text-slate-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">System Maintenance</h3>
-        </div>
-        <div className="space-y-3 p-5">
+      <SettingsCard title="System Maintenance" icon={<Wrench className="h-4 w-4" />}>
+        <div className="space-y-3">
           <div>
             <Checkbox
               id="maintenanceMode"
@@ -530,7 +499,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
     </div>
   );
 };

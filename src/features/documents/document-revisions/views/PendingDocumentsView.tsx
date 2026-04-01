@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ROUTES } from '@/app/routes.constants';
 import {
+  ChevronUp,
+  ChevronDown,
   ChevronRight,
   MoreVertical,
   History,
@@ -405,13 +407,13 @@ const DropdownMenu: React.FC<{
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onAction("history");
+              onAction("audit");
               onClose();
             }}
             className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
           >
             <History className="h-4 w-4 flex-shrink-0" />
-            <span className="font-medium">History</span>
+            <span className="font-medium">View Audit Trail</span>
           </button>
         </div>
       </div>
@@ -452,7 +454,10 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "revisionName",
+    direction: "asc",
+  });
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
@@ -641,12 +646,32 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
       );
     });
 
+    const parseDate = (dStr: string) => {
+      if (!dStr) return 0;
+      const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (parts) {
+        return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
+      }
+      return new Date(dStr).getTime();
+    };
+
     // Apply sorting
     return [...filtered].sort((a, b) => {
-      const nameA = a.revisionName.toLowerCase();
-      const nameB = b.revisionName.toLowerCase();
-      if (sortOrder === "asc") return nameA.localeCompare(nameB);
-      return nameB.localeCompare(nameA);
+      const key = sortConfig.key as keyof Revision;
+      let valA: any = a[key] || "";
+      let valB: any = b[key] || "";
+
+      if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
+        valA = parseDate(valA);
+        valB = parseDate(valB);
+      } else if (typeof valA === 'string') {
+        valA = valA.toLowerCase();
+        valB = valB.toLowerCase();
+      }
+
+      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
     });
   }, [
     searchQuery,
@@ -664,9 +689,17 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
     relatedDocumentFilter,
     correlatedDocumentFilter,
     templateFilter,
-    sortOrder,
+    sortConfig,
     businessUnitFilter,
   ]);
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+    setCurrentPage(1);
+  };
 
 
   // Handle loading state on filter changes
@@ -687,7 +720,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
     relatedDocumentFilter,
     correlatedDocumentFilter,
     templateFilter,
-    sortOrder,
+    sortConfig,
     viewType,
     businessUnitFilter,
   ]);
@@ -713,8 +746,8 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
       case "approve":
         navigateTo(ROUTES.DOCUMENTS.REVISIONS.APPROVAL(openId));
         break;
-      case "history":
-        console.log(`View history for document ${openId}`);
+      case "audit":
+        navigateTo(`${ROUTES.DOCUMENTS.REVISIONS.DETAIL(openId)}?tab=audit`);
         break;
     }
   };
@@ -796,11 +829,11 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
 
               <Button
                 variant="outline"
-                onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+                onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === "asc" ? "desc" : "asc" }))}
                 className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
                 size="sm"
               >
-                {sortOrder === "asc" ? (
+                {sortConfig.direction === "asc" ? (
                   <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
                 ) : (
                   <ArrowDownZA className="h-4 w-4 text-emerald-600" />
@@ -894,69 +927,61 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                 <div
                   ref={scrollerRef}
                   className={cn(
-                    "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
-                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                    "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400"
                   )}
                   {...dragEvents}
                 >
                   <table className="w-full min-w-max border-separate border-spacing-0 text-left">
                     <thead>
                       <tr>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          No.
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Document Number
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Revision Number
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Created
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Opened By
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Revision Name
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          State
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Document Name
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Document Type
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center">
-                          Related Document
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center">
-                          Correlated Document
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center">
-                          Template
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Business Unit
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Department
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Author
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Effective Date
-                        </th>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                          Valid Until
-                        </th>
-                        <th
-                          className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
-                        >
+                        {[
+                          { label: "", id: "expander", width: "w-8 md:w-10" },
+                          { label: "No.", id: "no" },
+                          { label: "Document Number", id: "documentNumber", sortable: true },
+                          { label: "Revision Number", id: "revisionNumber", sortable: true },
+                          { label: "Created", id: "created", sortable: true },
+                          { label: "Opened By", id: "openedBy", sortable: true },
+                          { label: "Revision Name", id: "revisionName", sortable: true },
+                          { label: "State", id: "state", sortable: true },
+                          { label: "Document Name", id: "documentName", sortable: true },
+                          { label: "Document Type", id: "type", sortable: true },
+                          { label: "Related Document", id: "relatedDocument", align: "text-center" },
+                          { label: "Correlated Document", id: "correlatedDocument", align: "text-center" },
+                          { label: "Template", id: "template", align: "text-center" },
+                          { label: "Business Unit", id: "businessUnit", sortable: true },
+                          { label: "Department", id: "department", sortable: true },
+                          { label: "Author", id: "author", sortable: true },
+                          { label: "Effective Date", id: "effectiveDate", sortable: true },
+                          { label: "Valid Until", id: "validUntil", sortable: true }
+                        ].map((col, idx) => {
+                          const isSorted = sortConfig.key === col.id;
+                          const canSort = col.sortable;
+
+                          return (
+                            <th
+                              key={idx}
+                              onClick={canSort ? () => handleSort(col.id!) : undefined}
+                              className={cn(
+                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
+                                col.width,
+                                col.align || "text-left"
+                              )}
+                            >
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <span className="truncate">{col.label}</span>
+                                {canSort && (
+                                  <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                                  </div>
+                                )}
+                              </div>
+                            </th>
+                          );
+                        })}
+                        {/* Cột Action Sticky */}
+                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                           Action
                         </th>
                       </tr>

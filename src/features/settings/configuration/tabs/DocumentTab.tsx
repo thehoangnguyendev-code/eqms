@@ -10,6 +10,20 @@ interface DocumentTabProps {
   onChange: (config: DocumentConfig) => void;
 }
 
+const SettingsCard: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
+
 export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) => {
   const handleChange = (key: keyof DocumentConfig, value: any) => {
     onChange({ ...config, [key]: value });
@@ -38,14 +52,8 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
   return (
     <div className="p-5 space-y-4">
       {/* Retention & Storage */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-100 flex-shrink-0">
-            <Archive className="h-4 w-4 text-emerald-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Retention &amp; Storage</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+      <SettingsCard title="Retention & Storage" icon={<Archive className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
               Default Retention Period (Days)
@@ -77,17 +85,11 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Protection & Distribution */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-blue-100 flex-shrink-0">
-            <Shield className="h-4 w-4 text-blue-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Protection &amp; Distribution</h3>
-        </div>
-        <div className="space-y-3 p-5">
+      <SettingsCard title="Protection & Distribution" icon={<Shield className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enableWatermark"
@@ -100,7 +102,7 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
             </p>
           </div>
           
-          <div>
+          <div className="pt-2">
             <Checkbox
               id="allowDownload"
               label="Allow Document Download"
@@ -112,17 +114,11 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Version Control */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-purple-100 flex-shrink-0">
-            <GitBranch className="h-4 w-4 text-purple-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Version Control</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="Version Control" icon={<GitBranch className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enableAutoVersioning"
@@ -188,17 +184,11 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
 
       {/* E-Signature Settings */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-amber-100 flex-shrink-0">
-            <PenSquare className="h-4 w-4 text-amber-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Electronic Signature (E-Signature)</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="Electronic Signature (E-Signature)" icon={<PenSquare className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enableESignature"
@@ -286,7 +276,7 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
     </div>
   );
 };

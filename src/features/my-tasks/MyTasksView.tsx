@@ -7,6 +7,8 @@ import {
   SlidersHorizontal,
   ArrowDownAZ,
   ArrowDownZA,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { myTasks } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -94,7 +96,10 @@ export const MyTasksView: React.FC = () => {
   const [reporterFilter, setReporterFilter] = useState("All Reporters");
 
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "dueDate",
+    direction: "desc",
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -109,6 +114,14 @@ export const MyTasksView: React.FC = () => {
     setAssigneeFilter("All Assignees");
     setReporterFilter("All Reporters");
   }, []);
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+    setCurrentPage(1);
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -164,10 +177,21 @@ export const MyTasksView: React.FC = () => {
     }
 
     data.sort((a, b) => {
-      const ta = parseDueDate(a.dueDate);
-      const tb = parseDueDate(b.dueDate);
-      if (ta === tb) return 0;
-      return sortOrder === "asc" ? ta - tb : tb - ta;
+      const key = sortConfig.key as keyof Task;
+      let valA: any = a[key] || "";
+      let valB: any = b[key] || "";
+
+      if (key === "dueDate") {
+        valA = parseDueDate(valA);
+        valB = parseDueDate(valB);
+      } else if (typeof valA === "string") {
+        valA = valA.toLowerCase();
+        valB = valB.toLowerCase();
+      }
+
+      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
     });
 
     return data;
@@ -180,7 +204,7 @@ export const MyTasksView: React.FC = () => {
     toDateFilter,
     assigneeFilter,
     reporterFilter,
-    sortOrder,
+    sortConfig,
   ]);
 
   const totalItems = filteredData.length;
@@ -243,19 +267,6 @@ export const MyTasksView: React.FC = () => {
               >
                 <SlidersHorizontal className="h-4 w-4" />
                 Filters
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
-                className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
-                size="sm"
-              >
-                {sortOrder === "asc" ? (
-                  <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
-                ) : (
-                  <ArrowDownZA className="h-4 w-4 text-emerald-600" />
-                )}
               </Button>
             </div>
           </div>
@@ -381,6 +392,8 @@ export const MyTasksView: React.FC = () => {
                     tasks={paginatedData}
                     onTaskClick={setSelectedTask}
                     startIndex={(currentPage - 1) * itemsPerPage + 1}
+                    sortConfig={sortConfig}
+                    onSort={handleSort}
                   />
                   <TablePagination
                     currentPage={currentPage}

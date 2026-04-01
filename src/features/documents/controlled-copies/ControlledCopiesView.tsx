@@ -4,12 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from '@/app/routes.constants';
 import {
   Download,
+  ChevronUp,
+  ChevronDown,
   Search,
   MoreVertical,
   Edit,
   FileX,
   Link2,
   Shredder,
+  ArrowDownAZ,
+  ArrowDownZA,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
@@ -78,6 +83,7 @@ const DropdownMenu: React.FC<{
   onDistribute?: () => void;
   onReportLostDamaged?: () => void;
   onCreateLink?: () => void;
+  onViewAuditTrail: () => void;
   viewType: ViewType;
 }> = ({
   isOpen,
@@ -89,6 +95,7 @@ const DropdownMenu: React.FC<{
   onDistribute,
   onReportLostDamaged,
   onCreateLink,
+  onViewAuditTrail,
   viewType,
 }) => {
     if (!isOpen) return null;
@@ -133,6 +140,17 @@ const DropdownMenu: React.FC<{
             >
               <Edit className="h-4 w-4 flex-shrink-0" />
               <span className="font-medium">Edit Controlled Copy</span>
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewAuditTrail();
+                onClose();
+              }}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <History className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">View Audit Trail</span>
             </button>
             {onDistribute && (
               <button
@@ -198,6 +216,7 @@ const DropdownMenu: React.FC<{
                 <FileX className="h-4 w-4 flex-shrink-0" />
                 <span className="font-medium">Cancel Distribution</span>
               </button>
+
             )}
           </div>
         </div>
@@ -248,6 +267,10 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "documentNumber",
+    direction: "asc",
+  });
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
@@ -267,7 +290,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
 
   // Apply filters
   const filteredData = useMemo(() => {
-    return baseData.filter((copy) => {
+    const filtered = baseData.filter((copy) => {
       const matchesSearch =
         searchQuery === "" ||
         copy.documentNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -315,7 +338,43 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
 
       return matchesSearch && matchesStatus && matchesCreatedFrom && matchesCreatedTo && matchesValidFrom && matchesValidTo;
     });
-  }, [baseData, searchQuery, statusFilter, createdFromDate, createdToDate, validFromDate, validToDate, viewType]);
+
+    const parseDate = (dStr: string) => {
+      if (!dStr) return 0;
+      const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (parts) {
+        return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
+      }
+      return new Date(dStr).getTime();
+    };
+
+    // Apply sorting
+    return [...filtered].sort((a, b) => {
+      const key = sortConfig.key as keyof ControlledCopy;
+      let valA: any = a[key] || "";
+      let valB: any = b[key] || "";
+
+      if (key === 'createdDate' || key === 'validUntil') {
+        valA = parseDate(valA);
+        valB = parseDate(valB);
+      } else if (typeof valA === 'string') {
+        valA = valA.toLowerCase();
+        valB = valB.toLowerCase();
+      }
+
+      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [baseData, searchQuery, statusFilter, createdFromDate, createdToDate, validFromDate, validToDate, viewType, sortConfig]);
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+    setCurrentPage(1);
+  };
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const paginatedData = useMemo(() => {
@@ -326,6 +385,10 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
   // Event handlers
   const handleViewDetails = (copy: ControlledCopy) => {
     navigateTo(ROUTES.DOCUMENTS.CONTROLLED_COPIES.DETAIL(copy.id));
+  };
+
+  const handleViewAuditTrail = (copy: ControlledCopy) => {
+    navigateTo(`${ROUTES.DOCUMENTS.CONTROLLED_COPIES.DETAIL(copy.id)}?tab=audit`);
   };
 
   const handleEdit = (copy: ControlledCopy) => {
@@ -562,14 +625,24 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
                     <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                       No.
                     </th>
-                    {DEFAULT_COLUMNS.filter((c) => c.visible).map((col) => (
-                      <th
-                        key={col.id}
-                        className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap"
-                      >
-                        {col.label}
-                      </th>
-                    ))}
+                    {DEFAULT_COLUMNS.filter((c) => c.visible).map((col) => {
+                      const isSorted = sortConfig.key === col.id;
+                      return (
+                        <th
+                          key={col.id}
+                          onClick={() => handleSort(col.id)}
+                          className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap cursor-pointer hover:bg-slate-100 transition-colors group"
+                        >
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span className="truncate">{col.label}</span>
+                            <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                              <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                              <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                            </div>
+                          </div>
+                        </th>
+                      );
+                    })}
                     <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>
@@ -683,6 +756,9 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
             viewType={viewType}
             onViewDetails={() => {
               if (selectedCopy) handleViewDetails(selectedCopy);
+            }}
+            onViewAuditTrail={() => {
+              if (selectedCopy) handleViewAuditTrail(selectedCopy);
             }}
             onEdit={() => {
               if (selectedCopy) handleEdit(selectedCopy);

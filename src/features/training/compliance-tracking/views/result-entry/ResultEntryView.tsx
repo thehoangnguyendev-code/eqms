@@ -11,6 +11,8 @@ import {
   AlertCircle,
   ZoomIn,
   RefreshCw,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { courseResultEntry } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -203,6 +205,18 @@ export const ResultEntryView: React.FC = () => {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: "asc" | "desc" }>({
+    key: "userId",
+    direction: "asc",
+  });
+
+  // Sorting Handler
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
 
   // File input refs
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
@@ -243,10 +257,35 @@ export const ResultEntryView: React.FC = () => {
     return filtered;
   }, [rows, searchQuery, statusFilter, departmentFilter]);
 
+  const sortedRows = useMemo(() => {
+    if (!sortConfig.key) return filteredRows;
+
+    return [...filteredRows].sort((a, b) => {
+      let aVal: any = (a as any)[sortConfig.key!];
+      let bVal: any = (b as any)[sortConfig.key!];
+
+      if (sortConfig.key === "examDate") {
+        aVal = aVal ? new Date(aVal).getTime() : 0;
+        bVal = bVal ? new Date(bVal).getTime() : 0;
+      } else if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      } else if (aVal === null) {
+        aVal = sortConfig.direction === "asc" ? Infinity : -Infinity;
+      } else if (bVal === null) {
+        bVal = sortConfig.direction === "asc" ? Infinity : -Infinity;
+      }
+
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredRows, sortConfig]);
+
   const paginatedRows = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return filteredRows.slice(start, start + itemsPerPage);
-  }, [filteredRows, currentPage, itemsPerPage]);
+    return sortedRows.slice(start, start + itemsPerPage);
+  }, [sortedRows, currentPage, itemsPerPage]);
 
   const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
 
@@ -677,36 +716,44 @@ export const ResultEntryView: React.FC = () => {
                     <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                       No.
                     </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Employee Code
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[180px]">
-                      Name
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden lg:table-cell">
-                      Email
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden xl:table-cell">
-                      Job Title
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap hidden md:table-cell">
-                      Department
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[140px]">
-                      Business Unit
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[150px]">
-                      Exam Date
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[130px]">
-                      {course.passingGradeType === "pass_fail" ? "Result" : "Score"}
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-[100px]">
-                      Status
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-[140px]">
-                      Evidence
-                    </th>
+                    {[
+                      { label: "Employee Code", id: "userId" },
+                      { label: "Name", id: "name" },
+                      { label: "Email", id: "email", hidden: "hidden lg:table-cell" },
+                      { label: "Job Title", id: "jobTitle", hidden: "hidden xl:table-cell" },
+                      { label: "Department", id: "department", hidden: "hidden md:table-cell" },
+                      { label: "Business Unit", id: "businessUnit" },
+                      { label: "Exam Date", id: "examDate" },
+                      { label: (course.passingGradeType === "pass_fail" ? "Result" : "Score"), id: "score" },
+                      { label: "Status", id: null, align: "text-center", sortable: false, width: "w-[100px]" },
+                      { label: "Evidence", id: null, align: "text-center", sortable: false, width: "w-[140px]" }
+                    ].map((col, idx) => {
+                      const isSorted = sortConfig.key === col.id;
+                      const canSort = col.id !== null && col.sortable !== false;
+                      return (
+                        <th
+                          key={idx}
+                          onClick={canSort ? () => handleSort(col.id!) : undefined}
+                          className={cn(
+                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                            canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
+                            col.align || "text-left",
+                            col.hidden,
+                            col.width
+                          )}
+                        >
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span className="truncate">{col.label}</span>
+                            {canSort && (
+                              <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
+                                <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                              </div>
+                            )}
+                          </div>
+                        </th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody className="bg-white">
@@ -739,7 +786,7 @@ export const ResultEntryView: React.FC = () => {
                             {rowNumber}
                           </td>
                           <td className={tdClass}>
-                            <span className="font-semibold text-emerald-600">{row.userId}</span>
+                            <span className="font-medium text-emerald-600 hover:underline">{row.userId}</span>
                           </td>
                           <td className={tdClass}>
                             <span className="font-bold text-slate-900">{row.name}</span>

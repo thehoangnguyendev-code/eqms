@@ -10,6 +10,20 @@ interface SecurityTabProps {
   onChange: (config: SecurityConfig) => void;
 }
 
+const SettingsCard: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
+
 export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) => {
   const [newIp, setNewIp] = useState('');
   const [newCountry, setNewCountry] = useState('');
@@ -69,14 +83,8 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
   return (
     <div className="p-5 space-y-4">
       {/* Password Policies */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-100 flex-shrink-0">
-            <Lock className="h-4 w-4 text-emerald-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Password Policies</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+      <SettingsCard title="Password Policies" icon={<Lock className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
               Minimum Password Length
@@ -107,17 +115,11 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Password Requirements */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-blue-100 flex-shrink-0">
-            <CheckCircle2 className="h-4 w-4 text-blue-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Password Requirements</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-5">
+      <SettingsCard title="Password Requirements" icon={<CheckCircle2 className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Checkbox
             id="requireUppercase"
             label="Require Uppercase Letters (A-Z)"
@@ -143,17 +145,11 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             onChange={(checked) => handleChange('requireNumbers', checked)}
           />
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Password Expiry & History */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-amber-100 flex-shrink-0">
-            <Clock className="h-4 w-4 text-amber-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Password Expiry &amp; History</h3>
-        </div>
-        <div className="space-y-3 p-5">
+      <SettingsCard title="Password Expiry & History" icon={<Clock className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enablePasswordExpiry"
@@ -166,7 +162,7 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             </p>
           </div>
           {config.enablePasswordExpiry && (
-            <div className="ml-7 mt-3">
+            <div className="ml-7">
               <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
                 Password Expiry Period (Days)
               </label>
@@ -214,18 +210,11 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             )}
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Session & Account Security */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-teal-100 flex-shrink-0">
-            <Shield className="h-4 w-4 text-teal-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Session &amp; Account Security</h3>
-        </div>
-        <div className="space-y-4 p-5">
-          {/* Two-Factor Authentication */}
+      <SettingsCard title="Session & Account Security" icon={<Shield className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enable2FA"
@@ -238,7 +227,6 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             </p>
           </div>
 
-          {/* Auto Logout */}
           <div className="pt-2">
             <Checkbox
               id="enableAutoLogout"
@@ -269,7 +257,6 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             )}
           </div>
 
-          {/* Account Lockout */}
           <div className="pt-2">
             <Checkbox
               id="enableAccountLockout"
@@ -300,17 +287,11 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             )}
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* IP Access Control */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-red-100 flex-shrink-0">
-            <Globe className="h-4 w-4 text-red-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">IP Access Control &amp; Geo-blocking</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="IP Access Control & Geo-blocking" icon={<Globe className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enableIpWhitelisting"
@@ -345,11 +326,11 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
                 </div>
                 <div className="space-y-2">
                   {config.ipSecurity.whitelistedIps.map((ip) => (
-                    <div key={ip} className="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200">
-                      <span className="text-sm  text-slate-700">{ip}</span>
+                    <div key={ip} className="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200 shadow-sm">
+                      <span className="text-sm font-medium text-slate-700">{ip}</span>
                       <button
                         onClick={() => removeWhitelistedIp(ip)}
-                        className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -397,8 +378,8 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
                   </div>
                   <div className="space-y-2">
                     {config.ipSecurity.blockedCountries.map((country) => (
-                      <div key={country} className="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200">
-                        <span className="text-sm  text-slate-700">{country}</span>
+                      <div key={country} className="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200 shadow-sm">
+                        <span className="text-sm font-medium text-slate-700">{country}</span>
                         <button
                           onClick={() => removeBlockedCountry(country)}
                           className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
@@ -428,17 +409,11 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Audit & Logging */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 flex-shrink-0">
-            <ClipboardList className="h-4 w-4 text-slate-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Audit &amp; Logging</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="Audit & Logging" icon={<ClipboardList className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enableDetailedAuditLog"
@@ -519,7 +494,7 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
     </div>
   );
 };

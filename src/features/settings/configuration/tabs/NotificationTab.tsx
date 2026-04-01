@@ -15,6 +15,20 @@ interface NotificationTabProps {
   onChange: (config: NotificationConfig) => void;
 }
 
+const SettingsCard: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
+
 export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChange }) => {
   const [showSmtpPassword, setShowSmtpPassword] = useState(false);
   const [showTelegramToken, setShowTelegramToken] = useState(false);
@@ -117,14 +131,8 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
   return (
     <div className="p-5 space-y-4">
       {/* Notification Channels */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-100 flex-shrink-0">
-            <Bell className="h-4 w-4 text-emerald-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Notification Channels</h3>
-        </div>
-        <div className="space-y-3 p-5">
+      <SettingsCard title="Notification Channels" icon={<Bell className="h-4 w-4" />}>
+        <div className="space-y-3">
           <div>
             <Checkbox
               id="enableInAppNotifications"
@@ -137,17 +145,11 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Email Configuration */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-red-50 flex-shrink-0">
-            <img src={gmailLogo} alt="Gmail" className="h-5 w-5 object-contain" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Email Notifications (SMTP)</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="Email Notifications (SMTP)" icon={<img src={gmailLogo} alt="Gmail" className="h-4 w-4 object-contain grayscale brightness-110" />}>
+        <div className="space-y-4">
           <Checkbox
             id="enableEmailNotifications"
             label="Enable Email Notifications"
@@ -252,7 +254,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
                   size="sm"
                   onClick={handleTestSmtp}
                   disabled={testingSmtp || !config.emailConfig.smtpHost}
-                  className="gap-2"
+                  className="gap-2 shadow-sm"
                 >
                   {testingSmtp ? (
                     <>
@@ -270,17 +272,11 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Telegram Configuration */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-sky-50 flex-shrink-0">
-            <img src={telegramLogo} alt="Telegram" className="h-5 w-5 object-contain" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Telegram Notifications</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="Telegram Notifications" icon={<img src={telegramLogo} alt="Telegram" className="h-4 w-4 object-contain" />}>
+        <div className="space-y-4">
           <Checkbox
             id="enableTelegramNotifications"
             label="Enable Telegram Notifications"
@@ -337,7 +333,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
                   size="sm"
                   onClick={handleTestTelegram}
                   disabled={testingTelegram || !config.telegramConfig.botToken || !config.telegramConfig.chatId}
-                  className="gap-2"
+                  className="gap-2 shadow-sm"
                 >
                   {testingTelegram ? (
                     <>
@@ -355,17 +351,11 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
 
       {/* WhatsApp Configuration */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-teal-50 flex-shrink-0">
-            <img src={whatsappLogo} alt="WhatsApp" className="h-5 w-5 object-contain" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">WhatsApp Notifications (Business API)</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="WhatsApp Notifications (Business API)" icon={<img src={whatsappLogo} alt="WhatsApp" className="h-4 w-4 object-contain" />}>
+        <div className="space-y-4">
           <Checkbox
             id="enableWhatsAppNotifications"
             label="Enable WhatsApp Notifications"
@@ -437,7 +427,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
                   size="sm"
                   onClick={handleTestWhatsApp}
                   disabled={testingWhatsApp || !config.whatsappConfig.accessToken || !config.whatsappConfig.phoneNumberId}
-                  className="gap-2"
+                  className="gap-2 shadow-sm"
                 >
                   {testingWhatsApp ? (
                     <>
@@ -455,17 +445,11 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Digest Settings */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-amber-100 flex-shrink-0">
-            <Clock className="h-4 w-4 text-amber-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Email Digest Settings</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+      <SettingsCard title="Email Digest Settings" icon={<Clock className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             label="Email Digest Frequency"
             value={config.emailDigestFrequency}
@@ -479,21 +463,16 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
           />
         </div>
         {!config.enableEmailNotifications && (
-          <p className="text-xs text-amber-600 mt-2">
+          <p className="text-xs text-amber-600 mt-3 font-medium flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
             Enable email notifications to configure digest settings
           </p>
         )}
-      </div>
+      </SettingsCard>
 
       {/* SMS Notifications */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-purple-100 flex-shrink-0">
-            <Smartphone className="h-4 w-4 text-purple-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">SMS Notifications</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="SMS Notifications" icon={<Smartphone className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enableSms"
@@ -587,17 +566,11 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Notification Templates */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 flex-shrink-0">
-            <Layout className="h-4 w-4 text-slate-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Notification Templates</h3>
-        </div>
-        <div className="space-y-4 p-5">
+      <SettingsCard title="Notification Templates" icon={<Layout className="h-4 w-4" />}>
+        <div className="space-y-4">
           <div>
             <Checkbox
               id="enableCustomTemplates"
@@ -617,85 +590,80 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
                   <p className="text-xs sm:text-sm font-medium text-slate-700">
                     Template Library
                   </p>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-slate-500 font-medium">
                     {config.templates.length} template{config.templates.length !== 1 ? 's' : ''} configured
                   </span>
                 </div>
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800">
-                    <strong>Coming Soon:</strong> Template editor with support for dynamic variables, multi-language,
+                  <p className="text-sm text-blue-800 leading-relaxed">
+                    <strong className="font-bold">Coming Soon:</strong> Template editor with support for dynamic variables, multi-language,
                     and HTML formatting. You'll be able to customize templates for Document Approval, Task Assignment,
                     CAPA Notifications, and more.
                   </p>
                 </div>
-                <p className="text-xs text-slate-500">
-                  <strong>Available Variables:</strong> <code className="px-1 py-0.5 bg-slate-200 rounded-lg text-slate-700">{'{userName}'}</code>,
-                  <code className="px-1 py-0.5 bg-slate-200 rounded-lg text-slate-700 ml-1">{'{documentTitle}'}</code>,
-                  <code className="px-1 py-0.5 bg-slate-200 rounded-lg text-slate-700 ml-1">{'{taskName}'}</code>,
-                  <code className="px-1 py-0.5 bg-slate-200 rounded-lg text-slate-700 ml-1">{'{dueDate}'}</code>,
-                  <code className="px-1 py-0.5 bg-slate-200 rounded-lg text-slate-700 ml-1">{'{systemName}'}</code>
-                </p>
+                <div className="flex flex-wrap gap-2 items-center text-xs text-slate-500">
+                  <span className="font-semibold text-slate-600">Available Variables:</span>
+                  <code className="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 uppercase">{'{userName}'}</code>
+                  <code className="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 uppercase">{'{documentTitle}'}</code>
+                  <code className="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 uppercase">{'{taskName}'}</code>
+                  <code className="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 uppercase">{'{dueDate}'}</code>
+                  <code className="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 uppercase">{'{systemName}'}</code>
+                </div>
               </div>
             </div>
           )}
         </div>
-      </div>
+      </SettingsCard>
 
       {/* Notification Triggers */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-indigo-100 flex-shrink-0">
-            <Zap className="h-4 w-4 text-indigo-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Notification Triggers</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
-          <div>
+      <SettingsCard title="Notification Triggers" icon={<Zap className="h-4 w-4" />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
+          <div className="p-4 rounded-lg bg-slate-50/50 border border-slate-100">
             <Checkbox
               id="trigger-approval"
               label="Document Approval Requests"
               checked={config.triggers.documentApproval}
               onChange={(checked) => handleTriggerChange('documentApproval', checked)}
             />
-            <p className="text-xs text-slate-500 ml-7 mt-1">
+            <p className="text-xs text-slate-500 ml-7 mt-1.5 leading-relaxed">
               When a document requires your approval
             </p>
           </div>
-          <div>
+          <div className="p-4 rounded-lg bg-slate-50/50 border border-slate-100">
             <Checkbox
               id="trigger-tasks"
               label="Task Assignments"
               checked={config.triggers.taskAssignment}
               onChange={(checked) => handleTriggerChange('taskAssignment', checked)}
             />
-            <p className="text-xs text-slate-500 ml-7 mt-1">
+            <p className="text-xs text-slate-500 ml-7 mt-1.5 leading-relaxed">
               When a task is assigned to you
             </p>
           </div>
-          <div>
+          <div className="p-4 rounded-lg bg-slate-50/50 border border-slate-100">
             <Checkbox
               id="trigger-alerts"
               label="System Alerts"
               checked={config.triggers.systemAlerts}
               onChange={(checked) => handleTriggerChange('systemAlerts', checked)}
             />
-            <p className="text-xs text-slate-500 ml-7 mt-1">
+            <p className="text-xs text-slate-500 ml-7 mt-1.5 leading-relaxed">
               Critical system messages and updates
             </p>
           </div>
-          <div>
+          <div className="p-4 rounded-lg bg-slate-50/50 border border-slate-100">
             <Checkbox
               id="trigger-capa"
               label="CAPA & Deviation Due Dates"
               checked={config.triggers.capaDue}
               onChange={(checked) => handleTriggerChange('capaDue', checked)}
             />
-            <p className="text-xs text-slate-500 ml-7 mt-1">
+            <p className="text-xs text-slate-500 ml-7 mt-1.5 leading-relaxed">
               Reminders for upcoming due dates
             </p>
           </div>
         </div>
-      </div>
+      </SettingsCard>
     </div>
   );
 };

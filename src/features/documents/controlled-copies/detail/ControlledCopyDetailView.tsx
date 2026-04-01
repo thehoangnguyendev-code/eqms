@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTES } from '@/app/routes.constants';
 import {
   Calendar,
@@ -127,7 +127,9 @@ export const ControlledCopyDetailView: React.FC<ControlledCopyDetailViewProps> =
   const [isDestructionModalOpen, setIsDestructionModalOpen] = useState(false);
   const [isDistributeModalOpen, setIsDistributeModalOpen] = useState(false);
   const [isReportLostDamagedModalOpen, setIsReportLostDamagedModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+  const [searchParams] = useSearchParams();
+  const urlTab = searchParams.get('tab') as TabType;
+  const [activeTab, setActiveTab] = useState<TabType>(urlTab || initialTab);
   const [isNavigating, setIsNavigating] = useState(false);
   const { showToast } = useToast();
 
