@@ -700,8 +700,8 @@ export const NotificationsView: React.FC = () => {
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
           {/* Search Row + Primary Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 items-end">
-            <div className="w-full flex-1 group">
+          <div className="flex flex-row gap-2 sm:gap-3 items-end">
+            <div className="flex-1 group">
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors group-focus-within:text-emerald-600">
                 Search
               </label>
@@ -730,15 +730,15 @@ export const NotificationsView: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex gap-2 w-full sm:w-auto">
+            <div className="flex-shrink-0">
               <Button
                 variant={isFilterVisible ? "default" : "outline"}
                 onClick={() => setIsFilterVisible(!isFilterVisible)}
-                className="h-9 px-4 gap-2 whitespace-nowrap rounded-lg"
+                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
                 size="sm"
               >
                 <SlidersHorizontal className="h-4 w-4" />
-                Filters
+                <span className="hidden sm:inline">Filters</span>
               </Button>
             </div>
           </div>

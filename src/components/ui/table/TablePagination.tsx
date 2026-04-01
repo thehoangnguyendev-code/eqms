@@ -116,8 +116,11 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
 
       {/* Right: Navigation */}
       <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2">
-        <Button variant="outline" size="icon-sm" onClick={goPrev} disabled={currentPage === 1}>
+        <Button variant="outline" size="icon-sm" className="sm:hidden" onClick={goPrev} disabled={currentPage === 1}>
           <IconChevronLeft className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="sm" className="hidden sm:flex" onClick={goPrev} disabled={currentPage === 1}>
+          Previous
         </Button>
 
         {showPageNumbers && (
@@ -148,8 +151,11 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
           </span>
         )}
 
-        <Button variant="outline" size="icon-sm" onClick={goNext} disabled={currentPage === totalPages}>
+        <Button variant="outline" size="icon-sm" className="sm:hidden" onClick={goNext} disabled={currentPage === totalPages}>
           <IconChevronRight className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="sm" className="hidden sm:flex" onClick={goNext} disabled={currentPage === totalPages}>
+          Next
         </Button>
       </div>
     </div>

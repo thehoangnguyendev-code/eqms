@@ -177,62 +177,62 @@ export const RevisionListView: React.FC = () => {
         matchesRelatedDocument &&
         matchesCorrelatedDocument &&
         matchesTemplate
-        );
-      });
-  
-      const parseDate = (dStr: string) => {
-        if (!dStr) return 0;
-        const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
-        }
-        return new Date(dStr).getTime();
-      };
-  
-      // Apply sorting
-      return [...filtered].sort((a, b) => {
-        const key = sortConfig.key as keyof Revision;
-        let valA: any = a[key] || "";
-        let valB: any = b[key] || "";
-  
-        if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
-          valA = parseDate(valA);
-          valB = parseDate(valB);
-        } else if (typeof valA === 'string') {
-          valA = valA.toLowerCase();
-          valB = valB.toLowerCase();
-        }
-  
-        if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
-        if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-        return 0;
-      });
-    }, [
-      searchQuery,
-      statusFilter,
-      typeFilter,
-      businessUnitFilter,
-      departmentFilter,
-      authorFilter,
-      createdFromDate,
-      createdToDate,
-      effectiveFromDate,
-      effectiveToDate,
-      validFromDate,
-      validToDate,
-      relatedDocumentFilter,
-      correlatedDocumentFilter,
-      templateFilter,
-      sortConfig,
-    ]);
-  
-    const handleSort = (key: string) => {
-      setSortConfig((prev) => ({
-        key,
-        direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
-      }));
-      setCurrentPage(1);
+      );
+    });
+
+    const parseDate = (dStr: string) => {
+      if (!dStr) return 0;
+      const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (parts) {
+        return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
+      }
+      return new Date(dStr).getTime();
     };
+
+    // Apply sorting
+    return [...filtered].sort((a, b) => {
+      const key = sortConfig.key as keyof Revision;
+      let valA: any = a[key] || "";
+      let valB: any = b[key] || "";
+
+      if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
+        valA = parseDate(valA);
+        valB = parseDate(valB);
+      } else if (typeof valA === 'string') {
+        valA = valA.toLowerCase();
+        valB = valB.toLowerCase();
+      }
+
+      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [
+    searchQuery,
+    statusFilter,
+    typeFilter,
+    businessUnitFilter,
+    departmentFilter,
+    authorFilter,
+    createdFromDate,
+    createdToDate,
+    effectiveFromDate,
+    effectiveToDate,
+    validFromDate,
+    validToDate,
+    relatedDocumentFilter,
+    correlatedDocumentFilter,
+    templateFilter,
+    sortConfig,
+  ]);
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+    setCurrentPage(1);
+  };
 
   // Handle loading state on filter changes
   React.useEffect(() => {
@@ -378,8 +378,8 @@ export const RevisionListView: React.FC = () => {
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
           {/* Search Row + Primary Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 items-end">
-            <div className="w-full flex-1 group">
+          <div className="flex flex-row gap-2 sm:gap-3 items-end">
+            <div className="flex-1 group">
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors group-focus-within:text-emerald-600">
                 Search
               </label>
@@ -408,28 +408,15 @@ export const RevisionListView: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex gap-2 w-full sm:w-auto">
+            <div className="flex-shrink-0">
               <Button
                 variant={isFilterVisible ? "default" : "outline"}
                 onClick={() => setIsFilterVisible(!isFilterVisible)}
-                className="h-9 px-4 gap-2 whitespace-nowrap rounded-lg"
+                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
                 size="sm"
               >
                 <SlidersHorizontal className="h-4 w-4" />
-                Filters
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === "asc" ? "desc" : "asc" }))}
-                className="h-9 px-4 gap-2 whitespace-nowrap border-slate-200 rounded-lg"
-                size="sm"
-              >
-                {sortConfig.direction === "asc" ? (
-                  <ArrowDownAZ className="h-4 w-4 text-emerald-600" />
-                ) : (
-                  <ArrowDownZA className="h-4 w-4 text-emerald-600" />
-                )}
+                <span className="hidden sm:inline">Filters</span>
               </Button>
             </div>
           </div>
@@ -709,7 +696,7 @@ export const RevisionListView: React.FC = () => {
                                           {/* Bảng Related Documents (Thiết kế gốc) */}
                                           {revision.relatedDocuments && revision.relatedDocuments.length > 0 && (
                                             <div>
-                                              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                                              <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1.5">
                                                 Related Documents ({revision.relatedDocuments.length})
                                               </p>
                                               <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
@@ -744,7 +731,7 @@ export const RevisionListView: React.FC = () => {
                                           {/* Bảng Correlated Documents (Thiết kế gốc) */}
                                           {revision.correlatedDocuments && revision.correlatedDocuments.length > 0 && (
                                             <div>
-                                              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                                              <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1.5">
                                                 Correlated Documents ({revision.correlatedDocuments.length})
                                               </p>
                                               <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">

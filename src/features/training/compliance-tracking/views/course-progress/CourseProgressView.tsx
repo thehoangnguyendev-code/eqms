@@ -26,9 +26,12 @@ import {
   Repeat,
   ShieldCheck,
   MoreVertical,
+  SlidersHorizontal,
+  X,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { courseProgress } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -189,6 +192,7 @@ export const CourseProgressView: React.FC = () => {
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
   const [isESignatureOpen, setIsESignatureOpen] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const info = {
     ...MOCK_PROGRESS_INFO,
@@ -471,101 +475,153 @@ export const CourseProgressView: React.FC = () => {
         </div>
       </div>
 
-      {/* Filters + table (single card) */}
+      {/* Unified Content Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col flex-1 min-h-0">
         <div className="p-4 md:p-5 flex flex-col">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-3 lg:gap-4 items-end">
-            {/* Search */}
-            <div className="xl:col-span-4">
-              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+          {/* Search Row + Primary Actions */}
+          <div className="flex flex-row gap-2 sm:gap-3 items-end">
+            <div className="flex-1 group">
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors group-focus-within:text-emerald-600">
                 Search
               </label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                  <Search className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                </div>
                 <input
                   type="text"
                   placeholder="Search by name, ID, email..."
-                  className="w-full h-10 pl-10 pr-4 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
                     setCurrentPage(1);
                   }}
+                  className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
             </div>
 
-            {/* Enrollment Filter */}
-            <div className="xl:col-span-2">
-              <Select
-                label="Enrollment"
-                value={enrollmentFilter}
-                onChange={(e) => {
-                  setEnrollmentFilter(e.target.value as typeof enrollmentFilter);
-                  setCurrentPage(1);
-                }}
-                options={[
-                  { label: "All Enrollments", value: "All" },
-                  { label: "Completed", value: "Completed" },
-                  { label: "In-Progress", value: "In-Progress" },
-                  { label: "Not Started", value: "Not Started" },
-                  { label: "Overdue", value: "Overdue" },
-                  { label: "Exempt", value: "Exempt" },
-                ]}
-              />
-            </div>
-
-            {/* Result Status */}
-            <div className="xl:col-span-2">
-              <Select
-                label="Result"
-                value={resultFilter}
-                onChange={(e) => {
-                  setResultFilter(e.target.value as typeof resultFilter);
-                  setCurrentPage(1);
-                }}
-                options={[
-                  { label: "All Results", value: "All" },
-                  { label: "Pass", value: "Pass" },
-                  { label: "Fail", value: "Fail" },
-                  { label: "Pending", value: "Pending" },
-                  { label: "N/A", value: "N/A" },
-                ]}
-              />
-            </div>
-
-            {/* Department */}
-            <div className="xl:col-span-2">
-              <Select
-                label="Department"
-                value={departmentFilter}
-                onChange={(e) => {
-                  setDepartmentFilter(e.target.value);
-                  setCurrentPage(1);
-                }}
-                options={[
-                  { label: "All Depts", value: "All" },
-                  ...uniqueDepartments.map((d) => ({ label: String(d), value: String(d) })),
-                ]}
-              />
-            </div>
-
-            {/* Business Unit */}
-            <div className="xl:col-span-2">
-              <Select
-                label="Business Unit"
-                value={businessUnitFilter}
-                onChange={(e) => {
-                  setBusinessUnitFilter(e.target.value);
-                  setCurrentPage(1);
-                }}
-                options={[
-                  { label: "All BUs", value: "All" },
-                  ...uniqueBusinessUnits.map((bu) => ({ label: String(bu), value: String(bu) })),
-                ]}
-              />
+            <div className="flex-shrink-0">
+              <Button
+                variant={isFilterVisible ? "default" : "outline"}
+                onClick={() => setIsFilterVisible(!isFilterVisible)}
+                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
+                size="sm"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                <span className="hidden sm:inline">Filters</span>
+              </Button>
             </div>
           </div>
+
+          {/* Conditional Filters Tray: Accordion Effect */}
+          <AnimatePresence>
+            {isFilterVisible && (
+              <motion.div
+                initial={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
+                animate={{ height: "auto", opacity: 1, y: 0, marginTop: 16 }}
+                exit={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
+                transition={{
+                  height: { type: "spring", bounce: 0, duration: 0.4 },
+                  marginTop: { type: "spring", bounce: 0, duration: 0.4 },
+                  opacity: { duration: 0.25 },
+                  y: { duration: 0.3 }
+                }}
+                className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
+              >
+                <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Enrollment Filter */}
+                  <Select
+                    label="Enrollment"
+                    value={enrollmentFilter}
+                    onChange={(e) => {
+                      setEnrollmentFilter(e.target.value as typeof enrollmentFilter);
+                      setCurrentPage(1);
+                    }}
+                    options={[
+                      { label: "All Enrollments", value: "All" },
+                      { label: "Completed", value: "Completed" },
+                      { label: "In-Progress", value: "In-Progress" },
+                      { label: "Not Started", value: "Not Started" },
+                      { label: "Overdue", value: "Overdue" },
+                      { label: "Exempt", value: "Exempt" },
+                    ]}
+                  />
+
+                  {/* Result Status */}
+                  <Select
+                    label="Result"
+                    value={resultFilter}
+                    onChange={(e) => {
+                      setResultFilter(e.target.value as typeof resultFilter);
+                      setCurrentPage(1);
+                    }}
+                    options={[
+                      { label: "All Results", value: "All" },
+                      { label: "Pass", value: "Pass" },
+                      { label: "Fail", value: "Fail" },
+                      { label: "Pending", value: "Pending" },
+                      { label: "N/A", value: "N/A" },
+                    ]}
+                  />
+
+                  {/* Department */}
+                  <Select
+                    label="Department"
+                    value={departmentFilter}
+                    onChange={(e) => {
+                      setDepartmentFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    options={[
+                      { label: "All Depts", value: "All" },
+                      ...uniqueDepartments.map((d) => ({ label: String(d), value: String(d) })),
+                    ]}
+                  />
+
+                  {/* Business Unit */}
+                  <Select
+                    label="Business Unit"
+                    value={businessUnitFilter}
+                    onChange={(e) => {
+                      setBusinessUnitFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    options={[
+                      { label: "All BUs", value: "All" },
+                      ...uniqueBusinessUnits.map((bu) => ({ label: String(bu), value: String(bu) })),
+                    ]}
+                  />
+
+                  <div className="flex items-end pb-0.5 lg:col-start-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setEnrollmentFilter("All");
+                        setResultFilter("All");
+                        setDepartmentFilter("All");
+                        setBusinessUnitFilter("All");
+                        setCurrentPage(1);
+                      }}
+                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative min-h-0 text-left">

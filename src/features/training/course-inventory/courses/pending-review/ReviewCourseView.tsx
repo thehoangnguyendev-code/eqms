@@ -50,7 +50,7 @@ export const ReviewCourseView: React.FC = () => {
     "complete-review" | "reject" | null
   >(null);
 
-  const original = MOCK_APPROVAL_DETAILS.find((a) => a.courseId === courseId);
+  const original = MOCK_APPROVAL_DETAILS.find((a) => a.id === courseId || a.courseId === courseId);
 
   // Local status override to reflect stepper advancement after action
   const [localStatus, setLocalStatus] = useState<string | null>(null);

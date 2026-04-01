@@ -19,9 +19,12 @@ import {
   Info,
   ShieldCheck,
   AlertCircle,
+  SlidersHorizontal,
+  X,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { IconTimeline } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { courseStatus } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -34,7 +37,7 @@ import { ESignatureModal } from "@/components/ui/esign-modal";
 import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { FullPageLoading } from "@/components/ui/loading";
 import { cn } from "@/components/ui/utils";
-import { usePortalDropdown, useNavigateWithLoading } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 import type { CourseComplianceRecord, CourseStatusFilters } from "../../../types";
 import { MOCK_COURSE_STATUS } from "../../mockData";
 
@@ -99,11 +102,11 @@ const CourseRow: React.FC<{
       <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200">
         <div className="flex items-start gap-2">
           <GraduationCap className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-          <div className="max-w-[200px] md:max-w-md">
-            <p className="font-medium text-slate-900">
+          <div className="flex-1">
+            <p className="font-medium text-slate-900 whitespace-nowrap">
               {course.courseTitle}
             </p>
-            <p className="text-[10px] md:text-xs text-slate-500 mt-0.5">
+            <p className="text-[10px] md:text-xs text-slate-500 mt-0.5 whitespace-nowrap">
               {course.description}
             </p>
           </div>
@@ -133,7 +136,6 @@ const CourseRow: React.FC<{
           onClick={(e) => { e.stopPropagation(); showDetailList(course, "Completed"); }}
           className="flex items-center gap-2 hover:bg-emerald-50 p-1 rounded transition-colors group/stat"
         >
-          <CheckCircle2 className="h-4 w-4 text-emerald-600 group-hover/stat:text-emerald-700" />
           <span className="font-semibold border-b border-transparent group-hover/stat:border-emerald-600">
             {course.completed}
           </span>
@@ -144,7 +146,6 @@ const CourseRow: React.FC<{
           onClick={(e) => { e.stopPropagation(); showDetailList(course, "InProgress"); }}
           className="flex items-center gap-2 hover:bg-blue-50 p-1 rounded transition-colors group/stat"
         >
-          <Clock className="h-4 w-4 text-blue-600 group-hover/stat:text-blue-700" />
           <span className="font-semibold border-b border-transparent group-hover/stat:border-blue-600">
             {course.inProgress}
           </span>
@@ -155,7 +156,6 @@ const CourseRow: React.FC<{
           onClick={(e) => { e.stopPropagation(); showDetailList(course, "Overdue"); }}
           className="flex items-center gap-2 hover:bg-red-50 p-1 rounded transition-colors group/stat"
         >
-          <Clock className="h-4 w-4 text-red-600 group-hover/stat:text-red-700" />
           <span className="font-semibold border-b border-transparent group-hover/stat:border-red-600">
             {course.overdue}
           </span>
@@ -303,6 +303,7 @@ const CourseActionMenu: React.FC<CourseActionMenuProps> = ({
 
 export const CourseStatusView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
 
   // Filters
@@ -320,6 +321,7 @@ export const CourseStatusView: React.FC = () => {
   });
 
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   // Sorting Handler
   const handleSort = (key: string) => {
@@ -543,51 +545,6 @@ export const CourseStatusView: React.FC = () => {
         }
       />
 
-      {/* Filters */}
-      <div className="bg-white p-4 lg:p-5 rounded-xl border border-slate-200 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 items-end">
-          <div className="xl:col-span-4">
-            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
-              Search
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search by course name or ID..."
-                value={filters.searchQuery}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, searchQuery: e.target.value }))
-                }
-                className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
-              />
-            </div>
-          </div>
-
-          <div className="xl:col-span-4">
-            <Select
-              label="Department"
-              value={filters.departmentFilter}
-              onChange={(val) =>
-                setFilters((prev) => ({ ...prev, departmentFilter: val }))
-              }
-              options={departmentOptions}
-            />
-          </div>
-
-          <div className="xl:col-span-4">
-            <Select
-              label="Type"
-              value={filters.typeFilter}
-              onChange={(val) =>
-                setFilters((prev) => ({ ...prev, typeFilter: val }))
-              }
-              options={typeOptions}
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Stats Cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 lg:gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
@@ -645,86 +602,202 @@ export const CourseStatusView: React.FC = () => {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="border border-slate-200 rounded-xl bg-white overflow-hidden flex flex-col flex-1">
-        <div className="flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 pb-1.5 transition-colors">
-          <table className="w-full border-separate border-spacing-0 text-left">
-            <thead>
-              <tr>
-                <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
-                  No.
-                </th>
-                {[
-                  { label: "Course ID", id: "courseId" },
-                  { label: "Course Name", id: "courseTitle" },
-                  { label: "Type", id: "courseType" },
-                  { label: "Total Assigned", id: "totalAssigned" },
-                  { label: "Completed", id: "completed", color: "text-emerald-700" },
-                  { label: "In Progress", id: "inProgress", color: "text-blue-700" },
-                  { label: "Overdue", id: "overdue", color: "text-red-700" },
-                  { label: "Avg. Score", id: "averageScore" },
-                  { label: "Completion", id: "completion" }
-                ].map((col, idx) => {
-                  const isSorted = sortConfig.key === col.id;
-                  return (
-                    <th
-                      key={idx}
-                      onClick={() => handleSort(col.id)}
-                      className={cn(
-                        "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group",
-                        col.color || "text-slate-500"
-                      )}
-                    >
-                      <div className="flex items-center justify-between gap-2 w-full">
-                        <span className="truncate">{col.label}</span>
-                        <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
-                          <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
-                          <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
-                        </div>
-                      </div>
-                    </th>
-                  );
-                })}
-                <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {paginatedData.map((course, index) => (
-                <CourseRow
-                  key={course.id}
-                  course={course}
-                  index={index}
-                  currentPage={currentPage}
-                  itemsPerPage={itemsPerPage}
-                  onViewProgress={handleViewProgress}
-                  showDetailList={handleDetailList}
-                  getRef={getRef}
-                  handleDropdownToggle={handleDropdownToggle}
-                  openDropdownId={openDropdownId}
-                  closeDropdown={closeDropdown}
-                  dropdownPosition={dropdownPosition}
-                  handleCloseArchive={handleCloseArchive}
-                  handleResultEntry={handleResultEntry}
+      {/* Unified Content Card */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col flex-1 min-h-0">
+        {/* Filter Section */}
+        <div className="p-4 md:p-5 flex flex-col">
+          {/* Search Row + Primary Actions */}
+          <div className="flex flex-row gap-2 sm:gap-3 items-end">
+            <div className="flex-1 group">
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors group-focus-within:text-emerald-600">
+                Search
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                  <Search className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by course name or ID..."
+                  value={filters.searchQuery}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, searchQuery: e.target.value }))
+                  }
+                  className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
                 />
-              ))}
-            </tbody>
-          </table>
+                {filters.searchQuery && (
+                  <button
+                    onClick={() => setFilters((prev) => ({ ...prev, searchQuery: "" }))}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex-shrink-0">
+              <Button
+                variant={isFilterVisible ? "default" : "outline"}
+                onClick={() => setIsFilterVisible(!isFilterVisible)}
+                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
+                size="sm"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                <span className="hidden sm:inline">Filters</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* Conditional Filters Tray: Accordion Effect */}
+          <AnimatePresence>
+            {isFilterVisible && (
+              <motion.div
+                initial={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
+                animate={{ height: "auto", opacity: 1, y: 0, marginTop: 16 }}
+                exit={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
+                transition={{
+                  height: { type: "spring", bounce: 0, duration: 0.4 },
+                  marginTop: { type: "spring", bounce: 0, duration: 0.4 },
+                  opacity: { duration: 0.25 },
+                  y: { duration: 0.3 }
+                }}
+                className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
+              >
+                <div className="pt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Select
+                    label="Department"
+                    value={filters.departmentFilter}
+                    onChange={(val) => {
+                      setFilters((prev) => ({ ...prev, departmentFilter: val }));
+                      setCurrentPage(1);
+                    }}
+                    options={departmentOptions}
+                  />
+
+                  <Select
+                    label="Type"
+                    value={filters.typeFilter}
+                    onChange={(val) => {
+                      setFilters((prev) => ({ ...prev, typeFilter: val }));
+                      setCurrentPage(1);
+                    }}
+                    options={typeOptions}
+                  />
+
+                  <div className="flex items-end pb-0.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setFilters({
+                          searchQuery: "",
+                          departmentFilter: "All",
+                          typeFilter: "All",
+                        });
+                        setCurrentPage(1);
+                      }}
+                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <TablePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-          totalItems={filteredData.length}
-          itemsPerPage={itemsPerPage}
-          onItemsPerPageChange={(val) => {
-            setItemsPerPage(val);
-            setCurrentPage(1);
-          }}
-          showItemCount={true}
-        />
+        {/* Table Section */}
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative min-h-0">
+          <div className="border border-slate-200 rounded-xl bg-white overflow-hidden flex flex-col flex-1 transition-all duration-300">
+            <div
+              ref={scrollerRef}
+              className={cn(
+                "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 pb-1.5 transition-colors",
+                isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+              )}
+              {...dragEvents}
+            >
+              <table className="w-full border-separate border-spacing-0 text-left">
+                <thead>
+                  <tr>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
+                      No.
+                    </th>
+                    {[
+                      { label: "Course ID", id: "courseId" },
+                      { label: "Course Name", id: "courseTitle" },
+                      { label: "Type", id: "courseType" },
+                      { label: "Total Assigned", id: "totalAssigned" },
+                      { label: "Completed", id: "completed" },
+                      { label: "In Progress", id: "inProgress" },
+                      { label: "Overdue", id: "overdue" },
+                      { label: "Avg. Score", id: "averageScore" },
+                      { label: "Completion", id: "completion" }
+                    ].map((col, idx) => {
+                      const isSorted = sortConfig.key === col.id;
+                      return (
+                        <th
+                          key={idx}
+                          onClick={() => handleSort(col.id)}
+                          className={cn(
+                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group",
+                            "text-slate-500"
+                          )}
+                        >
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span className="truncate">{col.label}</span>
+                            <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                              <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                              <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                            </div>
+                          </div>
+                        </th>
+                      );
+                    })}
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  {paginatedData.map((course, index) => (
+                    <CourseRow
+                      key={course.id}
+                      course={course}
+                      index={index}
+                      currentPage={currentPage}
+                      itemsPerPage={itemsPerPage}
+                      onViewProgress={handleViewProgress}
+                      showDetailList={handleDetailList}
+                      getRef={getRef}
+                      handleDropdownToggle={handleDropdownToggle}
+                      openDropdownId={openDropdownId}
+                      closeDropdown={closeDropdown}
+                      dropdownPosition={dropdownPosition}
+                      handleCloseArchive={handleCloseArchive}
+                      handleResultEntry={handleResultEntry}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filteredData.length}
+              itemsPerPage={itemsPerPage}
+              onItemsPerPageChange={(val) => {
+                setItemsPerPage(val);
+                setCurrentPage(1);
+              }}
+              showItemCount={true}
+            />
+          </div>
+        </div>
       </div>
 
       {/* --- Modals --- */}
