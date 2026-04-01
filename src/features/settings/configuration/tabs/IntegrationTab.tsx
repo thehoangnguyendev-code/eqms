@@ -378,8 +378,8 @@ export const IntegrationTab: React.FC<IntegrationTabProps> = ({ config, onChange
                         <h4 className="text-sm font-bold text-slate-900 truncate">{webhook.name}</h4>
                         <span
                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${webhook.enabled
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                              : 'bg-slate-50 text-slate-600 border-slate-200'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-slate-50 text-slate-600 border-slate-200'
                             }`}
                         >
                           {webhook.enabled ? (
@@ -590,7 +590,7 @@ export const IntegrationTab: React.FC<IntegrationTabProps> = ({ config, onChange
                 min={10}
                 max={1000}
               />
-              <p className="text-[10px] text-slate-400 mt-1.5 font-medium uppercase tracking-wider">
+              <p className="text-xs text-slate-500 mt-1">
                 Max API requests per minute per client
               </p>
             </div>
