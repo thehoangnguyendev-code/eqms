@@ -700,12 +700,12 @@ export const NotificationsView: React.FC = () => {
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
           {/* Search Row + Primary Actions */}
-          <div className="flex flex-row gap-2 sm:gap-3 items-end">
-            <div className="flex-1 group">
-              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors group-focus-within:text-emerald-600">
-                Search
-              </label>
-              <div className="relative">
+          <div className="flex flex-col gap-1.5 w-full">
+            <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors group-focus-within:text-emerald-600 px-0.5">
+              Search
+            </label>
+            <div className="flex gap-2 items-center w-full">
+              <div className="relative flex-1 group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
                   <Search className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
                 </div>
@@ -728,18 +728,19 @@ export const NotificationsView: React.FC = () => {
                   </button>
                 )}
               </div>
-            </div>
 
-            <div className="flex-shrink-0">
-              <Button
-                variant={isFilterVisible ? "default" : "outline"}
-                onClick={() => setIsFilterVisible(!isFilterVisible)}
-                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
-                size="sm"
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                <span className="hidden sm:inline">Filters</span>
-              </Button>
+              <div className="flex-shrink-0">
+                <Button
+                  variant={isFilterVisible ? "default" : "outline"}
+                  onClick={() => setIsFilterVisible(!isFilterVisible)}
+                  className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
+                  size="sm"
+                  aria-label="Toggle filters"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  <span className="hidden sm:inline">Filters</span>
+                </Button>
+              </div>
             </div>
           </div>
 

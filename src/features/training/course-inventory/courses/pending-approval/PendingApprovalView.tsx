@@ -20,7 +20,7 @@ import { coursePendingApproval } from "@/components/ui/breadcrumb/breadcrumbs.co
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading, SectionLoading } from "@/components/ui/loading/Loading";
 import { Select } from "@/components/ui/select/Select";
-import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
+import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { cn } from "@/components/ui/utils";
@@ -171,12 +171,12 @@ export const PendingApprovalView: React.FC = () => {
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
           {/* Search Row + Primary Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 items-end">
-            <div className="w-full flex-1 group">
-              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors group-focus-within:text-emerald-600">
-                Search
-              </label>
-              <div className="relative">
+          <div className="flex flex-col gap-1.5 w-full">
+            <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors group-focus-within:text-emerald-600 px-0.5">
+              Search
+            </label>
+            <div className="flex gap-2 items-center w-full">
+              <div className="relative flex-1 group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
                   <Search className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
                 </div>
@@ -199,18 +199,18 @@ export const PendingApprovalView: React.FC = () => {
                   </button>
                 )}
               </div>
-            </div>
 
-            <div className="flex gap-2 w-full sm:w-auto">
-              <Button
-                variant={isFilterVisible ? "default" : "outline"}
-                onClick={() => setIsFilterVisible(!isFilterVisible)}
-                className="h-9 px-4 gap-2 whitespace-nowrap rounded-lg"
-                size="sm"
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                Filters
-              </Button>
+              <div className="flex-shrink-0">
+                <Button
+                  variant={isFilterVisible ? "default" : "outline"}
+                  onClick={() => setIsFilterVisible(!isFilterVisible)}
+                  className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
+                  size="sm"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  <span className="hidden sm:inline">Filters</span>
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -261,29 +261,25 @@ export const PendingApprovalView: React.FC = () => {
                     disabled
                   />
 
-                  {/* Date From */}
-                  <DateTimePicker
-                    label="From Date"
-                    value={dateFrom}
-                    onChange={(val) => {
-                      setDateFrom(val);
-                      setCurrentPage(1);
-                    }}
-                    placeholder="Select start date"
-                  />
+                  {/* Date Range */}
+                  <div className="lg:col-span-1">
+                    <DateRangePicker
+                      label="Scheduled Date Range"
+                      startDate={dateFrom}
+                      endDate={dateTo}
+                      onStartDateChange={(val) => {
+                        setDateFrom(val);
+                        setCurrentPage(1);
+                      }}
+                      onEndDateChange={(val) => {
+                        setDateTo(val);
+                        setCurrentPage(1);
+                      }}
+                      placeholder="Select date range"
+                    />
+                  </div>
 
-                  {/* Date To */}
-                  <DateTimePicker
-                    label="To Date"
-                    value={dateTo}
-                    onChange={(val) => {
-                      setDateTo(val);
-                      setCurrentPage(1);
-                    }}
-                    placeholder="Select end date"
-                  />
-
-                  <div className="flex items-end pb-0.5">
+                  <div className="flex items-end">
                     <Button
                       variant="outline"
                       size="sm"
