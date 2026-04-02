@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import { ROUTES } from '@/app/routes.constants';
 import { createPortal } from "react-dom";
 import {
@@ -798,7 +798,6 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                           setTemplateFilter(value);
                           setCurrentPage(1);
                         }}
-                        onClearFilters={handleClearFilters}
                       />
                     </div>
                   </motion.div>
@@ -946,102 +945,90 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                     );
                                   })}
                                 </tr>
-                                <AnimatePresence initial={false}>
-                                  {isExpanded && hasSubDocs && (
-                                    <tr className="bg-slate-50/50">
-                                      {/* Cột chính chiếm toàn bộ chiều rộng trừ cột Action */}
-                                      <td colSpan={visibleColumns.length} className="p-0 border-b border-slate-200">
-                                        <motion.div
-                                          initial={{ height: 0, opacity: 0 }}
-                                          animate={{ height: "auto", opacity: 1 }}
-                                          exit={{ height: 0, opacity: 0 }}
-                                          transition={{ duration: 0.2 }}
-                                          className="overflow-hidden"
-                                        >
-                                          <div className="px-4 py-3">
-                                            <div className="ml-9 flex flex-wrap gap-6">
-                                              {/* Bảng Related Documents */}
-                                              {doc.relatedDocuments && doc.relatedDocuments.length > 0 && (
-                                                <div>
-                                                  <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1.5">
-                                                    Related Documents ({doc.relatedDocuments.length})
-                                                  </p>
-                                                  <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
-                                                    <table className="text-xs table-auto">
-                                                      <thead>
-                                                        <tr className="bg-slate-100 border-b border-slate-200">
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
-                                                        </tr>
-                                                      </thead>
-                                                      <tbody className="divide-y divide-slate-100 bg-white">
-                                                        {doc.relatedDocuments.map((rel: RelatedDocument) => (
-                                                          <tr key={rel.id} className="hover:bg-slate-50 transition-colors">
-                                                            <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{rel.documentNumber}</td>
-                                                            <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{rel.documentName}</td>
-                                                            <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{rel.revisionNumber}</td>
-                                                            <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{rel.type}</td>
-                                                            <td className="py-1.5 px-2.5 whitespace-nowrap">
-                                                              <StatusBadge status={mapDocumentStatusToStatusType(rel.state)} size="sm" />
-                                                            </td>
-                                                          </tr>
-                                                        ))}
-                                                      </tbody>
-                                                    </table>
-                                                  </div>
-                                                </div>
-                                              )}
-
-                                              {/* Bảng Correlated Documents */}
-                                              {doc.correlatedDocuments && doc.correlatedDocuments.length > 0 && (
-                                                <div>
-                                                  <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1.5">
-                                                    Correlated Documents ({doc.correlatedDocuments.length})
-                                                  </p>
-                                                  <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
-                                                    <table className="text-xs table-auto">
-                                                      <thead>
-                                                        <tr className="bg-slate-100 border-b border-slate-200">
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
-                                                          <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Correlation Type</th>
-                                                        </tr>
-                                                      </thead>
-                                                      <tbody className="divide-y divide-slate-100 bg-white">
-                                                        {doc.correlatedDocuments.map((cor: CorrelatedDocument) => (
-                                                          <tr key={cor.id} className="hover:bg-slate-50 transition-colors">
-                                                            <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{cor.documentNumber}</td>
-                                                            <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{cor.documentName}</td>
-                                                            <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{cor.revisionNumber}</td>
-                                                            <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{cor.type}</td>
-                                                            <td className="py-1.5 px-2.5 whitespace-nowrap">
-                                                              <StatusBadge status={mapDocumentStatusToStatusType(cor.state)} size="sm" />
-                                                            </td>
-                                                            <td className="py-1.5 px-2.5 text-slate-500 whitespace-nowrap">{cor.correlationType ?? "—"}</td>
-                                                          </tr>
-                                                        ))}
-                                                      </tbody>
-                                                    </table>
-                                                  </div>
-                                                </div>
-                                              )}
+                                {isExpanded && hasSubDocs && (
+                                  <tr className="bg-slate-50/50 animate-in fade-in duration-200">
+                                    {/* Cột chính chiếm toàn bộ chiều rộng trừ cột Action */}
+                                    <td colSpan={visibleColumns.length} className="p-0 border-b border-slate-200">
+                                      <div className="overflow-hidden px-4 py-3">
+                                        <div className="ml-9 flex flex-wrap gap-6">
+                                          {/* Bảng Related Documents */}
+                                          {doc.relatedDocuments && doc.relatedDocuments.length > 0 && (
+                                            <div>
+                                              <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1.5">
+                                                Related Documents ({doc.relatedDocuments.length})
+                                              </p>
+                                              <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
+                                                <table className="text-xs table-auto">
+                                                  <thead>
+                                                    <tr className="bg-slate-100 border-b border-slate-200">
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody className="divide-y divide-slate-100 bg-white">
+                                                    {doc.relatedDocuments.map((rel: RelatedDocument) => (
+                                                      <tr key={rel.id} className="hover:bg-slate-50 transition-colors">
+                                                        <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{rel.documentNumber}</td>
+                                                        <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{rel.documentName}</td>
+                                                        <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{rel.revisionNumber}</td>
+                                                        <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{rel.type}</td>
+                                                        <td className="py-1.5 px-2.5 whitespace-nowrap">
+                                                          <StatusBadge status={mapDocumentStatusToStatusType(rel.state)} size="sm" />
+                                                        </td>
+                                                      </tr>
+                                                    ))}
+                                                  </tbody>
+                                                </table>
+                                              </div>
                                             </div>
-                                          </div>
-                                        </motion.div>
-                                      </td>
+                                          )}
 
-                                      {/* Cột Action giả để giữ cấu trúc bảng không bị vỡ */}
-                                      <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-white before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
-                                      </td>
-                                    </tr>
-                                  )}
-                                </AnimatePresence>
+                                          {/* Bảng Correlated Documents */}
+                                          {doc.correlatedDocuments && doc.correlatedDocuments.length > 0 && (
+                                            <div>
+                                              <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1.5">
+                                                Correlated Documents ({doc.correlatedDocuments.length})
+                                              </p>
+                                              <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
+                                                <table className="text-xs table-auto">
+                                                  <thead>
+                                                    <tr className="bg-slate-100 border-b border-slate-200">
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
+                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Correlation Type</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody className="divide-y divide-slate-100 bg-white">
+                                                    {doc.correlatedDocuments.map((cor: CorrelatedDocument) => (
+                                                      <tr key={cor.id} className="hover:bg-slate-50 transition-colors">
+                                                        <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{cor.documentNumber}</td>
+                                                        <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{cor.documentName}</td>
+                                                        <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{cor.revisionNumber}</td>
+                                                        <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{cor.type}</td>
+                                                        <td className="py-1.5 px-2.5 whitespace-nowrap">
+                                                          <StatusBadge status={mapDocumentStatusToStatusType(cor.state)} size="sm" />
+                                                        </td>
+                                                        <td className="py-1.5 px-2.5 text-slate-500 whitespace-nowrap">{cor.correlationType ?? "—"}</td>
+                                                      </tr>
+                                                    ))}
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-white before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                                    </td>
+                                  </tr>
+                                )}
                               </React.Fragment>
                             );
                           })}

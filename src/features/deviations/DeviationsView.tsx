@@ -525,7 +525,7 @@ const DeviationActionMenu: React.FC<DeviationActionMenuProps> = ({
   return createPortal(
     <>
       <div
-        className="fixed inset-0 z-[60]"
+        className="fixed inset-0 z-40 animate-in fade-in duration-150"
         onClick={(e) => {
           e.stopPropagation();
           onClose();
@@ -533,7 +533,7 @@ const DeviationActionMenu: React.FC<DeviationActionMenuProps> = ({
         aria-hidden="true"
       />
       <div
-        className="absolute z-[70] min-w-[160px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        className="absolute z-50 min-w-[160px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
         style={position.style}
       >
         <div className="py-1">

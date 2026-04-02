@@ -99,10 +99,10 @@ const DropdownMenu: React.FC<{
   onViewAuditTrail,
   viewType,
 }) => {
-  
-  if (!isOpen) return null;
 
-  return createPortal(
+    if (!isOpen) return null;
+
+    return createPortal(
       <>
         {/* Backdrop */}
         <div
@@ -118,109 +118,109 @@ const DropdownMenu: React.FC<{
           className="absolute z-50 min-w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-200"
           style={position.style}
         >
-              <div className="py-1">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onViewDetails();
-                    onClose();
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                >
-                  <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
-                  <span className="font-medium">View Details</span>
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit();
-                    onClose();
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                >
-                  <Edit className="h-4 w-4 flex-shrink-0" />
-                  <span className="font-medium">Edit Controlled Copy</span>
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onViewAuditTrail();
-                    onClose();
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                >
-                  <History className="h-4 w-4 flex-shrink-0" />
-                  <span className="font-medium">View Audit Trail</span>
-                </button>
-                {onDistribute && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDistribute();
-                      onClose();
-                    }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                  >
-                    <IconShare3 className="h-4 w-4 flex-shrink-0" />
-                    <span className="font-medium">Distribute</span>
-                  </button>
-                )}
-                {onCreateLink && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCreateLink();
-                      onClose();
-                    }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                  >
-                    <Link2 className="h-4 w-4 flex-shrink-0" />
-                    <span className="font-medium">Create Shareable Link</span>
-                  </button>
-                )}
-                {viewType === "ready" && onCancel && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCancel();
-                      onClose();
-                    }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                  >
-                    <FileX className="h-4 w-4 flex-shrink-0" />
-                    <span className="font-medium">Cancel Distribution</span>
-                  </button>
-                )}
-                {(viewType === "distributed" || (viewType === "all" && onReportLostDamaged)) && onReportLostDamaged && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onReportLostDamaged();
-                      onClose();
-                    }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                  >
-                    <Shredder className="h-4 w-4 flex-shrink-0" />
-                    <span className="font-medium">Report Lost/Damaged</span>
-                  </button>
-                )}
-                {viewType === "all" && onCancel && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCancel();
-                      onClose();
-                    }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                  >
-                    <FileX className="h-4 w-4 flex-shrink-0" />
-                    <span className="font-medium">Cancel Distribution</span>
-                  </button>
-                )}
-              </div>
-            </div>
+          <div className="py-1">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewDetails();
+                onClose();
+              }}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">View Details</span>
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+                onClose();
+              }}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <Edit className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">Edit Controlled Copy</span>
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewAuditTrail();
+                onClose();
+              }}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <History className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">View Audit Trail</span>
+            </button>
+            {onDistribute && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDistribute();
+                  onClose();
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+              >
+                <IconShare3 className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium">Distribute</span>
+              </button>
+            )}
+            {onCreateLink && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCreateLink();
+                  onClose();
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+              >
+                <Link2 className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium">Create Shareable Link</span>
+              </button>
+            )}
+            {viewType === "ready" && onCancel && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCancel();
+                  onClose();
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+              >
+                <FileX className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium">Cancel Distribution</span>
+              </button>
+            )}
+            {(viewType === "distributed" || (viewType === "all" && onReportLostDamaged)) && onReportLostDamaged && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onReportLostDamaged();
+                  onClose();
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+              >
+                <Shredder className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium">Report Lost/Damaged</span>
+              </button>
+            )}
+            {viewType === "all" && onCancel && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCancel();
+                  onClose();
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+              >
+                <FileX className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium">Cancel Distribution</span>
+              </button>
+            )}
+          </div>
+        </div>
       </>
-,
+      ,
       window.document.body
     );
   };
@@ -515,7 +515,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
       {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 md:gap-4">
           <div className="min-w-[200px] flex-1">
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">{getPageTitle()}</h1>
             <Breadcrumb items={controlledCopies(navigateTo, viewType)} />
@@ -665,7 +665,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
                     paginatedData.map((copy, index) => {
                       const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
                       const statusConfig = getStatusConfig(copy.status);
-                      const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                      const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
 
                       return (
                         <tr

@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, createRef, RefObject } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import { ROUTES } from '@/app/routes.constants';
 import {
   ChevronRight,
@@ -448,7 +448,7 @@ export const RevisionListView: React.FC = () => {
     <div className="flex flex-col h-full gap-4 md:gap-6">
       {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header */}
-      <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 md:gap-4">
         <div className="min-w-[200px] flex-1">
           <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
             All Revisions
@@ -732,12 +732,11 @@ export const RevisionListView: React.FC = () => {
                                   </td>
                                 ),
                               )}
-                            </tr>
-
+                                             </tr>
                             <AnimatePresence initial={false}>
                               {isExpanded && hasDocs && (
                                 <tr className="bg-slate-50/50">
-                                  <td colSpan={visibleColumns.length + 1} className="p-0 border-b border-slate-200">
+                                  <td colSpan={visibleColumns.length} className="p-0 border-b border-slate-200">
                                     <motion.div
                                       initial={{ height: 0, opacity: 0 }}
                                       animate={{ height: "auto", opacity: 1 }}
@@ -780,7 +779,6 @@ export const RevisionListView: React.FC = () => {
                                               </div>
                                             </div>
                                           )}
-
                                           {revision.correlatedDocuments && revision.correlatedDocuments.length > 0 && (
                                             <div>
                                               <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
@@ -819,6 +817,8 @@ export const RevisionListView: React.FC = () => {
                                         </div>
                                       </div>
                                     </motion.div>
+                                  </td>
+                                  <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-white before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                                   </td>
                                 </tr>
                               )}

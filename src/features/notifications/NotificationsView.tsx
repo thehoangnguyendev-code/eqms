@@ -868,7 +868,7 @@ export const NotificationsView: React.FC = () => {
               <table className="w-full min-w-max border-separate border-spacing-0 text-left">
                 <thead>
                   <tr>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-14 text-center">
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-14 text-center">
                       No.
                     </th>
                     {[
@@ -885,7 +885,7 @@ export const NotificationsView: React.FC = () => {
                           key={idx}
                           onClick={canSort ? () => handleSort(col.id as keyof Notification) : undefined}
                           className={cn(
-                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
                             canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
                             col.hideMobile && "hidden md:table-cell",
                             col.hideLg && "hidden lg:table-cell",
@@ -904,7 +904,7 @@ export const NotificationsView: React.FC = () => {
                         </th>
                       );
                     })}
-                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>
                   </tr>

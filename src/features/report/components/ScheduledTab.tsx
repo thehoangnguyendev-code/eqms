@@ -138,11 +138,11 @@ export function useScheduledTab() {
                       className={cn(
                         'inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border',
                         schedule.status === 'Active' &&
-                          'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        'bg-emerald-50 text-emerald-700 border-emerald-200',
                         schedule.status === 'Paused' &&
-                          'bg-amber-50 text-amber-700 border-amber-200',
+                        'bg-amber-50 text-amber-700 border-amber-200',
                         schedule.status === 'Expired' &&
-                          'bg-slate-50 text-slate-700 border-slate-200'
+                        'bg-slate-50 text-slate-700 border-slate-200'
                       )}
                     >
                       {schedule.status === 'Active' && <Play className="h-3 w-3" />}
@@ -240,7 +240,7 @@ export function useScheduledTab() {
                     className="flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 active:bg-slate-100 transition-colors text-slate-500"
                   >
                     {MOCK_SCHEDULED_REPORTS.find((s) => s.id === openDropdownId)?.status ===
-                    'Paused' ? (
+                      'Paused' ? (
                       <>
                         <Play className="h-4 w-4 flex-shrink-0" />
                         <span className="font-medium">Resume Schedule</span>

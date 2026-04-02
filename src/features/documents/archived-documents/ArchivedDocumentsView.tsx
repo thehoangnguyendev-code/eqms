@@ -247,7 +247,7 @@ export const ArchivedDocumentsView: React.FC = () => {
                                     {paginatedDocuments.map((doc, index) => {
                                         const retentionStatus = calculateRetentionStatus(doc.retentionExpiry);
                                         const rowNumber = startIndex + index + 1;
-                                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
 
                                         return (
                                             <tr

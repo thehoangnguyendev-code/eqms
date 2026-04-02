@@ -19,12 +19,10 @@ import {
   Info,
   ShieldCheck,
   AlertCircle,
-  SlidersHorizontal,
   X,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { IconTimeline } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { courseStatus } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -317,7 +315,6 @@ export const CourseStatusView: React.FC = () => {
   });
 
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   // Sorting Handler
   const handleSort = (key: string) => {
@@ -602,9 +599,9 @@ export const CourseStatusView: React.FC = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col flex-1 min-h-0">
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
-          {/* Search Row + Primary Actions */}
-          <div className="flex flex-row gap-2 sm:gap-3 items-end">
-            <div className="flex-1 group">
+          {/* Search & Filters Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+            <div className="group">
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors group-focus-within:text-emerald-600">
                 Search
               </label>
@@ -632,76 +629,26 @@ export const CourseStatusView: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex-shrink-0">
-              <Button
-                variant={isFilterVisible ? "default" : "outline"}
-                onClick={() => setIsFilterVisible(!isFilterVisible)}
-                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
-                size="sm"
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                <span className="hidden sm:inline">Filters</span>
-              </Button>
-            </div>
+            <Select
+              label="Department"
+              value={filters.departmentFilter}
+              onChange={(val) => {
+                setFilters((prev) => ({ ...prev, departmentFilter: val }));
+                setCurrentPage(1);
+              }}
+              options={departmentOptions}
+            />
+
+            <Select
+              label="Type"
+              value={filters.typeFilter}
+              onChange={(val) => {
+                setFilters((prev) => ({ ...prev, typeFilter: val }));
+                setCurrentPage(1);
+              }}
+              options={typeOptions}
+            />
           </div>
-
-          {/* Conditional Filters Tray: Accordion Effect */}
-          <AnimatePresence>
-            {isFilterVisible && (
-              <motion.div
-                initial={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
-                animate={{ height: "auto", opacity: 1, y: 0, marginTop: 16 }}
-                exit={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
-                transition={{
-                  height: { type: "spring", bounce: 0, duration: 0.4 },
-                  marginTop: { type: "spring", bounce: 0, duration: 0.4 },
-                  opacity: { duration: 0.25 },
-                  y: { duration: 0.3 }
-                }}
-                className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
-              >
-                <div className="pt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <Select
-                    label="Department"
-                    value={filters.departmentFilter}
-                    onChange={(val) => {
-                      setFilters((prev) => ({ ...prev, departmentFilter: val }));
-                      setCurrentPage(1);
-                    }}
-                    options={departmentOptions}
-                  />
-
-                  <Select
-                    label="Type"
-                    value={filters.typeFilter}
-                    onChange={(val) => {
-                      setFilters((prev) => ({ ...prev, typeFilter: val }));
-                      setCurrentPage(1);
-                    }}
-                    options={typeOptions}
-                  />
-
-                  <div className="flex items-end pb-0.5">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setFilters({
-                          searchQuery: "",
-                          departmentFilter: "All",
-                          typeFilter: "All",
-                        });
-                        setCurrentPage(1);
-                      }}
-                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
-                    >
-                      Clear Filters
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         {/* Table Section */}

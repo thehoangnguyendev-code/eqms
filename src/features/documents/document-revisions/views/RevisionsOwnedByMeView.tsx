@@ -468,7 +468,7 @@ export const RevisionsOwnedByMeView: React.FC = () => {
       {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 md:gap-4">
           <div className="min-w-[200px] flex-1">
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
               Revisions Owned By Me
@@ -757,7 +757,7 @@ export const RevisionsOwnedByMeView: React.FC = () => {
                             <AnimatePresence initial={false}>
                               {isExpanded && hasDocs && (
                                 <tr className="bg-slate-50/50">
-                                  <td colSpan={visibleColumns.length + 1} className="p-0 border-b border-slate-200">
+                                  <td colSpan={visibleColumns.length} className="p-0 border-b border-slate-200">
                                     <motion.div
                                       initial={{ height: 0, opacity: 0 }}
                                       animate={{ height: "auto", opacity: 1 }}

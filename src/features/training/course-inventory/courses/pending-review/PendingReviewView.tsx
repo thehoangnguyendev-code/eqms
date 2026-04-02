@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
@@ -13,7 +14,6 @@ import {
   ChevronDown,
   X,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { IconInfoCircle, IconEyeCheck } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { coursePendingReview } from "@/components/ui/breadcrumb/breadcrumbs.config";

@@ -346,7 +346,7 @@ export const RoleListView: React.FC = () => {
                           onClick={() => handleViewRole(role.id)}
                           className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
                         >
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-500 font-medium">
                             {startIndex + index + 1}
                           </td>
                           <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">

@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
@@ -27,7 +28,6 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { MarkObsoleteModal, ObsoleteResult } from "../../components/MarkObsoleteModal";
 import { IconChecks, IconInfoCircle, IconEyeCheck } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";

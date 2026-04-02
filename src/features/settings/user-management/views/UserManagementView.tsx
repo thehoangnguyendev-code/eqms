@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/toast";
@@ -19,7 +20,6 @@ import {
   ChevronDown,
   Trash2,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { IconTrash, IconUserX } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { userManagement } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -424,7 +424,7 @@ export const UserManagementView: React.FC = () => {
                             {visibleColumns.map((col) => (
                               <td key={col.id} className={tdClass}>
                                 {col.id === "no" && (
-                                  <span className="font-medium text-slate-900">{startIndex + index + 1}</span>
+                                  <span className="text-slate-500 font-medium">{startIndex + index + 1}</span>
                                 )}
                                 {col.id === "status" && (
                                   <Badge
@@ -645,7 +645,7 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   return createPortal(
     <>
       <div
-        className="fixed inset-0 z-40"
+        className="fixed inset-0 z-40 animate-in fade-in duration-150"
         onClick={(e) => {
           e.stopPropagation();
           onClose();
@@ -665,56 +665,73 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
             className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
           >
             <UserIcon className="h-4 w-4 flex-shrink-0" />
-            <span className="font-medium">View Profile</span>
+            <span className="font-medium text-slate-500">View Profile</span>
           </button>
           {!isTerminated && (
             <button
-              onClick={() => onResetPassword(user)}
+              onClick={() => {
+                onClose();
+                onResetPassword(user);
+              }}
               className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
             >
               <KeyRound className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium">Reset Password</span>
+              <span className="font-medium text-slate-500">Reset Password</span>
             </button>
           )}
-          <div className="border-t border-slate-100 my-1" />
+
           {!isTerminated && !isSuspended && (
             <button
-              onClick={() => onSuspend(user)}
+              onClick={() => {
+                onClose();
+                onSuspend(user);
+              }}
               className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
             >
               <PauseCircle className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium">Suspend</span>
+              <span className="font-medium text-slate-500">Suspend Account</span>
             </button>
           )}
           {!isTerminated && (
             <button
-              onClick={() => onTerminate(user)}
+              onClick={() => {
+                onClose();
+                onTerminate(user);
+              }}
               className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
             >
-              <IconUserX className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium">Terminate</span>
+              <IconUserX className="h-4 w-4 flex-shrink-0 text-red-500" />
+              <span className="font-medium text-slate-500">Terminate Account</span>
             </button>
           )}
           {(isSuspended || isTerminated) && (
             <button
-              onClick={() => onReinstate(user)}
+              onClick={() => {
+                onClose();
+                onReinstate(user);
+              }}
               className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
             >
               <RotateCcw className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium">Reinstate</span>
+              <span className="font-medium text-slate-500">Reinstate User</span>
             </button>
           )}
-          <div className="border-t border-slate-100 my-1" />
+
           <button
-            onClick={() => user.role !== "Admin" && onDelete(user)}
+            onClick={() => {
+              if (user.role !== "Admin") {
+                onClose();
+                onDelete(user);
+              }
+            }}
             disabled={user.role === "Admin"}
             className={cn(
-              "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors font-medium",
-              user.role === "Admin" ? "text-slate-300 cursor-not-allowed" : "text-slate-500 hover:bg-slate-50 active:bg-slate-100"
+              "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors font-medium border-t border-slate-50 mt-1 pt-2",
+              user.role === "Admin" ? "text-slate-300 cursor-not-allowed opacity-50" : "text-slate-500 hover:bg-slate-50 active:bg-slate-100"
             )}
           >
             <Trash2 className="h-4 w-4 flex-shrink-0" />
-            <span>Delete User</span>
+            <span>Delete User Record</span>
           </button>
         </div>
       </div>

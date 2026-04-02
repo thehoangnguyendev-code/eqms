@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
@@ -15,8 +16,9 @@ import {
   ArrowDownAZ,
   ArrowDownZA,
   X,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { IconInfoCircle, IconEyeCheck, IconChecks, IconPlus } from "@tabler/icons-react";
 import { FullPageLoading, SectionLoading } from "@/components/ui/loading/Loading";
 import { PageHeader } from "@/components/ui/page/PageHeader";
@@ -120,8 +122,11 @@ export const CourseListView: React.FC = () => {
   });
   const [methodFilter, setMethodFilter] = useState<TrainingMethod | "All">("All");
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [isTableLoading, setIsTableLoading] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "trainingId",
+    direction: "asc",
+  });
 
   // Use shared Table Filter hook
   const {
@@ -167,14 +172,37 @@ export const CourseListView: React.FC = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, filters, methodFilter]);
 
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
   const sortedData = useMemo(() => {
     return [...filteredData].sort((a, b) => {
-      const nameA = a.title.toLowerCase();
-      const nameB = b.title.toLowerCase();
-      if (sortOrder === "asc") return nameA.localeCompare(nameB);
-      return nameB.localeCompare(nameA);
+      const key = sortConfig.key as keyof TrainingRecord;
+      let aValue: any = a[key];
+      let bValue: any = b[key];
+
+      if (key === "scheduledDate") {
+        const parseD = (s: string) => {
+          if (!s) return 0;
+          const parts = s.split("/");
+          return parts.length === 3 ? new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])).getTime() : new Date(s).getTime();
+        };
+        aValue = parseD(aValue);
+        bValue = parseD(bValue);
+      }
+
+      if (typeof aValue === "string") aValue = aValue.toLowerCase();
+      if (typeof bValue === "string") bValue = bValue.toLowerCase();
+
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
     });
-  }, [filteredData, sortOrder]);
+  }, [filteredData, sortConfig]);
 
   // Update pagination to use sortedData
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -309,7 +337,7 @@ export const CourseListView: React.FC = () => {
                 }}
                 className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
               >
-                <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Training Type */}
                   <Select
                     label="Training Type"
@@ -406,33 +434,37 @@ export const CourseListView: React.FC = () => {
                     <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
                       No.
                     </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Course ID
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap min-w-[200px]">
-                      Course Name
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Type
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Method
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Status
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Instructor
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Periodic Retraining
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Scheduled Date
-                    </th>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
-                      Enrolled
-                    </th>
+                    {[
+                      { label: "Course ID", id: "trainingId" },
+                      { label: "Course Name", id: "title" },
+                      { label: "Type", id: "type" },
+                      { label: "Method", id: "trainingMethod" },
+                      { label: "Status", id: "status" },
+                      { label: "Instructor", id: "instructor" },
+                      { label: "Retraining", id: "recurrence" },
+                      { label: "Scheduled", id: "scheduledDate" },
+                      { label: "Enrolled", id: "enrolled", align: "text-center" }
+                    ].map((col, idx) => {
+                      const isSorted = sortConfig.key === col.id;
+                      return (
+                        <th
+                          key={idx}
+                          onClick={() => handleSort(col.id)}
+                          className={cn(
+                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group",
+                            col.align || "text-left"
+                          )}
+                        >
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span className="truncate">{col.label}</span>
+                            <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                              <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                              <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                            </div>
+                          </div>
+                        </th>
+                      );
+                    })}
                     <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>

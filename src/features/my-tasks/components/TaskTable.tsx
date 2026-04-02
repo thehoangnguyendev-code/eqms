@@ -120,7 +120,7 @@ export const TaskTable: React.FC<{
             {tasks.map((task, idx) => {
               const remainingDays = calculateDaysLeft(task.dueDate);
               const progressPercentage = task.progress || 0;
-              const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+              const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
 
               return (
                 <tr
