@@ -37,7 +37,7 @@ import { ESignatureModal } from "@/components/ui/esign-modal";
 import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { FullPageLoading } from "@/components/ui/loading";
 import { cn } from "@/components/ui/utils";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 import type { CourseComplianceRecord, CourseStatusFilters } from "../../../types";
 import { MOCK_COURSE_STATUS } from "../../mockData";
 
@@ -53,7 +53,7 @@ const CourseRow: React.FC<{
   handleDropdownToggle: (id: string, e: React.MouseEvent) => void;
   openDropdownId: string | null;
   closeDropdown: () => void;
-  dropdownPosition: { top: number; left: number; showAbove?: boolean };
+  dropdownPosition: PortalDropdownPosition;
   handleCloseArchive: (course: CourseComplianceRecord) => void;
   handleResultEntry: (id: string) => void;
 }> = React.memo(({
@@ -213,7 +213,7 @@ interface CourseActionMenuProps {
   course: CourseComplianceRecord;
   isOpen: boolean;
   onClose: () => void;
-  position: { top: number; left: number; showAbove?: boolean };
+  position: PortalDropdownPosition;
   onViewProgress: (id: string) => void;
   onResultEntry: (id: string) => void;
   onCloseArchive: (course: CourseComplianceRecord) => void;
@@ -242,12 +242,8 @@ const CourseActionMenu: React.FC<CourseActionMenuProps> = ({
         }}
       />
       <div
-        className="fixed z-[70] min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-        style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          transform: position.showAbove ? "translateY(-100%)" : "none",
-        }}
+        className="absolute z-[70] min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={position.style}
       >
         <div className="py-1">
           {/* View Progress - Always visible */}

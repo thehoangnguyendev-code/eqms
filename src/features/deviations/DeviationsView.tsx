@@ -22,7 +22,9 @@ import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
 import { StatusBadge } from "@/components/ui";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
-import { useTableDragScroll } from "@/hooks";
+import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
+import { createPortal } from "react-dom";
 import { cn } from "@/components/ui/utils";
 import {
   Deviation,
@@ -34,7 +36,9 @@ import {
 import { MOCK_DEVIATIONS } from "./mockData";
 
 export const DeviationsView: React.FC = () => {
+  const { navigateTo, isNavigating } = useNavigateWithLoading();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
+  const { openId, position, getRef, toggle, close } = usePortalDropdown();
   const [filters, setFilters] = useState<DeviationFilters>({
     searchQuery: "",
     categoryFilter: "All",
@@ -154,8 +158,19 @@ export const DeviationsView: React.FC = () => {
     }
   };
 
+  const handleView = (id: string) => {
+    // navigateTo(ROUTES.DEVIATIONS.DETAIL(id));
+    console.log("View Deviation:", id);
+  };
+
+  const handleEdit = (id: string) => {
+    // navigateTo(ROUTES.DEVIATIONS.EDIT(id));
+    console.log("Edit Deviation:", id);
+  };
+
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col">
+      {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header: Title + Breadcrumb + Action Button */}
       <PageHeader
         title="Deviations & Non-Conformances"
@@ -427,7 +442,12 @@ export const DeviationsView: React.FC = () => {
                       </td>
                       <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center sticky right-0 bg-white z-30 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50">
                         <button
-                          className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
+                          ref={getRef(dev.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggle(dev.id, e);
+                          }}
+                          className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-200 transition-colors"
                           aria-label="More actions"
                         >
                           <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
@@ -468,7 +488,81 @@ export const DeviationsView: React.FC = () => {
           />
         )}
       </div>
+
+      {/* Action Menu */}
+      <DeviationActionMenu
+        isOpen={openId !== null}
+        onClose={close}
+        position={position}
+        onView={() => {
+          if (openId) handleView(openId);
+        }}
+        onEdit={() => {
+          if (openId) handleEdit(openId);
+        }}
+      />
     </div>
+  );
+};
+
+interface DeviationActionMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+  position: PortalDropdownPosition;
+  onView: () => void;
+  onEdit: () => void;
+}
+
+const DeviationActionMenu: React.FC<DeviationActionMenuProps> = ({
+  isOpen,
+  onClose,
+  position,
+  onView,
+  onEdit,
+}) => {
+  if (!isOpen) return null;
+
+  return createPortal(
+    <>
+      <div
+        className="fixed inset-0 z-[60]"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute z-[70] min-w-[160px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={position.style}
+      >
+        <div className="py-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onView();
+              onClose();
+            }}
+            className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+          >
+            <Eye className="h-4 w-4 flex-shrink-0" />
+            <span>View Detail</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+              onClose();
+            }}
+            className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+          >
+            <Edit className="h-4 w-4 flex-shrink-0" />
+            <span>Edit Deviation</span>
+          </button>
+        </div>
+      </div>
+    </>,
+    document.body
   );
 };
 

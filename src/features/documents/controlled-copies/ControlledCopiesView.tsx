@@ -33,7 +33,7 @@ import { IconInfoCircle, IconShare3 } from "@tabler/icons-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { controlledCopies } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 import { MOCK_ALL_CONTROLLED_COPIES } from './mockData';
 
@@ -77,7 +77,7 @@ const getStatusConfig = (status: ControlledCopyStatus) => {
 const DropdownMenu: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  position: { top: number; left: number; showAbove?: boolean };
+  position: PortalDropdownPosition;
   onViewDetails: () => void;
   onEdit: () => void;
   onCancel?: () => void;
@@ -100,45 +100,24 @@ const DropdownMenu: React.FC<{
   viewType,
 }) => {
   
-    return createPortal(
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            key="controlled-copies-dropdown-wrapper"
-            className="fixed inset-0 z-50 pointer-events-none"
-          >
-            {/* Backdrop */}
-            <motion.div
-              key="controlled-copies-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              className="fixed inset-0 z-40 pointer-events-auto"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClose();
-              }}
-              aria-hidden="true"
-            />
-            {/* Menu */}
-            <motion.div
-              key="controlled-copies-menu-content"
-              initial={{ opacity: 0, scale: 0.95, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 4 }}
-              transition={{
-                type: "spring",
-                damping: 25,
-                stiffness: 350,
-              }}
-              className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl pointer-events-auto"
-              style={{
-                top: `${position.top}px`,
-                left: `${position.left}px`,
-                transform: position.showAbove ? "translateY(-100%)" : "none",
-              }}
-            >
+  if (!isOpen) return null;
+
+  return createPortal(
+      <>
+        {/* Backdrop */}
+        <div
+          className="fixed inset-0 z-40 animate-in fade-in duration-150"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          aria-hidden="true"
+        />
+        {/* Menu */}
+        <div
+          className="absolute z-50 min-w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-200"
+          style={position.style}
+        >
               <div className="py-1">
                 <button
                   onClick={(e) => {
@@ -239,10 +218,8 @@ const DropdownMenu: React.FC<{
                   </button>
                 )}
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+      </>
 ,
       window.document.body
     );

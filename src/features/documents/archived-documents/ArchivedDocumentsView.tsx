@@ -27,7 +27,7 @@ import { FullPageLoading } from '@/components/ui/loading/Loading';
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { archivedDocuments } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { MOCK_ARCHIVED_DOCS } from './mockData';
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 export const ArchivedDocumentsView: React.FC = () => {
     const { navigateTo, isNavigating } = useNavigateWithLoading();
@@ -146,8 +146,6 @@ export const ArchivedDocumentsView: React.FC = () => {
             }
         });
     };
-
-
 
     return (
         <div className="h-full flex flex-col space-y-6">
@@ -338,57 +336,64 @@ export const ArchivedDocumentsView: React.FC = () => {
             </div>
 
             {/* Dropdown Menu */}
-            <AnimatePresence>
-                {openId && createPortal(
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                            className="fixed inset-0 z-40"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                close();
-                            }}
-                            aria-hidden="true"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: -8 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                            transition={{
-                              type: "spring",
-                              damping: 25,
-                              stiffness: 400
-                            }}
-                            className="fixed z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl overflow-hidden"
-                            style={{
-                                top: `${position.top}px`,
-                                left: `${position.left}px`,
-                                transformOrigin: position.showAbove ? "bottom" : "top",
-                            }}
-                        >
-                            <div className="py-1">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        const doc = paginatedDocuments.find(d => d.id === openId);
-                                        if (doc) handleView(doc);
-                                        close();
-                                    }}
-                                    className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                                >
-                                    <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
-                                    <span className="font-medium">View Detail</span>
-                                </button>
-                            </div>
-                        </motion.div>
-                    </>,
-                    document.body
-                )}
-            </AnimatePresence>
+            <DropdownMenu
+                isOpen={openId !== null}
+                onClose={close}
+                position={position}
+                onView={() => {
+                    const doc = paginatedDocuments.find(d => d.id === openId);
+                    if (doc) handleView(doc);
+                }}
+            />
 
         </div>
+    );
+};
+
+interface DropdownMenuProps {
+    isOpen: boolean;
+    onClose: () => void;
+    position: PortalDropdownPosition;
+    onView: () => void;
+}
+
+const DropdownMenu: React.FC<DropdownMenuProps> = ({
+    isOpen,
+    onClose,
+    position,
+    onView,
+}) => {
+    if (!isOpen) return null;
+
+    return createPortal(
+        <>
+            <div
+                className="fixed inset-0 z-40"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                }}
+                aria-hidden="true"
+            />
+            <div
+                className="absolute z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+                style={position.style}
+            >
+                <div className="py-1">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onView();
+                            onClose();
+                        }}
+                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                    >
+                        <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
+                        <span className="font-medium">View Detail</span>
+                    </button>
+                </div>
+            </div>
+        </>,
+        document.body
     );
 };

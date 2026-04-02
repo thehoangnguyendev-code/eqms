@@ -17,6 +17,7 @@ import {
   X,
   ChevronUp,
   ChevronDown,
+  Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconTrash, IconUserX } from "@tabler/icons-react";
@@ -41,7 +42,7 @@ import { getStatusColorClass } from "@/utils/status";
 import { formatDateNumeric } from "@/utils/format";
 import { FullPageLoading, SectionLoading } from "@/components/ui/loading/Loading";
 import { useUserList } from "../hooks/useUserList";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 // --- Main Component ---
 
@@ -533,102 +534,19 @@ export const UserManagementView: React.FC = () => {
         </div>
       </div>
 
-      {/* Dropdown Menu */}
-      {openDropdownId && createPortal(
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-40 animate-in fade-in duration-150"
-            onClick={(e) => {
-              e.stopPropagation();
-              closeDropdown();
-            }}
-            aria-hidden="true"
-          />
-          {/* Menu */}
-          <div
-            className="fixed z-50 min-w-[160px] w-[180px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-            style={{
-              top: `${dropdownPosition.top}px`,
-              left: `${dropdownPosition.left}px`,
-              transform: dropdownPosition.showAbove ? 'translateY(-100%)' : 'none',
-            }}
-          >
-            <div className="py-1">
-              {(() => {
-                const activeUser = users.find((u) => u.id === openDropdownId);
-                if (!activeUser) return null;
-                const isTerminated = activeUser.status === "Terminated";
-                const isSuspended = activeUser.status === "Suspended";
-                return (
-                  <>
-                    <button
-                      onClick={() => {
-                        closeDropdown();
-                        navigateTo(USER_MANAGEMENT_ROUTES.PROFILE(activeUser.id));
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                    >
-                      <UserIcon className="h-4 w-4 flex-shrink-0" />
-                      <span className="font-medium">View Profile</span>
-                    </button>
-                    {!isTerminated && (
-                      <button
-                        onClick={() => handleResetPassword(activeUser)}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                      >
-                        <KeyRound className="h-4 w-4 flex-shrink-0" />
-                        <span className="font-medium">Reset Password</span>
-                      </button>
-                    )}
-                    <div className="border-t border-slate-100 my-1" />
-                    {!isTerminated && !isSuspended && (
-                      <button
-                        onClick={() => handleSuspend(activeUser)}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                      >
-                        <PauseCircle className="h-4 w-4 flex-shrink-0" />
-                        <span className="font-medium">Suspend</span>
-                      </button>
-                    )}
-                    {!isTerminated && (
-                      <button
-                        onClick={() => handleTerminate(activeUser)}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                      >
-                        <IconUserX className="h-4 w-4 flex-shrink-0" />
-                        <span className="font-medium">Terminate</span>
-                      </button>
-                    )}
-                    {(isSuspended || isTerminated) && (
-                      <button
-                        onClick={() => handleReinstate(activeUser)}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                      >
-                        <RotateCcw className="h-4 w-4 flex-shrink-0" />
-                        <span className="font-medium">Reinstate</span>
-                      </button>
-                    )}
-                    <div className="border-t border-slate-100 my-1" />
-                    <button
-                      onClick={() => activeUser.role !== "Admin" && handleDelete(activeUser)}
-                      disabled={activeUser.role === "Admin"}
-                      className={cn(
-                        "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors font-medium",
-                        activeUser.role === "Admin" ? "text-slate-300 cursor-not-allowed" : "text-slate-500 hover:bg-slate-50 active:bg-slate-100"
-                      )}
-                    >
-                      <IconTrash className="h-4 w-4 flex-shrink-0" />
-                      <span>Delete User</span>
-                    </button>
-                  </>
-                );
-              })()}
-            </div>
-          </div>
-        </>,
-        document.body
-      )}
+      {/* Action Menu */}
+      <UserActionMenu
+        isOpen={openDropdownId !== null}
+        onClose={closeDropdown}
+        position={dropdownPosition}
+        user={users.find((u) => u.id === openDropdownId)}
+        onViewProfile={(id) => navigateTo(USER_MANAGEMENT_ROUTES.PROFILE(id))}
+        onResetPassword={handleResetPassword}
+        onSuspend={handleSuspend}
+        onTerminate={handleTerminate}
+        onReinstate={handleReinstate}
+        onDelete={handleDelete}
+      />
 
       {/* Delete Confirmation Modal */}
       <AlertModal
@@ -691,5 +609,116 @@ export const UserManagementView: React.FC = () => {
 
       {isNavigating && <FullPageLoading text="Loading..." />}
     </div>
+  );
+};
+
+interface UserActionMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+  position: PortalDropdownPosition;
+  user: User | undefined;
+  onViewProfile: (id: string) => void;
+  onResetPassword: (user: User) => void;
+  onSuspend: (user: User) => void;
+  onTerminate: (user: User) => void;
+  onReinstate: (user: User) => void;
+  onDelete: (user: User) => void;
+}
+
+const UserActionMenu: React.FC<UserActionMenuProps> = ({
+  isOpen,
+  onClose,
+  position,
+  user,
+  onViewProfile,
+  onResetPassword,
+  onSuspend,
+  onTerminate,
+  onReinstate,
+  onDelete,
+}) => {
+  if (!isOpen || !user) return null;
+
+  const isTerminated = user.status === "Terminated";
+  const isSuspended = user.status === "Suspended";
+
+  return createPortal(
+    <>
+      <div
+        className="fixed inset-0 z-40"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={position.style}
+      >
+        <div className="py-1">
+          <button
+            onClick={() => {
+              onClose();
+              onViewProfile(user.id);
+            }}
+            className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+          >
+            <UserIcon className="h-4 w-4 flex-shrink-0" />
+            <span className="font-medium">View Profile</span>
+          </button>
+          {!isTerminated && (
+            <button
+              onClick={() => onResetPassword(user)}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <KeyRound className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">Reset Password</span>
+            </button>
+          )}
+          <div className="border-t border-slate-100 my-1" />
+          {!isTerminated && !isSuspended && (
+            <button
+              onClick={() => onSuspend(user)}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <PauseCircle className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">Suspend</span>
+            </button>
+          )}
+          {!isTerminated && (
+            <button
+              onClick={() => onTerminate(user)}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <IconUserX className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">Terminate</span>
+            </button>
+          )}
+          {(isSuspended || isTerminated) && (
+            <button
+              onClick={() => onReinstate(user)}
+              className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+            >
+              <RotateCcw className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">Reinstate</span>
+            </button>
+          )}
+          <div className="border-t border-slate-100 my-1" />
+          <button
+            onClick={() => user.role !== "Admin" && onDelete(user)}
+            disabled={user.role === "Admin"}
+            className={cn(
+              "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors font-medium",
+              user.role === "Admin" ? "text-slate-300 cursor-not-allowed" : "text-slate-500 hover:bg-slate-50 active:bg-slate-100"
+            )}
+          >
+            <Trash2 className="h-4 w-4 flex-shrink-0" />
+            <span>Delete User</span>
+          </button>
+        </div>
+      </div>
+    </>,
+    document.body
   );
 };

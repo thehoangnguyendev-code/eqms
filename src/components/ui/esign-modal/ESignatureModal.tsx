@@ -181,7 +181,7 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
                     Electronic signature via credentials is legally binding and equivalent to a handwritten signature.
                   </p>
                 </div>
-                
+
                 <div className="space-y-1">
                   <label className="text-xs sm:text-sm font-medium text-slate-700">Signing Reason <span className="text-red-500">*</span></label>
                   <textarea

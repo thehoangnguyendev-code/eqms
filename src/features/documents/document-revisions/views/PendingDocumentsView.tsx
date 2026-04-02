@@ -32,7 +32,7 @@ import {
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { pendingDocuments } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 import type { RelatedDocument, CorrelatedDocument } from "@/features/documents/document-revisions/views/mockData";
@@ -341,7 +341,7 @@ const MOCK_APPROVAL_REVISIONS: Revision[] = [
 const DropdownMenu: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  position: { top: number; left: number; showAbove?: boolean };
+  position: PortalDropdownPosition;
   onAction: (action: string) => void;
   viewType: ViewType;
 }> = ({ isOpen, onClose, position, onAction, viewType }) => {
@@ -360,12 +360,8 @@ const DropdownMenu: React.FC<{
       />
       {/* Menu */}
       <div
-        className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-        style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          transform: position.showAbove ? "translateY(-100%)" : "none",
-        }}
+        className="absolute z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={position.style}
       >
         <div className="py-1">
           <button

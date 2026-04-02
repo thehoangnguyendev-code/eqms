@@ -46,7 +46,7 @@ import { formatDateUS } from "@/utils/format";
 import { MOCK_MATERIALS } from "../../mockData";
 import type { TrainingMaterial, MaterialFilters } from "../../types";
 import { VersionHistoryDrawer } from "../../components/VersionHistoryDrawer";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 /* ─── Dashboard Stats Calculation ───────────────────────────────── */
 const calcDashboardStats = (materials: TrainingMaterial[]) => {
@@ -71,7 +71,7 @@ interface MaterialDropdownMenuProps {
   effectiveStatus: TrainingMaterial["status"];
   isOpen: boolean;
   onClose: () => void;
-  position: { top: number; left: number; showAbove?: boolean };
+  position: PortalDropdownPosition;
   onNavigate: (path: string) => void;
   onMarkObsolete: (id: string) => void;
   onOpenHistory: (material: TrainingMaterial) => void;
@@ -124,8 +124,8 @@ const MaterialDropdownMenu: React.FC<MaterialDropdownMenuProps> = ({
         aria-hidden="true"
       />
       <div
-        className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-        style={{ top: `${position.top}px`, left: `${position.left}px`, transform: position.showAbove ? "translateY(-100%)" : "none" }}
+        className="absolute z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={position.style}
       >
         <div className="py-1">
           {menuItems.map((item, i) => {

@@ -889,14 +889,8 @@ export const RevisionsOwnedByMeView: React.FC = () => {
               aria-hidden="true"
             />
             <div
-              className="fixed z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-              style={{
-                top: `${position.top}px`,
-                left: `${position.left}px`,
-                transform: position.showAbove
-                  ? "translateY(-100%)"
-                  : "none",
-              }}
+              className="absolute z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+              style={position.style}
             >
               <div className="py-1">
                 <button

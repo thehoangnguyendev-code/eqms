@@ -9,7 +9,7 @@ export { useLocalStorage } from './useLocalStorage';
 export { usePagination } from './usePagination';
 export * from './useSecurity';
 export { useDropdownPosition } from './useDropdownPosition';
-export { usePortalDropdown } from './usePortalDropdown';
+export * from './usePortalDropdown';
 export { useNavigateWithLoading } from './useNavigateWithLoading';
 export { useTableFilter } from './useTableFilter';
 export { useTableDragScroll } from './useTableDragScroll';

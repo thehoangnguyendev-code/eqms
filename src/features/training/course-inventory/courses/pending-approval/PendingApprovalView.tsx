@@ -484,12 +484,8 @@ export const PendingApprovalView: React.FC = () => {
             aria-hidden="true"
           />
           <div
-            className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-            style={{
-              top: `${dropdownPosition.top}px`,
-              left: `${dropdownPosition.left}px`,
-              transform: dropdownPosition.showAbove ? 'translateY(-100%)' : 'none'
-            }}
+            className="absolute z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+            style={dropdownPosition.style}
           >
             <div className="py-1">
               <button

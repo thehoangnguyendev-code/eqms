@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { GraduationCap, Briefcase, Award, Plus, Eye, MoreVertical } from "lucide-react";
+import { Briefcase, Plus, Eye, MoreVertical, Trash2 } from "lucide-react";
 import { SectionCard, EditableField } from "../components/ProfileSectionCard";
 import type { SectionKey } from "../components/ProfileSectionCard";
 import { CertAddModal } from "../components/CertAddModal";
 import { EducationAddModal } from "../components/EducationAddModal";
 import { CertPreviewModal } from "../components/CertPreviewModal";
 import { Button } from "@/components/ui/button/Button";
-import { Badge } from "@/components/ui/badge/Badge";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { formatDate } from "@/utils/format";
 import { cn } from "@/components/ui/utils";
 import type { User, Certification, EducationItem } from "../types";
-import { IconCertificate, IconSchool, IconPencilMinus, IconTrash, IconCalendarMonth, IconTrophy, IconEdit } from "@tabler/icons-react";
+import { IconCertificate, IconSchool, IconPencilMinus, IconEdit } from "@tabler/icons-react";
 import { usePortalDropdown } from "@/hooks";
 import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
 
@@ -173,7 +172,7 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
                         className="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                         title="Delete"
                       >
-                        <IconTrash className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
@@ -255,7 +254,7 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
                     <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Issuing Organization</th>
                     <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Issue Date</th>
                     <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Expiry Date</th>
-                    <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Attachment</th>
+                    <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Attachment</th>
                     <th className="sticky top-0 right-0 z-30 bg-slate-50 py-1.5 px-2 md:py-2.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                       Action
                     </th>
@@ -306,21 +305,21 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
                                 <span className={cn("font-medium", isExpired ? "text-rose-600" : "text-slate-700")}>
                                   {formatDate(cert.expiryDate)}
                                 </span>
-                                {isExpired && <span className="text-[10px] font-bold text-rose-500 uppercase tracking-tight">Expired</span>}
+                                {isExpired && <span className="text-[12px] font-semibold text-rose-500 tracking-tight">Expired</span>}
                               </div>
                             ) : (
                               <span className="text-slate-400 italic">-</span>
                             )}
                           </td>
                           {/* Attachment */}
-                          <td className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-center">
+                          <td className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left">
                             {cert.fileName ? (
                               <button
                                 onClick={() => setCertPreview(cert)}
-                                className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors"
+                                className="inline-flex items-left gap-1.5 text-xs font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors"
                               >
                                 <IconCertificate className="h-3.5 w-3.5" />
-                                <span className="truncate max-w-[120px]">{cert.fileName}</span>
+                                <span className="truncate max-w-[150px]">{cert.fileName}</span>
                               </button>
                             ) : (
                               <span className="text-xs text-slate-400 italic">No file</span>
@@ -425,12 +424,8 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
             aria-hidden="true"
           />
           <div
-            className="fixed z-50 min-w-[160px] w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-            style={{
-              top: `${position.top}px`,
-              left: `${position.left}px`,
-              transform: position.showAbove ? "translateY(-100%)" : "none",
-            }}
+            className="absolute z-50 min-w-[160px] w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+            style={position.style}
           >
             <div className="py-1">
               {(() => {
@@ -457,7 +452,7 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
                       onClick={(e) => { e.stopPropagation(); setCertDeleteId(cert.id); close(); }}
                       className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
                     >
-                      <IconTrash className="h-3.5 w-3.5 flex-shrink-0" />
+                      <Trash2 className="h-3.5 w-3.5 flex-shrink-0" />
                       Delete
                     </button>
                   </>

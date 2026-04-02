@@ -15,11 +15,9 @@ import {
   Search,
   SlidersHorizontal,
   X,
-  ArrowDownAZ,
-  ArrowDownZA,
 } from "lucide-react";
 import { Button } from '@/components/ui/button/Button';
-import { StatusBadge, StatusType } from '@/components/ui';
+import { StatusBadge, StatusType } from '@/components/ui/badge';
 import { TablePagination } from '@/components/ui/table/TablePagination';
 import { TableEmptyState } from '@/components/ui/table/TableEmptyState';
 import { DocumentFilters } from "@/features/documents/shared/components";
@@ -35,7 +33,36 @@ import { Revision, MOCK_REVISIONS } from "./mockData";
 import type { RelatedDocument, CorrelatedDocument } from "./mockData";
 import { mapStatusToStatusType } from "@/utils/status";
 
+// --- Types ---
+interface TableColumn {
+  id: string;
+  label: string;
+  visible: boolean;
+  order: number;
+  locked?: boolean;
+}
 
+// Default columns configuration
+const DEFAULT_COLUMNS: TableColumn[] = [
+  { id: "no", label: "No.", visible: true, order: 0, locked: true },
+  { id: "documentNumber", label: "Document Number", visible: true, order: 1 },
+  { id: "revisionNumber", label: "Revision Number", visible: true, order: 2 },
+  { id: "created", label: "Created", visible: true, order: 3 },
+  { id: "openedBy", label: "Opened By", visible: true, order: 4 },
+  { id: "revisionName", label: "Revision Name", visible: true, order: 5 },
+  { id: "state", label: "State", visible: true, order: 6 },
+  { id: "documentName", label: "Document Name", visible: true, order: 7 },
+  { id: "type", label: "Document Type", visible: true, order: 8 },
+  { id: "relatedDocuments", label: "Related Document", visible: true, order: 9 },
+  { id: "correlatedDocuments", label: "Correlated Document", visible: true, order: 10 },
+  { id: "template", label: "Template", visible: true, order: 11 },
+  { id: "businessUnit", label: "Business Unit", visible: true, order: 12 },
+  { id: "department", label: "Department", visible: true, order: 13 },
+  { id: "author", label: "Author", visible: true, order: 14 },
+  { id: "effectiveDate", label: "Effective Date", visible: true, order: 15 },
+  { id: "validUntil", label: "Valid Until", visible: true, order: 16 },
+  { id: "action", label: "Action", visible: true, order: 17, locked: true },
+];
 
 // --- Main Component ---
 export const RevisionListView: React.FC = () => {
@@ -57,6 +84,7 @@ export const RevisionListView: React.FC = () => {
   const [relatedDocumentFilter, setRelatedDocumentFilter] = useState("All");
   const [correlatedDocumentFilter, setCorrelatedDocumentFilter] = useState("All");
   const [templateFilter, setTemplateFilter] = useState("All");
+  const [columns, setColumns] = useState<TableColumn[]>([...DEFAULT_COLUMNS]);
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -67,8 +95,8 @@ export const RevisionListView: React.FC = () => {
     direction: "asc",
   });
 
-  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
   // Filtered data
   const filteredRevisions = useMemo(() => {
@@ -265,6 +293,12 @@ export const RevisionListView: React.FC = () => {
     return filteredRevisions.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredRevisions, startIndex, itemsPerPage]);
 
+  // Visible columns
+  const visibleColumns = useMemo(
+    () => columns.filter((col) => col.visible).sort((a, b) => a.order - b.order),
+    [columns]
+  );
+
   // Handlers
   const handleViewRevision = (id: string) => {
     navigateTo(ROUTES.DOCUMENTS.REVISIONS.DETAIL(id));
@@ -344,7 +378,71 @@ export const RevisionListView: React.FC = () => {
     }
   };
 
-
+  // Render column cell
+  const renderCell = (
+    column: TableColumn,
+    revision: Revision,
+    index: number,
+  ) => {
+    switch (column.id) {
+      case "no":
+        return startIndex + index + 1;
+      case "documentNumber":
+        return (
+          <span className="font-medium text-emerald-600">
+            {revision.documentNumber}
+          </span>
+        );
+      case "revisionNumber":
+        return revision.revisionNumber;
+      case "created":
+        return revision.created;
+      case "openedBy":
+        return revision.openedBy;
+      case "revisionName":
+        return <span className="font-medium text-slate-900">{revision.revisionName}</span>;
+      case "state":
+        return (
+          <span className="inline-flex items-center gap-1.5">
+            <StatusBadge status={mapStatusToStatusType(revision.state) as StatusType} />
+          </span>
+        );
+      case "documentName":
+        return <span className="text-slate-600">{revision.documentName}</span>;
+      case "type":
+        return revision.type;
+      case "relatedDocuments":
+        return revision.hasRelatedDocuments ? (
+          <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">Yes</span>
+        ) : (
+          <span className="text-slate-600 font-medium">No</span>
+        );
+      case "correlatedDocuments":
+        return revision.hasCorrelatedDocuments ? (
+          <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">Yes</span>
+        ) : (
+          <span className="text-slate-600 font-medium">No</span>
+        );
+      case "template":
+        return revision.isTemplate ? (
+          <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">Yes</span>
+        ) : (
+          <span className="text-slate-600 font-medium">No</span>
+        );
+      case "businessUnit":
+        return revision.businessUnit;
+      case "department":
+        return revision.department;
+      case "author":
+        return revision.author;
+      case "effectiveDate":
+        return revision.effectiveDate;
+      case "validUntil":
+        return revision.validUntil;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="flex flex-col h-full gap-4 md:gap-6">
@@ -547,47 +645,28 @@ export const RevisionListView: React.FC = () => {
                   )}
                   {...dragEvents}
                 >
-                  {/* Sử dụng border-separate để kiểm soát tốt nhất các cột sticky */}
-                  {/* Sử dụng border-separate để kiểm soát tốt nhất các cột sticky */}
                   <table className="w-full min-w-max border-separate border-spacing-0 text-left">
                     <thead>
                       <tr>
-                        {[
-                          { label: "", id: "expander", width: "w-8 md:w-10" },
-                          { label: "No.", id: "no" },
-                          { label: "Document Number", id: "documentNumber", sortable: true },
-                          { label: "Revision Number", id: "revisionNumber", sortable: true },
-                          { label: "Created", id: "created", sortable: true },
-                          { label: "Opened By", id: "openedBy", sortable: true },
-                          { label: "Revision Name", id: "revisionName", sortable: true },
-                          { label: "State", id: "state", sortable: true },
-                          { label: "Document Name", id: "documentName", sortable: true },
-                          { label: "Document Type", id: "type", sortable: true },
-                          { label: "Related Document", id: "relatedDocument", align: "text-center" },
-                          { label: "Correlated Document", id: "correlatedDocument", align: "text-center" },
-                          { label: "Template", id: "template", align: "text-center" },
-                          { label: "Business Unit", id: "businessUnit", sortable: true },
-                          { label: "Department", id: "department", sortable: true },
-                          { label: "Author", id: "author", sortable: true },
-                          { label: "Effective Date", id: "effectiveDate", sortable: true },
-                          { label: "Valid Until", id: "validUntil", sortable: true }
-                        ].map((col, idx) => {
-                          const isSorted = sortConfig.key === col.id;
-                          const canSort = col.sortable;
+                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>
+                        {visibleColumns.map((column) => {
+                          const isSorted = sortConfig.key === column.id;
+                          const canSort = column.id !== 'action' && column.id !== 'no' && column.id !== 'relatedDocuments' && column.id !== 'correlatedDocuments' && column.id !== 'template';
 
                           return (
                             <th
-                              key={idx}
-                              onClick={canSort ? () => handleSort(col.id!) : undefined}
+                              key={column.id}
+                              onClick={canSort ? () => handleSort(column.id) : undefined}
                               className={cn(
                                 "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
                                 canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
-                                col.width,
-                                col.align || "text-left"
+                                column.id === "action"
+                                  ? "right-0 z-30 text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
+                                  : "text-left",
                               )}
                             >
                               <div className="flex items-center justify-between gap-2 w-full">
-                                <span className="truncate">{col.label}</span>
+                                <span className="truncate">{column.label}</span>
                                 {canSort && (
                                   <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
                                     <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
@@ -598,24 +677,17 @@ export const RevisionListView: React.FC = () => {
                             </th>
                           );
                         })}
-                        {/* Cột Action Sticky */}
-                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
-                          Action
-                        </th>
                       </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody className="bg-white">
                       {paginatedRevisions.map((revision, index) => {
                         const isExpanded = expandedRowId === revision.id;
                         const hasDocs = revision.hasRelatedDocuments || revision.hasCorrelatedDocuments;
-
-                        // Định nghĩa class dùng chung cho các ô td để code gọn hơn và dễ sửa đổi
                         const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
                         return (
                           <React.Fragment key={revision.id}>
-                            {/* Dòng dữ liệu chính */}
                             <tr
                               className="hover:bg-slate-50/80 transition-colors group"
                             >
@@ -629,61 +701,43 @@ export const RevisionListView: React.FC = () => {
                                   </button>
                                 )}
                               </td>
-                              <td className={tdClass}>{startIndex + index + 1}</td>
-                              <td
-                                onClick={() => handleViewRevision(revision.id)}
-                                className={cn(tdClass, "font-medium text-emerald-600 cursor-pointer hover:underline")}
-                              >
-                                {revision.documentNumber}
-                              </td>
-                              <td className={tdClass}>{revision.revisionNumber}</td>
-                              <td className={tdClass}>{revision.created}</td>
-                              <td className={tdClass}>{revision.openedBy}</td>
-                              <td className={cn(tdClass, "font-medium text-slate-900")}>{revision.revisionName}</td>
-                              <td className="py-2.5 px-2 md:py-3 md:px-4 border-b border-slate-200 whitespace-nowrap">
-                                <StatusBadge status={mapStatusToStatusType(revision.state) as StatusType} />
-                              </td>
-                              <td className={cn(tdClass, "text-slate-600")}>{revision.documentName}</td>
-                              <td className={tdClass}>{revision.type}</td>
-                              <td className={cn(tdClass, "text-center")}>
-                                {revision.hasRelatedDocuments ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>}
-                              </td>
-                              <td className={cn(tdClass, "text-center")}>
-                                {revision.hasCorrelatedDocuments ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>}
-                              </td>
-                              <td className={cn(tdClass, "text-center")}>
-                                {revision.isTemplate ? <span className="text-emerald-600 font-medium">Yes</span> : <span className="text-slate-400">No</span>}
-                              </td>
-                              <td className={tdClass}>{revision.businessUnit}</td>
-                              <td className={tdClass}>{revision.department}</td>
-                              <td className={tdClass}>{revision.author}</td>
-                              <td className={tdClass}>{revision.effectiveDate}</td>
-                              <td className={tdClass}>{revision.validUntil}</td>
-
-                              {/* Ô Action Sticky */}
-                              <td
-                                onClick={(e) => e.stopPropagation()}
-                                className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
-                              >
-                                <button
-                                  ref={getRef(revision.id)}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggle(revision.id, e);
-                                  }}
-                                  className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
-                                >
-                                  <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                                </button>
-                              </td>
+                              {visibleColumns.map((column) =>
+                                column.id === "action" ? (
+                                  <td
+                                    key={column.id}
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                                  >
+                                    <button
+                                      ref={getRef(revision.id)}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggle(revision.id, e);
+                                      }}
+                                      className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-100 transition-colors"
+                                    >
+                                      <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                                    </button>
+                                  </td>
+                                ) : (
+                                  <td
+                                    key={column.id}
+                                    className={cn(
+                                      tdClass,
+                                      column.id === "documentNumber" && "cursor-pointer hover:underline"
+                                    )}
+                                    onClick={column.id === "documentNumber" ? () => handleViewRevision(revision.id) : undefined}
+                                  >
+                                    {renderCell(column, revision, index)}
+                                  </td>
+                                ),
+                              )}
                             </tr>
 
-                            {/* Dòng mở rộng (Accordion) - GIỮ NGUYÊN THIẾT KẾ CŨ CỦA BẠN */}
                             <AnimatePresence initial={false}>
                               {isExpanded && hasDocs && (
                                 <tr className="bg-slate-50/50">
-                                  {/* 18 Cột nội dung */}
-                                  <td colSpan={18} className="p-0 border-b border-slate-200">
+                                  <td colSpan={visibleColumns.length + 1} className="p-0 border-b border-slate-200">
                                     <motion.div
                                       initial={{ height: 0, opacity: 0 }}
                                       animate={{ height: "auto", opacity: 1 }}
@@ -693,10 +747,9 @@ export const RevisionListView: React.FC = () => {
                                     >
                                       <div className="px-4 py-3">
                                         <div className="ml-9 flex flex-wrap gap-6">
-                                          {/* Bảng Related Documents (Thiết kế gốc) */}
                                           {revision.relatedDocuments && revision.relatedDocuments.length > 0 && (
                                             <div>
-                                              <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1.5">
+                                              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
                                                 Related Documents ({revision.relatedDocuments.length})
                                               </p>
                                               <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
@@ -728,10 +781,9 @@ export const RevisionListView: React.FC = () => {
                                             </div>
                                           )}
 
-                                          {/* Bảng Correlated Documents (Thiết kế gốc) */}
                                           {revision.correlatedDocuments && revision.correlatedDocuments.length > 0 && (
                                             <div>
-                                              <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1.5">
+                                              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
                                                 Correlated Documents ({revision.correlatedDocuments.length})
                                               </p>
                                               <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
@@ -768,10 +820,6 @@ export const RevisionListView: React.FC = () => {
                                       </div>
                                     </motion.div>
                                   </td>
-
-                                  {/* Cột Action giả để giữ cấu trúc bảng không bị vỡ */}
-                                  <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-white before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
-                                  </td>
                                 </tr>
                               )}
                             </AnimatePresence>
@@ -804,124 +852,103 @@ export const RevisionListView: React.FC = () => {
       </div>
 
       {/* Dropdown Menu (Portal) */}
-      <AnimatePresence>
-        {openId && (() => {
-          const currentRevision = MOCK_REVISIONS.find(r => r.id === openId);
-          const isPendingReview = currentRevision?.state === "Pending Review";
-          const isPendingApproval = currentRevision?.state === "Pending Approval";
-          const isEffective = currentRevision?.state === "Effective";
+      {openId && (() => {
+        const currentRevision = MOCK_REVISIONS.find(r => r.id === openId);
+        if (!currentRevision) return null;
 
-          return createPortal(
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="fixed inset-0 z-40"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  close();
-                }}
-                aria-hidden="true"
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: -8 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                transition={{
-                  type: "spring",
-                  damping: 25,
-                  stiffness: 400
-                }}
-                className="fixed z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl overflow-hidden"
-                style={{
-                  top: `${position.top}px`,
-                  left: `${position.left}px`,
-                  transformOrigin: position.showAbove ? "bottom" : "top",
-                }}
-              >
-                <div className="py-1">
+        const isPendingReview = currentRevision.state === "Pending Review";
+        const isPendingApproval = currentRevision.state === "Pending Approval";
+        const isEffective = currentRevision.state === "Effective";
+
+        return createPortal(
+          <>
+            <div
+              className="fixed inset-0 z-40 animate-in fade-in duration-150"
+              onClick={(e) => {
+                e.stopPropagation();
+                close();
+              }}
+              aria-hidden="true"
+            />
+            <div
+              className="absolute z-50 min-w-[200px] rounded-lg border border-slate-200 bg-white shadow-xl overflow-hidden pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-200"
+              style={position.style}
+            >
+              <div className="py-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMenuAction("view", openId);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                >
+                  <IconInfoCircle className="h-4 w-4 text-slate-500" />
+                  <span>View Details</span>
+                </button>
+                {isPendingReview && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleMenuAction("view", openId);
+                      handleMenuAction("review", openId);
                     }}
                     className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
                   >
-                    <IconInfoCircle className="h-4 w-4 text-slate-500" />
-                    <span>View Details</span>
+                    <IconEyeCheck className="h-4 w-4 text-slate-500" />
+                    <span>Review Revision</span>
                   </button>
-                  {isPendingReview && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleMenuAction("review", openId);
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                    >
-                      <IconEyeCheck className="h-4 w-4 text-slate-500" />
-                      <span>Review Revision</span>
-                    </button>
-                  )}
-                  {isPendingApproval && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleMenuAction("approve", openId);
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                    >
-                      <IconChecks className="h-4 w-4 text-slate-500" />
-                      <span>Approve Revision</span>
-                    </button>
-                  )}
-                  {isEffective && currentRevision && (
-                    <>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleNewRevision(currentRevision);
-                        }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                      >
-                        <FilePlusCorner className="h-4 w-4 text-slate-500" />
-                        <span>Upgrade Revision</span>
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePrintControlledCopy(currentRevision);
-                        }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
-                      >
-                        <FileStack className="h-4 w-4 text-slate-500" />
-                        <span>Request Controlled Copy</span>
-                      </button>
-                    </>
-                  )}
+                )}
+                {isPendingApproval && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleMenuAction("audit", openId);
+                      handleMenuAction("approve", openId);
                     }}
                     className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
                   >
-                    <History className="h-4 w-4 text-slate-500" />
-                    <span>View Audit Trail</span>
+                    <IconChecks className="h-4 w-4 text-slate-500" />
+                    <span>Approve Revision</span>
                   </button>
-                </div>
-              </motion.div>
-            </>,
-            document.body
-          );
-        })()}
-      </AnimatePresence>
+                )}
+                {isEffective && currentRevision && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNewRevision(currentRevision);
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                    >
+                      <FilePlusCorner className="h-4 w-4 text-slate-500" />
+                      <span>Upgrade Revision</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrintControlledCopy(currentRevision);
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                    >
+                      <FileStack className="h-4 w-4 text-slate-500" />
+                      <span>Request Controlled Copy</span>
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMenuAction("audit", openId);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                >
+                  <History className="h-4 w-4 text-slate-500" />
+                  <span>View Audit Trail</span>
+                </button>
+              </div>
+            </div>
+          </>,
+          document.body
+        );
+      })()}
     </div>
   );
 };
-
-
-
-
-

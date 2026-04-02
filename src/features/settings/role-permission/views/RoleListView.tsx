@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
-import { Plus, Search, MoreVertical, Users, Lock, Download, ChevronUp, ChevronDown } from "lucide-react";
+import { Plus, Search, MoreVertical, Users, Lock, Download, ChevronUp, ChevronDown, Trash2 } from "lucide-react";
 import { IconEye, IconEdit, IconTrash } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button/Button";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
@@ -18,12 +18,12 @@ import { Role } from "../types";
 import { PERMISSION_GROUPS } from "../constants";
 import { MOCK_ROLES } from "../mockData";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 interface DropdownMenuProps {
   isOpen: boolean;
   onClose: () => void;
-  position: { top: number; left: number; showAbove?: boolean };
+  position: PortalDropdownPosition;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -55,7 +55,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       color: "text-slate-500",
     },
     {
-      icon: IconTrash,
+      icon: Trash2,
       label: "Delete Role",
       onClick: onDelete,
       color: canDelete ? "text-slate-500" : "text-slate-300",
@@ -76,12 +76,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       />
       {/* Menu */}
       <div
-        className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-        style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          transform: position.showAbove ? 'translateY(-100%)' : 'none'
-        }}
+        className="absolute z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={position.style}
       >
         <div className="py-1">
           {menuItems.map((item, index) => {
@@ -300,7 +296,7 @@ export const RoleListView: React.FC = () => {
             {paginatedRoles.length > 0 ? (
               <>
                 {/* Table */}
-                <div 
+                <div
                   ref={scrollerRef}
                   className={cn(
                     "overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full transition-colors",

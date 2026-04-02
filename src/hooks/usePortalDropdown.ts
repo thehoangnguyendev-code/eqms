@@ -5,6 +5,10 @@ export interface PortalDropdownPosition {
   top: number;
   left: number;
   showAbove: boolean;
+  /** CSS transform property to handle showAbove cases (translateY(-100%)) */
+  transform: string;
+  /** Ready-to-use style object for the dropdown */
+  style: React.CSSProperties;
 }
 
 export interface UsePortalDropdownReturn {
@@ -62,6 +66,8 @@ export function usePortalDropdown(): UsePortalDropdownReturn {
     top: 0,
     left: 0,
     showAbove: false,
+    transform: 'none',
+    style: { top: 0, left: 0, transform: 'none' },
   });
 
   // Stable map of button refs keyed by item ID.
@@ -105,7 +111,15 @@ export function usePortalDropdown(): UsePortalDropdownReturn {
       let left = rect.right + window.scrollX - menuWidth;
       left = Math.max(safeMargin, Math.min(left, window.innerWidth - menuWidth - safeMargin));
 
-      setPosition({ top, left, showAbove: shouldShowAbove });
+      const transform = shouldShowAbove ? 'translateY(-100%)' : 'none';
+
+      const style: React.CSSProperties = {
+        top: `${top}px`,
+        left: `${left}px`,
+        transform,
+      };
+
+      setPosition({ top, left, showAbove: shouldShowAbove, transform, style });
       setOpenId(id);
     },
     [openId]

@@ -38,14 +38,14 @@ import {
   TrainingMethod,
 } from "../../types";
 import { MOCK_TRAININGS } from "./mockData";
-import { usePortalDropdown, useNavigateWithLoading, useTableFilter, useTableDragScroll } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableFilter, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 // ── Local Dropdown ────────────────────────────────────────────────
 interface CourseDropdownMenuProps {
   training: TrainingRecord;
   isOpen: boolean;
   onClose: () => void;
-  position: { top: number; left: number; showAbove?: boolean };
+  position: PortalDropdownPosition;
   onNavigate: (path: string) => void;
 }
 
@@ -79,8 +79,8 @@ const CourseDropdownMenu: React.FC<CourseDropdownMenuProps> = ({
         aria-hidden="true"
       />
       <div
-        className="fixed z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-        style={{ top: `${position.top}px`, left: `${position.left}px`, transform: position.showAbove ? "translateY(-100%)" : "none" }}
+        className="absolute z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={position.style}
       >
         <div className="py-1">
           {menuItems.map((item, i) => {

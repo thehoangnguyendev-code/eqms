@@ -12,19 +12,18 @@ export const useTableDragScroll = () => {
   const dragMoved = useRef(false);
 
   const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // Reset drag flag at the very start of any mouse down
+    dragMoved.current = false;
+
     // Only handle left mouse button
     if (e.button !== 0) return;
     
     // Don't start dragging if clicking on an interactive element (except for the table container itself)
     const target = e.target as HTMLElement;
     if (target.closest('button, a, input, select, [role="button"]')) {
-       // Allow dragging even if it started on an interactive element? 
-       // Usually we want to allow dragging the table even if clicking on a row, 
-       // but not if clicking a specific action button.
-       // For now, let's keep it simple like in DocumentsView.
+      return;
     }
 
-    dragMoved.current = false;
     dragStartX.current = e.clientX;
     scrollStartLeft.current = scrollerRef.current?.scrollLeft ?? 0;
     setIsDragging(true);
