@@ -94,7 +94,7 @@ export const CertAddModal: React.FC<CertAddModalProps> = ({ isOpen, onClose, onS
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white min-h-[56px] shrink-0">
               <div className="flex items-center gap-2.5">
-                <h3 className="text-sm font-semibold text-slate-800">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-6 truncate">
                   {editing ? "Edit Certificate" : "Add Certificate"}
                 </h3>
               </div>
@@ -150,20 +150,25 @@ export const CertAddModal: React.FC<CertAddModalProps> = ({ isOpen, onClose, onS
               {/* Dates */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <DateTimePicker
-                    label="Issue Date"
+                  <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+                    Issue Date
+                  </label>
+                  <input
+                    type="date"
                     value={issueDate}
-                    onChange={setIssueDate}
-                    placeholder="Select date"
+                    onChange={(e) => setIssueDate(e.target.value)}
+                    className="w-full h-9 px-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                   />
-                  {errors.issueDate && <p className="text-xs text-red-600 font-medium mt-1.5">{errors.issueDate}</p>}
                 </div>
                 <div>
-                  <DateTimePicker
-                    label="Expiry Date"
+                  <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+                    Expiry Date
+                  </label>
+                  <input
+                    type="date"
                     value={expiryDate}
-                    onChange={setExpiryDate}
-                    placeholder="No expiry"
+                    onChange={(e) => setExpiryDate(e.target.value)}
+                    className="w-full h-9 px-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                   />
                 </div>
               </div>

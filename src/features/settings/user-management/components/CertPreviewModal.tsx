@@ -148,10 +148,10 @@ export const CertPreviewModal: React.FC<CertPreviewModalProps> = ({ isOpen, cert
                         </p>
                       )}
                     </div>
-                    <Button variant="default" size="sm" onClick={handleDownload}>
-                      <Download className="h-4 w-4" />
+                    {/* <Button variant="default" size="sm" onClick={handleDownload}>
+                      <Download className="h-4 w-4 mr-1.5" />
                       Download File
-                    </Button>
+                    </Button> */}
                   </div>
                 )
               ) : (

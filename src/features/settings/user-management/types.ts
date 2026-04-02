@@ -26,6 +26,15 @@ export interface Certification {
   fileObjectUrl?: string;
 }
 
+export interface EducationItem {
+  id: string;
+  degree: string;
+  fieldOfStudy: string;
+  institution: string;
+  graduationYear: string;
+  gpa: string;
+}
+
 export interface User {
   id: string;
   employeeCode: string;
@@ -59,6 +68,7 @@ export interface User {
   institution?: string;
   graduationYear?: string;
   gpa?: string;
+  educationList?: EducationItem[];
   professionalLevel?: string;
   areaOfExpertise?: string;
   yearsOfExperience?: string;

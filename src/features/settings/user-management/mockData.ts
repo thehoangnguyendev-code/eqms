@@ -23,6 +23,17 @@ export const MOCK_USERS: User[] = [
     employmentType: "Full-time",
     startDate: "2024-01-15",
     managerName: "N/A",
+    permissions: [],
+    educationList: [
+      {
+        id: "edu-1",
+        degree: "Bachelor of Science",
+        fieldOfStudy: "Software Engineering",
+        institution: "Ho Chi Minh City University of Technology",
+        graduationYear: "2007",
+        gpa: "3.6/4.0",
+      }
+    ],
   },
   {
     id: "2",
@@ -45,6 +56,25 @@ export const MOCK_USERS: User[] = [
     employmentType: "Full-time",
     startDate: "2024-02-20",
     managerName: "Admin Hệ Thống 1",
+    permissions: [],
+    educationList: [
+      {
+        id: "edu-2",
+        degree: "Doctor of Philosophy (PhD)",
+        fieldOfStudy: "Quality Management",
+        institution: "Harvard University",
+        graduationYear: "2015",
+        gpa: "3.9/4.0",
+      },
+      {
+        id: "edu-3",
+        degree: "Master of Science",
+        fieldOfStudy: "Industrial Engineering",
+        institution: "Stanford University",
+        graduationYear: "2010",
+        gpa: "3.8/4.0",
+      }
+    ],
   },
   {
     id: "3",
@@ -67,6 +97,17 @@ export const MOCK_USERS: User[] = [
     employmentType: "Full-time",
     startDate: "2024-03-10",
     managerName: "Dr. Amanda Smith",
+    permissions: [],
+    educationList: [
+      {
+        id: "edu-4",
+        degree: "Bachelor of Science",
+        fieldOfStudy: "Biology",
+        institution: "University of California, Berkeley",
+        graduationYear: "2012",
+        gpa: "3.5/4.0",
+      }
+    ],
   },
   {
     id: "4",
@@ -89,6 +130,7 @@ export const MOCK_USERS: User[] = [
     employmentType: "Full-time",
     startDate: "2024-04-05",
     managerName: "Dr. Amanda Smith",
+    permissions: [],
   },
   {
     id: "5",
@@ -111,6 +153,7 @@ export const MOCK_USERS: User[] = [
     employmentType: "Contract",
     startDate: "2024-05-12",
     managerName: "Dr. Amanda Smith",
+    permissions: [],
   },
   {
     id: "6",
@@ -133,6 +176,7 @@ export const MOCK_USERS: User[] = [
     employmentType: "Full-time",
     startDate: "2024-06-18",
     managerName: "Admin Hệ Thống 1",
+    permissions: [],
   },
   {
     id: "7",
@@ -155,6 +199,7 @@ export const MOCK_USERS: User[] = [
     employmentType: "Full-time",
     startDate: "2025-12-30",
     managerName: "Admin Hệ Thống 1",
+    permissions: [],
   },
   {
     id: "8",
@@ -179,6 +224,7 @@ export const MOCK_USERS: User[] = [
     managerName: "Dr. Amanda Smith",
     suspendReason: "Pending internal investigation",
     suspendedUntil: "2026-04-30",
+    permissions: [],
   },
   {
     id: "9",
@@ -203,31 +249,13 @@ export const MOCK_USERS: User[] = [
     managerName: "Admin Hệ Thống 1",
     terminationReason: "Resignation",
     terminationDate: "2025-12-01",
+    permissions: [],
   },
 ];
 
 // TODO: Replace with API call: GET /api/settings/users/:id
 export const MOCK_USER: User = {
-  id: "1",
-  employeeCode: "NTP.0001",
-  fullName: "Admin Hệ Thống 1",
-  username: "adminhethong",
-  email: "admin@zenithquality.com",
-  phone: "0911263575",
-  role: "Admin",
-  businessUnit: "Corporate",
-  department: "IT Department",
-  status: "Active",
-  lastLogin: "2025-12-31 14:30",
-  createdDate: "2024-01-15",
-  jobTitle: "System Administrator",
-  dateOfBirth: "1985-03-20",
-  gender: "Male",
-  nationality: "Vietnamese",
-  address: "123 Nguyễn Huệ, Quận 1, TP.HCM",
-  employmentType: "Full-time",
-  startDate: "2024-01-15",
-  managerName: "N/A",
+  ...MOCK_USERS[0]
 };
 
 // TODO: Replace with API call: GET /api/settings/users (for duplicate detection)

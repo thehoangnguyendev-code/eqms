@@ -3,7 +3,7 @@ import { useToast } from "@/components/ui/toast";
 import { MOCK_USERS, EXISTING_USERS as _EXISTING_USERS } from "../mockData";
 import { BUSINESS_UNIT_DEPARTMENTS } from "../constants";
 import { generatePassword } from "../utils";
-import type { User, Certification } from "../types";
+import type { User, Certification, EducationItem } from "../types";
 import type { SectionKey } from "../components/ProfileSectionCard";
 
 // ---------------------------------------------------------------------------
@@ -30,6 +30,9 @@ export function useUserProfile(userId: string | undefined) {
   const [sectionOriginal, setSectionOriginal] = useState<User | null>(null);
   const [certifications, setCertifications] = useState<Certification[]>(
     userData.certifications ?? []
+  );
+  const [educationList, setEducationList] = useState<User["educationList"]>(
+    userData.educationList ?? []
   );
 
   // === Derived ===
@@ -139,6 +142,33 @@ export function useUserProfile(userId: string | undefined) {
     showToast({ type: "success", title: "Certificate removed", message: "Certificate has been removed." });
   };
 
+  // === Education actions ===
+
+  const saveEdu = (data: Omit<EducationItem, "id">, editing: EducationItem | null) => {
+    const currentList = educationList || [];
+    if (editing) {
+      const updated: EducationItem[] = currentList.map((e) =>
+        e.id === editing.id ? { ...data, id: e.id } : e
+      );
+      setEducationList(updated);
+      setUserData((prev) => ({ ...prev, educationList: updated }));
+      showToast({ type: "success", title: "Education experience updated", message: "Education detail has been updated successfully." });
+    } else {
+      const newEdu: EducationItem = { ...data, id: `edu-${Date.now()}` };
+      const updated: EducationItem[] = [...currentList, newEdu];
+      setEducationList(updated);
+      setUserData((prev) => ({ ...prev, educationList: updated }));
+      showToast({ type: "success", title: "Education experience added", message: "Education detail has been added successfully." });
+    }
+  };
+
+  const deleteEdu = (id: string) => {
+    const updated = (educationList || []).filter((e) => e.id !== id);
+    setEducationList(updated);
+    setUserData((prev) => ({ ...prev, educationList: updated }));
+    showToast({ type: "success", title: "Education experience removed", message: "Education entry has been removed." });
+  };
+
   // === User status actions ===
 
   const suspendUser = (reason: string, suspendedUntil: string) => {
@@ -199,6 +229,10 @@ export function useUserProfile(userId: string | undefined) {
     // Certs
     saveCert,
     deleteCert,
+    // Education
+    educationList,
+    saveEdu,
+    deleteEdu,
     // User status
     suspendUser,
     terminateUser,

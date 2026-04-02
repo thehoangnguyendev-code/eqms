@@ -4,15 +4,17 @@ import { GraduationCap, Briefcase, Award, Plus, Eye, MoreVertical } from "lucide
 import { SectionCard, EditableField } from "../components/ProfileSectionCard";
 import type { SectionKey } from "../components/ProfileSectionCard";
 import { CertAddModal } from "../components/CertAddModal";
+import { EducationAddModal } from "../components/EducationAddModal";
 import { CertPreviewModal } from "../components/CertPreviewModal";
 import { Button } from "@/components/ui/button/Button";
 import { Badge } from "@/components/ui/badge/Badge";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { formatDate } from "@/utils/format";
 import { cn } from "@/components/ui/utils";
-import type { User, Certification } from "../types";
-import { IconCertificate, IconPencilMinus, IconTrash } from "@tabler/icons-react";
+import type { User, Certification, EducationItem } from "../types";
+import { IconCertificate, IconSchool, IconPencilMinus, IconTrash, IconCalendarMonth, IconTrophy, IconEdit } from "@tabler/icons-react";
 import { usePortalDropdown } from "@/hooks";
+import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
 
 interface QualificationsTabProps {
   user: User;
@@ -20,6 +22,7 @@ interface QualificationsTabProps {
   editingSection: SectionKey | null;
   isDraftDirty: boolean;
   certifications: Certification[];
+  educationList?: EducationItem[];
   onSectionEdit: (section: SectionKey) => void;
   onSectionSave: (section: SectionKey) => void;
   onSectionCancel: () => void;
@@ -27,6 +30,8 @@ interface QualificationsTabProps {
   onDraftChange: (key: keyof User, value: string) => void;
   onCertSave: (data: Omit<Certification, "id">, editing: Certification | null) => void;
   onCertDelete: (id: string) => void;
+  onEduSave: (data: Omit<EducationItem, "id">, editing: EducationItem | null) => void;
+  onEduDelete: (id: string) => void;
 }
 
 export const QualificationsTab: React.FC<QualificationsTabProps> = ({
@@ -42,6 +47,9 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
   onDraftChange,
   onCertSave,
   onCertDelete,
+  educationList = [],
+  onEduSave,
+  onEduDelete,
 }) => {
   const isEducationEditing = editingSection === "education";
   const isExpertiseEditing = editingSection === "expertise";
@@ -51,7 +59,12 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
   const [certPreview, setCertPreview] = useState<Certification | null>(null);
   const [certDeleteId, setCertDeleteId] = useState<string | null>(null);
 
-  const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+  const [eduAddOpen, setEduAddOpen] = useState(false);
+  const [eduEditing, setEduEditing] = useState<EducationItem | null>(null);
+  const [eduDeleteId, setEduDeleteId] = useState<string | null>(null);
+  const { openId, position, getRef, toggle, close } = usePortalDropdown();
+
+
 
 
   const handleOpenAdd = () => {
@@ -70,53 +83,105 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
     setCertEditing(null);
   };
 
+  const handleEduOpenAdd = () => {
+    setEduEditing(null);
+    setEduAddOpen(true);
+  };
+
+  const handleEduOpenEdit = (edu: EducationItem) => {
+    setEduEditing(edu);
+    setEduAddOpen(true);
+  };
+
+  const handleEduSave = (data: Omit<EducationItem, "id">) => {
+    onEduSave(data, eduEditing);
+    setEduAddOpen(false);
+    setEduEditing(null);
+  };
+
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-      {/* Education */}
-      <SectionCard
-        title="Education"
-        icon={<GraduationCap className="h-4 w-4" />}
-        isEditing={isEducationEditing}
-        onEdit={() => onSectionEdit("education")}
-        onSave={() => onSectionSave("education")}
-        onCancel={onSectionCancel}
-        onReset={onSectionReset}
-        isResetDisabled={!isDraftDirty}
-      >
-        <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-          <EditableField
-            label="Highest Degree" value={user.degree} draftValue={draft.degree}
-            isEditing={isEducationEditing}
-            field={{ type: "text", fieldKey: "degree" }}
-            onChange={onDraftChange}
-          />
-          <EditableField
-            label="Field of Study" value={user.fieldOfStudy} draftValue={draft.fieldOfStudy}
-            isEditing={isEducationEditing}
-            field={{ type: "text", fieldKey: "fieldOfStudy" }}
-            onChange={onDraftChange}
-          />
-          <EditableField
-            label="Institution" value={user.institution} draftValue={draft.institution}
-            isEditing={isEducationEditing}
-            field={{ type: "text", fieldKey: "institution" }}
-            onChange={onDraftChange}
-            className="col-span-2"
-          />
-          <EditableField
-            label="Graduation Year" value={user.graduationYear} draftValue={draft.graduationYear}
-            isEditing={isEducationEditing}
-            field={{ type: "text", fieldKey: "graduationYear" }}
-            onChange={onDraftChange}
-          />
-          <EditableField
-            label="GPA / Grade" value={user.gpa} draftValue={draft.gpa}
-            isEditing={isEducationEditing}
-            field={{ type: "text", fieldKey: "gpa" }}
-            onChange={onDraftChange}
-          />
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 auto-rows-min">
+      {/* Education List */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px]">
+        {/* Card Header */}
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-emerald-600 flex-shrink-0"><IconSchool className="h-4 w-4" /></span>
+            <h3 className="text-sm font-semibold text-slate-800 truncate">Education Details</h3>
+            {educationList.length > 0 && (
+              <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full flex-shrink-0">
+                {educationList.length}
+              </span>
+            )}
+          </div>
+          <Button variant="default" size="sm" onClick={handleEduOpenAdd} className="flex-shrink-0 gap-2 sm:h-9 sm:px-4 sm:text-sm">
+            <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            Add Education
+          </Button>
         </div>
-      </SectionCard>
+
+        {/* Card Body */}
+        <div className="flex-1 overflow-y-auto">
+          {educationList.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 text-slate-400">
+              <IconSchool className="h-10 w-10 text-slate-300 mb-3" />
+              <p className="text-sm font-medium text-slate-500">No education items recorded</p>
+              <p className="text-xs mt-1">Add your degrees and academic qualifications</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {[...(educationList ?? [])]
+                .sort((a, b) => parseInt(b.graduationYear || "0") - parseInt(a.graduationYear || "0"))
+                .map((edu, idx) => (
+                  <div key={edu.id} className="p-4 hover:bg-slate-50 transition-colors group relative flex items-start justify-between gap-4">
+                    <div className="flex gap-3">
+                      <div className="flex flex-col items-center gap-1.5 shrink-0 mt-0.5">
+                        <span className="text-xs font-medium text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                          {String(idx + 1).padStart(2, '0')}
+                        </span>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-slate-800 line-clamp-2 leading-tight mb-1">{edu.degree}</p>
+                        <p className="text-xs font-medium text-emerald-600 mb-1">{edu.fieldOfStudy} - <span className="text-slate-500 font-medium">{edu.institution}</span></p>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2.5">
+                          <StatusBadge
+                            status="draft"
+                            size="sm"
+                            label={`${edu.graduationYear}`}
+                          />
+                          {edu.gpa && (
+                            <StatusBadge
+                              status="approved"
+                              size="sm"
+                              label={`GPA ${edu.gpa}`}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => handleEduOpenEdit(edu)}
+                        className="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                        title="Edit"
+                      >
+                        <IconPencilMinus className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => setEduDeleteId(edu.id)}
+                        className="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        title="Delete"
+                      >
+                        <IconTrash className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Professional Expertise */}
       <SectionCard
@@ -179,156 +244,134 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
         </div>
 
         {/* Card Body */}
-        <div className="p-0">
-          {certifications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-slate-400">
-              <IconCertificate className="h-10 w-10 text-slate-300 mb-3" />
-              <p className="text-sm font-medium text-slate-500">No certifications recorded</p>
-              <p className="text-xs mt-1">External certifications and licenses will appear here</p>
-            </div>
-          ) : (
+        <div className="p-5 flex-1 flex flex-col relative text-slate-900">
+          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col bg-white">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">
                   <tr>
-                    <th className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                      Certificate
-                    </th>
-                    <th className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
-                      Issuing Org
-                    </th>
-                    <th className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden sm:table-cell">
-                      Issue Date
-                    </th>
-                    <th className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
-                      Expiry Date
-                    </th>
-                    <th className="py-3 px-4 text-center text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap hidden xs:table-cell">
-                      Status
-                    </th>
-                    <th className="sticky right-0 bg-slate-50 py-3 px-4 text-center text-xs font-bold text-slate-500 uppercase tracking-wider z-40 backdrop-blur-sm whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
-                      Actions
+                    <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap w-10 sm:w-12">No.</th>
+                    <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Certificate Name</th>
+                    <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Issuing Organization</th>
+                    <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Issue Date</th>
+                    <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Expiry Date</th>
+                    <th className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap">Attachment</th>
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-1.5 px-2 md:py-2.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                      Action
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 bg-white">
-                  {certifications.map((cert) => {
-                    const isExpired = cert.expiryDate ? new Date(cert.expiryDate) < new Date() : false;
-                    return (
-                      <tr key={cert.id} className="hover:bg-slate-50/80 transition-colors group">
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2.5">
-                            <div className="h-7 w-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center flex-shrink-0">
-                              <IconCertificate className="h-3.5 w-3.5 text-emerald-600" />
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-slate-800 truncate max-w-[140px] sm:max-w-[200px]">
-                                {cert.name}
-                              </p>
-                              <p className="text-xs text-slate-400 md:hidden truncate max-w-[140px]">
-                                {cert.issuingOrg}
-                              </p>
-                              {/* Show status inline on mobile */}
-                              <Badge
-                                color={isExpired ? "red" : "emerald"}
-                                size="sm"
-                                pill
-                                className="mt-0.5 xs:hidden"
-                              >
-                                {isExpired ? "Expired" : "Valid"}
-                              </Badge>
-                            </div>
+                <tbody className="divide-y divide-slate-200 bg-white">
+                  {certifications.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="py-16 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center">
                           </div>
-                        </td>
-                        <td className="py-3 px-4 text-sm text-slate-600 hidden md:table-cell whitespace-nowrap">
-                          {cert.issuingOrg}
-                        </td>
-                        <td className="py-3 px-4 text-sm text-slate-600 hidden sm:table-cell whitespace-nowrap">
-                          {cert.issueDate ? formatDate(cert.issueDate) : "—"}
-                        </td>
-                        <td className="py-3 px-4 text-sm hidden lg:table-cell whitespace-nowrap">
-                          {cert.expiryDate ? (
-                            <span className={cn(isExpired ? "text-red-600 font-medium" : "text-slate-600")}>
-                              {formatDate(cert.expiryDate)}
-                            </span>
-                          ) : (
-                            <span className="text-slate-400">No expiry</span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-center hidden xs:table-cell">
-                          {isExpired ? (
-                            <Badge color="red" size="sm" pill className="whitespace-nowrap">Expired</Badge>
-                          ) : (
-                            <Badge color="emerald" size="sm" pill className="whitespace-nowrap">Valid</Badge>
-                          )}
-                        </td>
-                        <td
-                          onClick={(e) => e.stopPropagation()}
-                          className="sticky right-0 bg-white py-3 px-4 text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50/80"
-                        >
-                          <button
-                            ref={getRef(cert.id)}
-                            onClick={(e) => handleDropdownToggle(cert.id, e)}
-                            className="inline-flex items-center justify-center h-7 w-7 rounded-lg hover:bg-slate-100 transition-colors"
-                            aria-label="More actions"
-                          >
-                            <MoreVertical className="h-3.5 w-3.5 text-slate-600" />
-                          </button>
-                          {openDropdownId === cert.id && createPortal(
-                            <>
-                              <div
-                                className="fixed inset-0 z-40 animate-in fade-in duration-150"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  closeDropdown();
-                                }}
-                                aria-hidden="true"
-                              />
-                              <div
-                                className="fixed z-50 min-w-[160px] w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-                                style={{
-                                  top: `${dropdownPosition.top}px`,
-                                  left: `${dropdownPosition.left}px`,
-                                  transform: dropdownPosition.showAbove ? "translateY(-100%)" : "none",
-                                }}
-                              >
-                                <div className="py-1">
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); setCertPreview(cert); closeDropdown(); }}
-                                    className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-                                  >
-                                    <Eye className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
-                                    Preview
-                                  </button>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); handleOpenEdit(cert); closeDropdown(); }}
-                                    className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-                                  >
-                                    <IconPencilMinus className="h-3.5 w-3.5 text-slate-500 flex-shrink-0" />
-                                    Edit Certificate
-                                  </button>
-                                  <div className="my-1 h-px bg-slate-100" />
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); setCertDeleteId(cert.id); closeDropdown(); }}
-                                    className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
-                                  >
-                                    <IconTrash className="h-3.5 w-3.5 flex-shrink-0" />
-                                    Delete
-                                  </button>
-                                </div>
+                          <p className="text-sm font-medium text-slate-900">No certifications recorded</p>
+                          <p className="text-xs text-slate-500">Add external certifications and licenses.</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    certifications.map((cert, index) => {
+                      const isExpired = cert.expiryDate ? new Date(cert.expiryDate) < new Date() : false;
+                      return (
+                        <tr key={cert.id} className="hover:bg-slate-50/80 transition-colors group">
+                          {/* No. */}
+                          <td className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-sm text-center text-slate-500 font-medium">
+                            {String(index + 1)}
+                          </td>
+                          {/* Name */}
+                          <td className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-2.5">
+                              <div className="h-7 w-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center flex-shrink-0 font-medium">
+                                <IconCertificate className="h-3.5 w-3.5 text-emerald-600" />
                               </div>
-                            </>,
-                            window.document.body
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                              <p className="font-medium text-slate-900">{cert.name}</p>
+                            </div>
+                          </td>
+                          {/* Org */}
+                          <td className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-sm text-slate-700 whitespace-nowrap">
+                            {cert.issuingOrg}
+                          </td>
+                          {/* Issue Date */}
+                          <td className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-sm text-slate-700 whitespace-nowrap font-medium">
+                            {cert.issueDate ? formatDate(cert.issueDate) : "-"}
+                          </td>
+                          {/* Expiry Date */}
+                          <td className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                            {cert.expiryDate ? (
+                              <div className="flex flex-col">
+                                <span className={cn("font-medium", isExpired ? "text-rose-600" : "text-slate-700")}>
+                                  {formatDate(cert.expiryDate)}
+                                </span>
+                                {isExpired && <span className="text-[10px] font-bold text-rose-500 uppercase tracking-tight">Expired</span>}
+                              </div>
+                            ) : (
+                              <span className="text-slate-400 italic">-</span>
+                            )}
+                          </td>
+                          {/* Attachment */}
+                          <td className="py-1.5 px-2 sm:py-2.5 sm:px-4 text-center">
+                            {cert.fileName ? (
+                              <button
+                                onClick={() => setCertPreview(cert)}
+                                className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors"
+                              >
+                                <IconCertificate className="h-3.5 w-3.5" />
+                                <span className="truncate max-w-[120px]">{cert.fileName}</span>
+                              </button>
+                            ) : (
+                              <span className="text-xs text-slate-400 italic">No file</span>
+                            )}
+                          </td>
+                          {/* Action Sticky */}
+                          <td
+                            onClick={(e) => e.stopPropagation()}
+                            className="sticky right-0 z-10 bg-white border-b border-slate-200 py-1.5 px-2 md:py-2 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                          >
+                            <button
+                              ref={getRef(cert.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggle(cert.id, e);
+                              }}
+                              className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
-          )}
+
+            {/* Footer Summary */}
+            {certifications.length > 0 && (
+              <div className="px-5 py-3 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between flex-wrap gap-2">
+                <p className="text-xs text-slate-500">
+                  Showing <span className="font-semibold text-slate-700">{certifications.length}</span> certification{certifications.length !== 1 ? "s" : ""}
+                </p>
+                <div className="flex items-center gap-3 text-xs font-semibold text-slate-700">
+                  <span>Last Updated: {formatDate(new Date().toISOString())}</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+
+        <AlertModal
+          isOpen={certDeleteId !== null}
+          onClose={() => setCertDeleteId(null)}
+          onConfirm={() => { onCertDelete(certDeleteId!); setCertDeleteId(null); }}
+          type="confirm"
+          title="Delete Certificate"
+          description="Are you sure you want to delete this certificate? This action cannot be undone."
+        />
       </div>
 
       {/* Cert modals managed locally */}
@@ -344,6 +387,23 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
         onClose={() => setCertPreview(null)}
       />
 
+      {/* Education modals */}
+      <EducationAddModal
+        isOpen={eduAddOpen}
+        onClose={() => { setEduAddOpen(false); setEduEditing(null); }}
+        onSave={handleEduSave}
+        editing={eduEditing}
+      />
+
+      <AlertModal
+        isOpen={eduDeleteId !== null}
+        onClose={() => setEduDeleteId(null)}
+        onConfirm={() => { onEduDelete(eduDeleteId!); setEduDeleteId(null); }}
+        type="confirm"
+        title="Delete Education Entry"
+        description="Are you sure you want to delete this education entry? This action cannot be undone."
+      />
+
       <AlertModal
         isOpen={certDeleteId !== null}
         onClose={() => setCertDeleteId(null)}
@@ -352,6 +412,62 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
         title="Delete Certificate"
         description="Are you sure you want to delete this certificate? This action cannot be undone."
       />
+
+      {/* Action Menu Portal */}
+      {openId && createPortal(
+        <>
+          <div
+            className="fixed inset-0 z-40 animate-in fade-in duration-150"
+            onClick={(e) => {
+              e.stopPropagation();
+              close();
+            }}
+            aria-hidden="true"
+          />
+          <div
+            className="fixed z-50 min-w-[160px] w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+            style={{
+              top: `${position.top}px`,
+              left: `${position.left}px`,
+              transform: position.showAbove ? "translateY(-100%)" : "none",
+            }}
+          >
+            <div className="py-1">
+              {(() => {
+                const cert = certifications.find(c => c.id === openId);
+                if (!cert) return null;
+                return (
+                  <>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setCertPreview(cert); close(); }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                    >
+                      <Eye className="h-3.5 w-3.5 text-slate-500 flex-shrink-0" />
+                      Preview
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleOpenEdit(cert); close(); }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                    >
+                      <IconEdit className="h-3.5 w-3.5 text-slate-500 flex-shrink-0" />
+                      Edit Certificate
+                    </button>
+                    <div className="my-1 h-px bg-slate-100" />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setCertDeleteId(cert.id); close(); }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <IconTrash className="h-3.5 w-3.5 flex-shrink-0" />
+                      Delete
+                    </button>
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
     </div>
   );
 };

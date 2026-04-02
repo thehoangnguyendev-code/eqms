@@ -45,6 +45,9 @@ export const UserProfileView: React.FC = () => {
     terminateUser,
     reinstateUser,
     generateResetPassword,
+    educationList,
+    saveEdu,
+    deleteEdu,
   } = useUserProfile(userId);
 
   const [resetPasswordModal, setResetPasswordModal] = useState({ isOpen: false, password: "" });
@@ -225,6 +228,7 @@ export const UserProfileView: React.FC = () => {
               editingSection={editingSection}
               isDraftDirty={isDraftDirty}
               certifications={certifications}
+              educationList={educationList}
               onSectionEdit={startSectionEdit}
               onSectionSave={saveSection}
               onSectionCancel={cancelSection}
@@ -232,6 +236,8 @@ export const UserProfileView: React.FC = () => {
               onDraftChange={updateField}
               onCertSave={saveCert}
               onCertDelete={deleteCert}
+              onEduSave={saveEdu}
+              onEduDelete={deleteEdu}
             />
           )}
           {activeTab === "permissions" && (
