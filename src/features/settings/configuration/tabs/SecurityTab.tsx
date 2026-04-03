@@ -4,6 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox/Checkbox';
 import { Select } from '@/components/ui/select/Select';
 import { Button } from '@/components/ui/button/Button';
 import { Plus, X, Lock, CheckCircle2, Clock, Shield, Globe, ClipboardList } from 'lucide-react';
+import { IconFilter2Search, IconKey, IconLock } from '@tabler/icons-react';
 
 interface SecurityTabProps {
   config: SecurityConfig;
@@ -118,7 +119,7 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
       </SettingsCard>
 
       {/* Password Requirements */}
-      <SettingsCard title="Password Requirements" icon={<CheckCircle2 className="h-4 w-4" />}>
+      <SettingsCard title="Password Requirements" icon={<IconKey className="h-4 w-4" />}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Checkbox
             id="requireUppercase"
@@ -412,7 +413,7 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ config, onChange }) =>
       </SettingsCard>
 
       {/* Audit & Logging */}
-      <SettingsCard title="Audit & Logging" icon={<ClipboardList className="h-4 w-4" />}>
+      <SettingsCard title="Audit & Logging" icon={<IconFilter2Search className="h-4 w-4" />}>
         <div className="space-y-4">
           <div>
             <Checkbox

@@ -9,6 +9,7 @@ import { Eye, EyeOff, Send, Bell, Clock, Smartphone, Layout, Zap } from 'lucide-
 import gmailLogo from '@/assets/images/logo-app/gmail.svg';
 import telegramLogo from '@/assets/images/logo-app/telegram.svg';
 import whatsappLogo from '@/assets/images/logo-app/whatsapp.svg';
+import { IconBellRinging, IconMail, IconMessage } from '@tabler/icons-react';
 
 interface NotificationTabProps {
   config: NotificationConfig;
@@ -148,7 +149,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
       </SettingsCard>
 
       {/* Email Configuration */}
-      <SettingsCard title="Email Notifications (SMTP)" icon={<img src={gmailLogo} alt="Gmail" className="h-4 w-4 object-contain grayscale brightness-110" />}>
+      <SettingsCard title="Email Notifications (SMTP)" icon={<img src={gmailLogo} alt="Gmail" className="h-4 w-4 object-contain brightness-110" />}>
         <div className="space-y-4">
           <Checkbox
             id="enableEmailNotifications"
@@ -448,7 +449,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
       </SettingsCard>
 
       {/* Digest Settings */}
-      <SettingsCard title="Email Digest Settings" icon={<Clock className="h-4 w-4" />}>
+      <SettingsCard title="Email Digest Settings" icon={<IconMail className="h-4 w-4" />}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             label="Email Digest Frequency"
@@ -471,7 +472,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
       </SettingsCard>
 
       {/* SMS Notifications */}
-      <SettingsCard title="SMS Notifications" icon={<Smartphone className="h-4 w-4" />}>
+      <SettingsCard title="SMS Notifications" icon={<IconMessage className="h-4 w-4" />}>
         <div className="space-y-4">
           <div>
             <Checkbox
@@ -569,7 +570,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
       </SettingsCard>
 
       {/* Notification Templates */}
-      <SettingsCard title="Notification Templates" icon={<Layout className="h-4 w-4" />}>
+      <SettingsCard title="Notification Templates" icon={<IconBellRinging className="h-4 w-4" />}>
         <div className="space-y-4">
           <div>
             <Checkbox
@@ -625,7 +626,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
               checked={config.triggers.documentApproval}
               onChange={(checked) => handleTriggerChange('documentApproval', checked)}
             />
-            <p className="text-xs text-slate-500 ml-7 mt-1.5 leading-relaxed">
+            <p className="text-xs text-slate-500 ml-7 leading-relaxed">
               When a document requires your approval
             </p>
           </div>
@@ -636,7 +637,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
               checked={config.triggers.taskAssignment}
               onChange={(checked) => handleTriggerChange('taskAssignment', checked)}
             />
-            <p className="text-xs text-slate-500 ml-7 mt-1.5 leading-relaxed">
+            <p className="text-xs text-slate-500 ml-7 leading-relaxed">
               When a task is assigned to you
             </p>
           </div>
@@ -647,7 +648,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
               checked={config.triggers.systemAlerts}
               onChange={(checked) => handleTriggerChange('systemAlerts', checked)}
             />
-            <p className="text-xs text-slate-500 ml-7 mt-1.5 leading-relaxed">
+            <p className="text-xs text-slate-500 ml-7 leading-relaxed">
               Critical system messages and updates
             </p>
           </div>
@@ -658,7 +659,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
               checked={config.triggers.capaDue}
               onChange={(checked) => handleTriggerChange('capaDue', checked)}
             />
-            <p className="text-xs text-slate-500 ml-7 mt-1.5 leading-relaxed">
+            <p className="text-xs text-slate-500 ml-7 leading-relaxed">
               Reminders for upcoming due dates
             </p>
           </div>

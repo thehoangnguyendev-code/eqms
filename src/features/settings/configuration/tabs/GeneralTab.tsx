@@ -3,6 +3,7 @@ import { GeneralConfig } from '../types';
 import { Select } from '@/components/ui/select/Select';
 import { Checkbox } from '@/components/ui/checkbox/Checkbox';
 import { Palette, Phone, Building2, Database, Globe, Monitor, Wrench, Sun, Moon } from 'lucide-react';
+import { IconAddressBook } from '@tabler/icons-react';
 
 interface GeneralTabProps {
   config: GeneralConfig;
@@ -31,18 +32,18 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
     try {
       // Get all supported time zones from browser
       const zones = Intl.supportedValuesOf('timeZone');
-      
+
       // Format time zones with offset information
       const formatted = zones.map((zone) => {
         const formatter = new Intl.DateTimeFormat('en-US', {
           timeZone: zone,
           timeZoneName: 'shortOffset',
         });
-        
+
         // Get current time to calculate offset
         const parts = formatter.formatToParts(new Date());
         const offset = parts.find((part) => part.type === 'timeZoneName')?.value || '';
-        
+
         return {
           label: `${zone.replace(/_/g, ' ')} ${offset}`,
           value: zone,
@@ -150,7 +151,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
       </SettingsCard>
 
       {/* System Information */}
-      <SettingsCard title="Contact Information" icon={<Phone className="h-4 w-4" />}>
+      <SettingsCard title="Contact Information" icon={<IconAddressBook className="h-4 w-4" />}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
@@ -277,7 +278,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ config, onChange }) => {
               Automatically backup system data at scheduled intervals
             </p>
           </div>
-          
+
           {config.backupSettings.enableAutoBackup && (
             <div className="ml-4 sm:ml-7 p-3 sm:p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

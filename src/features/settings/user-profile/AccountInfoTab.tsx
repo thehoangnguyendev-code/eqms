@@ -1,4 +1,4 @@
-﻿import React, { useRef, ChangeEvent } from 'react';
+import React, { useRef, ChangeEvent } from 'react';
 import { Camera, Edit2, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button/Button';
 import { Checkbox } from '@/components/ui/checkbox/Checkbox';
@@ -68,7 +68,7 @@ export const AccountInfoTab: React.FC<AccountInfoTabProps> = ({
                 showToast({ type: 'error', message: 'Only .png or .jpg files are accepted.' });
                 return;
             }
-            
+
             // Upload directly without cropping
             onAvatarChange(file);
         }
@@ -222,21 +222,19 @@ export const AccountInfoTab: React.FC<AccountInfoTabProps> = ({
                                         value={formData.email}
                                         onChange={(e) => onInputChange('email', e.target.value)}
                                         disabled={!editingFields.email}
-                                        className={`w-full h-9 px-3.5 pr-10 text-sm border rounded-lg transition-all focus:outline-none ${
-                                            editingFields.email
+                                        className={`w-full h-9 px-3.5 pr-10 text-sm border rounded-lg transition-all focus:outline-none ${editingFields.email
                                                 ? 'border-emerald-500 bg-white ring-1 ring-emerald-500 focus:ring-emerald-500 focus:border-emerald-500'
                                                 : 'border-slate-200 bg-slate-50 text-slate-600 cursor-not-allowed'
-                                        }`}
+                                            }`}
                                         placeholder="Enter email"
                                     />
-                                    <Button 
-                                        variant="ghost" 
-                                        size="icon-sm" 
-                                        className={`absolute right-1 top-1/2 -translate-y-1/2 ${
-                                            editingFields.email 
-                                                ? 'text-emerald-600 bg-emerald-100 hover:bg-emerald-200' 
+                                    <Button
+                                        variant="ghost"
+                                        size="icon-sm"
+                                        className={`absolute right-1 top-1/2 -translate-y-1/2 ${editingFields.email
+                                                ? 'text-emerald-600 bg-emerald-100 hover:bg-emerald-200'
                                                 : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
-                                        }`}
+                                            }`}
                                         title={editingFields.email ? 'Editing email' : 'Edit email'}
                                         onClick={() => onToggleEdit('email')}
                                     >
@@ -276,21 +274,19 @@ export const AccountInfoTab: React.FC<AccountInfoTabProps> = ({
                                         value={formData.phone}
                                         onChange={(e) => onInputChange('phone', e.target.value)}
                                         disabled={!editingFields.phone}
-                                        className={`w-full h-9 px-3.5 pr-10 text-sm border rounded-lg transition-all focus:outline-none ${
-                                            editingFields.phone
+                                        className={`w-full h-9 px-3.5 pr-10 text-sm border rounded-lg transition-all focus:outline-none ${editingFields.phone
                                                 ? 'border-emerald-500 bg-white ring-1 ring-emerald-500 focus:ring-emerald-500 focus:border-emerald-500'
                                                 : 'border-slate-200 bg-slate-50 text-slate-600 cursor-not-allowed'
-                                        }`}
+                                            }`}
                                         placeholder="Enter phone number"
                                     />
-                                    <Button 
-                                        variant="ghost" 
-                                        size="icon-sm" 
-                                        className={`absolute right-1 top-1/2 -translate-y-1/2 ${
-                                            editingFields.phone 
-                                                ? 'text-emerald-600 bg-emerald-100 hover:bg-emerald-200' 
+                                    <Button
+                                        variant="ghost"
+                                        size="icon-sm"
+                                        className={`absolute right-1 top-1/2 -translate-y-1/2 ${editingFields.phone
+                                                ? 'text-emerald-600 bg-emerald-100 hover:bg-emerald-200'
                                                 : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
-                                        }`}
+                                            }`}
                                         title={editingFields.phone ? 'Editing phone' : 'Edit phone'}
                                         onClick={() => onToggleEdit('phone')}
                                     >

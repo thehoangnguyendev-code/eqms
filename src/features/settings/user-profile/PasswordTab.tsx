@@ -66,24 +66,24 @@ export const PasswordTab: React.FC<PasswordTabProps> = ({
         const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const numbers = '0123456789';
         const special = '!@#$%^&*()';
-        
+
         const allChars = lowercase + uppercase + numbers + special;
         let password = '';
-        
+
         // Ensure at least one character from each category
         password += lowercase[Math.floor(Math.random() * lowercase.length)];
         password += uppercase[Math.floor(Math.random() * uppercase.length)];
         password += numbers[Math.floor(Math.random() * numbers.length)];
         password += special[Math.floor(Math.random() * special.length)];
-        
+
         // Fill the rest randomly (total 12 characters)
         for (let i = 4; i < 12; i++) {
             password += allChars[Math.floor(Math.random() * allChars.length)];
         }
-        
+
         // Shuffle the password
         password = password.split('').sort(() => Math.random() - 0.5).join('');
-        
+
         onPasswordChange('newPassword', password);
         onPasswordChange('confirmPassword', password);
     };
@@ -123,7 +123,7 @@ export const PasswordTab: React.FC<PasswordTabProps> = ({
                     <div className="flex-1 min-w-0">
                         <h4 className="text-xs sm:text-sm font-semibold text-amber-900">Password Expiration Warning</h4>
                         <p className="text-xs sm:text-sm text-amber-700 mt-1">
-                            Your password will expire in <strong>{daysUntilExpiry} days</strong> (on {PASSWORD_EXPIRY_DATE}). 
+                            Your password will expire in <strong>{daysUntilExpiry} days</strong> (on {PASSWORD_EXPIRY_DATE}).
                             Please change your password soon to avoid account access issues.
                         </p>
                     </div>

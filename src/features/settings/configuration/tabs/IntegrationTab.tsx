@@ -22,6 +22,7 @@ import {
   Cloud,
   Shield,
 } from 'lucide-react';
+import { IconUserCode } from '@tabler/icons-react';
 
 interface IntegrationTabProps {
   config: IntegrationConfig;
@@ -143,7 +144,7 @@ export const IntegrationTab: React.FC<IntegrationTabProps> = ({ config, onChange
       />
 
       {/* SSO Configuration */}
-      <SettingsCard title="Single Sign-On (SSO)" icon={<Shield className="h-4 w-4" />}>
+      <SettingsCard title="Single Sign-On (SSO)" icon={<IconUserCode className="h-4 w-4" />}>
         <div className="space-y-4">
           <div>
             <Checkbox
@@ -564,7 +565,7 @@ export const IntegrationTab: React.FC<IntegrationTabProps> = ({ config, onChange
       </SettingsCard>
 
       {/* API Security & CORS */}
-      <SettingsCard title="API Security & CORS" icon={<Globe className="h-4 w-4" />}>
+      <SettingsCard title="API Security & CORS" icon={<Shield className="h-4 w-4" />}>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
             <div className="p-4 rounded-xl bg-slate-50/50 border border-slate-100">

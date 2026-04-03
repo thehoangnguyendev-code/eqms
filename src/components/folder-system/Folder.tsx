@@ -64,19 +64,22 @@ const Folder: React.FC<FolderProps> = ({
   const paper2 = darkenColor('#ffffff', 0.05);
   const paper3 = '#ffffff';
 
-  const handleMouseEnter = () => {
+  const handlePointerEnter = () => {
     if (externalOpen === undefined) setInternalOpen(true);
     onOpenChange?.(true);
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     if (externalOpen === undefined) setInternalOpen(false);
     onOpenChange?.(false);
     setPaperOffsets(Array.from({ length: maxItems }, () => ({ x: 0, y: 0 })));
   };
 
-  const handlePaperMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+  const handlePaperPointerMove = (e: React.PointerEvent<HTMLDivElement>, index: number) => {
     if (!open) return;
+    // On touch devices, don't follow the finger exactly as it covers the element
+    if (e.pointerType === 'touch') return;
+    
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -89,7 +92,7 @@ const Folder: React.FC<FolderProps> = ({
     });
   };
 
-  const handlePaperMouseLeave = (index: number) => {
+  const handlePaperPointerLeave = (index: number) => {
     setPaperOffsets(prev => {
       const newOffsets = [...prev];
       newOffsets[index] = { x: 0, y: 0 };
@@ -112,8 +115,8 @@ const Folder: React.FC<FolderProps> = ({
     <div 
       style={scaleStyle} 
       className={className}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
     >
       <div className={folderClassName} style={folderStyle}>
         <div className="folder__back">
@@ -121,8 +124,8 @@ const Folder: React.FC<FolderProps> = ({
             <div
               key={i}
               className={`paper paper-${i + 1}`}
-              onMouseMove={e => handlePaperMouseMove(e, i)}
-              onMouseLeave={() => handlePaperMouseLeave(i)}
+              onPointerMove={e => handlePaperPointerMove(e, i)}
+              onPointerLeave={() => handlePaperPointerLeave(i)}
               style={
                 open
                   ? {

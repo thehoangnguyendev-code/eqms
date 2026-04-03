@@ -2,6 +2,7 @@ import React from "react";
 import { Database, CheckCircle2, XCircle, Clock, Layers, BarChart3, ShieldAlert, Info } from "lucide-react";
 import type { DatabaseInfo } from "../types";
 import { formatDateTimeLong, formatDateUS } from "@/utils/format";
+import { IconNetwork } from "@tabler/icons-react";
 
 interface DatabaseTabProps {
   data: DatabaseInfo;
@@ -97,7 +98,7 @@ export const DatabaseTab: React.FC<DatabaseTabProps> = ({ data }) => {
 
       {/* Card: Connection Pool */}
       {data.connectionPool && (
-        <SettingsCard title="Connection Pool" icon={<Layers className="h-4 w-4" />}>
+        <SettingsCard title="Connection Pool" icon={<IconNetwork className="h-4 w-4" />}>
           <div className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-center">

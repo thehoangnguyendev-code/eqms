@@ -3,7 +3,7 @@ import { DocumentConfig } from '../types';
 import { Checkbox } from '@/components/ui/checkbox/Checkbox';
 import { Select } from '@/components/ui/select/Select';
 import { MultiSelect } from '@/components/ui/select/MultiSelect';
-import { Archive, Shield, GitBranch, PenSquare } from 'lucide-react';
+import { Archive, Shield, GitBranch, PenSquare, PenTool } from 'lucide-react';
 
 interface DocumentTabProps {
   config: DocumentConfig;
@@ -101,7 +101,7 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
               Apply "Confidential" watermark to all document previews and downloads
             </p>
           </div>
-          
+
           <div className="pt-2">
             <Checkbox
               id="allowDownload"
@@ -187,7 +187,7 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
       </SettingsCard>
 
       {/* E-Signature Settings */}
-      <SettingsCard title="Electronic Signature (E-Signature)" icon={<PenSquare className="h-4 w-4" />}>
+      <SettingsCard title="Electronic Signature" icon={<PenTool className="h-4 w-4" />}>
         <div className="space-y-4">
           <div>
             <Checkbox

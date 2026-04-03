@@ -13,7 +13,8 @@
   perspective: 1200px;
 }
 
-.folder:not(.open):hover {
+.folder:not(.open):hover,
+.folder:not(.open):active {
   transform: translateY(-5px) rotateY(-5deg);
 }
 
@@ -59,7 +60,8 @@
   overflow: hidden;
 }
 
-.paper:hover {
+.paper:hover,
+.paper:active {
   box-shadow: 0 8px 16px rgba(0,0,0,0.1);
   background: #ffffff !important;
   transition: all 0.3s ease;

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from '@/app/routes.constants';
-import { IconFile, IconSearch, IconPlus, IconUpload, IconDownload, IconLayoutGrid, IconLayoutList } from "@tabler/icons-react";
+import { IconFile, IconSearch, IconPlus, IconUpload, IconDownload, IconLayoutGrid, IconLayoutList, IconFolder } from "@tabler/icons-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { knowledgeBase } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
@@ -11,8 +11,8 @@ import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
-import Folder from "@/components/Folder";
-import Document3D from "@/components/Document3D";
+import Folder from "@/components/folder-system/Folder";
+import Document3D from "@/components/folder-system/Document3D";
 
 const COLOR_MAP: Record<string, string> = {
     "text-emerald-600": "#059669",
@@ -91,6 +91,7 @@ export const KnowledgeView: React.FC = () => {
     };
 
     const handleFolderClick = (dept: Department) => {
+        setHoveredDeptId(dept.id);
         setIsNavigating(true);
         setTimeout(() => {
             setSelectedDepartment(dept);
@@ -158,8 +159,12 @@ export const KnowledgeView: React.FC = () => {
                     <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4 shrink-0">
                         <div
                             className="bg-slate-50/50 border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm group cursor-pointer transition-all hover:bg-white hover:border-emerald-500 hover:shadow-md"
-                            onMouseEnter={() => setIsHoveringTotalStats(true)}
-                            onMouseLeave={() => setIsHoveringTotalStats(false)}
+                            onPointerEnter={() => setIsHoveringTotalStats(true)}
+                            onPointerLeave={() => setIsHoveringTotalStats(false)}
+                            onClick={() => {
+                                setIsHoveringTotalStats(true);
+                                setTimeout(() => setIsHoveringTotalStats(false), 2000);
+                            }}
                         >
                             <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0 transition-colors mr-2 relative">
@@ -193,8 +198,12 @@ export const KnowledgeView: React.FC = () => {
                         </div>
                         <div
                             className="bg-slate-50/50 border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm group cursor-pointer transition-all hover:bg-white hover:border-blue-500 hover:shadow-md"
-                            onMouseEnter={() => setIsHoveringDocStats(true)}
-                            onMouseLeave={() => setIsHoveringDocStats(false)}
+                            onPointerEnter={() => setIsHoveringDocStats(true)}
+                            onPointerLeave={() => setIsHoveringDocStats(false)}
+                            onClick={() => {
+                                setIsHoveringDocStats(true);
+                                setTimeout(() => setIsHoveringDocStats(false), 2000);
+                            }}
                         >
                             <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0 mr-2 relative">
@@ -230,9 +239,12 @@ export const KnowledgeView: React.FC = () => {
                     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
                         {/* 1. Header Row */}
                         <div className="border-b border-slate-100 px-4 md:px-6 py-4 flex items-center justify-between bg-slate-50/20">
-                            <h2 className="text-base font-semibold text-slate-900">
-                                Department Folders
-                            </h2>
+                            <div className="flex items-center gap-2.5">
+                                <IconFolder className="h-5 w-5 text-emerald-600" stroke={1.5} />
+                                <h2 className="text-base font-semibold text-slate-900">
+                                    Department Folders
+                                </h2>
+                            </div>
                             <StatusBadge
                                 status="draft"
                                 label={`${filteredDepartments.length} folders`}
@@ -277,6 +289,55 @@ export const KnowledgeView: React.FC = () => {
                                             enableSearch={false}
                                         />
                                     </div>
+
+                                    {/* View Mode Switcher */}
+                                    <div className="flex flex-col">
+                                        <label className="text-[10px] md:text-sm font-medium text-slate-700 mb-1.5">View</label>
+                                        <div className="flex items-center p-1 bg-slate-100 rounded-lg h-9 border border-slate-200/60 shadow-inner relative overflow-hidden">
+                                            <button
+                                                onClick={() => setViewMode("grid")}
+                                                className={cn(
+                                                    "flex items-center justify-center h-7 px-2 md:px-3 rounded-md transition-all duration-200 relative z-10",
+                                                    viewMode === "grid"
+                                                        ? "text-emerald-600"
+                                                        : "text-slate-500 hover:text-slate-900"
+                                                )}
+                                                title="Grid View"
+                                            >
+                                                {viewMode === "grid" && (
+                                                    <motion.div
+                                                        layoutId="viewModeIndicator"
+                                                        className="absolute inset-0 bg-white rounded-md shadow-sm border border-slate-200/50"
+                                                        transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                                                    />
+                                                )}
+                                                <div className="relative z-20">
+                                                    <IconLayoutGrid size={18} stroke={viewMode === "grid" ? 2.5 : 2} />
+                                                </div>
+                                            </button>
+                                            <button
+                                                onClick={() => setViewMode("list")}
+                                                className={cn(
+                                                    "flex items-center justify-center h-7 px-2 md:px-3 rounded-md transition-all duration-200 relative z-10",
+                                                    viewMode === "list"
+                                                        ? "text-emerald-600"
+                                                        : "text-slate-500 hover:text-slate-900"
+                                                )}
+                                                title="List View"
+                                            >
+                                                {viewMode === "list" && (
+                                                    <motion.div
+                                                        layoutId="viewModeIndicator"
+                                                        className="absolute inset-0 bg-white rounded-md shadow-sm border border-slate-200/50"
+                                                        transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                                                    />
+                                                )}
+                                                <div className="relative z-20">
+                                                    <IconLayoutList size={18} stroke={viewMode === "list" ? 2.5 : 2} />
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -303,8 +364,8 @@ export const KnowledgeView: React.FC = () => {
                                         <button
                                             key={dept.id}
                                             onClick={() => handleFolderClick(dept)}
-                                            onMouseEnter={() => setHoveredDeptId(dept.id)}
-                                            onMouseLeave={() => setHoveredDeptId(null)}
+                                            onPointerEnter={() => setHoveredDeptId(dept.id)}
+                                            onPointerLeave={() => setHoveredDeptId(null)}
                                             className="group relative bg-white border border-slate-200 rounded-xl p-4 md:p-6 lg:p-8 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 text-left flex flex-col items-center gap-6"
                                         >
                                             <div className="shrink-0 flex items-center justify-center">
@@ -335,8 +396,8 @@ export const KnowledgeView: React.FC = () => {
                                         <button
                                             key={dept.id}
                                             onClick={() => handleFolderClick(dept)}
-                                            onMouseEnter={() => setHoveredDeptId(dept.id)}
-                                            onMouseLeave={() => setHoveredDeptId(null)}
+                                            onPointerEnter={() => setHoveredDeptId(dept.id)}
+                                            onPointerLeave={() => setHoveredDeptId(null)}
                                             className="group w-full bg-white border border-slate-200 rounded-lg p-3 md:p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200 text-left"
                                         >
                                             <div className="flex items-center gap-3 md:gap-4">
