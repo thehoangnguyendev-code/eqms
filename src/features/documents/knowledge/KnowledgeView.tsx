@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from '@/app/routes.constants';
-import { IconFolderFilled, IconFile, IconSearch, IconPlus, IconUpload, IconDownload, IconLayoutGrid, IconLayoutList } from "@tabler/icons-react";
+import { IconFile, IconSearch, IconPlus, IconUpload, IconDownload, IconLayoutGrid, IconLayoutList } from "@tabler/icons-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { knowledgeBase } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
@@ -11,31 +11,49 @@ import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
+import Folder from "@/components/Folder";
+import Document3D from "@/components/Document3D";
+
+const COLOR_MAP: Record<string, string> = {
+    "text-emerald-600": "#059669",
+    "text-blue-600": "#2563eb",
+    "text-amber-600": "#d97706",
+    "text-purple-600": "#9333ea",
+    "text-red-600": "#dc2626",
+    "text-cyan-600": "#0891b2",
+    "text-orange-600": "#ea580c",
+    "text-indigo-600": "#4f46e5",
+    "text-pink-600": "#db2777",
+    "text-teal-600": "#0d9488",
+    "text-sky-600": "#0284c7",
+    "text-violet-600": "#7c3aed",
+    "text-rose-600": "#e11d48",
+    "text-slate-600": "#475569",
+};
 
 interface Department {
     id: string;
     name: string;
-    icon: React.ReactNode;
     documentCount: number;
     color: string;
 }
 
 const DEPARTMENTS: Department[] = [
-    { id: "qa", name: "Quality Assurance (QA)", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 45, color: "text-emerald-600" },
-    { id: "qc", name: "Quality Control (QC)", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 38, color: "text-blue-600" },
-    { id: "production", name: "Production", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 62, color: "text-amber-600" },
-    { id: "rnd", name: "Research & Development (R&D)", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 51, color: "text-purple-600" },
-    { id: "regulatory", name: "Regulatory Affairs", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 29, color: "text-red-600" },
-    { id: "warehouse", name: "Warehouse", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 22, color: "text-cyan-600" },
-    { id: "maintenance", name: "Maintenance", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 18, color: "text-orange-600" },
-    { id: "engineering", name: "Engineering", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 34, color: "text-indigo-600" },
-    { id: "hr", name: "Human Resources (HR)", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 15, color: "text-pink-600" },
-    { id: "finance", name: "Finance & Accounting", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 27, color: "text-emerald-600" },
-    { id: "procurement", name: "Procurement", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 20, color: "text-teal-600" },
-    { id: "logistics", name: "Logistics", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 16, color: "text-sky-600" },
-    { id: "it", name: "IT Department", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 31, color: "text-violet-600" },
-    { id: "safety", name: "Safety & Environment", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 24, color: "text-rose-600" },
-    { id: "management", name: "Management", icon: <IconFolderFilled className="h-12 w-12" />, documentCount: 42, color: "text-slate-600" },
+    { id: "qa", name: "Quality Assurance (QA)", documentCount: 45, color: "text-emerald-600" },
+    { id: "qc", name: "Quality Control (QC)", documentCount: 38, color: "text-blue-600" },
+    { id: "production", name: "Production", documentCount: 62, color: "text-amber-600" },
+    { id: "rnd", name: "Research & Development (R&D)", documentCount: 51, color: "text-purple-600" },
+    { id: "regulatory", name: "Regulatory Affairs", documentCount: 29, color: "text-red-600" },
+    { id: "warehouse", name: "Warehouse", documentCount: 22, color: "text-cyan-600" },
+    { id: "maintenance", name: "Maintenance", documentCount: 18, color: "text-orange-600" },
+    { id: "engineering", name: "Engineering", documentCount: 34, color: "text-indigo-600" },
+    { id: "hr", name: "Human Resources (HR)", documentCount: 15, color: "text-pink-600" },
+    { id: "finance", name: "Finance & Accounting", documentCount: 27, color: "text-emerald-600" },
+    { id: "procurement", name: "Procurement", documentCount: 20, color: "text-teal-600" },
+    { id: "logistics", name: "Logistics", documentCount: 16, color: "text-sky-600" },
+    { id: "it", name: "IT Department", documentCount: 31, color: "text-violet-600" },
+    { id: "safety", name: "Safety & Environment", documentCount: 24, color: "text-rose-600" },
+    { id: "management", name: "Management", documentCount: 42, color: "text-slate-600" },
 ];
 
 import { FolderDocumentsList } from "./FolderDocumentsList";
@@ -47,6 +65,9 @@ export const KnowledgeView: React.FC = () => {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [isNavigating, setIsNavigating] = useState(false);
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
+    const [hoveredDeptId, setHoveredDeptId] = useState<string | null>(null);
+    const [isHoveringTotalStats, setIsHoveringTotalStats] = useState(false);
+    const [isHoveringDocStats, setIsHoveringDocStats] = useState(false);
 
     const handleNavigate = (path: string) => {
         setIsNavigating(true);
@@ -119,10 +140,20 @@ export const KnowledgeView: React.FC = () => {
                 <div className="space-y-6 flex-1 flex flex-col min-h-0">
                     {/* Stats Overview */}
                     <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4 shrink-0">
-                        <div className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm">
+                        <div
+                            className="bg-slate-50/50 border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm group cursor-pointer transition-all hover:bg-white hover:border-emerald-500 hover:shadow-md"
+                            onMouseEnter={() => setIsHoveringTotalStats(true)}
+                            onMouseLeave={() => setIsHoveringTotalStats(false)}
+                        >
                             <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
-                                    <IconFolderFilled className="h-5 w-5 md:h-6 md:w-6 text-emerald-600" />
+                                <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0 transition-colors mr-2">
+                                    <Folder
+                                        color="#059669"
+                                        size={0.65}
+                                        className="mt-1"
+                                        onOpenChange={() => { }}
+                                        isOpen={isHoveringTotalStats}
+                                    />
                                 </div>
                                 <div>
                                     <p className="text-xs md:text-sm text-slate-600">Total Departments</p>
@@ -132,10 +163,19 @@ export const KnowledgeView: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm">
+                        <div
+                            className="bg-slate-50/50 border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm group cursor-pointer transition-all hover:bg-white hover:border-blue-500 hover:shadow-md"
+                            onMouseEnter={() => setIsHoveringDocStats(true)}
+                            onMouseLeave={() => setIsHoveringDocStats(false)}
+                        >
                             <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-                                    <IconFile className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
+                                <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0 mr-2">
+                                    <Document3D
+                                        color="#2563eb"
+                                        size={0.6}
+                                        className="mt-1"
+                                        isOpen={isHoveringDocStats}
+                                    />
                                 </div>
                                 <div>
                                     <p className="text-xs md:text-sm text-slate-600">Total Documents</p>
@@ -207,7 +247,13 @@ export const KnowledgeView: React.FC = () => {
                             {filteredDepartments.length === 0 ? (
                                 <div className="text-center py-8 md:py-12">
                                     <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3 md:mb-4">
-                                        <IconFolderFilled className="h-6 w-6 md:h-7 md:w-7 text-slate-300" />
+                                        <Folder
+                                            color="#cbd5e1"
+                                            size={0.5}
+                                            className="mt-1 opacity-40"
+                                            onOpenChange={() => { }}
+                                            isOpen={false}
+                                        />
                                     </div>
                                     <p className="text-sm md:text-base text-slate-900 font-semibold">No departments found</p>
                                     <p className="text-xs md:text-sm text-slate-500 mt-1">Try adjusting your search query</p>
@@ -218,24 +264,28 @@ export const KnowledgeView: React.FC = () => {
                                         <button
                                             key={dept.id}
                                             onClick={() => handleFolderClick(dept)}
-                                            className="group relative bg-white border border-slate-200 rounded-xl p-4 md:p-5 hover:border-emerald-500 hover:shadow-lg transition-all duration-200 text-left"
+                                            onMouseEnter={() => setHoveredDeptId(dept.id)}
+                                            onMouseLeave={() => setHoveredDeptId(null)}
+                                            className="group relative bg-white border border-slate-200 rounded-xl p-4 md:p-6 lg:p-8 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 text-left flex flex-col items-center gap-6"
                                         >
-                                            <div className="flex flex-col items-center gap-2 md:gap-3">
-                                                <div className={cn("transition-colors", dept.color)}>
-                                                    <IconFolderFilled className="h-10 w-10 md:h-12 md:w-12" />
-                                                </div>
-                                                <div className="text-center w-full min-w-0">
-                                                    <p className="font-semibold text-slate-900 text-[11px] md:text-sm truncate mb-1 px-1">
-                                                        {dept.name}
-                                                    </p>
-                                                    <p className="text-[10px] md:text-xs text-slate-500">
-                                                        {dept.documentCount} {dept.documentCount === 1 ? 'doc' : 'docs'}
-                                                    </p>
-                                                </div>
+                                            <div className="shrink-0 flex items-center justify-center">
+                                                <Folder
+                                                    color={COLOR_MAP[dept.color] || "#059669"}
+                                                    size={1}
+                                                    className="w-24 h-20 flex items-center justify-center"
+                                                    onOpenChange={() => { }}
+                                                    isOpen={hoveredDeptId === dept.id}
+                                                />
                                             </div>
-                                            <div className="absolute top-2 md:top-3 right-2 md:right-3">
-                                                <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                            <div className="text-center w-full min-w-0">
+                                                <p className="font-bold text-slate-900 text-sm md:text-base truncate mb-1 px-1 group-hover:text-emerald-600 transition-colors">
+                                                    {dept.name}
+                                                </p>
+                                                <p className="text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                                    {dept.documentCount} {dept.documentCount === 1 ? 'document' : 'documents'}
+                                                </p>
                                             </div>
+                                            <div className="absolute top-3 right-3 h-2 w-2 rounded-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                                         </button>
                                     ))}
                                 </div>
@@ -245,17 +295,25 @@ export const KnowledgeView: React.FC = () => {
                                         <button
                                             key={dept.id}
                                             onClick={() => handleFolderClick(dept)}
+                                            onMouseEnter={() => setHoveredDeptId(dept.id)}
+                                            onMouseLeave={() => setHoveredDeptId(null)}
                                             className="group w-full bg-white border border-slate-200 rounded-lg p-3 md:p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200 text-left"
                                         >
                                             <div className="flex items-center gap-3 md:gap-4">
-                                                <div className={cn("transition-colors shrink-0", dept.color)}>
-                                                    <IconFolderFilled className="h-8 w-8 md:h-10 md:w-10" />
+                                                <div className="shrink-0 flex items-center justify-center -ml-2">
+                                                    <Folder
+                                                        color={COLOR_MAP[dept.color] || "#059669"}
+                                                        size={0.6}
+                                                        className="w-16 h-12 flex items-center justify-center pointer-events-none"
+                                                        onOpenChange={() => { }}
+                                                        isOpen={hoveredDeptId === dept.id}
+                                                    />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="font-semibold text-slate-900 text-xs md:text-sm mb-0.5">
+                                                    <p className="font-bold text-slate-900 text-xs md:text-sm mb-0.5 group-hover:text-emerald-600 transition-colors">
                                                         {dept.name}
                                                     </p>
-                                                    <p className="text-xs text-slate-500">
+                                                    <p className="text-xs text-slate-500 font-medium">
                                                         {dept.documentCount} {dept.documentCount === 1 ? 'document' : 'documents'}
                                                     </p>
                                                 </div>

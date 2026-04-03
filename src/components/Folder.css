@@ -1,0 +1,126 @@
+:root {
+  --folder-color: #70a1ff;
+  --folder-back-color: #4785ff;
+  --paper-1: #e6e6e6;
+  --paper-2: #f2f2f2;
+  --paper-3: #ffffff;
+}
+
+.folder {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  perspective: 1200px; /* Enhanced depth */
+}
+
+.folder:not(.open):hover {
+  transform: translateY(-5px) rotateY(-5deg); /* Subtle tilt on hover */
+}
+
+.folder__back {
+  position: relative;
+  width: 80px; /* Reduced base size */
+  height: 60px; /* Reduced base size */
+  background: var(--folder-back-color);
+  border-radius: 4px 8px 8px 8px;
+  transform-style: preserve-3d;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.folder__back::after {
+  position: absolute;
+  z-index: 0;
+  bottom: 100%;
+  left: 0;
+  content: '';
+  width: 25px;
+  height: 8px;
+  background: var(--folder-back-color);
+  border-radius: 6px 6px 0 0;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.paper {
+  position: absolute;
+  z-index: 2;
+  bottom: 8%;
+  left: 50%;
+  transform: translate(-50%, 0) translateZ(5px);
+  width: 75%;
+  height: 85%;
+  background: var(--paper-1);
+  border-radius: 4px;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.paper:nth-child(2) {
+  background: var(--paper-2);
+  width: 82%;
+  height: 75%;
+  transform: translate(-50%, 0) translateZ(10px);
+}
+
+.paper:nth-child(3) {
+  background: var(--paper-3);
+  width: 90%;
+  height: 65%;
+  transform: translate(-50%, 0) translateZ(15px);
+}
+
+.folder.open .paper:nth-child(1) {
+  transform: translate(-90%, -40%) rotateZ(-12deg) translateZ(30px);
+}
+
+.folder.open .paper:nth-child(2) {
+  transform: translate(-10%, -40%) rotateZ(12deg) translateZ(30px);
+}
+
+.folder.open .paper:nth-child(3) {
+  transform: translate(-50%, -70%) rotateZ(3deg) translateZ(50px);
+}
+
+.folder__front {
+  position: absolute;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--folder-color) 0%, var(--folder-back-color) 100%);
+  border-radius: 4px 8px 8px 8px;
+  transform-origin: bottom;
+  transform: translateZ(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+/* Open Lid State - Physical-like Hinge */
+.folder.open .folder__front {
+  transform: translateZ(24px) rotateX(-80deg);
+}
+
+/* Subtle glossy reflection on lid */
+.folder__front::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+  border-radius: 4px 8px 0 0;
+}
+
+.paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+  border-radius: 4px;
+}
