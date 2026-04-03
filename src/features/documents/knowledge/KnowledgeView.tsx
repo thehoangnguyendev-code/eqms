@@ -31,6 +31,15 @@ const COLOR_MAP: Record<string, string> = {
     "text-slate-600": "#475569",
 };
 
+/**
+ * Helper to generate mini document icons for the folder opening effect
+ */
+const getFolderItems = (color: string) => [
+    <Document3D key="d1" color={color} size={0.3} className="pointer-events-none" />,
+    <Document3D key="d2" color={color} size={0.25} className="pointer-events-none" />,
+    <Document3D key="d3" color={color} size={0.35} className="pointer-events-none" />,
+];
+
 interface Department {
     id: string;
     name: string;
@@ -68,6 +77,13 @@ export const KnowledgeView: React.FC = () => {
     const [hoveredDeptId, setHoveredDeptId] = useState<string | null>(null);
     const [isHoveringTotalStats, setIsHoveringTotalStats] = useState(false);
     const [isHoveringDocStats, setIsHoveringDocStats] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    React.useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleNavigate = (path: string) => {
         setIsNavigating(true);
@@ -146,13 +162,25 @@ export const KnowledgeView: React.FC = () => {
                             onMouseLeave={() => setIsHoveringTotalStats(false)}
                         >
                             <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0 transition-colors mr-2">
+                                <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0 transition-colors mr-2 relative">
+                                    {/* Subtle Glow Effect */}
+                                    <AnimatePresence>
+                                        {isHoveringTotalStats && (
+                                            <motion.div 
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1.2, opacity: 1 }}
+                                                exit={{ scale: 0.5, opacity: 0 }}
+                                                className="absolute inset-0 bg-emerald-400/20 blur-xl rounded-full"
+                                            />
+                                        )}
+                                    </AnimatePresence>
                                     <Folder
                                         color="#059669"
-                                        size={0.65}
-                                        className="mt-1"
+                                        size={isMobile ? 0.5 : 0.65}
+                                        className="mt-1 relative z-10"
                                         onOpenChange={() => { }}
                                         isOpen={isHoveringTotalStats}
+                                        items={getFolderItems("#059669")}
                                     />
                                 </div>
                                 <div>
@@ -169,11 +197,22 @@ export const KnowledgeView: React.FC = () => {
                             onMouseLeave={() => setIsHoveringDocStats(false)}
                         >
                             <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0 mr-2">
+                                <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0 mr-2 relative">
+                                    {/* Subtle Glow Effect */}
+                                    <AnimatePresence>
+                                        {isHoveringDocStats && (
+                                            <motion.div 
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1.2, opacity: 1 }}
+                                                exit={{ scale: 0.5, opacity: 0 }}
+                                                className="absolute inset-0 bg-blue-400/20 blur-xl rounded-full"
+                                            />
+                                        )}
+                                    </AnimatePresence>
                                     <Document3D
                                         color="#2563eb"
-                                        size={0.6}
-                                        className="mt-1"
+                                        size={isMobile ? 0.5 : 0.6}
+                                        className="mt-1 relative z-10"
                                         isOpen={isHoveringDocStats}
                                     />
                                 </div>
@@ -271,10 +310,11 @@ export const KnowledgeView: React.FC = () => {
                                             <div className="shrink-0 flex items-center justify-center">
                                                 <Folder
                                                     color={COLOR_MAP[dept.color] || "#059669"}
-                                                    size={1}
-                                                    className="w-24 h-20 flex items-center justify-center"
+                                                    size={isMobile ? 0.75 : 1}
+                                                    className="w-24 h-20 flex items-center justify-center transform-gpu"
                                                     onOpenChange={() => { }}
                                                     isOpen={hoveredDeptId === dept.id}
+                                                    items={getFolderItems(COLOR_MAP[dept.color] || "#059669")}
                                                 />
                                             </div>
                                             <div className="text-center w-full min-w-0">
@@ -303,10 +343,11 @@ export const KnowledgeView: React.FC = () => {
                                                 <div className="shrink-0 flex items-center justify-center -ml-2">
                                                     <Folder
                                                         color={COLOR_MAP[dept.color] || "#059669"}
-                                                        size={0.6}
-                                                        className="w-16 h-12 flex items-center justify-center pointer-events-none"
+                                                        size={isMobile ? 0.45 : 0.6}
+                                                        className="w-16 h-12 flex items-center justify-center pointer-events-none transform-gpu"
                                                         onOpenChange={() => { }}
                                                         isOpen={hoveredDeptId === dept.id}
+                                                        items={getFolderItems(COLOR_MAP[dept.color] || "#059669")}
                                                     />
                                                 </div>
                                                 <div className="flex-1 min-w-0">

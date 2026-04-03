@@ -45,9 +45,11 @@ const Folder: React.FC<FolderProps> = ({
   const papers = [...items].slice(0, maxItems);
   while (papers.length < maxItems) {
     papers.push(
-      <div key={`placeholder-${papers.length}`} className="flex flex-col gap-1 p-2 pointer-events-none">
-        <div className="w-full h-1 bg-slate-100 rounded" />
-        <div className="w-2/3 h-1 bg-slate-50 rounded" />
+      <div key={`placeholder-${papers.length}`} className="flex flex-col gap-1.5 p-3 pointer-events-none opacity-80 scale-90">
+        <div className="w-[85%] h-1 rounded-full" style={{ backgroundColor: color, opacity: 0.3 }} />
+        <div className="w-full h-0.5 bg-slate-100 rounded-full" />
+        <div className="w-full h-0.5 bg-slate-100 rounded-full" />
+        <div className="w-4/5 h-0.5 bg-slate-50 rounded-full" />
       </div>
     );
   }
