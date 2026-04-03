@@ -3,12 +3,12 @@ import { createPortal } from "react-dom";
 import {
   X,
   History,
-  Clock,
   FileText,
   ChevronDown,
   ChevronUp,
   ExternalLink,
-  AlertCircle,
+  Minimize2,
+  Maximize2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { StatusBadge } from "@/components/ui/badge";
@@ -16,6 +16,9 @@ import type { StatusType } from "@/components/ui/badge";
 import { cn } from "@/components/ui/utils";
 import type { TrainingMaterial, MaterialVersionEntry } from "@/features/training/materials/types";
 import { IconMessage2 } from "@tabler/icons-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const READ_ONLY_CLASS = "w-full h-9 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none cursor-default";
 
 // Hook to detect mobile screen
 const useIsMobile = () => {
@@ -55,103 +58,183 @@ interface VersionCardProps {
   entry: MaterialVersionEntry;
   isLatest: boolean;
   fileType?: string;
+  isExpanded: boolean;
+  onToggle: () => void;
 }
 
-const VersionCard: React.FC<VersionCardProps> = ({ entry, isLatest, fileType }) => {
+const VersionCard: React.FC<VersionCardProps> = ({ entry, isLatest, fileType, isExpanded, onToggle }) => {
   const [showNotes, setShowNotes] = useState(false);
 
   return (
-    <div className="border border-slate-200 rounded-xl shadow-sm overflow-hidden bg-white">
-      {/* Card Header */}
-      <div className="px-4 pt-3.5 pb-2.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/30">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-slate-900 text-white text-[10px] sm:text-[11px] font-bold tracking-wide">
-            v{entry.version}
-          </span>
-          <StatusBadge status={statusToType(entry.status)} size="sm" />
-          {isLatest && (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">
-              Current
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Inline Preview */}
-      {entry.fileUrl && (
-        <div className="mx-4 mt-3 mb-0 rounded-lg border border-slate-200 bg-slate-50 p-2.5 flex items-center justify-between gap-3 shadow-sm">
-          <div className="flex items-center gap-2 min-w-0">
-            <FileText className="h-3.5 w-3.5 text-slate-500 flex-shrink-0" />
-            <span className="text-[11px] text-slate-700 font-medium truncate">
-              {fileType ? `${fileType} · ` : ""}
-              v{entry.version}
-            </span>
-          </div>
-          <a
-            href={entry.fileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-bold hover:underline shrink-0"
-          >
-            Open <ExternalLink className="h-3 w-3" />
-          </a>
-        </div>
-      )}
-
-      {/* Form-style Body */}
-      <div className="p-4 space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Created By</label>
-            <p className="text-sm font-bold text-slate-800">{entry.uploadedBy || "—"}</p>
-            <p className="text-[10px] text-slate-400 font-medium">{formatDate(entry.uploadedAt)}</p>
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Reviewed By</label>
-            <p className="text-sm font-bold text-slate-800">{entry.reviewedBy || "—"}</p>
-            <p className="text-[10px] text-slate-400 font-medium">{formatDate(entry.reviewedAt)}</p>
-          </div>
-        </div>
-
-        {entry.reviewComment && (
-          <div className="bg-amber-50/50 border border-amber-100 rounded-lg p-2.5">
-            <p className="text-[10px] font-bold text-amber-700 uppercase mb-1">Reviewer Comment</p>
-            <p className="text-xs text-slate-600 italic">"{entry.reviewComment}"</p>
-          </div>
+    <div className={cn(
+      "border transition-all duration-300 rounded-xl overflow-hidden bg-white",
+      isExpanded ? "border-emerald-200 shadow-md" : "border-slate-200 shadow-sm hover:border-slate-300"
+    )}>
+      {/* Card Header (Accordion Trigger) */}
+      <button
+        onClick={onToggle}
+        className={cn(
+          "w-full text-left px-4 pt-3.5 pb-2.5 flex items-center justify-between transition-colors relative z-10",
+          isExpanded ? "bg-emerald-50/20" : "bg-slate-50/30 hover:bg-slate-100/50"
         )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Approved By</label>
-            <p className="text-sm font-bold text-slate-800">{entry.approvedBy || "—"}</p>
-            <p className="text-[10px] text-slate-400 font-medium">{formatDate(entry.approvedAt)}</p>
-          </div>
-          {entry.approvalComment && (
-            <div className="bg-emerald-50/50 border border-emerald-100 rounded-lg p-2.5 col-span-1 sm:col-span-1">
-              <p className="text-[10px] font-bold text-emerald-700 uppercase mb-1">Approver Comment</p>
-              <p className="text-xs text-slate-600 italic">"{entry.approvalComment}"</p>
-            </div>
-          )}
-        </div>
-
-        {entry.revisionNotes && (
-          <div className="pt-1 border-t border-slate-100 mt-2">
-            <button
-               onClick={() => setShowNotes((v) => !v)}
-               className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider hover:text-slate-600 transition-colors w-full py-1"
-            >
-              <IconMessage2 className="h-3 w-3" />
-              Notes
-              {showNotes ? <ChevronUp className="h-3 w-3 ml-auto" /> : <ChevronDown className="h-3 w-3 ml-auto" />}
-            </button>
-            {showNotes && (
-              <div className="mt-1 p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-xs text-slate-600 leading-relaxed whitespace-pre-wrap italic">
-                {entry.revisionNotes}
-              </div>
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-slate-900 text-white text-[10px] sm:text-[11px] font-bold tracking-wide">
+              {entry.version}
+            </span>
+            <StatusBadge status={statusToType(entry.status)} size="sm" />
+            {isLatest && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">
+                Current
+              </span>
             )}
           </div>
+          {!isExpanded && (
+            <span className="text-[10px] text-slate-400 font-medium hidden sm:inline truncate max-w-[150px]">
+              Created by {entry.uploadedBy || "—"} on {formatDate(entry.uploadedAt)}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {isExpanded ? (
+            <ChevronUp className="h-4 w-4 text-emerald-600" />
+          ) : (
+            <ChevronDown className="h-4 w-4 text-slate-400" />
+          )}
+        </div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="p-0 border-t border-slate-100">
+              {/* Inline Preview */}
+              {entry.fileUrl && (
+                <div className="mx-4 mt-4 mb-0 rounded-lg border border-slate-200 bg-slate-50 p-2.5 flex items-center justify-between gap-3 shadow-sm">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <FileText className="h-3.5 w-3.5 text-slate-500 flex-shrink-0" />
+                    <span className="text-[11px] text-slate-700 font-medium truncate">
+                      {fileType ? `${fileType} · ` : ""}
+                      v{entry.version}
+                    </span>
+                  </div>
+                  <a
+                    href={entry.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-bold hover:underline shrink-0"
+                  >
+                    Open <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              )}
+
+              {/* Form-style Body */}
+              <div className="p-4 space-y-5">
+                {/* Creation Row */}
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] sm:text-[12px] font-medium text-slate-700">Created By</label>
+                      <div className={READ_ONLY_CLASS}>{entry.uploadedBy || "—"}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] sm:text-[12px] font-medium text-slate-700">Created On (Date - Time)</label>
+                      <div className={READ_ONLY_CLASS}>{formatDate(entry.uploadedAt)}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Review Row */}
+                {(entry.reviewedBy || entry.reviewedAt || entry.reviewComment) && (
+                  <div className="space-y-3 pt-4 border-t border-slate-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] sm:text-[12px] font-medium text-slate-700">Reviewed By</label>
+                        <div className={READ_ONLY_CLASS}>{entry.reviewedBy || "—"}</div>
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] sm:text-[12px] font-medium text-slate-700">Reviewed On (Date - Time)</label>
+                        <div className={READ_ONLY_CLASS}>{formatDate(entry.reviewedAt)}</div>
+                      </div>
+                    </div>
+                    {entry.reviewComment && (
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] sm:text-[12px] font-medium text-slate-700">Reviewer Comment</label>
+                        <div className="w-full px-3 py-2 bg-amber-50/50 border border-amber-100 rounded-lg text-xs text-slate-600 italic leading-relaxed">
+                          "{entry.reviewComment}"
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Approval Row */}
+                {(entry.approvedBy || entry.approvedAt || entry.approvalComment) && (
+                  <div className="space-y-3 pt-4 border-t border-slate-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] sm:text-[12px] font-medium text-slate-700">Approved By</label>
+                        <div className={READ_ONLY_CLASS}>{entry.approvedBy || "—"}</div>
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] sm:text-[12px] font-medium text-slate-700">Approved On (Date - Time)</label>
+                        <div className={READ_ONLY_CLASS}>{formatDate(entry.approvedAt)}</div>
+                      </div>
+                    </div>
+                    {entry.approvalComment && (
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] sm:text-[12px] font-medium text-slate-700">Approver Comment</label>
+                        <div className="w-full px-3 py-2 bg-emerald-50/50 border border-emerald-100 rounded-lg text-xs text-slate-600 italic leading-relaxed">
+                          "{entry.approvalComment}"
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Revision Notes (Footer section) */}
+                {entry.revisionNotes && (
+                  <div className="pt-2 border-t border-slate-100">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowNotes((v) => !v);
+                      }}
+                      className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider hover:text-slate-600 transition-colors w-full py-1"
+                    >
+                      <IconMessage2 className="h-3.5 w-3.5" />
+                      Revision Notes
+                      {showNotes ? <ChevronUp className="h-3.5 w-3.5 ml-auto" /> : <ChevronDown className="h-3.5 w-3.5 ml-auto" />}
+                    </button>
+                    <AnimatePresence>
+                      {showNotes && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="mt-2 p-3 bg-slate-50 border border-slate-100 rounded-lg text-xs text-slate-700 leading-relaxed whitespace-pre-wrap italic">
+                            {entry.revisionNotes}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 };
@@ -167,6 +250,31 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
   const isMobile = useIsMobile();
   const history = material.versionHistory ?? [];
   const sorted = [...history].reverse();
+  const [expandedVersions, setExpandedVersions] = useState<Set<string | number>>(
+    new Set(sorted[0]?.version ? [sorted[0].version] : [])
+  );
+
+  const isAllExpanded = expandedVersions.size === sorted.length && sorted.length > 0;
+
+  const toggleAll = () => {
+    if (isAllExpanded) {
+      setExpandedVersions(new Set());
+    } else {
+      setExpandedVersions(new Set(sorted.map(s => s.version)));
+    }
+  };
+
+  const toggleVersion = (version: string | number) => {
+    setExpandedVersions(prev => {
+      const next = new Set(prev);
+      if (next.has(version)) {
+        next.delete(version);
+      } else {
+        next.add(version);
+      }
+      return next;
+    });
+  };
 
   // Dragging / Bottom Sheet State
   const [drawerHeight, setDrawerHeight] = useState(88); // vh
@@ -200,41 +308,41 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
 
   // Handling both touch AND mouse events for better desktop-mobile-simulation testing
   const handleDragStart = (clientY: number) => {
-      setIsDragging(true);
-      dragStartY.current = clientY;
-      dragStartHeight.current = drawerHeight;
+    setIsDragging(true);
+    dragStartY.current = clientY;
+    dragStartHeight.current = drawerHeight;
   };
 
   const handleDragMove = (clientY: number) => {
-      if (!isDragging) return;
-      const viewportHeight = window.innerHeight;
-      const deltaY = dragStartY.current - clientY;
-      const deltaVh = (deltaY / viewportHeight) * 100;
-      
-      let newHeight = dragStartHeight.current + deltaVh;
-      newHeight = Math.max(0, Math.min(MAX_HEIGHT, newHeight));
-      setDrawerHeight(newHeight);
+    if (!isDragging) return;
+    const viewportHeight = window.innerHeight;
+    const deltaY = dragStartY.current - clientY;
+    const deltaVh = (deltaY / viewportHeight) * 100;
+
+    let newHeight = dragStartHeight.current + deltaVh;
+    newHeight = Math.max(0, Math.min(MAX_HEIGHT, newHeight));
+    setDrawerHeight(newHeight);
   };
 
   const handleDragEnd = () => {
-      setIsDragging(false);
-      if (drawerHeight < CLOSE_THRESHOLD) {
-          handleClose();
-      } else {
-          setDrawerHeight(88); // Snap back to 88
-      }
+    setIsDragging(false);
+    if (drawerHeight < CLOSE_THRESHOLD) {
+      handleClose();
+    } else {
+      setDrawerHeight(88); // Snap back to 88
+    }
   };
 
   useEffect(() => {
-      if (!isDragging) return;
-      const onMove = (e: MouseEvent) => handleDragMove(e.clientY);
-      const onEnd = () => handleDragEnd();
-      document.addEventListener("mousemove", onMove);
-      document.addEventListener("mouseup", onEnd);
-      return () => {
-          document.removeEventListener("mousemove", onMove);
-          document.removeEventListener("mouseup", onEnd);
-      };
+    if (!isDragging) return;
+    const onMove = (e: MouseEvent) => handleDragMove(e.clientY);
+    const onEnd = () => handleDragEnd();
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onEnd);
+    return () => {
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onEnd);
+    };
   }, [isDragging, drawerHeight]);
 
   const handleTouchStart = (e: React.TouchEvent) => handleDragStart(e.touches[0].clientY);
@@ -258,6 +366,40 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
         .mobile-drawer-exit { animation: slideOutBottom 0.3s cubic-bezier(0.4, 0, 1, 1) forwards; }
         .backdrop-enter { animation: fadeIn 0.3s ease-out forwards; }
         .backdrop-exit { animation: fadeOut 0.25s ease-in forwards; }
+        .custom-drawer-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(203, 213, 225, 0.4) transparent;
+          scrollbar-gutter: stable;
+        }
+        .custom-drawer-scrollbar::-webkit-scrollbar {
+          width: 5px;
+        }
+        .custom-drawer-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-drawer-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(203, 213, 225, 0.4);
+          border-radius: 10px;
+        }
+        .custom-drawer-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(148, 163, 184, 0.6);
+        }
+        @keyframes marker-pulse-emerald {
+          0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+          70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        @keyframes marker-pulse-slate {
+          0% { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.4); }
+          70% { box-shadow: 0 0 0 8px rgba(15, 23, 42, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0); }
+        }
+        .animate-pulse-emerald {
+          animation: marker-pulse-emerald 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .animate-pulse-slate {
+          animation: marker-pulse-slate 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
       `}</style>
 
       {/* Backdrop */}
@@ -273,11 +415,11 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
       <div
         className={cn(
           "pointer-events-auto bg-white flex flex-col relative overflow-hidden shadow-2xl",
-          isMobile 
-            ? cn("w-full transition-all flex flex-col", isFullHeight ? "rounded-none" : "rounded-t-2xl") 
+          isMobile
+            ? cn("w-full transition-all flex flex-col", isFullHeight ? "rounded-none" : "rounded-t-2xl")
             : "w-[500px] h-[calc(100vh-32px)] mr-4 rounded-2xl border border-slate-200",
-          isClosing 
-            ? (isMobile ? "mobile-drawer-exit" : "desktop-drawer-exit") 
+          isClosing
+            ? (isMobile ? "mobile-drawer-exit" : "desktop-drawer-exit")
             : (isMobile ? (!isDragging && "mobile-drawer-enter") : "desktop-drawer-enter"),
         )}
         style={isMobile ? {
@@ -289,7 +431,7 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
       >
         {/* Mobile Drag Handle */}
         {isMobile && (
-          <div 
+          <div
             className="flex flex-col items-center py-3 cursor-grab active:cursor-grabbing select-none touch-none bg-white shrink-0"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -328,15 +470,38 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
           </div>
         </div>
 
+        {/* Global Actions Toggle */}
+        {sorted.length > 0 && (
+          <div className="px-4 pt-2 pb-2.5 border-b border-slate-200 flex items-center justify-start bg-slate-50/10 shrink-0">
+            <Button
+              variant="outline-emerald"
+              size="sm"
+              onClick={toggleAll}
+            >
+              {isAllExpanded ? (
+                <>
+                  <Minimize2 className="h-3 w-3 mr-2" />
+                  Collapse All
+                </>
+              ) : (
+                <>
+                  <Maximize2 className="h-3 w-3 mr-2" />
+                  Expand All
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+
         {/* Body */}
-        <div 
-          className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/30" 
-          style={{ 
+        <div
+          className="flex-1 overflow-y-auto px-4 pb-4 pt-0 space-y-4 bg-slate-50/30 custom-drawer-scrollbar"
+          style={{
             WebkitOverflowScrolling: "touch",
             overscrollBehavior: "contain"
           }}
         >
-          {/* Version list */}
+          {/* Version list (Timeline) */}
           {sorted.length === 0 ? (
             <div className="bg-white border border-slate-200 rounded-xl py-10 text-center px-4 flex flex-col items-center shadow-sm">
               <History className="h-10 w-10 text-slate-200 mb-3" />
@@ -344,14 +509,30 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
               <p className="text-xs text-slate-400 mt-1">This material is in its first version.</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="relative pl-8 pr-1 pt-0 pb-4 space-y-6">
+              {/* Vertical Timeline Line */}
+              <div className="absolute left-4 top-0 bottom-6 w-px bg-slate-200" />
+
               {sorted.map((entry, idx) => (
-                <VersionCard
-                  key={entry.version}
-                  entry={entry}
-                  isLatest={idx === 0}
-                  fileType={material.type}
-                />
+                <div key={entry.version} className="relative">
+                  {/* Timeline Marker */}
+                  <div className={cn(
+                    "absolute -left-6 top-[14px] w-4 h-4 rounded-full border-[3px] border-white z-10 transition-all duration-300 shadow-sm",
+                    expandedVersions.has(entry.version)
+                      ? (idx === 0
+                        ? "bg-emerald-700 ring-4 ring-emerald-100 animate-pulse-emerald"
+                        : "bg-emerald-500 ring-4 ring-emerald-50 animate-pulse-emerald")
+                      : (idx === 0 ? "bg-emerald-600 ring-4 ring-emerald-50" : "bg-slate-300 ring-4 ring-slate-50")
+                  )} />
+
+                  <VersionCard
+                    entry={entry}
+                    isLatest={idx === 0}
+                    fileType={material.type}
+                    isExpanded={expandedVersions.has(entry.version)}
+                    onToggle={() => toggleVersion(entry.version)}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -359,8 +540,8 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
 
         {/* Footer */}
         <div className="px-5 py-3.5 border-t border-slate-200 bg-white shrink-0 flex items-center justify-between">
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">
-            {sorted.length} REVISION{sorted.length !== 1 ? "S" : ""}
+          <p className="text-xs font-medium text-slate-400 tracking-tight">
+            {sorted.length} Revision{sorted.length !== 1 ? "s" : ""}
           </p>
           <Button variant="outline" size="sm" onClick={handleClose}>Close</Button>
         </div>

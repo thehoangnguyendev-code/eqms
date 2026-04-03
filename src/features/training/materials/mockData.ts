@@ -112,6 +112,75 @@ const V_HISTORY_TM004: MaterialVersionEntry[] = [
   },
 ];
 
+const V_HISTORY_COMPLEX: MaterialVersionEntry[] = [
+  {
+    version: "1.0",
+    status: "Obsoleted",
+    uploadedBy: "Admin One",
+    uploadedAt: "01/01/2023",
+    revisionNotes: "Initial setup of the historical data and base procedures.",
+    fileSize: "1.2 MB",
+  },
+  {
+    version: "1.1",
+    status: "Obsoleted",
+    uploadedBy: "Jane Smith",
+    uploadedAt: "15/03/2023",
+    reviewedBy: "Mike Johnson",
+    reviewedAt: "20/03/2023",
+    reviewComment: "Fixed typos found in section 2.3 and 2.4.",
+    approvedBy: "Director Lee",
+    approvedAt: "25/03/2023",
+    revisionNotes: "Minor revision for typographical errors and formatting.",
+    fileSize: "1.3 MB",
+  },
+  {
+    version: "2.0",
+    status: "Obsoleted",
+    uploadedBy: "John Doe",
+    uploadedAt: "10/06/2024",
+    reviewedBy: "Jane Smith",
+    reviewedAt: "15/06/2024",
+    reviewComment: "Major overhaul confirmed consistent with the latest SOP update.",
+    approvedBy: "Dr. A. Smith",
+    approvedAt: "20/06/2024",
+    approvalComment: "Approved. Ready for the next audit cycle.",
+    revisionNotes: "Major version update for regulatory compliance adjustments. Added 3 new procedural steps.",
+    fileSize: "2.5 MB",
+    fileUrl: "https://example.com/materials/COMPLEX-v2.0.pdf",
+  },
+  {
+    version: "2.1",
+    status: "Obsoleted",
+    uploadedBy: "Sarah Williams",
+    uploadedAt: "01/01/2025",
+    reviewedBy: "John Doe",
+    reviewedAt: "05/01/2025",
+    reviewComment: "Updated safety instructions look good. Passed for approval.",
+    approvedBy: "Dr. A. Smith",
+    approvedAt: "10/01/2025",
+    approvalComment: "Verified and approved.",
+    revisionNotes: "Urgent safety note added regarding equipment overheating. Revised Section 4.",
+    fileSize: "2.6 MB",
+    fileUrl: "https://example.com/materials/COMPLEX-v2.1.pdf",
+  },
+  {
+    version: "3.0",
+    status: "Effective",
+    uploadedBy: "Michael Chen",
+    uploadedAt: "12/02/2026",
+    reviewedBy: "Jane Smith",
+    reviewedAt: "18/02/2026",
+    reviewComment: "Comprehensive review complete. All department feedback incorporated.",
+    approvedBy: "Dr. A. Smith",
+    approvedAt: "22/02/2026",
+    approvalComment: "Major release approved. The notes section is much improved.",
+    revisionNotes: "Complete redesign and content refresh. Added comprehensive troubleshooting guide and expanded maintenance section. This is the new gold standard for the facility.",
+    fileSize: "5.0 MB",
+    fileUrl: "https://example.com/materials/COMPLEX-v3.0.pdf",
+  },
+];
+
 // Mock Data — expanded for dashboard
 export const MOCK_MATERIALS: TrainingMaterial[] = [
   {
@@ -188,6 +257,13 @@ export const MOCK_MATERIALS: TrainingMaterial[] = [
     type: "PDF", version: "2.0", department: "Engineering", status: "Draft", uploadedAt: "25/02/2026", uploadedBy: "Jennifer Lee",
     fileSize: "12 MB", fileSizeBytes: 12582912, usageCount: 4,
     linkedCourses: ["TRN-2026-015"],
+  },
+  {
+    id: "13", materialId: "TM-PDF-013", title: "Comprehensive Quality Audit Framework", description: "Details on annual audit procedures and compliance metrics",
+    type: "PDF", version: "3.0", department: "Quality Assurance", status: "Effective", uploadedAt: "22/02/2026", uploadedBy: "Michael Chen",
+    fileSize: "5.0 MB", fileSizeBytes: 5242880, usageCount: 45,
+    linkedCourses: ["TRN-2026-001", "TRN-2026-008", "TRN-2026-020"],
+    versionHistory: V_HISTORY_COMPLEX,
   },
 ];
 

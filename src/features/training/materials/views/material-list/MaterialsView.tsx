@@ -111,7 +111,6 @@ const MaterialDropdownMenu: React.FC<MaterialDropdownMenuProps> = ({
     { icon: BarChart3, label: "Usage Report", onClick: () => { onNavigate(ROUTES.TRAINING.MATERIAL_USAGE_REPORT(material.id)); onClose(); }, color: "text-slate-500" },
     { icon: History, label: "Version History", onClick: () => { onOpenHistory(material); onClose(); }, color: "text-slate-500" },
     ...(effectiveStatus === "Effective" ? [
-      { isDivider: true } as MenuItem,
       { icon: XCircle, label: "Mark as Obsoleted", onClick: () => { onMarkObsolete(material.id); onClose(); }, color: "text-slate-500" } as MenuItem,
     ] : []),
   ];
