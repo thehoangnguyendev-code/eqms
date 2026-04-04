@@ -47,7 +47,7 @@ export const GeneralInformationTab: React.FC<GeneralInformationTabProps> = ({ do
 
         {/* Created (read-only, auto-generated) */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs sm:text-sm font-medium text-slate-700">Created (Date - Time)</label>
+          <label className="text-xs sm:text-sm font-medium text-slate-700">Created Time</label>
           <input
             type="text"
             value={document.created}
@@ -194,7 +194,7 @@ export const GeneralInformationTab: React.FC<GeneralInformationTabProps> = ({ do
 
         {/* Effective Date (read-only, auto-generated) */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs sm:text-sm font-medium text-slate-700">Effective Date (dd/MM/yyyy)</label>
+          <label className="text-xs sm:text-sm font-medium text-slate-700">Effective Date</label>
           <input
             type="text"
             value={document.effectiveDate}
@@ -206,7 +206,7 @@ export const GeneralInformationTab: React.FC<GeneralInformationTabProps> = ({ do
 
         {/* Valid Until (read-only, auto-generated) */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs sm:text-sm font-medium text-slate-700">Valid Until (dd/MM/yyyy)</label>
+          <label className="text-xs sm:text-sm font-medium text-slate-700">Valid Until</label>
           <input
             type="text"
             value={document.validUntil}

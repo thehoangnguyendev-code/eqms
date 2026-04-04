@@ -45,7 +45,7 @@ export const WorkingNotesTab: React.FC = () => {
             {/* Input area */}
             <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-slate-700">
-                    Add Working Note
+                    Working Note
                 </label>
                 <textarea
                     value={input}

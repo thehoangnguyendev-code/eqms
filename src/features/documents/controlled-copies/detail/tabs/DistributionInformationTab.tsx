@@ -12,9 +12,10 @@ export const DistributionInformationTab: React.FC<DistributionInformationTabProp
 }) => {
   const [distributionType, setDistributionType] = useState<string>("none");
   const [supplierCustomerType, setSupplierCustomerType] = useState<string>("none");
+  const [externalUsersEmail, setExternalUsersEmail] = useState<string>("");
   const [selectedSupplier, setSelectedSupplier] = useState<string>("");
   const [selectedCustomer, setSelectedCustomer] = useState<string>("");
-  
+
   // Internal distribution states
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
@@ -92,144 +93,131 @@ export const DistributionInformationTab: React.FC<DistributionInformationTabProp
     { label: "Packaging", value: "dept-009" },
     { label: "Laboratory", value: "dept-010" },
   ];
-  
+
   return (
     <div className="space-y-6">
       {/* Distribution Details Section */}
-        <div className="space-y-4">
-          {/* Distribution Type - Required Field */}
+      <div className="space-y-4">
+        {/* Distribution Type - Required Field */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs sm:text-sm font-medium text-slate-700">
+            Distribution <span className="text-red-500">*</span>
+          </label>
+          <Select
+            value={distributionType}
+            onChange={setDistributionType}
+            options={[
+              { label: "-- None --", value: "none" },
+              { label: "Internal", value: "internal" },
+              { label: "External", value: "external" }
+            ]}
+            placeholder="Select distribution type"
+          />
+        </div>
+
+        {/* Internal Distribution - Only shown when Internal is selected */}
+        {distributionType === "internal" && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Employees */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs sm:text-sm font-medium text-slate-700">
+                Employees
+              </label>
+              <MultiSelect
+                value={selectedEmployees}
+                onChange={(values) => setSelectedEmployees(values as string[])}
+                options={employees}
+                placeholder="Select employees"
+                enableSearch
+                maxVisibleTags={2}
+              />
+            </div>
+
+            {/* Groups */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs sm:text-sm font-medium text-slate-700">
+                Groups
+              </label>
+              <MultiSelect
+                value={selectedGroups}
+                onChange={(values) => setSelectedGroups(values as string[])}
+                options={groups}
+                placeholder="Select groups"
+                enableSearch
+                maxVisibleTags={2}
+              />
+            </div>
+
+            {/* Business Units */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs sm:text-sm font-medium text-slate-700">
+                Business Units
+              </label>
+              <MultiSelect
+                value={selectedBusinessUnits}
+                onChange={(values) => setSelectedBusinessUnits(values as string[])}
+                options={businessUnits}
+                placeholder="Select business units"
+                enableSearch
+                maxVisibleTags={2}
+              />
+            </div>
+
+            {/* Departments */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs sm:text-sm font-medium text-slate-700">
+                Departments
+              </label>
+              <MultiSelect
+                value={selectedDepartments}
+                onChange={(values) => setSelectedDepartments(values as string[])}
+                options={departments}
+                placeholder="Select departments"
+                enableSearch
+                maxVisibleTags={2}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* External Type - Shown when External is selected */}
+        {distributionType === "external" && (
           <div className="flex flex-col gap-2">
             <label className="text-xs sm:text-sm font-medium text-slate-700">
-              Distribution <span className="text-red-500">*</span>
+              External Type <span className="text-red-500">*</span>
             </label>
             <Select
-              value={distributionType}
-              onChange={setDistributionType}
+              value={supplierCustomerType}
+              onChange={setSupplierCustomerType}
               options={[
                 { label: "-- None --", value: "none" },
-                { label: "Internal", value: "internal" },
-                { label: "External", value: "external" }
+                { label: "External Users", value: "external-users" }
               ]}
-              placeholder="Select distribution type"
+              placeholder="Select external type"
             />
           </div>
+        )}
 
-          {/* Internal Distribution - Only shown when Internal is selected */}
-          {distributionType === "internal" && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Employees */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs sm:text-sm font-medium text-slate-700">
-                  Employees
-                </label>
-                <MultiSelect
-                  value={selectedEmployees}
-                  onChange={(values) => setSelectedEmployees(values as string[])}
-                  options={employees}
-                  placeholder="Select employees"
-                  enableSearch
-                  maxVisibleTags={2}
-                />
-              </div>
+        {/* External Users Input - Shown when External Users is selected */}
+        {distributionType === "external" && supplierCustomerType === "external-users" && (
+          <div className="flex flex-col gap-2">
+            <label className="text-xs sm:text-sm font-medium text-slate-700">
+              External Users <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={externalUsersEmail}
+              onChange={(e) => setExternalUsersEmail(e.target.value)}
+              placeholder="Enter email addresses (separated by commas)"
+              className="w-full h-9 px-3.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+            <p className="text-xs text-slate-400 flex items-center gap-1">
+              Enter email addresses of external recipients, separated by commas.
+            </p>
+          </div>
+        )}
 
-              {/* Groups */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs sm:text-sm font-medium text-slate-700">
-                  Groups
-                </label>
-                <MultiSelect
-                  value={selectedGroups}
-                  onChange={(values) => setSelectedGroups(values as string[])}
-                  options={groups}
-                  placeholder="Select groups"
-                  enableSearch
-                  maxVisibleTags={2}
-                />
-              </div>
-
-              {/* Business Units */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs sm:text-sm font-medium text-slate-700">
-                  Business Units
-                </label>
-                <MultiSelect
-                  value={selectedBusinessUnits}
-                  onChange={(values) => setSelectedBusinessUnits(values as string[])}
-                  options={businessUnits}
-                  placeholder="Select business units"
-                  enableSearch
-                  maxVisibleTags={2}
-                />
-              </div>
-
-              {/* Departments */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs sm:text-sm font-medium text-slate-700">
-                  Departments
-                </label>
-                <MultiSelect
-                  value={selectedDepartments}
-                  onChange={(values) => setSelectedDepartments(values as string[])}
-                  options={departments}
-                  placeholder="Select departments"
-                  enableSearch
-                  maxVisibleTags={2}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Suppliers/Customers - Only shown when External is selected */}
-          {distributionType === "external" && (
-            <div className="flex flex-col gap-2">
-              <label className="text-xs sm:text-sm font-medium text-slate-700">
-                Suppliers/Customers <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={supplierCustomerType}
-                onChange={setSupplierCustomerType}
-                options={[
-                  { label: "-- None --", value: "none" },
-                  { label: "Suppliers", value: "suppliers" },
-                  { label: "Customers", value: "customers" }
-                ]}
-                placeholder="Select supplier or customer"
-              />
-            </div>
-          )}
-
-          {/* Supplier List - Only shown when Suppliers is selected */}
-          {distributionType === "external" && supplierCustomerType === "suppliers" && (
-            <div className="flex flex-col gap-2">
-              <label className="text-xs sm:text-sm font-medium text-slate-700">
-                Supplier <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={selectedSupplier}
-                onChange={setSelectedSupplier}
-                options={suppliers}
-                placeholder="Select a supplier"
-                enableSearch
-              />
-            </div>
-          )}
-
-          {/* Customer List - Only shown when Customers is selected */}
-          {distributionType === "external" && supplierCustomerType === "customers" && (
-            <div className="flex flex-col gap-2">
-              <label className="text-xs sm:text-sm font-medium text-slate-700">
-                Customer <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={selectedCustomer}
-                onChange={setSelectedCustomer}
-                options={customers}
-                placeholder="Select a customer"
-                enableSearch
-              />
-            </div>
-          )}
-        </div>
+      </div>
     </div>
   );
 };

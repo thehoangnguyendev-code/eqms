@@ -324,14 +324,18 @@ export const ControlledCopyDetailView: React.FC<ControlledCopyDetailViewProps> =
 
         {/* Tab Content */}
         <div className="p-3 sm:p-4 md:p-6">
-          {activeTab === "document" && (
+          <div className={cn(activeTab !== "document" && "hidden")}>
             <DocumentInformationTab controlledCopy={controlledCopy} />
-          )}
-          {activeTab === "distribution" && (
+          </div>
+          <div className={cn(activeTab !== "distribution" && "hidden")}>
             <DistributionInformationTab controlledCopy={controlledCopy} />
-          )}
-          {activeTab === "signatures" && <SignaturesTab />}
-          {activeTab === "audit" && <AuditTrailTab />}
+          </div>
+          <div className={cn(activeTab !== "signatures" && "hidden")}>
+            <SignaturesTab />
+          </div>
+          <div className={cn(activeTab !== "audit" && "hidden")}>
+            <AuditTrailTab />
+          </div>
         </div>
       </div>
 

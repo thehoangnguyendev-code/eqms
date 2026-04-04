@@ -6,20 +6,20 @@ import { ParentDocument } from "./types";
 import { MOCK_CORRELATED_DOCUMENTS } from "@/features/documents/shared/mockData";
 
 interface CorrelatedDocumentsTabProps {
-    parentDocument: ParentDocument | null;
-    onParentDocumentChange: (parent: ParentDocument | null) => void;
+    correlatedDocuments: ParentDocument[];
+    onCorrelatedDocumentsChange: (docs: ParentDocument[]) => void;
 }
 
 export const CorrelatedDocumentsTab: React.FC<CorrelatedDocumentsTabProps> = ({ 
-    parentDocument,
-    onParentDocumentChange 
+    correlatedDocuments,
+    onCorrelatedDocumentsChange 
 }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
-    // Use props data (parentDocument from parent state) - convert to array for table
-    const documents = parentDocument ? [parentDocument] : [];
+    // Use props data
+    const documents = correlatedDocuments;
 
     // Filter documents based on search
     const filteredDocuments = useMemo(() => {

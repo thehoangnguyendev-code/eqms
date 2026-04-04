@@ -13,7 +13,7 @@ import { cn } from "@/components/ui/utils";
 import type { User, Certification, EducationItem } from "../types";
 import { IconCertificate, IconSchool, IconPencilMinus, IconEdit } from "@tabler/icons-react";
 import { usePortalDropdown } from "@/hooks";
-import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
+import { StatusBadge } from "@/components/ui/badge";
 
 interface QualificationsTabProps {
   user: User;

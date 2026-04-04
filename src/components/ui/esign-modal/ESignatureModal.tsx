@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Lock, AlertCircle, PenTool } from 'lucide-react';
 import { Button } from '../button/Button';
+import { cn } from "@/components/ui/utils";
 
 /**
  * E-Signature Modal for secure action confirmation
@@ -31,7 +32,14 @@ export interface ESignatureModalProps {
     action: string;
     oldValue: string;
     newValue: string;
+    category?: 'metadata' | 'status' | 'approver' | 'reviewer';
   }[];
+  /** Optional document info for context */
+  documentDetails?: {
+    code?: string;
+    title?: string;
+    revision?: string;
+  };
 }
 
 export const ESignatureModal: React.FC<ESignatureModalProps> = ({
@@ -39,7 +47,8 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
   onClose,
   onConfirm,
   actionTitle,
-  changes = []
+  changes = [],
+  documentDetails
 }) => {
   const [username, setUsername] = useState('Dr. A. Smith'); // Simulated logged-in user
   const [password, setPassword] = useState('');
@@ -101,10 +110,10 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
               stiffness: 350,
               duration: 0.3
             }}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-slate-200 overflow-hidden relative z-10 flex flex-col"
+            className="bg-white rounded-xl shadow-2xl w-[calc(100%-2rem)] max-w-md border border-slate-200 overflow-hidden relative z-10 flex flex-col"
             style={{
-              // Ensure modal doesn't exceed viewport on mobile
-              maxHeight: 'calc(100dvh - 2rem)',
+              // Reduced height on mobile to ensure content stays within view and scrolls
+              maxHeight: 'min(720px, 75dvh)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -116,7 +125,7 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 leading-tight">Electronic Signature</h3>
-                  <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium font-mono">21 CFR Part 11 COMPLIANT</p>
+                  <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium">21 CFR Part 11 Compliant</p>
                 </div>
               </div>
               <button
@@ -130,13 +139,38 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
 
             {/* Body - Scrollable */}
             <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-              {/* Change Details Table */}
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs sm:text-sm font-semibold text-slate-700">Audit Trail Summary</span>
+              {/* Document Identity Section (if provided) */}
+              {documentDetails && (
+                <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-medium text-slate-500">
+                    <span>Target Document</span>
+                    <span className="text-emerald-600 font-bold">{documentDetails.code || "N/A"}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-slate-800 leading-tight line-clamp-2">
+                      {documentDetails.title}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-slate-200 text-slate-700 rounded uppercase">
+                        Revision: {documentDetails.revision || "—"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
-                  <table className="w-full text-left border-collapse">
+              )}
+
+              {/* Change Details Table */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs sm:text-sm font-medium text-slate-700">
+                    Audit Trail Summary
+                  </span>
+                  <span className="text-[10px] font-medium text-slate-400">
+                    {changes.length + 1} item(s) to sign
+                  </span>
+                </div>
+                <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
+                  <table className="w-full text-left border-collapse table-fixed">
                     <thead>
                       <tr className="bg-slate-50 border-b border-slate-200">
                         <th className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Property</th>
@@ -145,11 +179,14 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {/* Primary Action Row */}
-                      <tr className="border-b border-emerald-100 bg-emerald-50/30">
-                        <td className="px-3 py-2 text-xs font-bold text-slate-800">Signing Purpose</td>
-                        <td className="px-3 py-2 text-xs text-slate-400 italic">—</td>
-                        <td className="px-3 py-2 text-xs font-bold text-emerald-700 decoration-emerald-500/30 decoration-2 underline-offset-4 tracking-tight">
+                      {/* Primary Action Row - High Priority */}
+                      <tr className="border-b border-emerald-100 bg-emerald-50/40">
+                        <td className="px-3 py-3 text-[11px] font-bold text-slate-900 flex items-center gap-1.5">
+                          <div className="w-1 h-1 rounded-full bg-emerald-500" />
+                          Signing Action
+                        </td>
+                        <td className="px-3 py-3 text-[11px] text-slate-400 italic font-medium">—</td>
+                        <td className="px-3 py-3 text-[11px] font-medium text-emerald-700">
                           {actionTitle}
                         </td>
                       </tr>
@@ -157,10 +194,26 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
                       {/* Additional Property Changes */}
                       {changes.length > 0 ? (
                         changes.map((change, idx) => (
-                          <tr key={idx} className={idx !== changes.length - 1 ? "border-b border-slate-100" : ""}>
-                            <td className="px-3 py-2 text-xs font-medium text-slate-700">{change.action}</td>
-                            <td className="px-3 py-2 text-xs text-slate-500 line-through decoration-slate-300">{change.oldValue || '—'}</td>
-                            <td className="px-3 py-2 text-xs font-semibold text-emerald-600">{change.newValue}</td>
+                          <tr
+                            key={idx}
+                            className={cn(
+                              "group transition-colors hover:bg-slate-50/50",
+                              idx !== changes.length - 1 ? "border-b border-slate-100" : ""
+                            )}
+                          >
+                            <td className="px-3 py-2.5 text-[11px] font-semibold text-slate-700 truncate" title={change.action}>
+                              {change.action}
+                            </td>
+                            <td className="px-3 py-2.5">
+                              <span className="text-[10px] text-slate-400 font-medium line-through decoration-slate-300 break-all">
+                                {change.oldValue || '—'}
+                              </span>
+                            </td>
+                            <td className="px-3 py-2.5">
+                              <span className="text-[11px] font-medium text-emerald-700">
+                                {change.newValue}
+                              </span>
+                            </td>
                           </tr>
                         ))
                       ) : (
@@ -176,12 +229,6 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
               </div>
 
               <div className="space-y-3">
-                <div className="bg-emerald-50/30 p-2.5 rounded-lg border border-emerald-100/50 mb-1">
-                  <p className="text-[10px] sm:text-xs text-emerald-700 leading-relaxed font-medium">
-                    Electronic signature via credentials is legally binding and equivalent to a handwritten signature.
-                  </p>
-                </div>
-
                 <div className="space-y-1">
                   <label className="text-xs sm:text-sm font-medium text-slate-700">Signing Reason <span className="text-red-500">*</span></label>
                   <textarea

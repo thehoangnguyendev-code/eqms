@@ -3,19 +3,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ROUTES } from "@/app/routes.constants";
 import {
-  ChevronRight,
-  Save,
-  X,
-  GitBranch,
   Check,
-  Send,
-  CheckCircle2,
   AlertCircle,
   AlertTriangle,
-  Home,
   Layers,
   FileText,
-  Cloud,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
@@ -36,8 +28,8 @@ import {
   WorkspaceReviewersTab,
   WorkspaceApproversTab,
 } from "../revision-tabs";
+import { StatusBadge, StatusType } from "@/components/ui/badge/Badge";
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
-import { IconChevronRight } from "@tabler/icons-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { revisionWorkspace } from "@/components/ui/breadcrumb/breadcrumbs.config";
 
@@ -100,6 +92,19 @@ interface LocationState {
     name: string;
     version: string;
     type?: string;
+    author?: string;
+    coAuthors?: (string | number)[];
+    businessUnit?: string;
+    department?: string;
+    knowledgeBase?: string;
+    subType?: string;
+    periodicReviewCycle?: number;
+    periodicReviewNotification?: number;
+    language?: string;
+    reviewDate?: string;
+    description?: string;
+    isTemplate?: boolean;
+    titleLocalLanguage?: string;
   };
   impactDecisions?: { [key: string]: boolean };
   linkedDocuments?: Array<{
@@ -109,6 +114,29 @@ interface LocationState {
     type: "Form" | "Annex" | "Template" | "Reference";
     currentVersion: string;
     nextVersion: string;
+    author?: string;
+    coAuthors?: (string | number)[];
+    businessUnit?: string;
+    department?: string;
+    knowledgeBase?: string;
+    subType?: string;
+    periodicReviewCycle?: number;
+    periodicReviewNotification?: number;
+    language?: string;
+    reviewDate?: string;
+    description?: string;
+    isTemplate?: boolean;
+    titleLocalLanguage?: string;
+  }>;
+  revisionReviewers?: Array<{
+    id: string;
+    name: string;
+    signedOn?: string;
+  }>;
+  revisionApprovers?: Array<{
+    id: string;
+    name: string;
+    signedOn?: string;
   }>;
   reasonForChange?: string;
   isStandalone?: boolean;
@@ -120,6 +148,18 @@ interface LocationState {
   documentStatus?: string;
   documentCreated?: string;
   revisionFile?: File | null;
+  documentRevisions?: Array<{
+    id: string;
+    revisionNumber: string;
+    created: string;
+    openedBy: string;
+    revisionName: string;
+    state: "draft" | "pendingReview" | "approved" | "effective" | "obsolete";
+  }>;
+  documentNumber?: string;
+  relationshipDocs?: any[];
+  correlatedDocuments?: any[];
+  revisionNumber?: string;
 }
 
 export const RevisionWorkspaceView: React.FC = () => {
@@ -142,14 +182,15 @@ export const RevisionWorkspaceView: React.FC = () => {
     useState<React.ReactNode>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [isUploadedToOffice, setIsUploadedToOffice] = useState(false);
 
   // Reviewers & Approvers state (workspace-owned)
   const [workspaceReviewers, setWorkspaceReviewers] = useState<
     WorkspaceReviewer[]
-  >([]);
+  >(state?.revisionReviewers || []);
   const [workspaceApprovers, setWorkspaceApprovers] = useState<
     WorkspaceApprover[]
-  >([]);
+  >(state?.revisionApprovers || []);
   const [reviewFlowType, setReviewFlowType] =
     useState<ReviewFlowType>("parallel");
 
@@ -177,19 +218,19 @@ export const RevisionWorkspaceView: React.FC = () => {
             formData: {
               title: state.sourceDocument.name,
               type: (state.sourceDocument.type || "SOP") as DocumentType,
-              author: "",
-              coAuthors: [],
-              businessUnit: "",
-              department: "",
-              knowledgeBase: "",
-              subType: "-- None --",
-              periodicReviewCycle: 24,
-              periodicReviewNotification: 14,
-              language: "English",
-              reviewDate: "",
-              description: "",
-              isTemplate: false,
-              titleLocalLanguage: "",
+              author: state.sourceDocument.author || "",
+              coAuthors: state.sourceDocument.coAuthors || [],
+              businessUnit: state.sourceDocument.businessUnit || "",
+              department: state.sourceDocument.department || "",
+              knowledgeBase: state.sourceDocument.knowledgeBase || "",
+              subType: state.sourceDocument.subType || "-- None --",
+              periodicReviewCycle: state.sourceDocument.periodicReviewCycle || 24,
+              periodicReviewNotification: state.sourceDocument.periodicReviewNotification || 14,
+              language: state.sourceDocument.language || "English",
+              reviewDate: state.sourceDocument.reviewDate || "",
+              description: state.sourceDocument.description || "",
+              isTemplate: state.sourceDocument.isTemplate || false,
+              titleLocalLanguage: state.sourceDocument.titleLocalLanguage || "",
             },
           });
           break;
@@ -209,19 +250,19 @@ export const RevisionWorkspaceView: React.FC = () => {
             formData: {
               title: state.sourceDocument.name,
               type: (state.sourceDocument.type || "SOP") as DocumentType,
-              author: "",
-              coAuthors: [],
-              businessUnit: "",
-              department: "",
-              knowledgeBase: "",
-              subType: "-- None --",
-              periodicReviewCycle: 24,
-              periodicReviewNotification: 14,
-              language: "English",
-              reviewDate: "",
-              description: "",
-              isTemplate: false,
-              titleLocalLanguage: "",
+              author: state.sourceDocument.author || "",
+              coAuthors: state.sourceDocument.coAuthors || [],
+              businessUnit: state.sourceDocument.businessUnit || "",
+              department: state.sourceDocument.department || "",
+              knowledgeBase: state.sourceDocument.knowledgeBase || "",
+              subType: state.sourceDocument.subType || "-- None --",
+              periodicReviewCycle: state.sourceDocument.periodicReviewCycle || 24,
+              periodicReviewNotification: state.sourceDocument.periodicReviewNotification || 14,
+              language: state.sourceDocument.language || "English",
+              reviewDate: state.sourceDocument.reviewDate || "",
+              description: state.sourceDocument.description || "",
+              isTemplate: state.sourceDocument.isTemplate || false,
+              titleLocalLanguage: state.sourceDocument.titleLocalLanguage || "",
             },
           });
 
@@ -240,19 +281,19 @@ export const RevisionWorkspaceView: React.FC = () => {
                 formData: {
                   title: doc.name,
                   type: "SOP" as DocumentType,
-                  author: "",
-                  coAuthors: [],
-                  businessUnit: "",
-                  department: "",
-                  knowledgeBase: "",
-                  subType: "-- None --",
-                  periodicReviewCycle: 24,
-                  periodicReviewNotification: 14,
-                  language: "English",
-                  reviewDate: "",
-                  description: "",
-                  isTemplate: false,
-                  titleLocalLanguage: "",
+                  author: doc.author || "",
+                  coAuthors: doc.coAuthors || [],
+                  businessUnit: doc.businessUnit || "",
+                  department: doc.department || "",
+                  knowledgeBase: doc.knowledgeBase || "",
+                  subType: doc.subType || "-- None --",
+                  periodicReviewCycle: doc.periodicReviewCycle || 24,
+                  periodicReviewNotification: doc.periodicReviewNotification || 14,
+                  language: doc.language || "English",
+                  reviewDate: doc.reviewDate || "",
+                  description: doc.description || "",
+                  isTemplate: doc.isTemplate || false,
+                  titleLocalLanguage: doc.titleLocalLanguage || "",
                 },
               }));
             documents.push(...upgradedDocs);
@@ -431,11 +472,23 @@ export const RevisionWorkspaceView: React.FC = () => {
     try {
       // TODO: Integrate with API service
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      navigate(ROUTES.DOCUMENTS.REVISIONS.ALL);
+      // In a real app, this would update the backend status to 'Pending Review'
+      navigate(ROUTES.DOCUMENTS.REVISIONS.ALL, {
+        state: {
+          from: location.pathname,
+          submissionSuccess: true,
+          newStatus: "Pending Review"
+        }
+      });
     } catch (error) {
       console.error("Error submitting revision:", error);
       setIsSubmitting(false);
     }
+  };
+
+  const handleUploadToOffice = () => {
+    setIsUploadedToOffice(true);
+    window.open("https://office.com", "_blank");
   };
 
   const handleNextDocument = () => {
@@ -568,19 +621,19 @@ export const RevisionWorkspaceView: React.FC = () => {
               variant="outline"
               size="sm"
               className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
-              onClick={() => window.open("https://office.com", "_blank")}
+              onClick={handleUploadToOffice}
             >
-              Upload To Microsoft Office Online
+              {isUploadedToOffice ? "Edit File Online" : "Upload To Microsoft Office Online"}
             </Button>
             <div className="w-px h-8 bg-slate-300 mx-1" />
             <Button
               onClick={handleSubmitForReview}
-              disabled={isSaving || isSubmitting || !allFilesUploaded}
+              disabled={isSaving || isSubmitting}
               variant="outline"
               size="sm"
               className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
             >
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? "Submitting..." : "Submit for Review"}
             </Button>
           </div>
         </div>
@@ -653,7 +706,20 @@ export const RevisionWorkspaceView: React.FC = () => {
             setIsESignOpen(false);
           }}
           onConfirm={handleESignConfirm}
-          actionTitle="Submit revisions for review"
+          actionTitle="Submit for Review"
+          documentDetails={{
+            code: state?.documentNumber || currentDocument?.code,
+            title: currentDocument?.name,
+            revision: state?.revisionNumber || "0.0.1",
+          }}
+          changes={[
+            {
+              action: "Status",
+              oldValue: "Draft",
+              newValue: "Pending Review",
+              category: "status",
+            },
+          ]}
         />
 
         <AlertModal
@@ -798,6 +864,7 @@ export const RevisionWorkspaceView: React.FC = () => {
                   created: state?.revisionCreated ?? "",
                   openedBy: state?.revisionOpenedBy ?? currentUserName,
                   author: String(currentDocument.formData.author ?? ""),
+                  coAuthors: currentDocument.formData.coAuthors || [],
                   isTemplate: currentDocument.formData.isTemplate,
                   businessUnit: currentDocument.formData.businessUnit,
                   department: currentDocument.formData.department,
@@ -816,51 +883,53 @@ export const RevisionWorkspaceView: React.FC = () => {
                 }}
               />
 
-              {/* Navigation Buttons */}
-              <div className="flex items-center justify-between gap-2 pt-4 md:pt-6 border-t border-slate-200">
-                <Button
-                  onClick={handlePreviousDocument}
-                  disabled={currentDocIndex === 0}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center justify-center gap-1.5 touch-manipulation"
-                >
-                  <span className="text-xs md:text-sm">Previous</span>
-                </Button>
-
-                {/* Warning message in center */}
-                {missingRequiredFields.length > 0 && (
-                  <div className="text-xs md:text-sm text-amber-600 flex items-center gap-1.5 px-2 md:px-3 py-1.5 md:py-2 bg-amber-50 rounded-lg">
-                    <span className="hidden sm:inline">
-                      {missingRequiredFields.length} required field(s) missing
-                    </span>
-                    <span className="sm:hidden">
-                      {missingRequiredFields.length} missing
-                    </span>
-                  </div>
-                )}
-
-                {currentDocIndex < workspaceDocuments.length - 1 ? (
+              {/* Navigation Buttons - only show if multiple documents */}
+              {workspaceDocuments.length > 1 && (
+                <div className="flex items-center justify-between gap-2 pt-4 md:pt-6 border-t border-slate-200">
                   <Button
-                    onClick={handleNextDocument}
-                    variant="default"
+                    onClick={handlePreviousDocument}
+                    disabled={currentDocIndex === 0}
+                    variant="outline"
                     size="sm"
                     className="flex items-center justify-center gap-1.5 touch-manipulation"
                   >
-                    <span className="text-xs md:text-sm">Next</span>
+                    <span className="text-xs md:text-sm">Previous</span>
                   </Button>
-                ) : (
-                  <Button
-                    onClick={() => setActiveTab("training")}
-                    variant="default"
-                    size="sm"
-                    disabled={!isCurrentDocumentValid}
-                    className="flex items-center justify-center gap-1.5 touch-manipulation"
-                  >
-                    <span className="text-xs md:text-sm">Continue</span>
-                  </Button>
-                )}
-              </div>
+
+                  {/* Warning message in center */}
+                  {missingRequiredFields.length > 0 && (
+                    <div className="text-xs md:text-sm text-amber-600 flex items-center gap-1.5 px-2 md:px-3 py-1.5 md:py-2 bg-amber-50 rounded-lg">
+                      <span className="hidden sm:inline">
+                        {missingRequiredFields.length} required field(s) missing
+                      </span>
+                      <span className="sm:hidden">
+                        {missingRequiredFields.length} missing
+                      </span>
+                    </div>
+                  )}
+
+                  {currentDocIndex < workspaceDocuments.length - 1 ? (
+                    <Button
+                      onClick={handleNextDocument}
+                      variant="default"
+                      size="sm"
+                      className="flex items-center justify-center gap-1.5 touch-manipulation"
+                    >
+                      <span className="text-xs md:text-sm">Next</span>
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => setActiveTab("training")}
+                      variant="default"
+                      size="sm"
+                      disabled={!isCurrentDocumentValid}
+                      className="flex items-center justify-center gap-1.5 touch-manipulation"
+                    >
+                      <span className="text-xs md:text-sm">Continue</span>
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -887,6 +956,19 @@ export const RevisionWorkspaceView: React.FC = () => {
 
           {activeTab === "approvers" && (
             <WorkspaceApproversTab approvers={workspaceApprovers} />
+          )}
+
+          {activeTab === "document" && (
+            <DocumentTab
+              mode="view"
+              selectedFile={state?.revisionFile}
+              uploadedFiles={state?.revisionFile ? [{
+                id: "initial-revision",
+                file: state.revisionFile,
+                progress: 100,
+                status: "success"
+              }] : []}
+            />
           )}
 
           {activeTab === "signatures" && <SignaturesTab />}
@@ -918,19 +1000,19 @@ export const RevisionWorkspaceView: React.FC = () => {
           variant="outline"
           size="sm"
           className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
-          onClick={() => window.open("https://office.com", "_blank")}
+          onClick={handleUploadToOffice}
         >
-          Upload To Microsoft Office Online
+          {isUploadedToOffice ? "Edit File Online" : "Upload To Microsoft Office Online"}
         </Button>
         <div className="w-px h-8 bg-slate-300 mx-1" />
         <Button
           onClick={handleSubmitForReview}
-          disabled={isSaving || isSubmitting || !allFilesUploaded}
+          disabled={isSaving || isSubmitting}
           variant="outline"
           size="sm"
           className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Submitting..." : "Submit for Review"}
         </Button>
       </div>
 
@@ -950,28 +1032,28 @@ export const RevisionWorkspaceView: React.FC = () => {
               <table className="w-full border-separate border-spacing-0">
                 <thead>
                   <tr className="bg-slate-50">
-                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 w-12">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 w-12 whitespace-nowrap">
                       No.
                     </th>
-                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 whitespace-nowrap">
                       Document Number
                     </th>
-                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden md:table-cell">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden md:table-cell whitespace-nowrap">
                       Created
                     </th>
-                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden md:table-cell">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden md:table-cell whitespace-nowrap">
                       Opened by
                     </th>
-                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 whitespace-nowrap">
                       Document Name
                     </th>
-                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 whitespace-nowrap">
                       State
                     </th>
-                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden lg:table-cell">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden lg:table-cell whitespace-nowrap">
                       Author
                     </th>
-                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden lg:table-cell">
+                    <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 hidden lg:table-cell whitespace-nowrap">
                       Valid Until
                     </th>
                   </tr>
@@ -983,45 +1065,78 @@ export const RevisionWorkspaceView: React.FC = () => {
                         key={doc.id}
                         className="hover:bg-slate-50/80 transition-colors group"
                       >
-                        <td className="py-3 px-4 text-xs md:text-sm text-slate-500 font-medium">
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-500 font-medium whitespace-nowrap">
                           {index + 1}
                         </td>
-                        <td className="py-3 px-4 text-xs md:text-sm">
+                        <td className="py-3 px-4 text-xs md:text-sm whitespace-nowrap">
                           <button
                             onClick={() => {
                               setIsNavigating(true);
-                              setTimeout(() => navigate(-1), 600);
+                              setTimeout(() => navigate(ROUTES.DOCUMENTS.NEW, {
+                                state: {
+                                  from: location.pathname,
+                                  workspaceState: state,
+                                  documentData: {
+                                    formData: doc.formData,
+                                    status: "Active",
+                                    isSaved: true,
+                                    documentNumber: state?.documentNumber || doc.code,
+                                    createdDateTime: state?.documentCreated || state?.revisionCreated || "",
+                                    reviewers: workspaceReviewers.map(r => ({
+                                      id: r.id,
+                                      name: r.name,
+                                      role: "",
+                                      email: "",
+                                      department: "",
+                                      order: 0,
+                                    })),
+                                    approvers: workspaceApprovers.map(a => ({
+                                      id: a.id,
+                                      name: a.name,
+                                      role: "",
+                                      email: "",
+                                      department: "",
+                                    })),
+                                    revisions: state?.documentRevisions || [],
+                                    isRevisionUploaded: true,
+                                    relationshipDocs: state?.relationshipDocs || [],
+                                    correlatedDocuments: state?.correlatedDocuments || [],
+                                    revisionFile: state?.revisionFile || null,
+                                  }
+                                }
+                              }), 600);
                             }}
                             className="font-medium text-emerald-600 ld-600 hover:text-emerald-700 hover:underline underline-offset-4 decoration-2 transition-all cursor-pointer"
                           >
                             {doc.code}
                           </button>
                         </td>
-                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden md:table-cell whitespace-nowrap">
                           {state?.documentCreated || state?.revisionCreated || "—"}
                         </td>
-                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden md:table-cell whitespace-nowrap">
                           {currentUserName}
                         </td>
-                        <td className="py-3 px-4 text-xs md:text-sm text-slate-900 font-medium max-w-[200px] truncate">
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-700 font-medium max-w-[200px] truncate whitespace-nowrap">
                           {doc.name}
                         </td>
-                        <td className="py-3 px-4 text-xs md:text-sm">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-tight border bg-slate-50 text-slate-700 border-slate-200 shadow-sm">
-                            {state?.documentStatus || "Draft"}
-                          </span>
+                        <td className="py-3 px-4 text-xs md:text-sm whitespace-nowrap">
+                          <StatusBadge
+                            status={(state?.documentStatus?.toLowerCase().replace(/\s+/g, '') as StatusType) || "draft"}
+                            size="sm"
+                          />
                         </td>
-                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden lg:table-cell">
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden lg:table-cell whitespace-nowrap">
                           {state?.documentAuthor || "—"}
                         </td>
-                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden lg:table-cell">
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden lg:table-cell whitespace-nowrap">
                           —
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center bg-slate-50/50">
+                      <td colSpan={8} className="py-12 text-center bg-slate-50/50 whitespace-nowrap">
                         <p className="text-sm text-slate-500 font-medium italic">
                           No documents in workspace.
                         </p>

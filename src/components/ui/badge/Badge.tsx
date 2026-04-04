@@ -130,7 +130,9 @@ export type StatusType =
   | 'obsolete'
   | 'current'
   | 'blocked'
-  | 'inProgress';
+  | 'inProgress'
+  | 'completed'
+  | 'cancelled';
 
 const DOC_STATUS_MAP: Record<StatusType, { label: string; color: BadgeColor }> = {
   draft: { label: 'Draft', color: 'slate' },
@@ -148,6 +150,8 @@ const DOC_STATUS_MAP: Record<StatusType, { label: string; color: BadgeColor }> =
   active: { label: 'Active', color: 'emerald' },
   archived: { label: 'Closed - Cancelled', color: 'slate' },
   obsolete: { label: 'Obsoleted', color: 'rose' },
+  completed: { label: 'Completed', color: 'emerald' },
+  cancelled: { label: 'Cancelled', color: 'red' },
 };
 
 export interface StatusBadgeProps {
@@ -156,6 +160,7 @@ export interface StatusBadgeProps {
   size?: BadgeSize;
   icon?: React.ReactNode;
   showDot?: boolean;
+  label?: string;
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ 
@@ -163,7 +168,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   className,
   size = 'default',
   icon,
-  showDot = false
+  showDot = false,
+  label
 }) => {
   const config = DOC_STATUS_MAP[status] || DOC_STATUS_MAP.draft;
   return (
@@ -174,7 +180,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       showDot={showDot} 
       className={className}
     >
-      {config.label}
+      {label || config.label}
     </Badge>
   );
 };
@@ -225,9 +231,3 @@ export const ModuleBadge: React.FC<ModuleBadgeProps> = ({ module, ...props }) =>
   };
   return <Badge color={moduleMap[module]} {...props}>{module}</Badge>;
 };
-
-
-
-
-
-

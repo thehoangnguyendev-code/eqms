@@ -11,32 +11,32 @@ const mockSignatures: SignatureRecord[] = [
   {
     actionBy: "Submitted By",
     actionByName: "Gilad Kigel",
-    actionOn: "Submitted On (Date - Time)",
+    actionOn: "Submitted On",
     actionOnValue: "2025-12-12 07:46:36",
   },
   {
     actionBy: "Rejected By",
-    actionByName: "",
-    actionOn: "Rejected On (Date - Time)",
-    actionOnValue: "",
-  },
-  {
-    actionBy: "Reviewed By",
-    actionByName: "Jane Smith",
-    actionOn: "Reviewed On (Date - Time)",
-    actionOnValue: "2025-12-11 16:30:45",
-  },
-  {
-    actionBy: "Approved By",
-    actionByName: "John Doe",
-    actionOn: "Approved On (Date - Time)",
-    actionOnValue: "2025-12-12 09:15:20",
+    actionByName: "—",
+    actionOn: "Rejected On",
+    actionOnValue: "—",
   },
   {
     actionBy: "Published By",
     actionByName: "Gilad Kigel",
-    actionOn: "Published On (Date - Time)",
+    actionOn: "Published On",
     actionOnValue: "2025-12-12 07:47:19",
+  },
+  {
+    actionBy: "Obsoleted By",
+    actionByName: "—",
+    actionOn: "Obsoleted On",
+    actionOnValue: "—",
+  },
+  {
+    actionBy: "Cancelled By",
+    actionByName: "—",
+    actionOn: "Cancelled On",
+    actionOnValue: "—",
   },
 ];
 

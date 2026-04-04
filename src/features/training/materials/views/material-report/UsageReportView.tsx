@@ -27,7 +27,7 @@ import {
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { materialUsageReport } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
-import { StatusBadge, type StatusType } from "@/components/ui/status-badge/StatusBadge";
+import { StatusBadge, type StatusType } from "@/components/ui/badge";
 import { formatDateUS } from "@/utils/format";
 import { Select } from "@/components/ui/select/Select";
 import { cn } from "@/components/ui/utils";

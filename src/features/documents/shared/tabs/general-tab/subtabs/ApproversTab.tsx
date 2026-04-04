@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle, Plus, Trash2, Search, User, X, ShieldCheck, Check } from "lucide-react";
-import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button/Button";
+import { cn } from "@/components/ui/utils";
+import { FormModal } from "@/components/ui/modal/FormModal";
 import { MOCK_USERS } from "../../../mockData";
 
 interface Approver {
@@ -38,8 +39,6 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
         }
     }, [isOpen]);
 
-    if (!isOpen) return null;
-
     const filteredUsers = MOCK_USERS.filter(user => 
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -60,73 +59,65 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
         }
     };
 
-    return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
-            <div 
-                className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" 
-                onClick={onClose}
-            />
-            <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-200">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                    <h3 className="text-lg font-semibold text-slate-900">Setup Approver</h3>
-                    <Button 
-                        onClick={onClose}
-                        variant="ghost"
-                        size="icon-sm"
-                        className="rounded-full"
-                    >
-                        <X className="h-5 w-5" />
-                    </Button>
-                </div>
-                
-                <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="Search by name, role, or department..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full h-9 pl-9 pr-4 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400 transition-colors"
-                            autoFocus
-                        />
-                    </div>
+    return (
+        <FormModal
+            isOpen={isOpen}
+            onClose={onClose}
+            onConfirm={handleSave}
+            title="Setup Approver"
+            description="Select the final approver for this document."
+            confirmText="Commit Selection"
+            confirmDisabled={!selectedId}
+            size="lg"
+        >
+            <div className="space-y-4">
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <input
+                        type="text"
+                        placeholder="Search by name, role, or department..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full h-9 pl-9 pr-4 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400 transition-colors"
+                        autoFocus
+                    />
                 </div>
 
-                <div className="flex-1 overflow-y-auto max-h-[290px] px-4 py-2">
+                <div className="overflow-y-auto max-h-[350px] -mx-1 px-1 custom-scrollbar min-h-[150px]">
                     {filteredUsers.length > 0 ? (
-                        <div className="space-y-0 divide-y divide-slate-100">
+                        <div className="space-y-1 divide-y divide-slate-100">
                             {filteredUsers.map((user, index) => {
-                                const isAlreadyAdded = false; // ApproversTab has single approver, so check if already selected
                                 const isSelected = selectedId === user.id;
                                 
                                 return (
                                     <button
                                         key={user.id}
-                                        onClick={() => !isAlreadyAdded && handleToggleUser(user.id)}
-                                        disabled={isAlreadyAdded}
-                                        className={`w-full flex items-center gap-3 py-1.5 transition-all group text-left ${
+                                        onClick={() => handleToggleUser(user.id)}
+                                        className={cn(
+                                            "w-full flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all group text-left border border-transparent",
                                             isSelected 
-                                                ? "bg-emerald-50/80" 
-                                                : isAlreadyAdded
-                                                    ? "bg-slate-50 opacity-60 cursor-not-allowed"
-                                                    : "hover:bg-slate-50/80"
-                                        }`}
+                                                ? "bg-emerald-50 border-emerald-100" 
+                                                : "hover:bg-slate-50"
+                                        )}
                                     >
-                                        <div className={`w-8 flex items-center justify-center text-sm font-semibold shrink-0 transition-colors ${
-                                            isSelected ? "text-emerald-600" : "text-slate-400"
-                                        }`}>
+                                        <div className={cn(
+                                            "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 transition-colors border",
+                                            isSelected 
+                                                ? "bg-emerald-100 border-emerald-200 text-emerald-700" 
+                                                : "bg-slate-100 border-slate-200 text-slate-500"
+                                        )}>
                                             {isSelected ? <Check className="h-4 w-4" /> : (index + 1)}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="font-medium text-slate-900 truncate text-sm">
                                                 {user.name}
-                                                {isAlreadyAdded && <span className="ml-2 text-xs text-slate-500 font-normal">(Already Added)</span>}
                                             </div>
-                                            <div className="text-xs text-slate-500 truncate">{user.username} | {user.role} • {user.department}</div>
+                                            <div className="text-xs text-slate-500 truncate mt-0.5">
+                                                {user.role} • {user.department}
+                                            </div>
                                         </div>
                                         {isSelected && (
-                                            <div className="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-lg shrink-0">
+                                            <div className="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-md shrink-0 uppercase tracking-wider">
                                                 Selected
                                             </div>
                                         )}
@@ -135,34 +126,17 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
                             })}
                         </div>
                     ) : (
-                        <div className="text-center py-12">
-                            <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3">
+                        <div className="text-center py-12 bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+                            <div className="h-12 w-12 rounded-full bg-white shadow-sm flex items-center justify-center mx-auto mb-3">
                                 <User className="h-6 w-6 text-slate-300" />
                             </div>
-                            <p className="text-sm font-medium text-slate-900">No users found matching "{searchTerm}"</p>
+                            <p className="text-sm font-semibold text-slate-900">No users found</p>
+                            <p className="text-xs text-slate-500 mt-1">Try a different search term</p>
                         </div>
                     )}
                 </div>
-
-                <div className="p-4 border-t border-slate-100 bg-slate-50 rounded-b-xl flex justify-end gap-3">
-                    <Button
-                        onClick={onClose}
-                        variant="outline"
-                        size="sm"
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleSave}
-                        disabled={!selectedId}
-                        size="sm"
-                    >
-                        Update Approvers
-                    </Button>
-                </div>
             </div>
-        </div>,
-        document.body
+        </FormModal>
     );
 };
 

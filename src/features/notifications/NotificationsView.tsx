@@ -35,7 +35,7 @@ import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { FilterCard } from "@/components/ui/card/FilterCard";
 import { cn } from "@/components/ui/utils";
-import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
+import { StatusBadge } from "@/components/ui/badge";
 import type {
   Notification,
   NotificationType,
@@ -343,7 +343,7 @@ const NotificationRow: React.FC<{
           </div>
         </td>
 
-        <td className={cn(tdClass, "hidden md:table-cell")}>
+        <td className={tdClass}>
           <StatusBadge
             status="draft"
             label={notification.module}
@@ -352,7 +352,7 @@ const NotificationRow: React.FC<{
           />
         </td>
 
-        <td className={cn(tdClass, "hidden lg:table-cell")}>
+        <td className={tdClass}>
           {notification.relatedItem ? (
             <span className="font-medium text-emerald-600">
               {notification.relatedItem.code}
@@ -362,7 +362,7 @@ const NotificationRow: React.FC<{
           )}
         </td>
 
-        <td className={cn(tdClass, "hidden md:table-cell")}>
+        <td className={tdClass}>
           <span
             className={cn(
               "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium border capitalize",
@@ -373,7 +373,7 @@ const NotificationRow: React.FC<{
           </span>
         </td>
 
-        <td className={cn(tdClass, "hidden sm:table-cell text-slate-500")}>
+        <td className={cn(tdClass, "text-slate-500")}>
           {formatTimeAgo(notification.createdAt)}
         </td>
 
@@ -873,10 +873,10 @@ export const NotificationsView: React.FC = () => {
                     </th>
                     {[
                       { label: "Notification", id: "title", sortable: true },
-                      { label: "Module", id: "module", sortable: true, hideMobile: true },
-                      { label: "Related Item", id: "relatedItem", sortable: true, hideLg: true },
-                      { label: "Priority", id: "priority", sortable: true, hideMobile: true },
-                      { label: "Time", id: "createdAt", sortable: true, hideSm: true }
+                      { label: "Module", id: "module", sortable: true },
+                      { label: "Related Item", id: "relatedItem", sortable: true },
+                      { label: "Priority", id: "priority", sortable: true },
+                      { label: "Time", id: "createdAt", sortable: true }
                     ].map((col, idx) => {
                       const isSorted = sortConfig.key === col.id;
                       const canSort = col.sortable;
@@ -887,9 +887,6 @@ export const NotificationsView: React.FC = () => {
                           className={cn(
                             "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
                             canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
-                            col.hideMobile && "hidden md:table-cell",
-                            col.hideLg && "hidden lg:table-cell",
-                            col.hideSm && "hidden sm:table-cell"
                           )}
                         >
                           <div className="flex items-center justify-between gap-2 w-full">

@@ -2,6 +2,20 @@ import React, { useState } from 'react';
 import { Bell, Mail, Smartphone, MousePointer2 } from 'lucide-react';
 import { cn } from '@/components/ui/utils';
 
+const SettingsCard: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100 uppercase tracking-wider">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-xs font-bold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
+
 export const NotificationSettingsTab: React.FC = () => {
     const [notifications, setNotifications] = useState({
         email_new_task: true,
@@ -15,16 +29,9 @@ export const NotificationSettingsTab: React.FC = () => {
     };
 
     return (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="p-1 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
             {/* Email Notifications */}
-            <section className="space-y-4">
-                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center">
-                        <Mail className="h-5 w-5 text-emerald-600" />
-                    </div>
-                    <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Email Notifications</h3>
-                </div>
-
+            <SettingsCard title="Email Notifications" icon={<Mail className="h-4 w-4" />}>
                 <div className="bg-white rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
                     <div className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                         <div className="flex flex-col gap-1">
@@ -70,17 +77,10 @@ export const NotificationSettingsTab: React.FC = () => {
                         </button>
                     </div>
                 </div>
-            </section>
+            </SettingsCard>
 
              {/* In-App Notifications */}
-             <section className="space-y-4">
-                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center">
-                        <Bell className="h-5 w-5 text-emerald-600" />
-                    </div>
-                    <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">In-App Notifications</h3>
-                </div>
-
+             <SettingsCard title="In-App Notifications" icon={<Bell className="h-4 w-4" />}>
                 <div className="bg-white rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
                     <div className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                         <div className="flex items-center gap-4">
@@ -136,7 +136,7 @@ export const NotificationSettingsTab: React.FC = () => {
                         </button>
                     </div>
                 </div>
-            </section>
+            </SettingsCard>
         </div>
     );
 };

@@ -98,7 +98,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         {/* Created (read-only, auto-generated) */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs sm:text-sm font-medium text-slate-700">
-            Created (Date - Time)
+            Created Time
           </label>
           <input
             type="text"
@@ -320,9 +320,9 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               id="isTemplate"
               checked={formData.isTemplate}
               onChange={(checked) =>
-                !isObsoleted && !lockAllEditableFields && setFormData({ isTemplate: checked })
+                !isObsoleted && !lockAllEditableFields && !lockedAfterSave && setFormData({ isTemplate: checked })
               }
-              disabled={isObsoleted || lockAllEditableFields}
+              disabled={isObsoleted || lockAllEditableFields || lockedAfterSave}
             />
           </div>
         )}
@@ -448,7 +448,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         {/* Effective Date (read-only, auto-generated) */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs sm:text-sm font-medium text-slate-700">
-            Effective Date (dd/MM/yyyy)
+            Effective Date
           </label>
           <input
             type="text"
@@ -461,7 +461,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
         <div className="flex flex-col gap-1.5">
           <label className="text-xs sm:text-sm font-medium text-slate-700">
-            Valid Until (dd/MM/yyyy)
+            Valid Until
           </label>
           <input
             type="text"

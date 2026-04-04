@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
 import { Check, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
@@ -48,7 +48,6 @@ type SubTabId =
   | "copies"
   | "related"
   | "correlated";
-type ReviewFlowType = "sequential" | "parallel";
 
 interface Reviewer {
   id: string;
@@ -69,9 +68,18 @@ interface Approver {
 
 export const NewDocumentView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
+  const location = useLocation();
   const { user } = useAuth();
   const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<TabType>("general");
+
+  // Helper to read initial state from navigation
+  const getInitialData = () => {
+    const locState = location.state as any;
+    return locState?.documentData || null;
+  };
+  const initialData = getInitialData();
+
+  const [activeTab, setActiveTab] = useState<TabType>(initialData?.activeTab || "general");
   const [isSaving, setIsSaving] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [validationModalMessage, setValidationModalMessage] =
@@ -82,12 +90,12 @@ export const NewDocumentView: React.FC = () => {
   const [isObsoleteModalOpen, setIsObsoleteModalOpen] = useState(false);
   const [isUploadRevisionModalOpen, setIsUploadRevisionModalOpen] =
     useState(false);
-  const [isSaved, setIsSaved] = useState(false); // Track if document has been saved
-  const [isRevisionUploaded, setIsRevisionUploaded] = useState(false); // Track if revision was uploaded
+  const [isSaved, setIsSaved] = useState(initialData?.isSaved ?? false);
+  const [isRevisionUploaded, setIsRevisionUploaded] = useState(initialData?.isRevisionUploaded ?? false);
   const [uploadedRevisionFile, setUploadedRevisionFile] = useState<File | null>(
-    null,
-  ); // Store uploaded revision file
-  const [documentStatus, setDocumentStatus] = useState<DocumentStatus>("Draft"); // Track current document status
+    initialData?.revisionFile || null,
+  );
+  const [documentStatus, setDocumentStatus] = useState<DocumentStatus>(initialData?.status || "Draft");
 
   // Subtab states
   const [activeSubtab, setActiveSubtab] = useState<SubTabId>("revisions");
@@ -95,9 +103,7 @@ export const NewDocumentView: React.FC = () => {
   const [isApproverModalOpen, setIsApproverModalOpen] = useState(false);
   const [isRelatedModalOpen, setIsRelatedModalOpen] = useState(false);
   const [isCorrelatedModalOpen, setIsCorrelatedModalOpen] = useState(false);
-  const [revisions, setRevisions] = useState<Revision[]>([]);
-  const [reviewFlowType, setReviewFlowType] =
-    useState<ReviewFlowType>("parallel");
+  const [revisions, setRevisions] = useState<Revision[]>(initialData?.revisions || []);
   // Initial mock data for testing
   const [relationshipDocs, setRelationshipDocs] = useState<RelatedDocument[]>([
     {
@@ -129,8 +135,8 @@ export const NewDocumentView: React.FC = () => {
   ]);
 
   // Auto-generated fields
-  const [documentNumber, setDocumentNumber] = useState<string>("");
-  const [createdDateTime, setCreatedDateTime] = useState<string>("");
+  const [documentNumber, setDocumentNumber] = useState<string>(initialData?.documentNumber || "");
+  const [createdDateTime, setCreatedDateTime] = useState<string>(initialData?.createdDateTime || "");
 
   // Set openedBy immediately with current user fullname
   const [openedBy] = useState<string>(
@@ -138,8 +144,8 @@ export const NewDocumentView: React.FC = () => {
   );
 
   // Reviewers and Approvers state
-  const [reviewers, setReviewers] = useState<Reviewer[]>([]);
-  const [approvers, setApprovers] = useState<Approver[]>([]);
+  const [reviewers, setReviewers] = useState<Reviewer[]>(initialData?.reviewers || []);
+  const [approvers, setApprovers] = useState<Approver[]>(initialData?.approvers || []);
 
   // File state
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -147,24 +153,11 @@ export const NewDocumentView: React.FC = () => {
 
   // Document Relationships state
   // Initial mock data for testing
-  const [parentDocument, setParentDocument] = useState<ParentDocument | null>({
-    id: "1",
-    documentNumber: "DOC-2024-005",
-    created: "2024-01-05",
-    openedBy: "Alice Brown",
-    documentName: "Equipment Maintenance Schedule",
-    state: "effective",
-    documentType: "Schedule",
-    department: "Maintenance",
-    authorCoAuthor: "Alice Brown",
-    effectiveDate: "2024-01-15",
-    validUntil: "2025-01-15",
-  });
+  const [correlatedDocuments, setCorrelatedDocuments] = useState<ParentDocument[]>(initialData?.correlatedDocuments || []);
   const [suggestedDocumentCode, setSuggestedDocumentCode] =
     useState<string>("");
 
-  // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialData?.formData || {
     title: "",
     type: "" as DocumentType,
     author: "",
@@ -291,6 +284,8 @@ export const NewDocumentView: React.FC = () => {
     setDocumentStatus("Obsoleted");
   };
 
+
+
   const handleBackToList = () => {
     navigateTo(ROUTES.DOCUMENTS.ALL);
   };
@@ -343,7 +338,7 @@ export const NewDocumentView: React.FC = () => {
     { id: "general" as TabType, label: "General Information" },
     { id: "training" as TabType, label: "Training Information" },
     { id: "document" as TabType, label: "Document" },
-    ...(isSaved ? [{ id: "signatures" as TabType, label: "Signatures" }] : []),
+    { id: "signatures" as TabType, label: "Signatures" },
     { id: "audit" as TabType, label: "Audit Trail" },
   ];
 
@@ -373,6 +368,7 @@ export const NewDocumentView: React.FC = () => {
               </Button>
             ) : (
               <>
+
                 <Button
                   onClick={handleCancel}
                   variant="outline-emerald"
@@ -403,6 +399,16 @@ export const NewDocumentView: React.FC = () => {
                       ? "Save"
                       : "Next Step"}
                 </Button>
+                {documentStatus === "Active" && (
+                  <Button
+                    onClick={() => setIsObsoleteModalOpen(true)}
+                    variant="default"
+                    size="sm"
+                    className="whitespace-nowrap"
+                  >
+                    Obsolete
+                  </Button>
+                )}
               </>
             )}
           </div>
@@ -527,7 +533,7 @@ export const NewDocumentView: React.FC = () => {
             <GeneralTab
               formData={formData}
               onFormChange={setFormData}
-              hideTemplateCheckbox={true}
+              hideTemplateCheckbox={false}
               suggestedDocumentCode={suggestedDocumentCode}
               documentNumber={documentNumber}
               createdDateTime={createdDateTime}
@@ -563,8 +569,8 @@ export const NewDocumentView: React.FC = () => {
                 documentStatus === "Obsoleted" ||
                 documentStatus === "Closed - Cancelled"
               }
-              parentDocument={parentDocument}
-              onParentDocumentChange={setParentDocument}
+              correlatedDocuments={correlatedDocuments}
+              onCorrelatedDocumentsChange={setCorrelatedDocuments}
               relatedDocuments={relationshipDocs}
               onRelatedDocumentsChange={setRelationshipDocs}
               documentType={formData.type}
@@ -573,7 +579,7 @@ export const NewDocumentView: React.FC = () => {
             />
           )}
 
-          {activeTab === "signatures" && <SignaturesTab />}
+          {activeTab === "signatures" && <SignaturesTab onlyStatusFields />}
 
           {activeTab === "audit" && <AuditTab />}
         </div>
@@ -599,14 +605,17 @@ export const NewDocumentView: React.FC = () => {
             {isSaved &&
               documentStatus !== "Obsoleted" &&
               documentStatus !== "Closed - Cancelled" && (
-                <Button
-                  onClick={handleCancel}
-                  variant="outline-emerald"
-                  size="sm"
-                  className="whitespace-nowrap"
-                >
-                  Cancel
-                </Button>
+                <>
+
+                  <Button
+                    onClick={handleCancel}
+                    variant="outline-emerald"
+                    size="sm"
+                    className="whitespace-nowrap"
+                  >
+                    Cancel
+                  </Button>
+                </>
               )}
 
             {/* Back to List button - shown when cancelled */}
@@ -661,7 +670,7 @@ export const NewDocumentView: React.FC = () => {
             {documentStatus === "Active" && (
               <Button
                 onClick={() => setIsObsoleteModalOpen(true)}
-                variant="outline-emerald"
+                variant="default"
                 size="sm"
                 className="whitespace-nowrap"
               >
@@ -720,8 +729,8 @@ export const NewDocumentView: React.FC = () => {
                     className="whitespace-nowrap"
                   >
                     Select Correlated Documents
-                    {parentDocument && (
-                      <span className="ml-2 text-xs opacity-70">(1)</span>
+                    {correlatedDocuments.length > 0 && (
+                      <span className="ml-2 text-xs opacity-70">({correlatedDocuments.length})</span>
                     )}
                   </Button>
                   <Button
@@ -791,14 +800,18 @@ export const NewDocumentView: React.FC = () => {
                 documentStatus={documentStatus}
                 documentCreated={createdDateTime}
                 revisionFile={uploadedRevisionFile}
+                formData={formData}
+                reviewers={reviewers}
+                approvers={approvers}
+                documentNumber={documentNumber}
+                relationshipDocs={relationshipDocs}
+                correlatedDocuments={correlatedDocuments}
               />
             )}
             {activeSubtab === "reviewers" && (
               <ReviewersTab
                 reviewers={reviewers}
                 onReviewersChange={setReviewers}
-                reviewFlowType={reviewFlowType}
-                onReviewFlowTypeChange={setReviewFlowType}
                 isModalOpen={isReviewerModalOpen}
                 onModalClose={() => setIsReviewerModalOpen(false)}
               />
@@ -820,8 +833,8 @@ export const NewDocumentView: React.FC = () => {
             )}
             {activeSubtab === "correlated" && (
               <CorrelatedDocumentsTab
-                parentDocument={parentDocument}
-                onParentDocumentChange={setParentDocument}
+                correlatedDocuments={correlatedDocuments}
+                onCorrelatedDocumentsChange={setCorrelatedDocuments}
               />
             )}
           </div>
@@ -830,8 +843,8 @@ export const NewDocumentView: React.FC = () => {
 
       {/* Modals */}
       <DocumentRelationships
-        parentDocument={parentDocument}
-        onParentDocumentChange={setParentDocument}
+        correlatedDocuments={correlatedDocuments}
+        onCorrelatedDocumentsChange={setCorrelatedDocuments}
         relatedDocuments={relationshipDocs}
         onRelatedDocumentsChange={setRelationshipDocs}
         documentType={formData.type}
@@ -926,6 +939,3 @@ export const NewDocumentView: React.FC = () => {
     </div>
   );
 };
-
-
-

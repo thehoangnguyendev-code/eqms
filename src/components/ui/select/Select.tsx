@@ -338,7 +338,7 @@ export const Select: React.FC<SelectProps> = ({
           triggerClassName
         )}
       >
-        <span className={cn("truncate", selectedOption ? "text-slate-900" : "text-slate-400")}>
+        <span className={cn("", selectedOption ? "text-slate-900" : "text-slate-400")}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
@@ -431,7 +431,7 @@ export const Select: React.FC<SelectProps> = ({
                         )}
                         style={{ height: rowHeight }}
                       >
-                        <span className="flex-1 text-left truncate">{option.label}</span>
+                        <span className="flex-1 text-left">{option.label}</span>
                         {isSelected && (
                           <Check className="h-4 w-4 text-emerald-600 shrink-0 ml-2" />
                         )}
@@ -461,7 +461,7 @@ export const Select: React.FC<SelectProps> = ({
                     )}
                     style={{ height: rowHeight }}
                   >
-                    <span className="flex-1 text-left truncate">{option.label}</span>
+                    <span className="flex-1 text-left">{option.label}</span>
                     {isSelected && (
                       <Check className="h-4 w-4 text-emerald-600 shrink-0 ml-2" />
                     )}

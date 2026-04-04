@@ -25,8 +25,8 @@ interface DocumentTabProps {
   isObsoleted?: boolean; // Disable all file operations when obsoleted
   hideUpload?: boolean; // Hide upload section and show "no attachment" message
   // Optional extended props for document relationships
-  parentDocument?: ParentDocument | null;
-  onParentDocumentChange?: (doc: ParentDocument | null) => void;
+  correlatedDocuments?: ParentDocument[];
+  onCorrelatedDocumentsChange?: (docs: ParentDocument[]) => void;
   relatedDocuments?: RelatedDocument[];
   onRelatedDocumentsChange?: (docs: RelatedDocument[]) => void;
   documentType?: string;
@@ -42,8 +42,8 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
   isObsoleted = false,
   hideUpload = false,
   // Extended props (unused in this component but accepted for compatibility)
-  parentDocument: _parentDocument,
-  onParentDocumentChange: _onParentDocumentChange,
+  correlatedDocuments: _correlatedDocuments,
+  onCorrelatedDocumentsChange: _onCorrelatedDocumentsChange,
   relatedDocuments: _relatedDocuments,
   onRelatedDocumentsChange: _onRelatedDocumentsChange,
   documentType: _documentType,

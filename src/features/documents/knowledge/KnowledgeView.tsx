@@ -10,7 +10,7 @@ import { cn } from "@/components/ui/utils";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { StatusBadge } from "@/components/ui/status-badge/StatusBadge";
+import { StatusBadge } from "@/components/ui/badge";
 import Folder from "@/components/folder-system/Folder";
 import Document3D from "@/components/folder-system/Document3D";
 

@@ -7,6 +7,7 @@ export interface GeneralInformationDocumentDetail {
   created: string;
   openedBy: string;
   author: string;
+  coAuthors: (string | number)[];
   isTemplate: boolean;
   businessUnit: string;
   department: string;
@@ -44,7 +45,7 @@ export const GeneralInformationTab: React.FC<GeneralInformationTabProps> = ({ do
 
         {/* Created (read-only, auto-generated) */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs sm:text-sm font-medium text-slate-700">Created (Date - Time)</label>
+          <label className="text-xs sm:text-sm font-medium text-slate-700">Created Time</label>
           <input
             type="text"
             value={document.created}
@@ -55,8 +56,9 @@ export const GeneralInformationTab: React.FC<GeneralInformationTabProps> = ({ do
         </div>
 
         {/* Opened by & Author - Same row */}
-        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-          <div className="flex flex-col gap-1.5">
+        {/* Opened by, Author & Co-Author(s) - Same row with 2-1-1 ratio */}
+        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
+          <div className="flex flex-col gap-1.5 md:col-span-2">
             <label className="text-xs sm:text-sm font-medium text-slate-700">Opened by</label>
             <input
               type="text"
@@ -74,6 +76,16 @@ export const GeneralInformationTab: React.FC<GeneralInformationTabProps> = ({ do
               type="text"
               value={document.author}
               readOnly
+              className="w-full h-9 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-default"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs sm:text-sm font-medium text-slate-700">Co-Author(s)</label>
+            <input
+              type="text"
+              value={Array.isArray(document.coAuthors) ? document.coAuthors.join(", ") : ""}
+              readOnly
+              placeholder="—"
               className="w-full h-9 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-default"
             />
           </div>
@@ -133,7 +145,7 @@ export const GeneralInformationTab: React.FC<GeneralInformationTabProps> = ({ do
 
         {/* Effective Date */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs sm:text-sm font-medium text-slate-700">Effective Date (dd/MM/yyyy)</label>
+          <label className="text-xs sm:text-sm font-medium text-slate-700">Effective Date</label>
           <input
             type="text"
             value={document.effectiveDate}
@@ -145,7 +157,7 @@ export const GeneralInformationTab: React.FC<GeneralInformationTabProps> = ({ do
 
         {/* Valid Until */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs sm:text-sm font-medium text-slate-700">Valid Until (dd/MM/yyyy)</label>
+          <label className="text-xs sm:text-sm font-medium text-slate-700">Valid Until</label>
           <input
             type="text"
             value={document.validUntil}

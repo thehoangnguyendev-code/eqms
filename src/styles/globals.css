@@ -112,13 +112,6 @@ html, body {
 }
 
 /* ===================================
-   iOS SAFARI LAYOUT FIXES
-   Using flex-based pinned header/footer pattern:
-   No sticky/fixed needed — header & footer are flex children
-   with shrink-0, only the content area scrolls.
-   =================================== */
-
-/* ===================================
    MOBILE SIDEBAR & OVERLAY SCROLL FIX
    Ensures sidebar content is fully scrollable on mobile
    Prevents content from being hidden behind browser UI
@@ -341,26 +334,12 @@ html, body {
   
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-  --: 'Monaco', 'Courier New', monospace;
   
   /* Layout Sizes */
   --sidebar-collapsed: 80px;
   --sidebar-expanded: 280px;
   --header-height: 64px;
   --header-height-desktop: 72px;
-}
-
-/* Responsive Typography */
-@media (min-width: 768px) {
-  :root {
-    font-size: 16px;
-  }
-}
-
-@media (min-width: 1280px) {
-  :root {
-    font-size: 17px;
-  }
 }
 
 /* Reset & Base Styles */
@@ -383,17 +362,6 @@ body {
   line-height: 1.6;
 }
 
-/* Touch-friendly for tablets */
-@media (hover: none) and (pointer: coarse) {
-  button, 
-  a, 
-  input, 
-  select {
-    min-height: 44px; /* iOS recommended touch target */
-    min-width: 44px;
-  }
-}
-
 /* ===================================
    GLOBAL CUSTOM SCROLLBAR
    Thin, elegant, and harmonious across all browsers
@@ -407,93 +375,8 @@ body {
 
 /* Webkit support (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 8px !important;
-  height: 8px !important;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.3) !important;
-  border-radius: 10px !important;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.6) !important;
-  background-clip: padding-box !important;
-  border: 2px solid transparent !important;
-  border-radius: 10px !important;
-  transition: background var(--transition-base) !important;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.8) !important;
-  border: 2px solid transparent !important;
-}
-
-/* Custom Scrollbar Utility */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.5);
-}
-
-/* Scrollbar Always Visible Utility - Specifically for macOS/WebKit */
-.scrollbar-always-visible::-webkit-scrollbar {
-  display: block !important;
-}
-
-
-/* Thin Scrollbar for Tables - Hide vertical and make horizontal accessible */
-.scrollbar-thin::-webkit-scrollbar {
-  width: 0px; 
-  height: 6px; /* Increased from 3px for better visibility on macOS */
-}
-
-.scrollbar-track-slate-100::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.8) !important;
-  border-radius: 9999px;
-}
-
-.scrollbar-thumb-slate-300::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.8) !important;
-  border-radius: 9999px;
-}
-
-.scrollbar-thumb-slate-300:hover::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 1) !important;
-}
-
-.scrollbar-thumb-rounded-full::-webkit-scrollbar-thumb {
-  border-radius: 9999px;
-}
-
-.scrollbar-track-rounded-full::-webkit-scrollbar-track {
-  border-radius: 9999px;
-}
-
-/* Firefox Specific Class */
-.scrollbar-thin {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.5) rgba(241, 245, 249, 0.3);
-}
-
-/* ===================================
-   GLOBAL CUSTOM SCROLLBAR
-   Thin, elegant, and harmonious across all browsers
-   =================================== */
-
-/* Firefox support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(203, 213, 225, 0.4) transparent;
-}
-
-/* Webkit support (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-  width: 6px !important;
-  height: 6px !important;
+  width: 4px !important;
+  height: 4px !important;
 }
 
 ::-webkit-scrollbar-track {
@@ -501,61 +384,54 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.4) !important;
+  background: rgba(203, 213, 225, 0.3) !important;
   background-clip: padding-box !important;
-  border: 1px solid transparent !important;
   border-radius: 10px !important;
   transition: background var(--transition-base) !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.6) !important;
+  background: rgba(148, 163, 184, 0.5) !important;
 }
 
-/* Custom Scrollbar Utility */
+/* Custom Scrollbar Utility - Even thinner */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 3px;
+  height: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.5);
+  background: rgba(203, 213, 225, 0.3);
 }
 
-/* Thin Scrollbar for Tables - Hide vertical and make horizontal extra thin */
+/* Scrollbar Always Visible Utility - Specifically for macOS/WebKit */
+.scrollbar-always-visible::-webkit-scrollbar {
+  display: block !important;
+}
+
+/* Thin Scrollbar for Tables */
 .scrollbar-thin::-webkit-scrollbar {
   width: 0px; 
   height: 3px;
 }
 
 .scrollbar-track-slate-100::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.5);
-  border-radius: 9999px;
+  background: rgba(241, 245, 249, 0.3);
 }
 
 .scrollbar-thumb-slate-300::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.4);
-  border-radius: 9999px;
+  background: rgba(203, 213, 225, 0.3) !important;
 }
 
 .scrollbar-thumb-slate-300:hover::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.6);
+  background: rgba(148, 163, 184, 0.5) !important;
 }
 
-.scrollbar-thumb-rounded-full::-webkit-scrollbar-thumb {
-  border-radius: 9999px;
-}
-
-.scrollbar-track-rounded-full::-webkit-scrollbar-track {
-  border-radius: 9999px;
-}
-
-/* Firefox Specific Class */
+/* Reset scrollbar-color for Firefox in thin class */
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: rgba(203, 213, 225, 0.3) transparent;
 }
-
 
 /* Utility Classes */
 .container {
@@ -571,18 +447,10 @@ body {
   white-space: nowrap;
 }
 
-.text-balance {
-  text-wrap: balance;
-}
-
 /* Animation Classes */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes fadeInScale {
@@ -596,116 +464,6 @@ body {
   }
 }
 
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* Smooth Page Transitions */
-.page-transition-enter {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.page-transition-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity var(--transition-smooth), transform var(--transition-smooth);
-}
-
-.page-transition-exit {
-  opacity: 1;
-}
-
-.page-transition-exit-active {
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
 .animate-fade-in {
   animation: fadeIn var(--transition-base);
 }
@@ -714,61 +472,9 @@ body {
   animation: fadeInScale var(--transition-smooth);
 }
 
-.animate-slide-in-up {
-  animation: slideInUp var(--transition-slow);
-}
-
-.animate-slide-in-down {
-  animation: slideInDown var(--transition-slow);
-}
-
-.animate-slide-in-right {
-  animation: slideInRight var(--transition-smooth);
-}
-
-.animate-slide-in-left {
-  animation: slideInLeft var(--transition-smooth);
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.animate-shimmer {
-  animation: shimmer 2s infinite linear;
-}
-
-.animate-bounce {
-  animation: bounce 1s infinite;
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-.animate-scale-in {
-  animation: scaleIn var(--transition-smooth);
-}
-
 /* Transition Utilities */
 .transition-smooth {
   transition: all var(--transition-smooth);
-}
-
-.transition-smooth-colors {
-  transition: color var(--transition-smooth), background-color var(--transition-smooth), border-color var(--transition-smooth);
-}
-
-.transition-smooth-transform {
-  transition: transform var(--transition-smooth);
-}
-
-.transition-smooth-opacity {
-  transition: opacity var(--transition-smooth);
-}
-
-.transition-bounce {
-  transition: all var(--transition-bounce);
 }
 
 /* Hover Effects */
@@ -787,118 +493,4 @@ body {
 
 .hover-scale:hover {
   transform: scale(1.02);
-}
-
-.hover-glow {
-  transition: box-shadow var(--transition-smooth);
-}
-
-.hover-glow:hover {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-}
-
-/* Print Styles */
-@media print {
-  body {
-    background: white;
-  }
-  
-  .no-print {
-    display: none !important;
-  }
-  
-  @page {
-    margin: 2cm;
-  }
-}
-
-/* Accessibility */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-/* Focus Visible */
-*:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-/* Loading States */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-slate-200) 25%,
-    var(--color-slate-100) 50%,
-    var(--color-slate-200) 75%
-  );
-  background-size: 200% 100%;
-  animation: loading 1.5s ease-in-out infinite;
-}
-
-@keyframes loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* Animated Gradient Background */
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-gradient-shift {
-  background-size: 200% 200%;
-  animation: gradient-shift 15s ease infinite;
-}
-
-/* Custom Classes for QMS */
-.compliance-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-md);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.audit-highlight {
-  background-color: rgba(99, 102, 241, 0.1);
-  border-left: 3px solid var(--color-primary);
-  padding: var(--spacing-md);
-  margin: var(--spacing-md) 0;
-}
-
-.signature-field {
-  border: 2px dashed var(--color-slate-300);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  text-align: center;
-  transition: all var(--transition-base);
-}
-
-.signature-field:hover {
-  border-color: var(--color-primary);
-  background-color: var(--color-slate-50);
 }

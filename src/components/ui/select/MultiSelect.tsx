@@ -50,22 +50,26 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0, showAbove: false });
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
-  
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
+
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const tooltipTargetRef = useRef<HTMLSpanElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const filteredOptions = enableSearch
     ? options.filter((opt) =>
-        opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : options;
 
   const selectedOptions = options.filter((opt) => value.includes(opt.value));
   const visibleTags = selectedOptions.slice(0, maxVisibleTags);
   const remainingCount = selectedOptions.length - maxVisibleTags;
+  const remainingOptions = selectedOptions.slice(maxVisibleTags);
 
   // Calculate dropdown position
   const updatePosition = () => {
@@ -75,10 +79,10 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
       const spaceBelow = viewportHeight - rect.bottom;
       const spaceAbove = rect.top;
       const dropdownHeight = Math.min(maxVisibleRows * rowHeight + 100, 400); // Estimate dropdown height
-      
+
       // Show above if not enough space below and more space above
       const showAbove = spaceBelow < dropdownHeight && spaceAbove > spaceBelow;
-      
+
       setPosition({
         top: showAbove ? rect.top - 4 : rect.bottom + 4,
         left: rect.left,
@@ -129,7 +133,19 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   };
 
-  const isAllSelected = filteredOptions.length > 0 && 
+  const handleTooltipOpen = (e: React.MouseEvent | React.TouchEvent | React.FocusEvent) => {
+    e.stopPropagation();
+    if (tooltipTargetRef.current) {
+      const rect = tooltipTargetRef.current.getBoundingClientRect();
+      setTooltipPos({
+        top: rect.top - 8,
+        left: rect.left + rect.width / 2,
+      });
+      setShowTooltip(true);
+    }
+  };
+
+  const isAllSelected = filteredOptions.length > 0 &&
     filteredOptions.every(opt => value.includes(opt.value));
   const isSomeSelected = value.length > 0 && !isAllSelected;
 
@@ -140,7 +156,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setFocusedIndex(prev => 
+        setFocusedIndex(prev =>
           prev < filteredOptions.length - 1 ? prev + 1 : prev
         );
         break;
@@ -209,6 +225,26 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
+
+  // Close tooltip on click outside
+  useEffect(() => {
+    if (!showTooltip) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (tooltipTargetRef.current?.contains(target)) return;
+      setShowTooltip(false);
+    };
+
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+    }, 10);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showTooltip]);
 
   // Focus search input when opened
   useEffect(() => {
@@ -281,39 +317,50 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={cn(
-          "flex w-full items-center justify-between rounded-lg border bg-white px-3 py-2 text-sm transition-colors focus:outline-none",
-          "min-h-[40px]",
+          "flex w-full items-center justify-between rounded-lg border bg-white px-3 text-sm transition-colors focus:outline-none",
+          "h-9",
           disabled
             ? "bg-slate-50 text-slate-500 cursor-default border-slate-200"
             : isOpen
-            ? "border-emerald-500 ring-1 ring-emerald-500"
-            : "border-slate-200 hover:border-slate-300 focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500",
+              ? "border-emerald-500 ring-1 ring-emerald-500"
+              : "border-slate-200 hover:border-slate-300 focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500",
           triggerClassName
         )}
       >
-        <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
+        <div className="flex items-center gap-1 flex-nowrap flex-1 min-w-0 overflow-hidden">
           {selectedOptions.length === 0 ? (
-            <span className="text-slate-400 text-left">{placeholder}</span>
+            <span className="text-slate-400 text-left truncate">{placeholder}</span>
           ) : (
             <>
               {visibleTags.map((option) => (
                 <span
                   key={option.value}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200"
+                  className="inline-flex items-center gap-1 pl-1.5 pr-0.5 py-0 rounded-xl bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100 whitespace-nowrap shrink-0"
                 >
-                  <span className="truncate max-w-[100px]">{option.label}</span>
+                  <span className="">{option.label}</span>
                   <button
                     type="button"
                     onClick={(e) => handleRemoveTag(option.value, e)}
-                    className="hover:bg-emerald-100 rounded p-1 min-w-[24px] min-h-[24px] flex items-center justify-center"
+                    className="hover:bg-emerald-200/50 rounded-sm p-0.5 flex items-center justify-center transition-colors"
                     aria-label={`Remove ${option.label}`}
                   >
-                    <X className="h-3 w-3" />
+                    <X className="h-2.5 w-2.5" />
                   </button>
                 </span>
               ))}
               {remainingCount > 0 && (
-                <span className="text-xs text-slate-500">+{remainingCount} more</span>
+                <span
+                  ref={tooltipTargetRef}
+                  onMouseEnter={handleTooltipOpen}
+                  onMouseLeave={() => setShowTooltip(false)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleTooltipOpen(e);
+                  }}
+                  className="text-[10px] text-slate-500 font-bold whitespace-nowrap px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors cursor-help shrink-0"
+                >
+                  +{remainingCount}
+                </span>
               )}
             </>
           )}
@@ -374,7 +421,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
           )}
 
           {/* Options */}
-          <div 
+          <div
             className="overflow-y-auto overscroll-contain"
             style={{ maxHeight: maxVisibleRows * rowHeight }}
             onKeyDown={handleKeyDown}
@@ -407,8 +454,8 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                             isAllSelected
                               ? "bg-emerald-600 border-emerald-600"
                               : isSomeSelected
-                              ? "bg-emerald-600 border-emerald-600"
-                              : "bg-white border-slate-300 hover:border-emerald-400"
+                                ? "bg-emerald-600 border-emerald-600"
+                                : "bg-white border-slate-300 hover:border-emerald-400"
                           )}
                         >
                           {isAllSelected ? (
@@ -419,7 +466,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                         </div>
                       </div>
                       <span>
-                        {isAllSelected 
+                        {isAllSelected
                           ? `Deselect All (${filteredOptions.length})`
                           : `Select All (${filteredOptions.length})`
                         }
@@ -430,34 +477,59 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
 
                 {/* Options List */}
                 {filteredOptions.map((option, index) => {
-                const isSelected = value.includes(option.value);
-                const isFocused = index === focusedIndex;
-                return (
-                  <button
-                    key={option.value}
-                    ref={el => { optionRefs.current[index] = el; }}
-                    type="button"
-                    role="option"
-                    aria-selected={isSelected}
-                    onClick={() => handleToggleOption(option.value)}
-                    className={cn(
-                      "flex w-full items-center px-3 text-sm transition-colors",
-                      "min-h-[44px] hover:bg-slate-50 active:bg-slate-100",
-                      isSelected && "bg-emerald-50 text-emerald-700",
-                      isFocused && "bg-slate-100 ring-1 ring-inset ring-slate-300"
-                    )}
-                    style={{ height: rowHeight }}
-                  >
-                    <span className="flex-1 text-left truncate">{option.label}</span>
-                    {isSelected && (
-                      <Check className="h-4 w-4 text-emerald-600 shrink-0 ml-2" />
-                    )}
-                  </button>
-                );
-              })}
+                  const isSelected = value.includes(option.value);
+                  const isFocused = index === focusedIndex;
+                  return (
+                    <button
+                      key={option.value}
+                      ref={el => { optionRefs.current[index] = el; }}
+                      type="button"
+                      role="option"
+                      aria-selected={isSelected}
+                      onClick={() => handleToggleOption(option.value)}
+                      className={cn(
+                        "flex w-full items-center px-3 text-sm transition-colors",
+                        "min-h-[44px] hover:bg-slate-50 active:bg-slate-100",
+                        isSelected && "bg-emerald-50 text-emerald-700",
+                        isFocused && "bg-slate-100 ring-1 ring-inset ring-slate-300"
+                      )}
+                      style={{ height: rowHeight }}
+                    >
+                      <span className="flex-1 text-left">{option.label}</span>
+                      {isSelected && (
+                        <Check className="h-4 w-4 text-emerald-600 shrink-0 ml-2" />
+                      )}
+                    </button>
+                  );
+                })}
               </>
             )}
           </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Tags Tooltip Portal */}
+      {showTooltip && remainingOptions.length > 0 && createPortal(
+        <div
+          className="fixed z-[9999] px-3 py-2 bg-white text-slate-900 text-[10px] sm:text-xs rounded-lg shadow-2xl border border-slate-300 animate-in fade-in zoom-in-95 duration-150"
+          style={{
+            top: tooltipPos.top,
+            left: tooltipPos.left,
+            transform: 'translate(-50%, -100%)',
+          }}
+        >
+          <div className="flex flex-col gap-1 max-w-[250px] max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
+            <p className="font-medium border-b border-slate-100 pb-1.5 mb-1.5 text-slate-600 text-xs sticky top-0 bg-white">Co-Author(s)</p>
+            {remainingOptions.map(opt => (
+              <div key={opt.value} className="whitespace-nowrap px-2 py-1 rounded hover:bg-slate-50 transition-colors text-slate-700">
+                - {opt.label}
+              </div>
+            ))}
+          </div>
+          {/* Arrow */}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-[6px] border-transparent border-t-white z-[1]" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-slate-300" />
         </div>,
         document.body
       )}

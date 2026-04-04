@@ -38,6 +38,18 @@ const mockSignatures: SignatureRecord[] = [
     actionOn: "Published On (Date - Time)",
     actionOnValue: "2025-12-12 07:47:19",
   },
+  {
+    actionBy: "Obsoleted By",
+    actionByName: "",
+    actionOn: "Obsoleted On (Date - Time)",
+    actionOnValue: "",
+  },
+  {
+    actionBy: "Cancelled By",
+    actionByName: "",
+    actionOn: "Cancelled On (Date - Time)",
+    actionOnValue: "",
+  },
 ];
 
 const READ_ONLY_CLASS =

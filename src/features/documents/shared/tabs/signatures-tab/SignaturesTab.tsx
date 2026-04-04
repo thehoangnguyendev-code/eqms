@@ -38,16 +38,40 @@ const mockSignatures: SignatureRecord[] = [
     actionOn: "Published On (Date - Time)",
     actionOnValue: "2025-12-12 07:47:19",
   },
+  {
+    actionBy: "Obsoleted By",
+    actionByName: "",
+    actionOn: "Obsoleted On (Date - Time)",
+    actionOnValue: "",
+  },
+  {
+    actionBy: "Cancelled By",
+    actionByName: "",
+    actionOn: "Cancelled On (Date - Time)",
+    actionOnValue: "",
+  },
 ];
 
 const READ_ONLY_CLASS =
   "w-full h-9 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-default";
 
-export const SignaturesTab: React.FC = () => {
+interface SignaturesTabProps {
+  onlyStatusFields?: boolean;
+}
+
+export const SignaturesTab: React.FC<SignaturesTabProps> = ({
+  onlyStatusFields = false,
+}) => {
+  const displaySignatures = onlyStatusFields
+    ? mockSignatures.filter((s) =>
+        ["Obsoleted By", "Cancelled By"].includes(s.actionBy),
+      )
+    : mockSignatures;
+
   return (
     <div className="space-y-4 md:space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-        {mockSignatures.map((record, index) => (
+        {displaySignatures.map((record, index) => (
           <React.Fragment key={index}>
             {/* Action By */}
             <div className="flex flex-col gap-1.5">

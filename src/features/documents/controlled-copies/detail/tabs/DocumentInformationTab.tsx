@@ -157,7 +157,7 @@ export const DocumentInformationTab: React.FC<DocumentInformationTabProps> = ({
               readOnly
               className="w-full h-9 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-default focus:outline-none"
             />
-            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 flex items-center gap-1">
+            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
               The Copy Number field represents the n'th copy of the related revision
             </p>
           </div>
@@ -175,7 +175,7 @@ export const DocumentInformationTab: React.FC<DocumentInformationTabProps> = ({
               readOnly
               className="w-full h-9 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-default focus:outline-none"
             />
-            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 flex items-center gap-1">
+            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
               The Total Copies Number field represents the total number of all copies of the related revision
             </p>
           </div>

@@ -13,9 +13,28 @@ interface DocumentRevisionsTabProps {
     documentStatus?: string;
     documentCreated?: string;
     revisionFile?: File | null;
+    formData?: any;
+    reviewers?: any[];
+    approvers?: any[];
+    documentNumber?: string;
+    relationshipDocs?: any[];
+    correlatedDocuments?: any[];
 }
 
-export const DocumentRevisionsTab: React.FC<DocumentRevisionsTabProps> = ({ revisions = [], onCountChange, documentAuthor = "", documentStatus = "Draft", documentCreated = "", revisionFile = null }) => {
+export const DocumentRevisionsTab: React.FC<DocumentRevisionsTabProps> = ({ 
+    revisions = [], 
+    onCountChange, 
+    documentAuthor = "", 
+    documentStatus = "Draft", 
+    documentCreated = "", 
+    revisionFile = null,
+    formData = null,
+    reviewers = [],
+    approvers = [],
+    documentNumber = "",
+    relationshipDocs = [],
+    correlatedDocuments = []
+}) => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState("");
     const [isNavigating, setIsNavigating] = useState(false);
@@ -36,25 +55,61 @@ export const DocumentRevisionsTab: React.FC<DocumentRevisionsTabProps> = ({ revi
 
     const handleRevisionClick = (revision: Revision) => {
         setIsNavigating(true);
+
+        // Always build sourceDocument with full metadata from formData
+        const sourceDocument = {
+            code: revision.revisionNumber,
+            name: formData?.title || revision.revisionName,
+            version: revision.revisionNumber,
+            type: formData?.type || "",
+            author: formData?.author || documentAuthor,
+            coAuthors: formData?.coAuthors || [],
+            businessUnit: formData?.businessUnit || "",
+            department: formData?.department || "",
+            knowledgeBase: formData?.knowledgeBase || "",
+            subType: formData?.subType || "",
+            periodicReviewCycle: formData?.periodicReviewCycle || 0,
+            periodicReviewNotification: formData?.periodicReviewNotification || 0,
+            language: formData?.language || "English",
+            reviewDate: formData?.reviewDate || "",
+            description: formData?.description || "",
+            isTemplate: formData?.isTemplate || false,
+            titleLocalLanguage: formData?.titleLocalLanguage || "",
+        };
+
+        // Map reviewers/approvers from NewDocumentView format to workspace format
+        const mappedReviewers = reviewers.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            signedOn: undefined,
+        }));
+        const mappedApprovers = approvers.map((a: any) => ({
+            id: a.id,
+            name: a.name,
+            signedOn: undefined,
+        }));
+
         setTimeout(() => {
             navigate(ROUTES.DOCUMENTS.REVISIONS.WORKSPACE, {
-            state: {
-                sourceDocument: {
-                    code: revision.revisionNumber,
-                    name: revision.revisionName,
-                    version: revision.revisionNumber,
+                state: {
+                    sourceDocument,
+                    revisionReviewers: mappedReviewers,
+                    revisionApprovers: mappedApprovers,
+                    isStandalone: true,
+                    revisionId: revision.id,
+                    revisionCreated: revision.created,
+                    revisionOpenedBy: revision.openedBy,
+                    revisionState: revision.state,
+                    documentAuthor: formData?.author || documentAuthor,
+                    documentStatus,
+                    documentCreated,
+                    revisionFile,
+                    documentRevisions: revisions,
+                    documentNumber,
+                    relationshipDocs,
+                    correlatedDocuments,
                 },
-                isStandalone: true,
-                revisionId: revision.id,
-                revisionCreated: revision.created,
-                revisionOpenedBy: revision.openedBy,
-                revisionState: revision.state,
-                documentAuthor,
-                documentStatus,
-                documentCreated,
-                revisionFile,
-            },
-        });
+            });
         }, 600);
     };
 
