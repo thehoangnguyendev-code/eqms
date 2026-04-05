@@ -452,7 +452,9 @@ export const NotificationsView: React.FC = () => {
   const [priority, setPriority] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+  });
   const [sortConfig, setSortConfig] = useState<{ key: keyof Notification | null; direction: "asc" | "desc" }>({
     key: "createdAt",
     direction: "desc",

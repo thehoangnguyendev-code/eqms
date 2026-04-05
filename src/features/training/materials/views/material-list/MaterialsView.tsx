@@ -171,7 +171,9 @@ export const MaterialsView: React.FC = () => {
 
 
   // Filters
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+  });
   const [isTableLoading, setIsTableLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: keyof TrainingMaterial | null; direction: "asc" | "desc" }>({
     key: "uploadedAt",

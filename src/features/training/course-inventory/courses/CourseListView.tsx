@@ -121,7 +121,9 @@ export const CourseListView: React.FC = () => {
     dateTo: "",
   });
   const [methodFilter, setMethodFilter] = useState<TrainingMethod | "All">("All");
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+  });
   const [isTableLoading, setIsTableLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
     key: "trainingId",

@@ -340,7 +340,11 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
   const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
   const [selectedDocumentForLink, setSelectedDocumentForLink] = useState<Document | null>(null);
   const [isLocalNavigating, setIsLocalNavigating] = useState(false);
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(() => {
+    // Default: visible on tablet/desktop (>= 768px), hidden on mobile
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+  });
+
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
     key: "title",
     direction: "asc",

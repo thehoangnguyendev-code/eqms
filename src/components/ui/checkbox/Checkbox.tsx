@@ -25,8 +25,10 @@ export interface CheckboxProps {
   label?: string;
   /** Disable the checkbox */
   disabled?: boolean;
-  /** Additional CSS classes */
+  /** Additional CSS classes for the container */
   className?: string;
+  /** Additional CSS classes for the label */
+  labelClassName?: string;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({
@@ -36,6 +38,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   label,
   disabled = false,
   className,
+  labelClassName,
 }) => {
   const generatedId = useReactId();
   const checkboxId = id || generatedId;
@@ -78,6 +81,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           htmlFor={checkboxId}
           className={cn(
             'text-xs sm:text-sm font-medium text-slate-700 cursor-pointer select-none',
+            labelClassName,
             disabled && 'cursor-not-allowed'
           )}
         >

@@ -188,7 +188,9 @@ export const CourseProgressView: React.FC = () => {
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
   const [isESignatureOpen, setIsESignatureOpen] = useState(false);
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+  });
 
   const info = {
     ...MOCK_PROGRESS_INFO,

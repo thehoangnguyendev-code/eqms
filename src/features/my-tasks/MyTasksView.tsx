@@ -95,7 +95,9 @@ export const MyTasksView: React.FC = () => {
   const [assigneeFilter, setAssigneeFilter] = useState("All Assignees");
   const [reporterFilter, setReporterFilter] = useState("All Reporters");
 
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+  });
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
     key: "dueDate",
     direction: "desc",

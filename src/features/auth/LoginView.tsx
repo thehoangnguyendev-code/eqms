@@ -6,7 +6,6 @@ import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
-import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
 import { IconArrowBigUpFilled } from "@tabler/icons-react";
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { AuthBranding } from "./AuthBranding";
@@ -278,31 +277,30 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
       {/* ====================================================================
           RIGHT SIDE - LOGIN FORM
           ==================================================================== */}
-      <div className="w-full lg:w-1/2 xl:w-2/5 relative flex flex-col lg:flex-row items-center justify-center p-6 sm:p-8 lg:p-12 bg-[#0c3547] lg:bg-white">
-        {/* Mobile-only Logo - top left header */}
-        <div className="w-full max-w-md flex items-center gap-3 mb-6 lg:hidden">
-          <img
-            src={logoImg}
-            alt="QMS Logo"
-            className="h-10 w-auto object-contain drop-shadow-sm"
-            onError={(e) => { e.currentTarget.style.display = "none"; }}
-          />
-        </div>
+      <div className="w-full lg:w-1/2 xl:w-2/5 relative flex flex-col lg:flex-row items-center justify-center p-6 sm:p-8 lg:p-12 bg-white">
+        {/* Grid Pattern Background - Visible only on mobile/tablet */}
+        <div
+          className="absolute inset-0 lg:hidden pointer-events-none opacity-[0.9]"
+          style={{
+            backgroundImage: `linear-gradient(#f1f5f9 1.5px, transparent 1.5px), linear-gradient(90deg, #f1f5f9 1.5px, transparent 1.5px)`,
+            backgroundSize: '32px 32px'
+          }}
+        />
 
         {/* Form Container */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="w-full max-w-md"
+          className="w-full max-w-md z-10"
         >
-          <div className="bg-white overflow-hidden rounded-xl lg:rounded-none shadow-2xl lg:shadow-none">
+          <div className="bg-white overflow-hidden rounded-2xl lg:rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.12)] lg:shadow-none border border-slate-100 lg:border-none">
             {/* Mobile gradient top bar */}
-            <div className="lg:hidden h-2 bg-gradient-to-r from-green-400 via-emerald-400 to-emerald-600" />
+            <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
             {/* Form Header */}
-            <div className="px-6 sm:px-8 pt-4 sm:pt-10 pb-4">
-              <div className="text-center space-y-3">
-                <div className="hidden lg:inline-flex items-center justify-center mb-6">
+            <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
+              <div className="text-center space-y-4">
+                <div className="flex items-center justify-center mb-2">
                   <img
                     src={logoImg}
                     alt="QMS Logo"
@@ -454,12 +452,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                     checked={formData.rememberMe}
                     onChange={handleRememberMeChange}
                     label="Remember me"
+                    labelClassName="text-sm sm:text-[15px]"
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={handleForgotPasswordClick}
-                    className="text-xs sm:text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none"
+                    className="text-sm sm:text-[15px] font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none"
                     disabled={isLoading}
                     aria-label="Forgot password"
                   >

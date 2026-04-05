@@ -89,7 +89,9 @@ export const UserManagementView: React.FC = () => {
   const [terminateModal, setTerminateModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [reinstateModal, setReinstateModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [esignModal, setEsignModal] = useState({ isOpen: false, userId: "", userName: "" });
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+  });
   const [isTableLoading, setIsTableLoading] = useState(false);
   const { sortConfig, handleSort } = useUserList();
 
