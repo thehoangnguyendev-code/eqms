@@ -6,6 +6,7 @@ import { SelectFromLibraryModal, type LibraryItem } from "@/features/training/co
 import { TrainingFile } from "../../types";
 
 import { getFileIconSrc, defaultFileIcon } from "@/utils/fileIcons";
+import { IconFolderOpen } from "@tabler/icons-react";
 
 interface DocumentTrainingTabProps {
     readOnly?: boolean;
@@ -24,14 +25,15 @@ const formatFileSize = (bytes: number) => {
 
 /* ─── Library Mock Data ─────────────────────────────────────────── */
 const LIBRARY_MATERIALS: LibraryItem[] = [
-    { id: "lib-1", code: "MAT-2026-001", title: "GMP Introduction Video", fileName: "GMP_Introduction_2026.mp4", type: "Video", fileSize: 131072000, category: "GMP" },
-    { id: "lib-2", code: "MAT-2026-002", title: "Cleanroom Operations Manual", fileName: "Cleanroom_Operations_Manual.pdf", type: "PDF", fileSize: 4718592, category: "Technical" },
-    { id: "lib-3", code: "MAT-2026-003", title: "Equipment Handling Guide", fileName: "Equipment_Handling_Guide.pdf", type: "PDF", fileSize: 8597504, category: "Technical" },
-    { id: "lib-4", code: "MAT-2026-004", title: "Safety Protocol Infographic", fileName: "Safety_Protocol_Infographic.png", type: "Image", fileSize: 2202009, category: "Safety" },
-    { id: "lib-5", code: "MAT-2026-005", title: "ISO 9001 Training Video", fileName: "ISO9001_Training_2026.mp4", type: "Video", fileSize: 220200960, category: "Compliance" },
-    { id: "lib-6", code: "MAT-2026-006", title: "SOP Template Pack", fileName: "SOP_Templates_v3.docx", type: "Document", fileSize: 1048576, category: "SOP" },
-    { id: "lib-7", code: "MAT-2026-007", title: "Chemical Handling Procedures", fileName: "Chemical_Handling_Procedures.pdf", type: "PDF", fileSize: 3145728, category: "Safety" },
-    { id: "lib-8", code: "MAT-2026-008", title: "HPLC Training Slides", fileName: "HPLC_Training_Slides.pptx", type: "Document", fileSize: 15728640, category: "Technical" },
+    { id: "lib-1", code: "MAT-2026-001", title: "GMP Introduction Video", fileName: "GMP_Introduction_2026.mp4", type: "Video", fileSize: 131072000, category: "GMP", status: "Effective" },
+    { id: "lib-2", code: "MAT-2026-002", title: "Cleanroom Operations Manual", fileName: "Cleanroom_Operations_Manual.pdf", type: "PDF", fileSize: 4718592, category: "Technical", status: "Effective" },
+    { id: "lib-3", code: "MAT-2026-003", title: "Equipment Handling Guide", fileName: "Equipment_Handling_Guide.pdf", type: "PDF", fileSize: 8597504, category: "Technical", status: "Pending Review" },
+    { id: "lib-4", code: "MAT-2026-004", title: "Safety Protocol Infographic", fileName: "Safety_Protocol_Infographic.png", type: "Image", fileSize: 2202009, category: "Safety", status: "Effective" },
+    { id: "lib-5", code: "MAT-2026-005", title: "ISO 9001 Training Video", fileName: "ISO9001_Training_2026.mp4", type: "Video", fileSize: 220200960, category: "Compliance", status: "Draft" },
+    { id: "lib-6", code: "MAT-2026-006", title: "SOP Template Pack", fileName: "SOP_Templates_v3.docx", type: "Document", fileSize: 1048576, category: "SOP", status: "Effective" },
+    { id: "lib-7", code: "MAT-2026-007", title: "Chemical Handling Procedures", fileName: "Chemical_Handling_Procedures.pdf", type: "PDF", fileSize: 3145728, category: "Safety", status: "Obsoleted" },
+    { id: "lib-8", code: "MAT-2026-008", title: "HPLC Training Slides", fileName: "HPLC_Training_Slides.pptx", type: "Document", fileSize: 15728640, category: "Technical", status: "Effective" },
+    { id: "lib-11", code: "MAT-2026-011", title: "Batch Record Review Checklist", fileName: "Batch_Record_Review_Checklist.docx", type: "Document", fileSize: 838860, category: "Quality", status: "Pending Approval" },
 ];
 
 
@@ -162,7 +164,7 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
                     className="h-10 px-4 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
                     onClick={() => setShowLibraryModal(true)}
                 >
-                    <Library className="h-4 w-4 mr-2 text-blue-500" />
+                    <IconFolderOpen className="h-4 w-4 mr-2 text-emerald-500" />
                     Select from Materials Library
                 </Button>
             </div>

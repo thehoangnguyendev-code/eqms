@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { ShieldCheck, ArrowLeft, RefreshCw, Mail } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
-import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
-import { IconAuth2fa, IconMailOpened, IconQrcode, IconRefresh } from "@tabler/icons-react";
+import { IconMailOpened, IconQrcode, IconRefresh } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthBranding } from "./AuthBranding";
 
@@ -259,7 +258,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                       <div className="group relative flex items-center justify-between p-4 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition-all duration-300 shadow-sm overflow-hidden">
                         <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 mr-3">
                           <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-500">
-                            <IconMailOpened size={32} className="w-8 h-8 sm:w-10 sm:h-10" />
+                            <IconMailOpened size={32} stroke={1.5} className="w-8 h-8 sm:w-10 sm:h-10" />
                           </div>
                           <div className="min-w-0 flex-1">
                             <h3 className="font-bold text-sm sm:text-base text-slate-900 whitespace-normal">Email Authentication</h3>
@@ -281,7 +280,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                       <div className="group relative flex items-center justify-between p-4 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition-all duration-300 shadow-sm overflow-hidden">
                         <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 mr-3">
                           <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-500">
-                            <IconQrcode size={32} className="w-8 h-8 sm:w-10 sm:h-10" />
+                            <IconQrcode size={32} stroke={1.5} className="w-8 h-8 sm:w-10 sm:h-10" />
                           </div>
                           <div className="min-w-0 flex-1">
                             <h3 className="font-bold text-sm sm:text-base text-slate-900 whitespace-normal">Authenticator App</h3>
@@ -395,18 +394,6 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                     </motion.form>
                   )}
                 </AnimatePresence>
-              </div>
-
-              {/* Footer Help */}
-              <div className="text-center mt-3 pt-3 border-t border-slate-100">
-                <p className="text-xs sm:text-sm text-slate-500">
-                  <button
-                    type="button"
-                    className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none hover:underline"
-                  >
-                    Need assistance with sign in?
-                  </button>
-                </p>
               </div>
             </div>
           </div>

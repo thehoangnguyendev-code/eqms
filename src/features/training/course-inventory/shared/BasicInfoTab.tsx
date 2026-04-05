@@ -163,7 +163,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
 }) => {
     // Defensive check for recurrence data
     const safeRecurrence = recurrence || { enabled: false, intervalMonths: 0, warningPeriodDays: 30 };
-    
+
     // Parsing location for internal state
     const parseLocation = (loc: string) => {
         const match = loc.match(/^\[(Zoom|Google Meet|Microsoft Teams|Other)\]\s*(.*)$/);
@@ -229,7 +229,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                 <div className="md:col-span-2">
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs sm:text-sm font-medium text-slate-700">
-                            Description {!readOnly && <span className="text-red-500">*</span>}
+                            Course description {!readOnly && <span className="text-red-500">*</span>}
                         </label>
                         {readOnly ? (
                             <p className="text-sm text-slate-900 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg leading-relaxed whitespace-pre-wrap min-h-[4rem]">
@@ -449,9 +449,9 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                             onChange={(e) => setMeetingLink(e.target.value)}
                                             placeholder={
                                                 platform === "Zoom" ? "https://zoom.us/j/..." :
-                                                platform === "Google Meet" ? "https://meet.google.com/..." :
-                                                platform === "Microsoft Teams" ? "https://teams.microsoft.com/..." :
-                                                "Enter meeting link..."
+                                                    platform === "Google Meet" ? "https://meet.google.com/..." :
+                                                        platform === "Microsoft Teams" ? "https://teams.microsoft.com/..." :
+                                                            "Enter meeting link..."
                                             }
                                             className="text-xs md:text-sm"
                                         />
@@ -540,7 +540,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                     </div>
                                     <label className="text-sm text-slate-700">months</label>
                                 </div>
-                                
+
                                 <div className="flex items-center gap-3">
                                     <label className="text-sm text-slate-700 whitespace-nowrap w-32">Warning Period</label>
                                     <div className="w-24">
@@ -558,7 +558,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                     </div>
                                     <label className="text-sm text-slate-700">days</label>
                                 </div>
-                                
+
                                 <p className="text-xs text-slate-500">
                                     When due, employee status will automatically change from <strong>Completed</strong> to <strong>Required</strong> and a notification will be sent.
                                 </p>

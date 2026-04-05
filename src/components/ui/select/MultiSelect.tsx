@@ -357,7 +357,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                     e.stopPropagation();
                     handleTooltipOpen(e);
                   }}
-                  className="text-[10px] text-slate-500 font-bold whitespace-nowrap px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors cursor-help shrink-0"
+                  className="text-[10px] text-slate-500 font-bold whitespace-nowrap px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer shrink-0"
                 >
                   +{remainingCount}
                 </span>
@@ -512,24 +512,34 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
       {/* Tags Tooltip Portal */}
       {showTooltip && remainingOptions.length > 0 && createPortal(
         <div
-          className="fixed z-[9999] px-3 py-2 bg-white text-slate-900 text-[10px] sm:text-xs rounded-lg shadow-2xl border border-slate-300 animate-in fade-in zoom-in-95 duration-150"
+          className="fixed z-[9999] animate-in fade-in zoom-in-95 duration-150"
           style={{
             top: tooltipPos.top,
             left: tooltipPos.left,
             transform: 'translate(-50%, -100%)',
           }}
         >
-          <div className="flex flex-col gap-1 max-w-[250px] max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
-            <p className="font-medium border-b border-slate-100 pb-1.5 mb-1.5 text-slate-600 text-xs sticky top-0 bg-white">Co-Author(s)</p>
-            {remainingOptions.map(opt => (
-              <div key={opt.value} className="whitespace-nowrap px-2 py-1 rounded hover:bg-slate-50 transition-colors text-slate-700">
-                - {opt.label}
-              </div>
-            ))}
+          <div className="relative bg-white text-slate-900 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-slate-100 overflow-hidden min-w-[160px] max-w-[260px]">
+            {/* Header */}
+            <div className="flex items-center justify-between gap-3 px-3 py-2 border-b border-slate-100 bg-slate-50/50">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Selected</span>
+              <span className="inline-flex items-center justify-center h-4 min-w-[1rem] px-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+                {remainingOptions.length}
+              </span>
+            </div>
+            {/* Tags list */}
+            <div className="flex flex-col gap-0.5 p-2 max-h-[180px] overflow-y-auto">
+              {remainingOptions.map(opt => (
+                <div key={opt.value} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-xs text-slate-700 whitespace-nowrap font-medium">{opt.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
           {/* Arrow */}
           <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-[6px] border-transparent border-t-white z-[1]" />
-          <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-slate-300" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-[7px] border-transparent border-t-slate-100" style={{ marginTop: '-1px', zIndex: 0 }} />
         </div>,
         document.body
       )}

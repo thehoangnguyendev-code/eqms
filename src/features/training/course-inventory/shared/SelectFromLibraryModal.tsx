@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { FileText, Film, Eye, FolderOpen, Check, Search } from "lucide-react";
+import { FileText, Film, Eye, FolderOpen, Search } from "lucide-react";
 import { FormModal } from "@/components/ui/modal/FormModal";
 import { Button } from "@/components/ui/button/Button";
+import { StatusBadge, type StatusType } from "@/components/ui/badge/Badge";
+import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { cn } from "@/components/ui/utils";
 import { getFileIconSrc, defaultFileIcon } from "@/utils/fileIcons";
 import { getMaterialTypeColorClass } from "@/utils/status";
+import type { MaterialStatus } from "@/features/training/types/material.types";
 
 /* ─── Types ─────────────────────────────────────────────────────── */
 export interface LibraryItem {
@@ -16,6 +19,7 @@ export interface LibraryItem {
     type: "Video" | "PDF" | "Image" | "Document";
     fileSize: number;
     category?: string;
+    status?: MaterialStatus;
 }
 
 export interface SelectFromLibraryModalProps {
@@ -49,8 +53,8 @@ const getTypeIcon = (type: string) => {
     }
 };
 
-/** Height of a single row (p-3 = 12px*2 + content ≈ 56px) + gap 8px */
-const ROW_HEIGHT = 64;
+/** Height of a single row (p-2.5 = 10px*2 + content ≈ 44px) + gap 8px */
+const ROW_HEIGHT = 52;
 
 /* ─── Component ─────────────────────────────────────────────────── */
 export const SelectFromLibraryModal: React.FC<SelectFromLibraryModalProps> = ({
@@ -84,6 +88,7 @@ export const SelectFromLibraryModal: React.FC<SelectFromLibraryModalProps> = ({
     }, [isOpen, onClose]);
 
     const filtered = items.filter((m) => {
+        if (m.status === "Obsoleted") return false;
         if (excludeFileNames.includes(m.fileName)) return false;
         if (!search.trim()) return true;
         const q = search.toLowerCase();
@@ -94,6 +99,17 @@ export const SelectFromLibraryModal: React.FC<SelectFromLibraryModalProps> = ({
             m.fileName.toLowerCase().includes(q)
         );
     });
+
+    const mapMaterialStatusToStatusType = (status?: MaterialStatus): StatusType => {
+        switch (status) {
+            case "Draft": return "draft";
+            case "Pending Review": return "pendingReview";
+            case "Pending Approval": return "pendingApproval";
+            case "Effective": return "effective";
+            case "Obsoleted": return "obsolete";
+            default: return "draft";
+        }
+    };
 
     const toggleSelect = useCallback((id: string) => {
         setSelectedIds((prev) => {
@@ -161,30 +177,23 @@ export const SelectFromLibraryModal: React.FC<SelectFromLibraryModalProps> = ({
                                     key={item.id}
                                     onClick={() => toggleSelect(item.id)}
                                     className={cn(
-                                        "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all",
+                                        "flex items-center gap-3 p-2.5 rounded-lg border cursor-pointer transition-all",
                                         isSelected
                                             ? "border-emerald-300 bg-emerald-50 ring-1 ring-emerald-200"
                                             : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                                     )}
                                 >
-                                    {/* Checkbox */}
-                                    <div
-                                        className={cn(
-                                            "flex-shrink-0 h-5 w-5 rounded flex items-center justify-center border-2 transition-colors",
-                                            isSelected
-                                                ? "bg-emerald-600 border-emerald-600"
-                                                : "bg-white border-slate-300"
-                                        )}
-                                    >
-                                        {isSelected && <Check className="h-3 w-3 text-white" />}
-                                    </div>
+                                    <Checkbox
+                                        checked={isSelected}
+                                        className="pointer-events-none"
+                                    />
 
                                     {/* File Icon */}
                                     <div className="flex-shrink-0">
                                         <img
                                             src={getFileIconSrc(item.fileName)}
                                             alt=""
-                                            className="h-8 w-8 object-contain"
+                                            className="h-7 w-7 object-contain"
                                             onError={(e) => {
                                                 (e.target as HTMLImageElement).src = defaultFileIcon;
                                             }}
@@ -193,24 +202,32 @@ export const SelectFromLibraryModal: React.FC<SelectFromLibraryModalProps> = ({
 
                                     {/* Info */}
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-slate-900 truncate">
+                                        <p className="text-xs sm:text-sm font-medium text-slate-900 truncate">
                                             {item.title}
                                         </p>
-                                        <p className="text-xs text-slate-500 truncate">
+                                        <p className="text-[10px] sm:text-xs text-slate-500 truncate mt-0.5">
                                             {item.fileName} · {formatFileSize(item.fileSize)}
                                         </p>
                                     </div>
 
-                                    {/* Type Badge */}
-                                    <span
-                                        className={cn(
-                                            "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border flex-shrink-0",
-                                            getMaterialTypeColorClass(item.type)
+                                    {/* Status & Type Badges */}
+                                    <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                                        {item.status && (
+                                            <StatusBadge
+                                                status={mapMaterialStatusToStatusType(item.status)}
+                                                size="xs"
+                                            />
                                         )}
-                                    >
-                                        {getTypeIcon(item.type)}
-                                        {item.type}
-                                    </span>
+                                        <span
+                                            className={cn(
+                                                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border flex-shrink-0",
+                                                getMaterialTypeColorClass(item.type)
+                                            )}
+                                        >
+                                            {getTypeIcon(item.type)}
+                                            {item.type}
+                                        </span>
+                                    </div>
                                 </div>
                             );
                         })}

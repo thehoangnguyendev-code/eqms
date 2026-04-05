@@ -452,13 +452,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                     checked={formData.rememberMe}
                     onChange={handleRememberMeChange}
                     label="Remember me"
-                    labelClassName="text-sm sm:text-[15px]"
+                    labelClassName="text-xs sm:text-sm"
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={handleForgotPasswordClick}
-                    className="text-sm sm:text-[15px] font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none"
+                    className="text-xs sm:text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none hover:underline"
                     disabled={isLoading}
                     aria-label="Forgot password"
                   >
@@ -497,7 +497,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                   <button
                     type="button"
                     onClick={handleContactAdminClick}
-                    className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none"
+                    className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none hover:underline"
                     aria-label="Contact administrator to create an account"
                   >
                     Contact Administrator
