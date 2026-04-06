@@ -52,13 +52,13 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
     <div className="p-4 lg:p-5 space-y-4 bg-slate-50/30 border-b border-slate-100">
       {/* Row 1: Search + action buttons */}
       <div className="flex flex-col gap-1.5 w-full">
-        <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors group-focus-within:text-emerald-600 px-0.5">
+        <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5">
           Search
         </label>
         <div className="flex gap-2 items-center w-full">
           {/* Search */}
-          <div className="relative flex-1 group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 transition-colors" />
             <input
               type="text"
               placeholder="Search employee, department, job title..."

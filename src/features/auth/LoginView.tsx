@@ -266,7 +266,15 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
   // ========================================================================
 
   return (
-    <div className="min-h-screen w-full flex overflow-hidden" role="main">
+    <div className="min-h-screen w-full flex overflow-hidden relative bg-white" role="main">
+      {/* Grid Pattern Background - Unified for all screens */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.9]"
+        style={{
+          backgroundImage: `linear-gradient(#f1f5f9 1.5px, transparent 1.5px), linear-gradient(90deg, #f1f5f9 1.5px, transparent 1.5px)`,
+          backgroundSize: '32px 32px'
+        }}
+      />
       {isLoading && <FullPageLoading text="Signing in..." />}
 
       {/* ====================================================================
@@ -277,15 +285,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
       {/* ====================================================================
           RIGHT SIDE - LOGIN FORM
           ==================================================================== */}
-      <div className="w-full lg:w-1/2 xl:w-2/5 relative flex flex-col lg:flex-row items-center justify-center p-6 sm:p-8 lg:p-12 bg-white">
-        {/* Grid Pattern Background - Visible only on mobile/tablet */}
-        <div
-          className="absolute inset-0 lg:hidden pointer-events-none opacity-[0.9]"
-          style={{
-            backgroundImage: `linear-gradient(#f1f5f9 1.5px, transparent 1.5px), linear-gradient(90deg, #f1f5f9 1.5px, transparent 1.5px)`,
-            backgroundSize: '32px 32px'
-          }}
-        />
+      <div className="w-full lg:w-1/2 xl:w-2/5 relative flex flex-col lg:flex-row items-center justify-center p-6 sm:p-8 lg:p-12 bg-transparent">
 
         {/* Form Container */}
         <motion.div
@@ -294,7 +294,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="w-full max-w-md z-10"
         >
-          <div className="bg-white overflow-hidden rounded-2xl lg:rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.12)] lg:shadow-none border border-slate-100 lg:border-none">
+          <div className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20">
             {/* Mobile gradient top bar */}
             <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
             {/* Form Header */}
@@ -484,7 +484,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                   <div className="w-full border-t border-slate-100"></div>
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="px-4 bg-white text-slate-400 font-medium tracking-normal">
+                  <span className="px-4 bg-transparent text-slate-400 font-medium tracking-normal">
                     Need help?
                   </span>
                 </div>

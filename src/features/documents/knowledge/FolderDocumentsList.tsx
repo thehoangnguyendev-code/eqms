@@ -195,12 +195,12 @@ export const FolderDocumentsList: React.FC<FolderDocumentsListProps> = ({
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
                 <div className="p-3 md:p-4 border-b border-slate-100 bg-slate-50/30">
                     <div className="flex flex-col sm:flex-row sm:items-end gap-3 md:gap-4">
-                        <div className="flex-1 group">
+                        <div className="flex-1">
                             <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
                                 Search
                             </label>
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search in this folder..."

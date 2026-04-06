@@ -421,11 +421,11 @@ export const AuditTrailView: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                         {/* Search */}
                         <div className="lg:col-span-1">
-                            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+                            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
                                 Search
                             </label>
-                            <div className="relative group">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 transition-colors" />
                                 <input
                                     type="text"
                                     value={searchQuery}

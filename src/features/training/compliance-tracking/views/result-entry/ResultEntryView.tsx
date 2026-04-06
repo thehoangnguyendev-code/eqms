@@ -622,8 +622,8 @@ export const ResultEntryView: React.FC = () => {
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
                 Search
               </label>
-              <div className="relative group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 transition-colors" />
                 <input
                   type="text"
                   placeholder="Search by Username, Name..."

@@ -51,7 +51,7 @@ export const AuthBranding: React.FC<AuthBrandingProps> = ({
   }
 
   return (
-    <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 p-4 lg:p-6 items-center justify-center bg-white self-stretch overflow-hidden">
+    <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 p-4 lg:p-6 items-center justify-center bg-transparent self-stretch overflow-hidden relative z-10">
       <div className="relative w-full h-full rounded-[1.2rem] overflow-hidden bg-slate-900 shadow-xl min-h-[600px] flex flex-col">
         
         {/* Optimized Carousel Background - Uses opacity and simple scale for GPU efficiency */}

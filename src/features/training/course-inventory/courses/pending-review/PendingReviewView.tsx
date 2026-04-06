@@ -178,13 +178,13 @@ export const PendingReviewView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           {/* Search Row + Primary Actions */}
           <div className="flex flex-col gap-1.5 w-full">
-            <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors group-focus-within:text-emerald-600 px-0.5">
+            <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5">
               Search
             </label>
             <div className="flex gap-2 items-center w-full">
-              <div className="relative flex-1 group">
+              <div className="relative flex-1">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                  <Search className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                  <Search className="h-4 w-4 text-slate-400 transition-colors" />
                 </div>
                 <input
                   type="text"

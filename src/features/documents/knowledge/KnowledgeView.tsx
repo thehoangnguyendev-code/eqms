@@ -257,12 +257,12 @@ export const KnowledgeView: React.FC = () => {
                         <div className="p-4 md:p-5 border-b border-slate-100 bg-white">
                             <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center">
                                 {/* Search input */}
-                                <div className="w-full sm:flex-1 group">
+                                <div className="w-full sm:flex-1">
                                     <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
                                         Search
                                     </label>
                                     <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="Type to filter folders..."

@@ -44,6 +44,7 @@ import type {
 } from "./types";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { MOCK_NOTIFICATIONS } from "./mockData";
+import { AlertModal } from "@/components/ui/modal/AlertModal";
 
 // Helper functions
 const getTypeIcon = (type: NotificationType) => {
@@ -443,6 +444,7 @@ export const NotificationsView: React.FC = () => {
     close: closeDropdown,
   } = usePortalDropdown();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
+  const [isMarkAllModalOpen, setIsMarkAllModalOpen] = useState(false);
 
   // Filter states
   const [activeTab, setActiveTab] = useState<NotificationFilterTab>("all");
@@ -620,6 +622,7 @@ export const NotificationsView: React.FC = () => {
           : n,
       ),
     );
+    setIsMarkAllModalOpen(false);
   };
 
   const handleDeleteNotification = (id: string) => {
@@ -667,7 +670,7 @@ export const NotificationsView: React.FC = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={handleMarkAllAsRead}
+            onClick={() => setIsMarkAllModalOpen(true)}
             disabled={counts.unread === 0}
             className="whitespace-nowrap gap-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
           >
@@ -692,13 +695,13 @@ export const NotificationsView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           {/* Search Row + Primary Actions */}
           <div className="flex flex-col gap-1.5 w-full">
-            <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors group-focus-within:text-emerald-600 px-0.5">
+            <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5">
               Search
             </label>
             <div className="flex gap-2 items-center w-full">
-              <div className="relative flex-1 group">
+              <div className="relative flex-1">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                  <Search className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                  <Search className="h-4 w-4 text-slate-400 transition-colors" />
                 </div>
                 <input
                   type="text"
@@ -976,6 +979,17 @@ export const NotificationsView: React.FC = () => {
             }}
           />
         )}
+
+      <AlertModal
+        isOpen={isMarkAllModalOpen}
+        onClose={() => setIsMarkAllModalOpen(false)}
+        onConfirm={handleMarkAllAsRead}
+        title="Mark All as Read"
+        description="Are you sure you want to mark all unread notifications as read? This action cannot be undone."
+        type="confirm"
+        confirmText="Confirm"
+        showCancel
+      />
     </div>
   );
 };

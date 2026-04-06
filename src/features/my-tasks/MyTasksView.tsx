@@ -230,13 +230,13 @@ export const MyTasksView: React.FC = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col flex-1 min-h-0">
         <div className="p-4 md:p-5 flex flex-col">
           <div className="flex flex-row gap-2 sm:gap-3 items-end">
-            <div className="flex-1 group">
-              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors group-focus-within:text-emerald-600">
+            <div className="flex-1">
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
                 Search
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                  <Search className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                  <Search className="h-4 w-4 text-slate-400 transition-colors" />
                 </div>
                 <input
                   type="text"

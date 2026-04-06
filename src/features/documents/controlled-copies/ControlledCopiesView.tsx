@@ -544,8 +544,8 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-end">
             <div>
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Search</label>
-              <div className="relative group">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400 transition-colors" />
                 <input
                   type="text"
                   value={searchQuery}
