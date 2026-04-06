@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/components/ui/utils";
+import { motion } from "framer-motion";
 
 export interface TabItem {
   id: string;
@@ -21,6 +22,8 @@ interface TabNavProps {
    * - `"pill"` — segmented control on a slate background (e.g. Notifications).
    */
   variant?: "underline" | "pill";
+  /** Unique ID for shared layout animations (pill variant only) */
+  layoutId?: string;
   /** Additional className for the root container */
   className?: string;
 }
@@ -57,13 +60,14 @@ export const TabNav: React.FC<TabNavProps> = ({
   activeTab,
   onChange,
   variant = "underline",
+  layoutId = "activeTabIndicator",
   className,
 }) => {
   if (variant === "pill") {
     return (
       <div
         className={cn(
-          "flex gap-1 p-1 bg-slate-100 rounded-lg w-full sm:w-fit",
+          "flex gap-1 p-1 bg-slate-100 rounded-lg w-full relative",
           className
         )}
       >
@@ -75,29 +79,38 @@ export const TabNav: React.FC<TabNavProps> = ({
               key={tab.id}
               onClick={() => onChange(tab.id)}
               className={cn(
-                "flex items-center justify-center gap-2 px-3 sm:px-4 py-2",
-                "text-xs sm:text-sm font-medium rounded-lg transition-all duration-200",
-                "flex-1 sm:flex-initial",
+                "flex items-center justify-center gap-2 px-2.5 py-1.5 relative whitespace-nowrap",
+                "text-[11px] font-semibold rounded-lg transition-all duration-200",
+                "flex-1",
                 isActive
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                  ? "text-slate-900"
+                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-200/50"
               )}
             >
-              {Icon && <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />}
-              <span>{tab.label}</span>
-              {tab.count !== undefined && (
-                <span
-                  className={cn(
-                    "inline-flex items-center justify-center min-w-[20px] h-5 px-1.5",
-                    "text-xs font-semibold rounded-full",
-                    isActive
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-slate-200/60 text-slate-500"
-                  )}
-                >
-                  {tab.count}
-                </span>
+              {isActive && (
+                <motion.div
+                  layoutId={layoutId}
+                  className="absolute inset-0 bg-white rounded-lg shadow-sm z-0"
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                />
               )}
+              <span className="relative z-10 flex items-center gap-1.5">
+                {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
+                <span>{tab.label}</span>
+                {tab.count !== undefined && (
+                  <span
+                    className={cn(
+                      "inline-flex items-center justify-center min-w-[18px] h-4.5 px-1.5",
+                      "text-[10px] font-bold rounded-full",
+                      isActive
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-slate-200 text-slate-500"
+                    )}
+                  >
+                    {tab.count}
+                  </span>
+                )}
+              </span>
             </button>
           );
         })}
@@ -126,7 +139,7 @@ export const TabNav: React.FC<TabNavProps> = ({
                   : "border-b-transparent text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
               )}
             >
-              {Icon && <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />}
+              {Icon && <Icon className="h-4 w-4 sm:h-[18px] sm:w-[18px] shrink-0" />}
               <span>{tab.label}</span>
               {tab.count !== undefined && (
                 <span

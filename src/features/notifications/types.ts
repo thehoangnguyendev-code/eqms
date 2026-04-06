@@ -41,7 +41,7 @@ export interface Notification {
   actionUrl?: string;
 }
 
-export type NotificationFilterTab = 'all' | 'unread' | 'read';
+export type NotificationFilterTab = 'all' | 'for-me' | 'system';
 
 export interface NotificationFilters {
   search: string;

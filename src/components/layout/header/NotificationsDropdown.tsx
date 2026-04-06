@@ -2,10 +2,12 @@ import React, { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, DollarSign, Reply, X } from 'lucide-react';
+import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, DollarSign, Reply, X, RefreshCw, ExternalLink } from 'lucide-react';
+import { TabNav, type TabItem } from '../../ui/tabs/TabNav';
 import { Button } from '../../ui/button/Button';
 import { cn } from '../../ui/utils';
 import { ROUTES } from '@/app/routes.constants';
+import { AlertModal } from '../../ui/modal/AlertModal';
 
 interface NotificationsDropdownProps {
   isOpen: boolean;
@@ -16,14 +18,14 @@ interface NotificationsDropdownProps {
 // Hook to detect mobile screen
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
-  
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-  
+
   return isMobile;
 };
 
@@ -31,6 +33,7 @@ const useIsMobile = () => {
 const NOTIFICATIONS = [
   {
     id: '1',
+    status: 'unread',
     type: 'review-request' as const,
     avatar: User,
     avatarBg: 'bg-blue-100',
@@ -48,6 +51,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '2',
+    status: 'unread',
     type: 'approval' as const,
     avatar: User,
     avatarBg: 'bg-emerald-100',
@@ -65,6 +69,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '3',
+    status: 'read',
     type: 'capa-assignment' as const,
     avatar: AlertTriangle,
     avatarBg: 'bg-amber-100',
@@ -82,6 +87,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '4',
+    status: 'read',
     type: 'training-completion' as const,
     avatar: User,
     avatarBg: 'bg-purple-100',
@@ -99,6 +105,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '5',
+    status: 'unread',
     type: 'document-update' as const,
     avatar: FileText,
     avatarBg: 'bg-cyan-100',
@@ -116,6 +123,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '6',
+    status: 'read',
     type: 'comment-reply' as const,
     avatar: User,
     avatarBg: 'bg-slate-100',
@@ -133,6 +141,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '7',
+    status: 'read',
     type: 'review-request' as const,
     avatar: User,
     avatarBg: 'bg-rose-100',
@@ -150,6 +159,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '8',
+    status: 'read',
     type: 'document-update' as const,
     avatar: FileText,
     avatarBg: 'bg-indigo-100',
@@ -167,6 +177,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '9',
+    status: 'read',
     type: 'training-completion' as const,
     avatar: User,
     avatarBg: 'bg-teal-100',
@@ -184,6 +195,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '10',
+    status: 'read',
     type: 'approval' as const,
     avatar: User,
     avatarBg: 'bg-orange-100',
@@ -201,6 +213,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '11',
+    status: 'read',
     type: 'capa-assignment' as const,
     avatar: AlertTriangle,
     avatarBg: 'bg-red-100',
@@ -218,6 +231,7 @@ const NOTIFICATIONS = [
   },
   {
     id: '12',
+    status: 'read',
     type: 'document-update' as const,
     avatar: FileText,
     avatarBg: 'bg-sky-100',
@@ -235,7 +249,6 @@ const NOTIFICATIONS = [
   }
 ];
 
-// Notification Item Component
 const NotificationItem: React.FC<{
   notification: typeof NOTIFICATIONS[0];
   isLast: boolean;
@@ -243,38 +256,76 @@ const NotificationItem: React.FC<{
 }> = ({ notification, isLast, onClose }) => {
   const AvatarIcon = notification.avatar;
   const BadgeIcon = notification.badge;
-  
+
   return (
-    <button 
-      onClick={() => {
-        notification.onClick();
-        onClose();
-      }}
-      className={cn(
-        "w-full flex items-start gap-2.5 px-3.5 py-2 hover:bg-slate-50 active:bg-slate-100 transition-colors text-left",
-        !isLast && "border-b border-slate-100"
-      )}
-    >
-      <div className="relative shrink-0">
-        <div className={cn("h-8 w-8 rounded-full flex items-center justify-center", notification.avatarBg)}>
-          <AvatarIcon className={cn("h-4 w-4", notification.avatarColor)} />
+    <div className="w-full">
+      <button
+        onClick={() => {
+          notification.onClick();
+          onClose();
+        }}
+        className={cn(
+          "w-full flex items-start gap-2.5 px-4 py-3 transition-all duration-200 text-left group",
+          notification.status === 'unread' ? "bg-slate-50/80" : "bg-white",
+          "hover:bg-slate-100",
+          !isLast && "border-b border-slate-100"
+        )}
+      >
+        <div className="relative shrink-0 mt-0.5">
+          <div className={cn("h-9 w-9 rounded-full flex items-center justify-center transition-transform group-hover:scale-105", notification.avatarBg)}>
+            <AvatarIcon className={cn("h-4.5 w-4.5", notification.avatarColor)} />
+          </div>
+          <div className={cn(
+            "absolute -bottom-0.5 -right-0.5 h-4.5 w-4.5 rounded-full flex items-center justify-center border-2 border-white shadow-sm",
+            notification.badgeBg
+          )}>
+            <BadgeIcon className="h-2.5 w-2.5 text-white" />
+          </div>
         </div>
-        <div className={cn(
-          "absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full flex items-center justify-center border-2 border-white",
-          notification.badgeBg
-        )}>
-          <BadgeIcon className="h-2.5 w-2.5 text-white" />
+        <div className="flex-1 min-w-0 space-y-1">
+          <div className="text-[12px] text-slate-900 font-medium leading-tight line-clamp-2">
+            {notification.title}
+          </div>
+
+          <div className="flex items-center justify-between gap-2">
+            <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 text-slate-500 border border-slate-100 group-hover:bg-emerald-50 group-hover:border-emerald-100 group-hover:text-emerald-700 transition-colors">
+              <span className="text-[9px] font-bold uppercase tracking-wider opacity-70">
+                {notification.type === 'review-request' ? 'Review' :
+                  notification.type === 'approval' ? 'Approval' :
+                    notification.type === 'capa-assignment' ? 'CAPA' :
+                      notification.type === 'training-completion' ? 'Training' :
+                        'System'}
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400 font-medium">{notification.time}</p>
+          </div>
         </div>
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-xs text-slate-900 leading-snug">
-          {notification.title}
-        </p>
-        <p className="text-[10px] text-slate-400 mt-0.5">{notification.time}</p>
-      </div>
-    </button>
+
+        {/* Unread indicator dot */}
+        {notification.status === 'unread' && (
+          <div className="shrink-0 mt-1.5">
+            <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)] animate-pulse" />
+          </div>
+        )}
+      </button>
+    </div>
   );
 };
+
+const NotificationSkeleton: React.FC<{ isLast?: boolean }> = ({ isLast }) => (
+  <div className={cn("px-4 py-3 animate-pulse bg-white", !isLast && "border-b border-slate-100")}>
+    <div className="w-full flex items-start gap-2.5">
+      <div className="h-9 w-9 rounded-full bg-slate-200 shrink-0" />
+      <div className="flex-1 space-y-2 py-1">
+        <div className="h-2.5 bg-slate-200 rounded w-3/4" />
+        <div className="flex justify-between items-center text-left">
+          <div className="h-4 bg-slate-200 rounded w-12" />
+          <div className="h-2 bg-slate-200 rounded w-8" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 // Mobile Bottom Drawer Component
 const MobileDrawer: React.FC<{
@@ -289,7 +340,7 @@ const MobileDrawer: React.FC<{
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(70);
   const drawerRef = useRef<HTMLDivElement>(null);
-  
+
   // Min and max height constraints (in vh)
   const MIN_HEIGHT = 30;
   const MAX_HEIGHT = 100;
@@ -344,11 +395,11 @@ const MobileDrawer: React.FC<{
   // Handle drag move
   const handleDragMove = (clientY: number) => {
     if (!isDragging) return;
-    
+
     const viewportHeight = window.innerHeight;
     const deltaY = dragStartY.current - clientY; // Positive when dragging up
     const deltaVh = (deltaY / viewportHeight) * 100;
-    
+
     let newHeight = dragStartHeight.current + deltaVh;
     // Clamp between min and max
     newHeight = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, newHeight));
@@ -359,13 +410,13 @@ const MobileDrawer: React.FC<{
   const handleDragEnd = () => {
     if (!isDragging) return;
     setIsDragging(false);
-    
+
     // Close if dragged too low
     if (drawerHeight < CLOSE_THRESHOLD) {
       onClose();
       return;
     }
-    
+
     // Snap to nearest comfortable height
     if (drawerHeight < 40) {
       setDrawerHeight(MIN_HEIGHT);
@@ -395,18 +446,18 @@ const MobileDrawer: React.FC<{
 
   useEffect(() => {
     if (!isDragging) return;
-    
+
     const handleMouseMove = (e: MouseEvent) => {
       handleDragMove(e.clientY);
     };
-    
+
     const handleMouseUp = () => {
       handleDragEnd();
     };
-    
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-    
+
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
@@ -421,7 +472,7 @@ const MobileDrawer: React.FC<{
   return createPortal(
     <div className="fixed inset-0 z-50 md:hidden">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
         style={{
           opacity: isVisible ? 1 : 0,
@@ -429,9 +480,9 @@ const MobileDrawer: React.FC<{
         }}
         onClick={onClose}
       />
-      
+
       {/* Drawer */}
-      <div 
+      <div
         ref={drawerRef}
         className={cn(
           "absolute bottom-0 left-0 right-0 bg-white shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.25)]",
@@ -445,9 +496,9 @@ const MobileDrawer: React.FC<{
           paddingLeft: 'env(safe-area-inset-left, 0px)',
           paddingRight: 'env(safe-area-inset-right, 0px)',
           transform: isVisible ? 'translateY(0)' : 'translateY(100%)',
-          transition: isDragging 
-            ? 'none' 
-            : isVisible 
+          transition: isDragging
+            ? 'none'
+            : isVisible
               ? 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1), height 300ms cubic-bezier(0.16, 1, 0.3, 1), border-radius 200ms ease'
               : 'transform 300ms cubic-bezier(0.4, 0, 0.6, 1)',
           // iOS Safari optimization
@@ -456,7 +507,7 @@ const MobileDrawer: React.FC<{
         }}
       >
         {/* Drawer Handle - Draggable */}
-        <div 
+        <div
           className={cn(
             "flex justify-center py-3 cursor-grab active:cursor-grabbing select-none touch-none",
             isFullHeight && "pt-4"
@@ -468,16 +519,16 @@ const MobileDrawer: React.FC<{
         >
           <div className={cn(
             "rounded-full transition-all duration-200",
-            isDragging 
-              ? "w-20 h-1.5 bg-slate-400" 
+            isDragging
+              ? "w-20 h-1.5 bg-slate-400"
               : "w-12 h-1 bg-slate-300 hover:bg-slate-400 hover:w-16"
           )} />
         </div>
 
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900">Notifications</h3>
-          <button 
+          <h3 className="text-lg font-medium text-slate-900">Notifications</h3>
+          <button
             className="flex items-center gap-1.5 py-2 hover:bg-slate-100 active:bg-slate-200 rounded-lg transition-colors"
             onClick={() => console.log("Mark all as read")}
           >
@@ -487,9 +538,9 @@ const MobileDrawer: React.FC<{
         </div>
 
         {/* Notifications List */}
-        <div 
+        <div
           className="overflow-y-auto overscroll-contain flex-1"
-          style={{ 
+          style={{
             // Dynamic height based on drawer height
             height: `calc(${drawerHeight}dvh - 120px - ${isFullHeight ? 'env(safe-area-inset-top, 0px)' : '0px'} - env(safe-area-inset-bottom, 0px))`,
             WebkitOverflowScrolling: 'touch',
@@ -519,7 +570,7 @@ const MobileDrawer: React.FC<{
 
         {/* Footer - View All */}
         <div className="border-t border-slate-200 px-4" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 12px)' }}>
-          <button 
+          <button
             className="w-full py-3 text-center text-sm font-medium text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100 rounded-lg transition-colors"
             onClick={() => {
               onViewAll();
@@ -544,85 +595,165 @@ const DesktopDropdown: React.FC<{
   onViewAll: () => void;
 }> = ({ isOpen, onClose, buttonRef, onViewAll }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState('all');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+  };
+
+  const handleMarkAllRead = () => {
+    setIsConfirmOpen(true);
+  };
+
+  const onConfirmMarkRead = () => {
+    console.log("Marking all as read...");
+    setIsConfirmOpen(false);
+  };
+
+  const counts = {
+    all: NOTIFICATIONS.length,
+    me: NOTIFICATIONS.filter(n => n.type !== 'system' as any).length,
+    system: NOTIFICATIONS.filter(n => n.type === 'system' as any).length,
+  };
+
+  const DROPDOWN_TABS: TabItem[] = [
+    { id: 'all', label: 'All', count: counts.all },
+    { id: 'me', label: 'For Me', count: counts.me },
+    { id: 'system', label: 'System', count: counts.system },
+  ];
+
+  const filteredNotifications = NOTIFICATIONS.filter(n => {
+    if (activeTab === 'all') return true;
+    if (activeTab === 'me') return (n.type as any) !== 'system';
+    if (activeTab === 'system') return (n.type as any) === 'system';
+    return true;
+  });
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || isConfirmOpen) return;
     const handleClick = (e: MouseEvent) => {
       const target = e.target as Node;
       if (buttonRef.current && !buttonRef.current.contains(target) &&
-          dropdownRef.current && !dropdownRef.current.contains(target)) {
+        dropdownRef.current && !dropdownRef.current.contains(target)) {
         onClose();
       }
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
-  }, [isOpen, onClose, buttonRef]);
+  }, [isOpen, onClose, buttonRef, isConfirmOpen]);
 
   if (!isOpen) return null;
 
   return createPortal(
     <div className="fixed inset-0 z-50 pointer-events-none">
-      {/* Full-screen Backdrop Overlay - only catches clicks */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="absolute inset-0 z-0 bg-transparent pointer-events-auto"
-        onClick={onClose}
+        onClick={() => {
+          if (!isConfirmOpen) onClose();
+        }}
         aria-hidden="true"
       />
 
-      {/* Dropdown Content */}
       <motion.div
         ref={dropdownRef}
         initial={{ opacity: 0, scale: 0.95, y: -10, transformOrigin: 'top right' }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: -10 }}
         transition={{ type: 'spring', bounce: 0, duration: 0.25 }}
-        className="fixed w-80 bg-white border border-slate-200 rounded-xl shadow-2xl z-10 overflow-hidden pointer-events-auto"
+        className="fixed w-[360px] bg-white border border-slate-200 rounded-2xl shadow-2xl z-10 overflow-hidden pointer-events-auto flex flex-col"
         style={{
           top: `${buttonRef.current?.getBoundingClientRect().bottom! + window.scrollY + 8}px`,
           right: `${window.innerWidth - buttonRef.current?.getBoundingClientRect().right! - window.scrollX}px`
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-200">
-          <h3 className="text-sm font-semibold text-slate-900">Notifications</h3>
-          <button 
-            className="flex items-center gap-1.5 px-2 py-1 hover:bg-slate-100 rounded-lg transition-colors group"
-            onClick={() => console.log("Mark all as read")}
-            title="Mark all as read"
+        <div className="flex items-center justify-between px-5 py-2">
+          <h3 className="text-base font-bold text-slate-900 tracking-tight">Notifications</h3>
+          <button
+            className={cn(
+              "p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-emerald-600 transition-all duration-500",
+              isLoading && "animate-spin text-emerald-600"
+            )}
+            onClick={handleRefresh}
+            disabled={isLoading}
+            title="Refresh"
           >
-            <CheckCheck className="h-3.5 w-3.5 text-slate-500 group-hover:text-emerald-600 transition-colors" />
-            <span className="text-[11px] font-medium text-slate-600 group-hover:text-emerald-600 transition-colors">Mark all as read</span>
+            <RefreshCw className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Notifications List — max 5 visible, scroll for more */}
-        <div className="max-h-[240px] overflow-y-auto">
-          {NOTIFICATIONS.map((notification, index) => (
-            <NotificationItem
-              key={notification.id}
-              notification={notification}
-              isLast={index === NOTIFICATIONS.length - 1}
-              onClose={onClose}
-            />
-          ))}
+        {/* Tabs */}
+        <div className="px-4 pb-2">
+          <TabNav
+            tabs={DROPDOWN_TABS}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            variant="pill"
+            layoutId="notificationTabIndicator"
+            className="w-full bg-slate-100/80"
+          />
+        </div>
+
+        {/* Notifications List */}
+        <div className="max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300 bg-white min-h-[300px]">
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => <NotificationSkeleton key={i} isLast={i === 3} />)
+          ) : filteredNotifications.length === 0 ? (
+            <div className="py-20 text-center">
+              <p className="text-sm text-slate-400">No notifications here</p>
+            </div>
+          ) : (
+            filteredNotifications.map((notification, index) => (
+              <NotificationItem
+                key={notification.id}
+                notification={notification}
+                isLast={index === filteredNotifications.length - 1}
+                onClose={onClose}
+              />
+            ))
+          )}
         </div>
 
         {/* Footer */}
-        <div className="border-t border-slate-200">
-          <button 
-            className="w-full py-1.5 text-center text-[11px] font-medium text-emerald-600 hover:bg-emerald-50 rounded-b-xl transition-colors"
+        <div className="flex items-center justify-between px-5 py-3.5 border-t border-slate-100 bg-white shrink-0">
+          <button
+            className="text-[13px] font-semibold text-slate-900 hover:text-emerald-600 underline underline-offset-4 decoration-slate-300 hover:decoration-emerald-500 transition-colors"
+            onClick={handleMarkAllRead}
+          >
+            Mark all as read
+          </button>
+          <Button
+            variant="outline"
+            size="xs"
             onClick={() => {
               onViewAll();
               onClose();
             }}
+            className="h-9 px-4 rounded-lg text-xs font-medium border-slate-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-all font-semibold"
           >
-            View all notifications
-          </button>
+            Go to notification center
+          </Button>
         </div>
       </motion.div>
+
+      {/* Confirmation Modal */}
+      <AlertModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={onConfirmMarkRead}
+        title="Mark All as Read"
+        description="Are you sure you want to mark all notifications as read? This cannot be undone."
+        type="confirm"
+        confirmText="Yes, Mark All"
+      />
     </div>,
     document.body
   );
@@ -641,9 +772,9 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ is
     <>
       {/* Notifications Button */}
       <div ref={notificationRef} className="inline-flex">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onToggle}
           className="relative text-slate-600 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
         >
@@ -665,9 +796,9 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ is
       {!isMobile && (
         <AnimatePresence>
           {isOpen && (
-            <DesktopDropdown 
-              isOpen={isOpen} 
-              onClose={onClose} 
+            <DesktopDropdown
+              isOpen={isOpen}
+              onClose={onClose}
               buttonRef={notificationRef as React.RefObject<HTMLDivElement>}
               onViewAll={handleViewAllNotifications}
             />

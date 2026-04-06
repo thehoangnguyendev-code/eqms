@@ -35,6 +35,7 @@ import {
   IconAdjustmentsHorizontal,
   IconMessageChatbot,
   IconAlertSquareRounded,
+  IconUsersGroup,
 } from "@tabler/icons-react";
 import { NavItem } from "@/types";
 
@@ -42,7 +43,7 @@ import { NavItem } from "@/types";
 // CORE NAVIGATION (Dashboard, Tasks, Notifications)
 // ============================================================================
 const CORE_NAV: NavItem[] = [
-    {
+  {
     id: "notifications",
     label: "Notifications",
     icon: Bell,
@@ -53,13 +54,20 @@ const CORE_NAV: NavItem[] = [
     label: "Dashboard",
     icon: IconLayoutGrid,
     path: "/dashboard",
+    showDividerAfter: true,
   },
   {
     id: "my-tasks",
     label: "My Tasks",
     icon: IconBrandAsana,
     path: "/my-tasks",
-    showDividerAfter: true, // Divider Separator
+  },
+  {
+    id: "my-team",
+    label: "My Team",
+    icon: IconUsersGroup,
+    path: "/my-team",
+    showDividerAfter: true,
   }
 ];
 

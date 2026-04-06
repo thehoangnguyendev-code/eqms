@@ -45,6 +45,7 @@ import type {
 import { IconInfoCircle } from "@tabler/icons-react";
 import { MOCK_NOTIFICATIONS } from "./mockData";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
+import { TabNav, type TabItem } from "@/components/ui/tabs/TabNav";
 
 // Helper functions
 const getTypeIcon = (type: NotificationType) => {
@@ -145,58 +146,7 @@ const formatTimeAgo = (dateString: string) => {
 
 // --- Components ---
 
-// Tab Component
-const NotificationTabs: React.FC<{
-  activeTab: NotificationFilterTab;
-  setActiveTab: (tab: NotificationFilterTab) => void;
-  counts: { all: number; unread: number; read: number };
-}> = ({ activeTab, setActiveTab, counts }) => {
-  const tabs: { id: NotificationFilterTab; label: string; count: number }[] = [
-    { id: "all", label: "All", count: counts.all },
-    { id: "unread", label: "Unread", count: counts.unread },
-    { id: "read", label: "Read", count: counts.read },
-  ];
 
-  return (
-    <div className="flex gap-1 p-1 bg-slate-100 rounded-lg w-full sm:w-fit">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => setActiveTab(tab.id)}
-          className={cn(
-            "flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 flex-1 sm:flex-initial relative z-10",
-            activeTab === tab.id
-              ? "text-slate-900"
-              : "text-slate-600 hover:text-slate-900 hover:bg-slate-50/50",
-          )}
-        >
-          {activeTab === tab.id && (
-            <motion.div
-              layoutId="activeNotificationTab"
-              className="absolute inset-0 bg-white rounded-lg shadow-sm pointer-events-none"
-              transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
-            />
-          )}
-          <span className="relative z-20 flex items-center gap-2">
-            {tab.label}
-            <span
-              className={cn(
-                "inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-semibold rounded-full transition-colors",
-                activeTab === tab.id
-                  ? tab.id === "unread"
-                    ? "bg-emerald-100 text-emerald-700"
-                    : "bg-slate-200 text-slate-700"
-                  : "bg-slate-200/60 text-slate-500",
-              )}
-            >
-              {tab.count}
-            </span>
-          </span>
-        </button>
-      ))}
-    </div>
-  );
-};
 
 const NotificationActionsDropdown: React.FC<{
   isOpen: boolean;
@@ -298,13 +248,16 @@ const NotificationRow: React.FC<{
     return (
       <tr
         className={cn(
-          "group transition-colors",
+          "group transition-colors relative",
           notification.status === "unread"
-            ? "bg-emerald-50/30 hover:bg-emerald-50/50"
-            : "hover:bg-slate-50/80",
+            ? "bg-emerald-50/40 hover:bg-emerald-50/60"
+            : "bg-white hover:bg-slate-50/80",
         )}
       >
-        <td className={cn(tdClass, "text-center text-slate-500 w-14")}>
+        <td className={cn(tdClass, "text-center text-slate-500 w-14 relative")}>
+          {notification.status === "unread" && (
+            <div className="absolute inset-y-0 left-0 w-1 bg-emerald-500" title="Unread" />
+          )}
           {index}
         </td>
 
@@ -316,14 +269,15 @@ const NotificationRow: React.FC<{
             <div className="relative shrink-0">
               <div
                 className={cn(
-                  "h-9 w-9 md:h-10 md:w-10 rounded-full flex items-center justify-center",
+                  "h-9 w-9 md:h-10 md:w-10 rounded-full flex items-center justify-center transition-opacity",
                   colors.bg,
+                  notification.status === "read" && "opacity-60"
                 )}
               >
                 <Icon className={cn("h-4 w-4 md:h-5 md:w-5", colors.text)} />
               </div>
               {notification.status === "unread" && (
-                <div className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 md:h-3 md:w-3 bg-emerald-500 rounded-full border-2 border-white" />
+                <div className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 md:h-3 md:w-3 bg-emerald-500 rounded-full border-2 border-white animate-pulse" />
               )}
             </div>
             <div className="flex-1 min-w-0">
@@ -331,13 +285,18 @@ const NotificationRow: React.FC<{
                 className={cn(
                   "text-sm hover:underline",
                   notification.status === "unread"
-                    ? "font-semibold text-slate-900"
-                    : "font-medium text-slate-700",
+                    ? "font-bold text-slate-900"
+                    : "font-medium text-slate-500",
                 )}
               >
                 {notification.title}
               </p>
-              <p className="text-xs md:text-sm text-slate-500 mt-0.5 max-w-md truncate">
+              <p className={cn(
+                "text-xs md:text-sm mt-0.5 max-w-md truncate",
+                notification.status === "unread"
+                  ? "text-slate-600"
+                  : "text-slate-400"
+              )}>
                 {notification.description}
               </p>
             </div>
@@ -408,17 +367,17 @@ const EmptyState: React.FC<{
         ? "We couldn't find any notifications matching your filters. Try adjusting your search criteria or clear filters."
         : "You're all caught up!",
     },
-    unread: {
-      title: "No unread notifications",
+    "for-me": {
+      title: "No personal notifications",
       description: hasActiveFilters
-        ? "We couldn't find any unread notifications matching your filters. Try adjusting your search criteria or clear filters."
-        : "All notifications have been read",
+        ? "We couldn't find any personal notifications matching your filters."
+        : "You don't have any personal notifications yet.",
     },
-    read: {
-      title: "No read notifications",
+    system: {
+      title: "No system notifications",
       description: hasActiveFilters
-        ? "We couldn't find any read notifications matching your filters. Try adjusting your search criteria or clear filters."
-        : "Notifications you've read will appear here",
+        ? "We couldn't find any system notifications matching your filters."
+        : "There are no system notifications at this time.",
     },
   };
 
@@ -450,6 +409,7 @@ export const NotificationsView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NotificationFilterTab>("all");
   const [search, setSearch] = useState("");
   const [type, setType] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [module, setModule] = useState("all");
   const [priority, setPriority] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
@@ -475,10 +435,17 @@ export const NotificationsView: React.FC = () => {
   const counts = useMemo(() => {
     return {
       all: notifications.length,
+      forMe: notifications.filter((n) => n.type !== "system").length,
+      system: notifications.filter((n) => n.type === "system").length,
       unread: notifications.filter((n) => n.status === "unread").length,
-      read: notifications.filter((n) => n.status === "read").length,
     };
   }, [notifications]);
+
+  const NOTIFICATION_TABS: TabItem[] = [
+    { id: "all", label: "All Notifications", count: counts.all },
+    { id: "for-me", label: "For Me", count: counts.forMe },
+    { id: "system", label: "Systems", count: counts.system },
+  ];
 
   // Sorting Handler
   const handleSort = (key: keyof Notification) => {
@@ -505,9 +472,12 @@ export const NotificationsView: React.FC = () => {
   const filteredNotifications = useMemo(() => {
     let filtered = notifications.filter((notification) => {
       // Tab filter
-      if (activeTab === "unread" && notification.status !== "unread")
+      if (activeTab === "for-me" && notification.type === "system")
         return false;
-      if (activeTab === "read" && notification.status !== "read") return false;
+      if (activeTab === "system" && notification.type !== "system") return false;
+
+      // Status filter
+      if (statusFilter !== "all" && notification.status !== statusFilter) return false;
 
       // Search filter
       if (search) {
@@ -633,6 +603,7 @@ export const NotificationsView: React.FC = () => {
   const handleClearFilters = () => {
     setSearch("");
     setType("all");
+    setStatusFilter("all");
     setModule("all");
     setPriority("all");
     setDateFrom("");
@@ -642,6 +613,7 @@ export const NotificationsView: React.FC = () => {
   const hasActiveFilters =
     search !== "" ||
     type !== "all" ||
+    statusFilter !== "all" ||
     module !== "all" ||
     priority !== "all" ||
     dateFrom !== "" ||
@@ -680,17 +652,14 @@ export const NotificationsView: React.FC = () => {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <NotificationTabs
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          counts={counts}
-        />
-      </div>
-
       {/* Unified Content Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
+        <TabNav
+          tabs={NOTIFICATION_TABS}
+          activeTab={activeTab}
+          onChange={(id) => setActiveTab(id as NotificationFilterTab)}
+          variant="underline"
+        />
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
           {/* Search Row + Primary Actions */}
@@ -753,12 +722,27 @@ export const NotificationsView: React.FC = () => {
                 }}
                 className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
               >
-                <div className="pt-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                    <div className="w-full">
-                      <Select
-                        label="Notification Type"
-                        value={type}
+                  <div className="pt-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                      <div className="w-full">
+                        <Select
+                          label="Status"
+                          value={statusFilter}
+                          onChange={(val) => {
+                            setStatusFilter(val as string);
+                            setCurrentPage(1);
+                          }}
+                          options={[
+                            { label: "All Status", value: "all" },
+                            { label: "Unread Only", value: "unread" },
+                            { label: "Read Only", value: "read" },
+                          ]}
+                        />
+                      </div>
+                      <div className="w-full">
+                        <Select
+                          label="Notification Type"
+                          value={type}
                         onChange={(val) => {
                           setType(val as string);
                           setCurrentPage(1);
