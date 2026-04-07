@@ -15,7 +15,7 @@ import {
   IconMinus,
   IconSitemap
 } from '@tabler/icons-react';
-import { Check, Search } from 'lucide-react';
+import { Check, Search, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button/Button';
 import { cn } from '@/components/ui/utils';
 import { PageHeader } from '@/components/ui/page/PageHeader';
@@ -164,7 +164,7 @@ const StatusBadge: React.FC<{ status: Employee['status'], className?: string }> 
   };
 
   return (
-    <Badge color={colorMap[status]} size="xs" pill={true} variant="soft" className={cn("uppercase font-bold tracking-wider", className)}>
+    <Badge color={colorMap[status]} size="sm" pill={true} variant="soft" className={cn("uppercase font-bold tracking-wider", className)}>
       {labels[status]}
     </Badge>
   );
@@ -186,14 +186,28 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, variant = 'grid',
         hidden: { opacity: 0, scale: 0.95 },
         visible: { opacity: 1, scale: 1 }
       }}
-      whileHover={{ y: isOrg ? 0 : -4, scale: isOrg ? 1.02 : 1 }}
+      whileHover={{ y: isOrg ? 0 : -4, scale: isOrg ? 1 : 1 }}
       className="h-full relative group"
     >
+      {/* Top connection node - Outside the card to avoid overflow clipping */}
+      {isOrg && !employee.isHead && (
+        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 z-[60] pointer-events-none">
+          <div className="relative flex items-center justify-center">
+            <motion.div 
+              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute inset-0 rounded-full bg-emerald-400"
+            />
+            <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-md relative z-10" />
+          </div>
+        </div>
+      )}
+
       <Card
         padding="none"
         className={cn(
           "h-full relative transition-all duration-300 overflow-hidden border-slate-200",
-          employee.isHead ? "border-emerald-200 ring-4 ring-emerald-50/50 shadow-emerald-50/50" : "hover:border-slate-300",
+          employee.isHead ? "border-emerald-200 ring-4 ring-emerald-50/50 shadow-emerald-50/50" : "hover:border-slate-300 hover:shadow-md",
           isOrg ? "p-4" : "p-3 sm:p-5"
         )}
       >
@@ -215,14 +229,14 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, variant = 'grid',
           </div>
           <div className="min-w-0 flex-1 pt-0.5">
             <div className={cn("flex items-center justify-center sm:justify-between gap-2 overflow-hidden", isOrg && "flex-col items-start gap-0")}>
-              <h3 className={cn("font-bold text-slate-900 truncate", isOrg ? "text-[13px] leading-tight" : "text-sm sm:text-base")}>
+              <h3 className={cn("font-bold text-slate-900 truncate", isOrg ? "text-[13px] leading-tight" : "text-base sm:text-lg")}>
                 {employee.name}
               </h3>
               {!isOrg && <StatusBadge status={employee.status} className="hidden sm:inline-flex" />}
             </div>
             <p className={cn(
               "font-semibold truncate",
-              isOrg ? "text-[11px] mt-0.5" : "text-[10px] sm:text-xs mt-0.5",
+              isOrg ? "text-[11px] mt-0.5" : "text-sm sm:text-base mt-0.5",
               employee.isHead ? "text-emerald-600" : "text-slate-500"
             )}>
               {employee.role}
@@ -235,34 +249,36 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, variant = 'grid',
         {/* Employee Meta Info */}
         <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mb-3 sm:mb-4 bg-slate-50/50 rounded-lg p-2 sm:p-2.5 border border-slate-100">
           <div className="space-y-0.5">
-            <p className="text-[8px] sm:text-[9px] font-semibold text-slate-700">ID</p>
-            <p className="text-[10px] sm:text-[11px] font-bold text-emerald-600">{employee.employeeId}</p>
+            <p className="text-[10px] sm:text-[11px] font-semibold text-slate-700">ID</p>
+            <p className="text-xs sm:text-sm font-bold text-emerald-600">{employee.employeeId}</p>
           </div>
           <div className="space-y-0.5">
-            <p className="text-[8px] sm:text-[9px] font-semibold text-slate-700">Tenure</p>
-            <p className="text-[10px] sm:text-[11px] font-bold text-emerald-600">{tenure}</p>
+            <p className="text-[10px] sm:text-[11px] font-semibold text-slate-700">Tenure</p>
+            <p className="text-xs sm:text-sm font-bold text-emerald-600">{tenure}</p>
           </div>
         </div>
 
         {/* Contact Details */}
-        <div className="space-y-1.5 sm:space-y-2">
-          <div className="flex items-center gap-2 sm:gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
-            <IconMail className="w-3 h-3 sm:h-3.5 sm:w-3.5 shrink-0 opacity-70" />
-            <span className="text-[9px] sm:text-[11px] truncate">{employee.email}</span>
+        {!isOrg && (
+          <div className="space-y-1.5 sm:space-y-2">
+            <div className="flex items-center gap-2 sm:gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
+              <IconMail className="w-3.5 h-3.5 sm:h-4 sm:w-4 shrink-0 opacity-70" />
+              <span className="text-xs sm:text-[13px] truncate">{employee.email}</span>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
+              <IconPhone className="w-3.5 h-3.5 sm:h-4 sm:w-4 shrink-0 opacity-70" />
+              <span className="text-xs sm:text-[13px] truncate">{employee.phone}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 sm:gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
-            <IconPhone className="w-3 h-3 sm:h-3.5 sm:w-3.5 shrink-0 opacity-70" />
-            <span className="text-[9px] sm:text-[11px] truncate">{employee.phone}</span>
-          </div>
-        </div>
+        )}
 
         {/* Footer Actions */}
         {!isOrg && (
           <div className="mt-4 sm:mt-5 flex gap-1.5 sm:gap-2">
-            <button className="flex-1 px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-all border border-slate-100 active:scale-95">
+            <button className="flex-1 px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-all border border-slate-100 active:scale-95">
               Profile
             </button>
-            <button className="px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-all border border-emerald-100 active:scale-95">
+            <button className="px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-all border border-emerald-100 active:scale-95">
               Chat
             </button>
           </div>
@@ -271,7 +287,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, variant = 'grid',
 
       {/* Add Member Button - Perfectly centered on edge with pulsing effect */}
       {isOrg && (
-        <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
+        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
           {/* Pulsing Outer Ring */}
           <motion.div
             animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0, 0.6] }}
@@ -284,10 +300,10 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, variant = 'grid',
               e.stopPropagation();
               onAddMember?.(employee);
             }}
-            className="relative h-5 w-5 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/40 flex items-center justify-center hover:bg-emerald-600 hover:scale-110 active:scale-90 transition-all border-[1.5px] border-white cursor-pointer z-10"
+            className="h-6 w-6 rounded-full bg-emerald-500 text-white shadow-md relative border-2 border-white cursor-pointer z-10"
             title={`Add member to ${employee.name}'s team`}
           >
-            <IconPlus size={10} strokeWidth={3} />
+            <Plus size={14} strokeWidth={3} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           </button>
         </div>
       )}
@@ -306,47 +322,47 @@ const DepartmentHero: React.FC = () => {
       <div className="absolute top-0 right-0 -mr-12 -mt-12 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity" />
       <div className="absolute bottom-0 left-0 -ml-12 -mb-12 w-48 h-48 bg-blue-50 rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity" />
 
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-        {/* Department Info */}
-        <div className="lg:col-span-1 space-y-3">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-center">
+        {/* Department Info - Takes exactly 50% */}
+        <div className="space-y-3">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider border border-emerald-100/50">
             Current Department
           </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Quality Assurance</h2>
-          <p className="text-sm text-slate-500 leading-relaxed">
+          <p className="text-sm text-slate-500 leading-relaxed max-w-none">
             Ensuring high standards of quality and compliance across all manufacturing processes and documentation.
           </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="lg:col-span-3 grid grid-cols-3 gap-2 md:gap-4 lg:gap-6">
-          <div className="p-3 md:p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 group/stat hover:border-emerald-200 transition-colors">
-            <div className="p-2 bg-white rounded-lg shadow-sm group-hover/stat:text-emerald-600 transition-colors">
-              <IconUsers size={16} className="sm:size-5" />
+        {/* Stats Grid - Scaled up for full 50% utilization with responsive scaling */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 xl:gap-6 w-full">
+          <div className="p-2.5 sm:p-4 lg:p-5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col xl:flex-row items-center xl:justify-start gap-2 sm:gap-3 xl:gap-4 group/stat hover:border-emerald-200 hover:shadow-sm transition-all">
+            <div className="p-2 sm:p-2.5 bg-white rounded-lg sm:rounded-xl shadow-sm group-hover/stat:text-emerald-600 transition-colors shrink-0">
+              <IconUsers className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
             </div>
-            <div className="text-center sm:text-left">
-              <p className="text-[11px] sm:text-sm font-bold text-slate-900">12</p>
-              <p className="text-[8px] sm:text-[10px] font-medium text-slate-500 uppercase tracking-wide">Size</p>
-            </div>
-          </div>
-
-          <div className="p-3 md:p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 group/stat hover:border-emerald-200 transition-colors">
-            <div className="p-2 bg-white rounded-lg shadow-sm group-hover/stat:text-emerald-600 transition-colors">
-              <IconTarget size={16} className="sm:size-5" />
-            </div>
-            <div className="text-center sm:text-left">
-              <p className="text-[11px] sm:text-sm font-bold text-slate-900">94%</p>
-              <p className="text-[8px] sm:text-[10px] font-medium text-slate-500 uppercase tracking-wide">Train</p>
+            <div className="text-center xl:text-left min-w-0">
+              <p className="text-sm sm:text-base lg:text-xl font-bold text-slate-900 leading-tight truncate">12</p>
+              <p className="text-[9px] sm:text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wide mt-0.5">Size</p>
             </div>
           </div>
 
-          <div className="p-3 md:p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 group/stat hover:border-emerald-200 transition-colors">
-            <div className="p-2 bg-white rounded-lg shadow-sm group-hover/stat:text-emerald-600 transition-colors">
-              <IconClock size={16} className="sm:size-5" />
+          <div className="p-2.5 sm:p-4 lg:p-5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col xl:flex-row items-center xl:justify-start gap-2 sm:gap-3 xl:gap-4 group/stat hover:border-emerald-200 hover:shadow-sm transition-all">
+            <div className="p-2 sm:p-2.5 bg-white rounded-lg sm:rounded-xl shadow-sm group-hover/stat:text-emerald-600 transition-colors shrink-0">
+              <IconTarget className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
             </div>
-            <div className="text-center sm:text-left">
-              <p className="text-[11px] sm:text-sm font-bold text-slate-900">2.4d</p>
-              <p className="text-[8px] sm:text-[10px] font-medium text-slate-500 uppercase tracking-wide">Time</p>
+            <div className="text-center xl:text-left min-w-0">
+              <p className="text-sm sm:text-base lg:text-xl font-bold text-slate-900 leading-tight truncate">94%</p>
+              <p className="text-[9px] sm:text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wide mt-0.5">Train</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 sm:p-4 lg:p-5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col xl:flex-row items-center xl:justify-start gap-2 sm:gap-3 xl:gap-4 group/stat hover:border-emerald-200 hover:shadow-sm transition-all">
+            <div className="p-2 sm:p-2.5 bg-white rounded-lg sm:rounded-xl shadow-sm group-hover/stat:text-emerald-600 transition-colors shrink-0">
+              <IconClock className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+            </div>
+            <div className="text-center xl:text-left min-w-0">
+              <p className="text-sm sm:text-base lg:text-xl font-bold text-slate-900 leading-tight truncate">2.4d</p>
+              <p className="text-[9px] sm:text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wide mt-0.5">Time</p>
             </div>
           </div>
         </div>
@@ -543,7 +559,7 @@ const NodeLines: React.FC<{
       className="overflow-visible"
       style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
     >
-      {/* Main stem from parent */}
+      {/* Path drawing only - Nodes are now card-managed or minimal junction */}
       <path d={`M ${centerX} 0 V ${STEM_HEIGHT}`} stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
 
       {childCenters.map((childX, i) => {
@@ -559,44 +575,13 @@ const NodeLines: React.FC<{
 
         return (
           <g key={i}>
-            {/* Static Emerald line */}
             <path d={d} stroke="#10b981" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            
-            {/* Pulsing ring for card nodes */}
-            <motion.circle 
-              cx={childX} 
-              cy={gapY} 
-              animate={{ r: [4, 7, 4], opacity: [0.6, 0, 0.6] }}
-              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              fill="#10b981"
-            />
-            {/* Connection node at card top edge */}
-            <circle cx={childX} cy={gapY} r="4" fill="#10b981" stroke="#ffffff" strokeWidth="1.5" />
           </g>
         );
       })}
 
-      {/* Pulsing ring for junction */}
-      <motion.circle 
-        cx={centerX} 
-        cy={STEM_HEIGHT} 
-        animate={{ r: [4, 7, 4], opacity: [0.6, 0, 0.6] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-        fill="#10b981"
-      />
-      {/* Junction node */}
-      <circle cx={centerX} cy={STEM_HEIGHT} r="4" fill="#10b981" stroke="#ffffff" strokeWidth="1.5" />
-      
-      {/* Pulsing ring for parent start */}
-      <motion.circle 
-        cx={centerX} 
-        cy="0" 
-        animate={{ r: [3.5, 6.5, 3.5], opacity: [0.6, 0, 0.6] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-        fill="#10b981"
-      />
-      {/* Start node at parent bottom */}
-      <circle cx={centerX} cy="0" r="3.5" fill="#10b981" stroke="#ffffff" strokeWidth="1.5" />
+      {/* Junction node only */}
+      <circle cx={centerX} cy={STEM_HEIGHT} r="3" fill="#10b981" stroke="#ffffff" strokeWidth="1.5" />
     </svg>
   );
 };
@@ -631,12 +616,49 @@ const OrgChartView: React.FC<{
     y.set(0);
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -0.05 : 0.05;
-      setScale(prev => Math.min(Math.max(prev + delta, 0.4), 2));
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onWheelNative = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault(); // Stop entire browser from zooming
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        setScale(prev => Math.min(Math.max(prev + delta, 0.4), 2));
+      }
+    };
+
+    container.addEventListener('wheel', onWheelNative, { passive: false });
+    return () => container.removeEventListener('wheel', onWheelNative);
+  }, []);
+
+  // --- Pinch-to-zoom for touch devices ---
+  const pinchRef = React.useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].pageX - e.touches[1].pageX;
+      const dy = e.touches[0].pageY - e.touches[1].pageY;
+      pinchRef.current = Math.sqrt(dx * dx + dy * dy);
     }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchRef.current !== null) {
+      const dx = e.touches[0].pageX - e.touches[1].pageX;
+      const dy = e.touches[0].pageY - e.touches[1].pageY;
+      const currentDistance = Math.sqrt(dx * dx + dy * dy);
+
+      const delta = (currentDistance - pinchRef.current) * 0.005;
+      setScale(prev => Math.min(Math.max(prev + delta, 0.4), 2));
+      pinchRef.current = currentDistance;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    pinchRef.current = null;
   };
 
   // Dimensional constants for layout
@@ -684,7 +706,7 @@ const OrgChartView: React.FC<{
 
         {children.length > 0 && (
           <div className="relative pt-[100px] flex justify-center" style={{ gap: GAP_X }}>
-            <div className="absolute top-0 inset-0 pointer-events-none z-[20]" style={{ height: GAP_Y }}>
+            <div className="absolute top-0 inset-0 pointer-events-none z-0" style={{ height: GAP_Y }}>
 
               <NodeLines
                 totalWidth={totalSubtreeWidth}
@@ -701,7 +723,13 @@ const OrgChartView: React.FC<{
   };
 
   return (
-    <div className="relative w-full h-[650px] bg-white rounded-2xl border border-slate-200 overflow-hidden cursor-grab active:cursor-grabbing select-none" onWheel={handleWheel}>
+    <div
+      ref={containerRef}
+      className="relative w-full h-[650px] bg-white rounded-2xl border border-slate-200 overflow-hidden cursor-grab active:cursor-grabbing select-none touch-none"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.9]" style={{ backgroundImage: `linear-gradient(#f1f5f9 1.5px, transparent 1.5px), linear-gradient(90deg, #f1f5f9 1.5px, transparent 1.5px)`, backgroundSize: '32px 32px' }} />
 
@@ -720,17 +748,37 @@ const OrgChartView: React.FC<{
         </div>
       </div>
 
-      {/* Help Overlay */}
+      {/* Help Overlay - Improved interaction guide */}
       <div className="absolute top-6 left-6 pointer-events-none z-[40]">
         <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200/50 px-4 py-2 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5">
-              <span className="w-4 h-4 rounded bg-slate-200 flex items-center justify-center text-[10px] font-bold">⌘</span>
-              <span className="text-[11px] font-medium text-slate-500">+ Click to pan</span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-4">
+            {/* Desktop Interaction */}
+            <div className="hidden md:flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                <div className="px-1.5 py-0.5 rounded bg-slate-200 text-[9px] font-bold text-slate-700 shadow-sm border border-slate-300/50">DRAG</div>
+                <span className="text-[11px] font-medium text-slate-600">to Pan</span>
+              </div>
+              <div className="w-px h-3 bg-slate-300" />
+              <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1">
+                  <span className="px-1.5 py-0.5 rounded bg-slate-200 text-[9px] font-bold text-slate-700 shadow-sm border border-slate-300/50">CTRL</span>
+                  <span className="text-slate-400 font-bold">+</span>
+                  <span className="px-1.5 py-0.5 rounded bg-slate-200 text-[9px] font-bold text-slate-700 shadow-sm border border-slate-300/50">SCROLL</span>
+                </div>
+                <span className="text-[11px] font-medium text-slate-600">to Zoom</span>
+              </div>
             </div>
-            <div className="w-px h-3 bg-slate-300" />
-            <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-medium text-slate-500">Scroll to zoom</span>
+
+            {/* Mobile Interaction (Visible on smaller screens) */}
+            <div className="md:hidden flex flex-col gap-2">
+              <div className="flex items-center gap-2 text-[11px] font-medium text-slate-600">
+                <IconSitemap size={12} className="text-emerald-500" />
+                <span>Drag to pan</span>
+              </div>
+              <div className="flex items-center gap-2 text-[11px] font-medium text-slate-600">
+                <IconMaximize size={12} className="text-emerald-500" />
+                <span>Pinch to zoom</span>
+              </div>
             </div>
           </div>
         </div>
