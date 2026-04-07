@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
   IconUsers,
   IconUserCheck,
@@ -194,7 +194,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, variant = 'grid',
       {isOrg && !employee.isHead && (
         <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 z-[60] pointer-events-none">
           <div className="relative flex items-center justify-center">
-            <motion.div 
+            <motion.div
               animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
               transition={{ repeat: Infinity, duration: 2 }}
               className="absolute inset-0 rounded-full bg-emerald-400"
@@ -209,7 +209,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, variant = 'grid',
         className={cn(
           "h-full relative transition-all duration-300 overflow-hidden border-slate-200",
           employee.isHead ? "border-emerald-200 ring-4 ring-emerald-50/50 shadow-emerald-50/50" : "hover:border-slate-300 hover:shadow-md",
-          isOrg ? "p-4" : "p-3 sm:p-5"
+          isOrg ? "p-2.5" : "p-3 sm:p-5"
         )}
       >
         {/* Decorative background for Head */}
@@ -220,44 +220,59 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, variant = 'grid',
         )}
 
         {/* Header Info */}
-        <div className={cn("flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4 mb-3 sm:mb-4 text-center sm:text-left", isOrg && "mb-3 gap-3")}>
+        <div className={cn("flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4 mb-3 sm:mb-4 text-center sm:text-left", isOrg && "mb-1.5 gap-2.5")}>
           <div className={cn(
             "rounded-full flex items-center justify-center shrink-0 border-2 transition-transform",
-            isOrg ? "h-12 w-12" : "h-10 w-10 sm:h-14 sm:w-14",
+            isOrg ? "h-9 w-9" : "h-10 w-10 sm:h-14 sm:w-14",
             employee.isHead ? "bg-emerald-50 border-emerald-200 shadow-sm" : "bg-slate-50 border-slate-100 shadow-sm"
           )}>
-            <IconUserCircle className={cn(isOrg ? "w-8 h-8" : "w-7 h-7 sm:w-10 sm:h-10", employee.isHead ? "text-emerald-500" : "text-slate-400")} />
+            <IconUserCircle className={cn(isOrg ? "w-6 h-6" : "w-7 h-7 sm:w-10 sm:h-10", employee.isHead ? "text-emerald-500" : "text-slate-400")} />
           </div>
           <div className="min-w-0 flex-1 pt-0.5">
             <div className={cn("flex items-center justify-center sm:justify-between gap-2 overflow-hidden", isOrg && "flex-col items-start gap-0")}>
-              <h3 className={cn("font-bold text-slate-900 truncate", isOrg ? "text-[13px] leading-tight" : "text-base sm:text-lg")}>
+              <h3 className={cn("font-semibold text-slate-900 truncate", isOrg ? "text-xs sm:text-sm leading-tight translate-y-0.5" : "text-sm sm:text-base")}>
                 {employee.name}
               </h3>
               {!isOrg && <StatusBadge status={employee.status} className="hidden sm:inline-flex" />}
             </div>
-            <p className={cn(
-              "font-semibold truncate",
-              isOrg ? "text-[11px] mt-0.5" : "text-sm sm:text-base mt-0.5",
-              employee.isHead ? "text-emerald-600" : "text-slate-500"
-            )}>
-              {employee.role}
-            </p>
-            {!isOrg && <StatusBadge status={employee.status} className="sm:hidden mt-1.5" />}
-            {isOrg && <StatusBadge status={employee.status} className="mt-1.5" />}
+
+            {isOrg ? (
+              <div className="flex flex-col gap-0.5 mt-1.5 border-t border-slate-50 pt-1.5">
+                <p className="text-[10px] sm:text-[11px] font-bold text-emerald-600 tracking-tight uppercase">
+                  {employee.employeeId}
+                </p>
+                <p className="text-[11px] sm:text-xs font-medium text-slate-500 truncate leading-tight">
+                  {employee.role}
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className={cn(
+                  "font-semibold truncate",
+                  "text-sm sm:text-base mt-0.5",
+                  employee.isHead ? "text-emerald-600" : "text-slate-500"
+                )}>
+                  {employee.role}
+                </p>
+                <StatusBadge status={employee.status} className="sm:hidden mt-1.5" />
+              </>
+            )}
           </div>
         </div>
 
         {/* Employee Meta Info */}
-        <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mb-3 sm:mb-4 bg-slate-50/50 rounded-lg p-2 sm:p-2.5 border border-slate-100">
-          <div className="space-y-0.5">
-            <p className="text-[10px] sm:text-[11px] font-semibold text-slate-700">ID</p>
-            <p className="text-xs sm:text-sm font-bold text-emerald-600">{employee.employeeId}</p>
+        {!isOrg && (
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mb-3 sm:mb-4 bg-slate-50/50 rounded-lg p-2 sm:p-2.5 border border-slate-100">
+            <div className="space-y-0.5">
+              <p className="text-[10px] sm:text-[11px] font-semibold text-slate-700">ID</p>
+              <p className="text-xs sm:text-sm font-bold text-emerald-600">{employee.employeeId}</p>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] sm:text-[11px] font-semibold text-slate-700">Tenure</p>
+              <p className="text-xs sm:text-sm font-bold text-emerald-600">{tenure}</p>
+            </div>
           </div>
-          <div className="space-y-0.5">
-            <p className="text-[10px] sm:text-[11px] font-semibold text-slate-700">Tenure</p>
-            <p className="text-xs sm:text-sm font-bold text-emerald-600">{tenure}</p>
-          </div>
-        </div>
+        )}
 
         {/* Contact Details */}
         {!isOrg && (
@@ -494,8 +509,8 @@ const AddMemberModal: React.FC<{
                     )}
                   >
                     <div className="shrink-0 pointer-events-none">
-                      <Checkbox 
-                        checked={isSelected} 
+                      <Checkbox
+                        checked={isSelected}
                         disabled={isAlreadyAdded}
                       />
                     </div>
@@ -591,9 +606,15 @@ const OrgChartView: React.FC<{
   teamData: Employee[];
   onAddMember: (employee: Employee) => void
 }> = ({ teamData, onAddMember }) => {
-  const [scale, setScale] = React.useState(1);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const scale = useMotionValue(1);
+
+  // Smooth springs for a "premium" elastic feel
+  const springConfig = { damping: 30, stiffness: 300, mass: 0.8 };
+  const smoothX = useSpring(x, springConfig);
+  const smoothY = useSpring(y, springConfig);
+  const smoothScale = useSpring(scale, springConfig);
 
   const head = teamData.find(e => e.isHead);
 
@@ -609,10 +630,10 @@ const OrgChartView: React.FC<{
 
   const tree = head ? buildTree() : [];
 
-  const handleZoomIn = () => setScale(prev => Math.min(prev + 0.1, 2));
-  const handleZoomOut = () => setScale(prev => Math.max(prev - 0.1, 0.4));
+  const handleZoomIn = () => scale.set(Math.min(scale.get() + 0.2, 2));
+  const handleZoomOut = () => scale.set(Math.max(scale.get() - 0.2, 0.4));
   const handleReset = () => {
-    setScale(1);
+    scale.set(1);
     x.set(0);
     y.set(0);
   };
@@ -626,23 +647,28 @@ const OrgChartView: React.FC<{
     const onWheelNative = (e: WheelEvent) => {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault(); // Stop entire browser from zooming
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        setScale(prev => Math.min(Math.max(prev + delta, 0.4), 2));
+        const delta = e.deltaY > 0 ? -0.15 : 0.15;
+        scale.set(Math.min(Math.max(scale.get() + delta, 0.4), 2));
       }
     };
 
     container.addEventListener('wheel', onWheelNative, { passive: false });
     return () => container.removeEventListener('wheel', onWheelNative);
-  }, []);
+  }, [scale]);
 
-  // --- Pinch-to-zoom for touch devices ---
+  // --- Pinch-to-zoom and Panning for touch devices ---
   const pinchRef = React.useRef<number | null>(null);
+  const lastTouchRef = React.useRef<{ x: number, y: number } | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       const dx = e.touches[0].pageX - e.touches[1].pageX;
       const dy = e.touches[0].pageY - e.touches[1].pageY;
       pinchRef.current = Math.sqrt(dx * dx + dy * dy);
+      lastTouchRef.current = null; // Disable panning when pinching
+    } else if (e.touches.length === 1) {
+      lastTouchRef.current = { x: e.touches[0].pageX, y: e.touches[0].pageY };
+      pinchRef.current = null;
     }
   };
 
@@ -653,13 +679,23 @@ const OrgChartView: React.FC<{
       const currentDistance = Math.sqrt(dx * dx + dy * dy);
 
       const delta = (currentDistance - pinchRef.current) * 0.005;
-      setScale(prev => Math.min(Math.max(prev + delta, 0.4), 2));
+      scale.set(Math.min(Math.max(scale.get() + delta, 0.4), 2));
       pinchRef.current = currentDistance;
+    } else if (e.touches.length === 1 && lastTouchRef.current !== null) {
+      const touch = e.touches[0];
+      const dx = touch.pageX - lastTouchRef.current.x;
+      const dy = touch.pageY - lastTouchRef.current.y;
+
+      x.set(x.get() + dx);
+      y.set(y.get() + dy);
+
+      lastTouchRef.current = { x: touch.pageX, y: touch.pageY };
     }
   };
 
   const handleTouchEnd = () => {
     pinchRef.current = null;
+    lastTouchRef.current = null;
   };
 
   // Dimensional constants for layout
@@ -731,10 +767,10 @@ const OrgChartView: React.FC<{
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Background */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.9]" style={{ backgroundImage: `linear-gradient(#f1f5f9 1.5px, transparent 1.5px), linear-gradient(90deg, #f1f5f9 1.5px, transparent 1.5px)`, backgroundSize: '32px 32px' }} />
+      {/* Background - Dot pattern for a modern look */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.8]" style={{ backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 0)', backgroundSize: '24px 24px' }} />
 
-      <motion.div drag dragMomentum={false} style={{ x, y, scale }} className="absolute inset-0 flex flex-col items-center py-20 min-w-max">
+      <motion.div drag dragMomentum={false} style={{ x: smoothX, y: smoothY, scale: smoothScale }} className="absolute inset-0 flex flex-col items-center py-20 min-w-max">
         {tree.map(root => renderNode(root))}
       </motion.div>
 
@@ -742,7 +778,7 @@ const OrgChartView: React.FC<{
       <div className="absolute bottom-6 right-6 flex items-center gap-3 z-[40]">
         <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-1.5 shadow-xl flex items-center gap-1">
           <button onClick={handleZoomOut} className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-600 transition-all active:scale-90" title="Zoom Out"><IconMinus size={18} /></button>
-          <div className="px-2 min-w-[50px] text-center"><span className="text-[11px] font-bold text-slate-500 tabular-nums">{Math.round(scale * 100)}%</span></div>
+          <div className="px-2 min-w-[50px] text-center"><span className="text-[11px] font-bold text-slate-500 tabular-nums">{Math.round(scale.get() * 100)}%</span></div>
           <button onClick={handleZoomIn} className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-600 transition-all active:scale-90" title="Zoom In"><IconPlus size={18} /></button>
           <div className="w-px h-6 bg-slate-100 mx-1" />
           <button onClick={handleReset} className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-600 transition-all active:scale-90" title="Reset View"><IconMaximize size={18} /></button>
@@ -762,7 +798,7 @@ const OrgChartView: React.FC<{
               <div className="w-px h-3 bg-slate-300" />
               <div className="flex items-center gap-1.5">
                 <div className="flex items-center gap-1">
-                  <span className="px-1.5 py-0.5 rounded bg-slate-200 text-[9px] font-bold text-slate-700 shadow-sm border border-slate-300/50">CTRL</span>
+                  <span className="px-1.5 py-0.5 rounded bg-slate-200 text-[9px] font-bold text-slate-700 shadow-sm border border-slate-300/50">CTRL/Cmd</span>
                   <span className="text-slate-400 font-bold">+</span>
                   <span className="px-1.5 py-0.5 rounded bg-slate-200 text-[9px] font-bold text-slate-700 shadow-sm border border-slate-300/50">SCROLL</span>
                 </div>
