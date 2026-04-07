@@ -25,6 +25,7 @@ import { TabNav } from '@/components/ui/tabs/TabNav';
 import { Badge } from '@/components/ui/badge/Badge';
 import { Card } from '@/components/ui/card/ResponsiveCard';
 import { Checkbox } from '@/components/ui/checkbox/Checkbox';
+import { FullPageLoading } from '@/components/ui/loading/Loading';
 
 
 // --- Types ---
@@ -795,6 +796,15 @@ export const MyTeamView: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
   const [selectedParent, setSelectedParent] = React.useState<Employee | null>(null);
   const [teamData, setTeamData] = React.useState<Employee[]>(MY_TEAM_DATA);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Simulate initial data loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleAddMember = (parent: Employee) => {
     setSelectedParent(parent);
@@ -839,6 +849,10 @@ export const MyTeamView: React.FC = () => {
       </div>
     </div>
   );
+
+  if (isLoading) {
+    return <FullPageLoading text="Organizing your team..." />;
+  }
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
