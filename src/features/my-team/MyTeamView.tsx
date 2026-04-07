@@ -1,5 +1,21 @@
 import React from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring, useMotionValueEvent } from 'framer-motion';
+
+// --- Components ---
+
+const ZoomPercentage = ({ scaleValue }: { scaleValue: any }) => {
+  const [val, setVal] = React.useState(Math.round(Number(scaleValue.get()) * 100));
+  
+  useMotionValueEvent(scaleValue, "change", (latest) => {
+    setVal(Math.round(Number(latest) * 100));
+  });
+
+  return (
+    <span className="text-[11px] font-bold text-slate-500 tabular-nums min-w-[34px] inline-block">
+      {val}%
+    </span>
+  );
+};
 import {
   IconUsers,
   IconUserCheck,
@@ -774,14 +790,16 @@ const OrgChartView: React.FC<{
         {tree.map(root => renderNode(root))}
       </motion.div>
 
-      {/* Floating Control Panel */}
-      <div className="absolute bottom-6 right-6 flex items-center gap-3 z-[40]">
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-1.5 shadow-xl flex items-center gap-1">
-          <button onClick={handleZoomOut} className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-600 transition-all active:scale-90" title="Zoom Out"><IconMinus size={18} /></button>
-          <div className="px-2 min-w-[50px] text-center"><span className="text-[11px] font-bold text-slate-500 tabular-nums">{Math.round(scale.get() * 100)}%</span></div>
-          <button onClick={handleZoomIn} className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-600 transition-all active:scale-90" title="Zoom In"><IconPlus size={18} /></button>
-          <div className="w-px h-6 bg-slate-100 mx-1" />
-          <button onClick={handleReset} className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-600 transition-all active:scale-90" title="Reset View"><IconMaximize size={18} /></button>
+      {/* Floating Control Panel - Moved to bottom-left */}
+      <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 flex items-center gap-3 z-[40]">
+        <div className="bg-white/90 backdrop-blur-md rounded-xl border border-slate-200 p-1 shadow-xl flex items-center gap-0.5">
+          <button onClick={handleZoomOut} className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-all active:scale-90" title="Zoom Out"><IconMinus size={16} /></button>
+          <div className="px-1.5 min-w-[44px] text-center">
+            <ZoomPercentage scaleValue={smoothScale} />
+          </div>
+          <button onClick={handleZoomIn} className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-all active:scale-90" title="Zoom In"><IconPlus size={16} /></button>
+          <div className="w-px h-5 bg-slate-100 mx-1" />
+          <button onClick={handleReset} className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-all active:scale-90" title="Reset View"><IconMaximize size={16} /></button>
         </div>
       </div>
 
