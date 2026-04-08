@@ -32,11 +32,13 @@ export interface EmailTemplate {
   name: string;
   type: EmailTemplateType;
   subject: string;
-  content: string; // HTML content from CKEditor
+  content: string;
   status: EmailTemplateStatus;
-  variables: string[]; // Array of variable keys used in template
+  variables: string[];
   logoUrl?: string;
   logoFileName?: string;
+  copyright?: string;
+  contactEmail?: string;
   createdBy: string;
   createdDate: string;
   updatedBy?: string;
@@ -56,6 +58,8 @@ export interface EmailTemplatePayload {
   variables: string[];
   logoUrl?: string;
   logoFileName?: string;
+  copyright?: string;
+  contactEmail?: string;
   description?: string;
 }
 

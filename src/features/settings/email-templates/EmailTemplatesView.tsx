@@ -3,7 +3,6 @@ import { ChevronUp, ChevronDown, MoreVertical, Plus, Download, Search, X, Slider
 import { createPortal } from "react-dom";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/form";
 import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
@@ -15,7 +14,7 @@ import { formatDateNumeric } from "@/utils/format";
 import { usePortalDropdown } from "@/hooks/usePortalDropdown";
 import { useTableDragScroll } from "@/hooks/useTableDragScroll";
 import { useNavigateWithLoading } from "@/hooks/useNavigateWithLoading";
-import { SectionLoading } from "@/components/ui/loading";
+import { SectionLoading, Loading } from "@/components/ui/loading";
 import { cn } from "@/lib/utils";
 import { emailTemplates } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { DEFAULT_COLUMNS } from "./constants";
@@ -74,6 +73,10 @@ export const EmailTemplatesView: React.FC = () => {
     template: null as EmailTemplate | null
   });
 
+  const [duplicateConfirm, setDuplicateConfirm] = useState(false);
+  const [toggleConfirm, setToggleConfirm] = useState(false);
+  const [activeMenuTemplate, setActiveMenuTemplate] = useState<EmailTemplate | null>(null);
+
   // Handle loading state on filter changes
   React.useEffect(() => {
     setIsTableLoading(true);
@@ -88,19 +91,20 @@ export const EmailTemplatesView: React.FC = () => {
 
   // Handle actions
   const handleCreateTemplate = () => {
-    navigate("/settings/email-templates/new");
+    navigateTo("/settings/email-templates/new");
   };
 
   const handleEditTemplate = (template: EmailTemplate) => {
-    navigate(`/settings/email-templates/edit/${template.id}`);
+    navigateTo(`/settings/email-templates/edit/${template.id}`);
   };
 
   const handleDuplicateTemplate = (template: EmailTemplate) => {
-    duplicateEmailTemplate(template.id);
+    setActiveMenuTemplate(template);
+    setDuplicateConfirm(true);
   };
 
   const handlePreviewTemplate = (template: EmailTemplate) => {
-    navigate(`/settings/email-templates/preview`, { state: { template } });
+    navigateTo(`/settings/email-templates/preview`, { state: { template } });
   };
 
   const handleDeleteTemplate = (template: EmailTemplate) => {
@@ -108,7 +112,24 @@ export const EmailTemplatesView: React.FC = () => {
   };
 
   const handleToggleStatus = (template: EmailTemplate) => {
-    toggleTemplateStatus(template.id);
+    setActiveMenuTemplate(template);
+    setToggleConfirm(true);
+  };
+
+  const confirmDuplicate = () => {
+    if (activeMenuTemplate) {
+      duplicateEmailTemplate(activeMenuTemplate.id);
+      setDuplicateConfirm(false);
+      setActiveMenuTemplate(null);
+    }
+  };
+
+  const confirmToggleStatus = () => {
+    if (activeMenuTemplate) {
+      toggleTemplateStatus(activeMenuTemplate.id);
+      setToggleConfirm(false);
+      setActiveMenuTemplate(null);
+    }
   };
 
   const confirmDelete = () => {
@@ -434,85 +455,99 @@ export const EmailTemplatesView: React.FC = () => {
         </div>
       </div>
 
-      {/* Dropdown Menu (Portal) */}
+      {/* Action Dropdown (Portal) */}
       {openDropdownId && (() => {
-        const currentTemplate = currentEmailTemplates.find(t => t.id === openDropdownId);
-        if (!currentTemplate) return null;
-
+        const t = currentEmailTemplates.find(t => t.id === openDropdownId);
+        if (!t) return null;
+        const isActive = t.status === "Active";
         return createPortal(
           <>
             <div
               className="fixed inset-0 z-40 animate-in fade-in duration-150"
-              onClick={(e) => {
-                e.stopPropagation();
-                closeDropdown();
-              }}
+              onClick={(e) => { e.stopPropagation(); closeDropdown(); }}
               aria-hidden="true"
             />
             <div
-              className="absolute z-50 min-w-[200px] rounded-lg border border-slate-200 bg-white shadow-xl overflow-hidden pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-200"
+              className="absolute z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
               style={dropdownPosition.style}
             >
               <div className="py-1">
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditTemplate(currentTemplate);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); closeDropdown(); handleEditTemplate(t); }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 transition-colors"
                 >
-                  <Edit className="h-4 w-4 text-slate-500" />
-                  <span>Edit Template</span>
+                  <Edit className="h-4 w-4 text-slate-400 flex-shrink-0" />
+                  <span className="font-medium text-slate-600">Edit Template</span>
                 </button>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDuplicateTemplate(currentTemplate);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); closeDropdown(); handleDuplicateTemplate(t); }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 transition-colors"
                 >
-                  <Copy className="h-4 w-4 text-slate-500" />
-                  <span>Duplicate</span>
+                  <Copy className="h-4 w-4 text-slate-400 flex-shrink-0" />
+                  <span className="font-medium text-slate-600">Duplicate</span>
                 </button>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePreviewTemplate(currentTemplate);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); closeDropdown(); handlePreviewTemplate(t); }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 transition-colors"
                 >
-                  <Eye className="h-4 w-4 text-slate-500" />
-                  <span>Preview</span>
+                  <Eye className="h-4 w-4 text-slate-400 flex-shrink-0" />
+                  <span className="font-medium text-slate-600">Preview</span>
                 </button>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleToggleStatus(currentTemplate);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); closeDropdown(); handleToggleStatus(t); }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 transition-colors"
                 >
-                  {currentTemplate.status === "Active" ? (
-                    <ToggleLeft className="h-4 w-4 text-slate-500" />
-                  ) : (
-                    <ToggleRight className="h-4 w-4 text-slate-500" />
-                  )}
-                  <span>{currentTemplate.status === "Active" ? "Deactivate" : "Activate"}</span>
+                  {isActive
+                    ? <ToggleLeft className="h-4 w-4 text-slate-400 flex-shrink-0" />
+                    : <ToggleRight className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                  }
+                  <span className="font-medium text-slate-600">{isActive ? "Deactivate" : "Activate"}</span>
                 </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteTemplate(currentTemplate);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-red-500 hover:bg-red-50 transition-colors"
-                >
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                  <span>Delete</span>
-                </button>
+                <div className="border-t border-slate-100 mt-1 pt-1">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); closeDropdown(); handleDeleteTemplate(t); }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-red-50 transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4 text-red-400 flex-shrink-0" />
+                    <span className="font-medium text-red-500">Delete Template</span>
+                  </button>
+                </div>
               </div>
             </div>
-          </>, document.body
+          </>,
+          document.body
         );
       })()}
+
+      {/* Duplicate Confirm Modal */}
+      <AlertModal
+        isOpen={duplicateConfirm}
+        onClose={() => { setDuplicateConfirm(false); setActiveMenuTemplate(null); }}
+        onConfirm={confirmDuplicate}
+        type="confirm"
+        title="Duplicate Template"
+        description={`Create a copy of "${activeMenuTemplate?.name}"? The duplicate will be saved as a Draft.`}
+        confirmText="Duplicate"
+        cancelText="Cancel"
+        showCancel
+      />
+
+      {/* Toggle Status Confirm Modal */}
+      <AlertModal
+        isOpen={toggleConfirm}
+        onClose={() => { setToggleConfirm(false); setActiveMenuTemplate(null); }}
+        onConfirm={confirmToggleStatus}
+        type={activeMenuTemplate?.status === "Active" ? "warning" : "confirm"}
+        title={activeMenuTemplate?.status === "Active" ? "Deactivate Template" : "Activate Template"}
+        description={
+          activeMenuTemplate?.status === "Active"
+            ? `Are you sure you want to deactivate "${activeMenuTemplate?.name}"? It will no longer be available for use.`
+            : `Are you sure you want to activate "${activeMenuTemplate?.name}"? It will become available for use.`
+        }
+        confirmText={activeMenuTemplate?.status === "Active" ? "Deactivate" : "Activate"}
+        cancelText="Cancel"
+        showCancel
+      />
 
 
 
@@ -529,7 +564,7 @@ export const EmailTemplatesView: React.FC = () => {
         showCancel
       />
 
-      {isNavigating && <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"><div className="text-white">Loading...</div></div>}
+      {isNavigating && <Loading fullPage text="Loading..." />}
     </div>
   );
 };
