@@ -146,6 +146,9 @@ export const ROUTES = {
     DICTIONARIES: '/settings/dictionaries',
     CONFIGURATION: '/settings/configuration',
     SYSTEM_INFO: '/settings/system-info',
+    EMAIL_TEMPLATES: '/settings/email-templates',
+    EMAIL_TEMPLATES_NEW: '/settings/email-templates/new',
+    EMAIL_TEMPLATES_EDIT: (id: string) => `/settings/email-templates/edit/${id}`,
   },
 
   // User Manual
@@ -212,6 +215,8 @@ export const TRANSACTIONAL_PATH_PREFIXES: readonly string[] = [
   '/settings/users/profile/',
   '/settings/roles/new',
   '/settings/roles/', // :id, :id/edit
+  '/settings/email-templates/new',
+  '/settings/email-templates/edit/',
 ] as const;
 
 /**

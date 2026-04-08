@@ -520,6 +520,29 @@ export const systemInformation = (navigate?: (path: string) => void): Breadcrumb
   { label: "System Information", isActive: true },
 ];
 
+export const emailTemplates = (navigate?: (path: string) => void): BreadcrumbItem[] => [
+  dashboard(navigate),
+  { label: "Setting" },
+  { label: "Email Templates", isActive: true },
+];
+
+export const emailTemplateCreate = (_navigate?: (path: string) => void): BreadcrumbItem[] => [
+  dashboard(_navigate),
+  { label: "Setting" },
+  { label: "Email Templates", href: ROUTES.SETTINGS.EMAIL_TEMPLATES },
+  { label: "Create Template", isActive: true },
+];
+
+export const emailTemplateEdit = (
+  _navigate?: (path: string) => void,
+  templateName?: string
+): BreadcrumbItem[] => [
+  dashboard(_navigate),
+  { label: "Setting" },
+  { label: "Email Templates", href: ROUTES.SETTINGS.EMAIL_TEMPLATES },
+  { label: templateName || "Edit Template", isActive: true },
+];
+
 // --- My Tasks ---
 export const myTasks = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
@@ -610,6 +633,7 @@ const breadcrumbs = {
   dictionaries,
   configuration,
   systemInformation,
+  emailTemplates,
   preferences: (navigate?: (path: string) => void): BreadcrumbItem[] => [
     dashboard(navigate),
     { label: "Preferences", isActive: true },

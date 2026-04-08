@@ -62,6 +62,10 @@ const UserProfileView = lazy(() => import('@/features/settings').then(m => ({ de
 const DictionariesView = lazy(() => import('@/features/settings').then(m => ({ default: m.DictionariesView })));
 const SystemInformationView = lazy(() => import('@/features/settings').then(m => ({ default: m.SystemInformationView })));
 const ConfigurationView = lazy(() => import('@/features/settings').then(m => ({ default: m.ConfigurationView })));
+const EmailTemplatesView = lazy(() => import('@/features/settings').then(m => ({ default: m.EmailTemplatesView })));
+const EmailTemplateCreateView = lazy(() => import('@/features/settings').then(m => ({ default: m.EmailTemplateCreateView })));
+const EmailTemplateEditView = lazy(() => import('@/features/settings').then(m => ({ default: m.EmailTemplateEditView })));
+const EmailTemplatePreviewView = lazy(() => import('@/features/settings').then(m => ({ default: m.EmailTemplatePreviewView })));
 const UserManualView = lazy(() => import('@/features/user-manual').then(m => ({ default: m.UserManualView })));
 const RoleListView = lazy(() => import('@/features/settings/role-permission').then(m => ({ default: m.RoleListView })));
 const RoleDetailView = lazy(() => import('@/features/settings/role-permission').then(m => ({ default: m.RoleDetailView })));
@@ -322,6 +326,12 @@ export const AppRoutes: React.FC = () => {
           <Route path="dictionaries" element={<Suspense fallback={<LoadingFallback />}><DictionariesView /></Suspense>} />
           <Route path="configuration" element={<Suspense fallback={<LoadingFallback />}><ConfigurationView /></Suspense>} />
           <Route path="system-info" element={<Suspense fallback={<LoadingFallback />}><SystemInformationView /></Suspense>} />
+          <Route path="email-templates">
+            <Route index element={<Suspense fallback={<LoadingFallback />}><EmailTemplatesView /></Suspense>} />
+            <Route path="new" element={<Suspense fallback={<LoadingFallback />}><EmailTemplateCreateView /></Suspense>} />
+            <Route path="edit/:id" element={<Suspense fallback={<LoadingFallback />}><EmailTemplateEditView /></Suspense>} />
+            <Route path="preview" element={<Suspense fallback={<LoadingFallback />}><EmailTemplatePreviewView /></Suspense>} />
+          </Route>
         </Route>
         
         {/* ===== HELP & SUPPORT ===== */}

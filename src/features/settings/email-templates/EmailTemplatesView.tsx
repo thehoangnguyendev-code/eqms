@@ -1,0 +1,535 @@
+import React, { useState } from "react";
+import { ChevronUp, ChevronDown, MoreVertical, Plus, Download, Search, X, SlidersHorizontal, Edit, Copy, Eye, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
+import { createPortal } from "react-dom";
+import { PageHeader } from "@/components/ui/page/PageHeader";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/form";
+import { Select } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
+import { TablePagination } from "@/components/ui/table/TablePagination";
+import { AlertModal } from "@/components/ui/modal";
+import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { formatDateNumeric } from "@/utils/format";
+import { usePortalDropdown } from "@/hooks/usePortalDropdown";
+import { useTableDragScroll } from "@/hooks/useTableDragScroll";
+import { useNavigateWithLoading } from "@/hooks/useNavigateWithLoading";
+import { SectionLoading } from "@/components/ui/loading";
+import { cn } from "@/lib/utils";
+import { emailTemplates } from "@/components/ui/breadcrumb/breadcrumbs.config";
+import { DEFAULT_COLUMNS } from "./constants";
+import { EMAIL_TEMPLATE_TYPES } from "./constants";
+import { useEmailTemplatesList } from "./hooks/useEmailTemplatesList";
+import { DateRangePicker } from "@/components/ui/datetime-picker";
+import type { EmailTemplate, TableColumn } from "./types";
+
+export const EmailTemplatesView: React.FC = () => {
+  const navigate = useNavigate();
+  const { navigateTo, isNavigating } = useNavigateWithLoading();
+
+  const {
+    currentEmailTemplates,
+    filteredEmailTemplates,
+    totalPages,
+    startIndex,
+    searchQuery,
+    setSearchQuery,
+    typeFilter,
+    setTypeFilter,
+    statusFilter,
+    setStatusFilter,
+    dateFrom,
+    setDateFrom,
+    dateTo,
+    setDateTo,
+    updatedFrom,
+    setUpdatedFrom,
+    updatedTo,
+    setUpdatedTo,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
+    sortConfig,
+    handleSort,
+    createEmailTemplate,
+    updateEmailTemplate,
+    deleteEmailTemplate,
+    duplicateEmailTemplate,
+    toggleTemplateStatus,
+    clearFilters,
+  } = useEmailTemplatesList();
+
+  const [columns, setColumns] = useState<TableColumn[]>([...DEFAULT_COLUMNS]);
+  const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
+  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
+  const [isFilterVisible, setIsFilterVisible] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+  });
+  const [isTableLoading, setIsTableLoading] = useState(false);
+
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    template: null as EmailTemplate | null
+  });
+
+  // Handle loading state on filter changes
+  React.useEffect(() => {
+    setIsTableLoading(true);
+    const timer = setTimeout(() => setIsTableLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, typeFilter, statusFilter, dateFrom, dateTo, updatedFrom, updatedTo]);
+
+  // Visible columns
+  const visibleColumns = columns
+    .filter((col) => col.visible)
+    .sort((a, b) => a.order - b.order);
+
+  // Handle actions
+  const handleCreateTemplate = () => {
+    navigate("/settings/email-templates/new");
+  };
+
+  const handleEditTemplate = (template: EmailTemplate) => {
+    navigate(`/settings/email-templates/edit/${template.id}`);
+  };
+
+  const handleDuplicateTemplate = (template: EmailTemplate) => {
+    duplicateEmailTemplate(template.id);
+  };
+
+  const handlePreviewTemplate = (template: EmailTemplate) => {
+    navigate(`/settings/email-templates/preview`, { state: { template } });
+  };
+
+  const handleDeleteTemplate = (template: EmailTemplate) => {
+    setDeleteModal({ isOpen: true, template });
+  };
+
+  const handleToggleStatus = (template: EmailTemplate) => {
+    toggleTemplateStatus(template.id);
+  };
+
+  const confirmDelete = () => {
+    if (deleteModal.template) {
+      deleteEmailTemplate(deleteModal.template.id, deleteModal.template.name);
+      setDeleteModal({ isOpen: false, template: null });
+    }
+  };
+
+  const handleExportTemplates = () => {
+    // TODO: Implement export functionality
+    console.log("Export templates");
+  };
+
+  return (
+    <div className="space-y-6 w-full flex-1 flex flex-col">
+      {/* Header */}
+      <PageHeader
+        title="Email Templates"
+        breadcrumbItems={emailTemplates()}
+        actions={
+          <>
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex items-center gap-2 whitespace-nowrap"
+              onClick={handleExportTemplates}
+            >
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+            <Button
+              size="sm"
+              className="flex items-center gap-2 whitespace-nowrap"
+              onClick={handleCreateTemplate}
+            >
+              <Plus className="h-4 w-4" />
+              Create Template
+            </Button>
+          </>
+        }
+      />
+
+      {/* Unified Content Card */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
+        {/* Filter Section */}
+        <div className="p-4 md:p-5 flex flex-col">
+          {/* Search Row + Primary Actions */}
+          <div className="flex flex-row gap-2 sm:gap-3 items-end">
+            <div className="flex-1">
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
+                Search
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                  <Search className="h-4 w-4 text-slate-400 transition-colors" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by name, subject, description..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex-shrink-0">
+              <Button
+                variant={isFilterVisible ? "default" : "outline"}
+                onClick={() => setIsFilterVisible(!isFilterVisible)}
+                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
+                size="sm"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                <span className="hidden sm:inline">Filters</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* Conditional Filters Tray: Accordion Effect */}
+          <AnimatePresence>
+            {isFilterVisible && (
+              <motion.div
+                initial={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
+                animate={{ height: "auto", opacity: 1, y: 0, marginTop: 16 }}
+                exit={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
+                transition={{
+                  height: { type: "spring", bounce: 0, duration: 0.4 },
+                  marginTop: { type: "spring", bounce: 0, duration: 0.4 },
+                  opacity: { duration: 0.25 },
+                  y: { duration: 0.3 }
+                }}
+                className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
+              >
+                <div className="pt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {/* Type Filter */}
+                  <Select
+                    label="Template Type"
+                    value={typeFilter}
+                    onChange={(value) => setTypeFilter(value as any)}
+                    options={[
+                      { label: "All Types", value: "All" },
+                      ...Object.entries(EMAIL_TEMPLATE_TYPES).map(([key, config]) => ({
+                        label: `${config.icon} ${config.label}`,
+                        value: key
+                      }))
+                    ]}
+                  />
+
+                  {/* Status Filter */}
+                  <Select
+                    label="Status"
+                    value={statusFilter}
+                    onChange={(value) => setStatusFilter(value as any)}
+                    options={[
+                      { label: "All Status", value: "All" },
+                      { label: "Active", value: "Active" },
+                      { label: "Inactive", value: "Inactive" },
+                      { label: "Draft", value: "Draft" },
+                    ]}
+                  />
+
+                  {/* Created Date Range Filter */}
+                  <DateRangePicker
+                    label="Created Date Range"
+                    startDate={dateFrom}
+                    endDate={dateTo}
+                    onStartDateChange={setDateFrom}
+                    onEndDateChange={setDateTo}
+                    placeholder="Select date range"
+                  />
+
+                  {/* Updated Date Range Filter */}
+                  <DateRangePicker
+                    label="Updated Date Range"
+                    startDate={updatedFrom}
+                    endDate={updatedTo}
+                    onStartDateChange={setUpdatedFrom}
+                    onEndDateChange={setUpdatedTo}
+                    placeholder="Select date range"
+                  />
+
+                  <div className="flex items-end pb-0.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Table Section */}
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
+          {isTableLoading && (
+            <div className="absolute inset-0 z-20 bg-white/40 backdrop-blur-[4px] flex items-center justify-center transition-all duration-300">
+              <SectionLoading text="Searching..." minHeight="150px" />
+            </div>
+          )}
+
+          <div className={cn(
+            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
+            isTableLoading && "blur-[2px] opacity-80"
+          )}>
+            {currentEmailTemplates.length > 0 ? (
+              <>
+                <div
+                  ref={scrollerRef}
+                  className={cn(
+                    "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
+                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+                  )}
+                  {...dragEvents}
+                >
+                  <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                    <thead>
+                      <tr>
+                        {visibleColumns.map((col) => {
+                          const isSorted = sortConfig.key === col.id;
+                          const canSort = !["no", "status"].includes(col.id);
+                          return (
+                            <th
+                              key={col.id}
+                              onClick={canSort ? () => handleSort(col.id) : undefined}
+                              className={cn(
+                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group"
+                              )}
+                            >
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <span className="truncate">{col.label}</span>
+                                {canSort && (
+                                  <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                                  </div>
+                                )}
+                              </div>
+                            </th>
+                          );
+                        })}
+                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white">
+                      {currentEmailTemplates.map((template, index) => {
+                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+
+                        return (
+                          <tr
+                            key={template.id}
+                            className="hover:bg-slate-50/80 transition-colors group"
+                          >
+                            {visibleColumns.map((col) => (
+                              <td key={col.id} className={tdClass}>
+                                {col.id === "no" && (
+                                  <span className="text-slate-500 font-medium">{startIndex + index + 1}</span>
+                                )}
+                                {col.id === "status" && (
+                                  <Badge
+                                    color={
+                                      template.status === "Active" ? "emerald" :
+                                        template.status === "Inactive" ? "slate" :
+                                          "amber"
+                                    }
+                                    size="sm"
+                                    pill
+                                  >
+                                    {template.status}
+                                  </Badge>
+                                )}
+                                {col.id === "type" && (
+                                  <div className="flex items-center gap-2">
+                                    <span>{EMAIL_TEMPLATE_TYPES[template.type].icon}</span>
+                                    <span className="text-slate-700">{EMAIL_TEMPLATE_TYPES[template.type].label}</span>
+                                  </div>
+                                )}
+                                {col.id === "name" && (
+                                  <span className="font-medium text-slate-900">{template.name}</span>
+                                )}
+                                {col.id === "subject" && (
+                                  <span className="text-slate-700 max-w-48 truncate" title={template.subject}>
+                                    {template.subject}
+                                  </span>
+                                )}
+                                {col.id === "usageCount" && (
+                                  <span className="text-slate-700 font-medium">{template.usageCount}</span>
+                                )}
+                                {col.id === "lastUsed" && (
+                                  <span className="text-slate-700">
+                                    {template.lastUsed ? formatDateNumeric(template.lastUsed) : "-"}
+                                  </span>
+                                )}
+                                {col.id === "updatedDate" && (
+                                  <span className="text-slate-700">
+                                    {template.updatedDate ? formatDateNumeric(template.updatedDate) : formatDateNumeric(template.createdDate)}
+                                  </span>
+                                )}
+                                {col.id === "createdBy" && (
+                                  <span className="text-slate-700">{template.createdBy}</span>
+                                )}
+                              </td>
+                            ))}
+                            <td
+                              onClick={(e) => e.stopPropagation()}
+                              className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                            >
+                              <button
+                                ref={getRef(template.id)}
+                                onClick={(e) => handleDropdownToggle(template.id, e)}
+                                className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
+                              >
+                                <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination */}
+                <TablePagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={filteredEmailTemplates.length}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                  showItemCount={true}
+                />
+              </>
+            ) : (
+              <TableEmptyState
+                title="No Email Templates Found"
+                description="We couldn't find any email templates matching your filters. Try adjusting your search criteria or create a new template."
+                actionLabel="Create Template"
+                onAction={handleCreateTemplate}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Dropdown Menu (Portal) */}
+      {openDropdownId && (() => {
+        const currentTemplate = currentEmailTemplates.find(t => t.id === openDropdownId);
+        if (!currentTemplate) return null;
+
+        return createPortal(
+          <>
+            <div
+              className="fixed inset-0 z-40 animate-in fade-in duration-150"
+              onClick={(e) => {
+                e.stopPropagation();
+                closeDropdown();
+              }}
+              aria-hidden="true"
+            />
+            <div
+              className="absolute z-50 min-w-[200px] rounded-lg border border-slate-200 bg-white shadow-xl overflow-hidden pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-200"
+              style={dropdownPosition.style}
+            >
+              <div className="py-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditTemplate(currentTemplate);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                >
+                  <Edit className="h-4 w-4 text-slate-500" />
+                  <span>Edit Template</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDuplicateTemplate(currentTemplate);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                >
+                  <Copy className="h-4 w-4 text-slate-500" />
+                  <span>Duplicate</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePreviewTemplate(currentTemplate);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                >
+                  <Eye className="h-4 w-4 text-slate-500" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleStatus(currentTemplate);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 transition-colors"
+                >
+                  {currentTemplate.status === "Active" ? (
+                    <ToggleLeft className="h-4 w-4 text-slate-500" />
+                  ) : (
+                    <ToggleRight className="h-4 w-4 text-slate-500" />
+                  )}
+                  <span>{currentTemplate.status === "Active" ? "Deactivate" : "Activate"}</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteTemplate(currentTemplate);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-red-500 hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 className="h-4 w-4 text-red-500" />
+                  <span>Delete</span>
+                </button>
+              </div>
+            </div>
+          </>, document.body
+        );
+      })()}
+
+
+
+      {/* Delete Confirmation Modal */}
+      <AlertModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, template: null })}
+        onConfirm={confirmDelete}
+        type="error"
+        title="Delete Email Template"
+        description={`Are you sure you want to delete "${deleteModal.template?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        showCancel
+      />
+
+      {isNavigating && <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"><div className="text-white">Loading...</div></div>}
+    </div>
+  );
+};

@@ -14,6 +14,7 @@
     "@ckeditor/ckeditor5-autoformat": "^48.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^48.0.0",
     "@ckeditor/ckeditor5-block-quote": "^48.0.0",
+    "@ckeditor/ckeditor5-build-classic": "^41.4.2",
     "@ckeditor/ckeditor5-enter": "^48.0.0",
     "@ckeditor/ckeditor5-essentials": "^48.0.0",
     "@ckeditor/ckeditor5-font": "^48.0.0",

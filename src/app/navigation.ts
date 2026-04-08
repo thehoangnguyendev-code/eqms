@@ -348,6 +348,12 @@ const SYSTEM_MODULES: NavItem[] = [
         icon: IconAlertSquareRounded,
         path: "/settings/system-info",
       },
+      {
+        id: "email-templates",
+        label: "Email Templates",
+        icon: IconMessageReport, // Sử dụng icon phù hợp, có thể thay đổi
+        path: "/settings/email-templates",
+      },
     ],
   },
   {
