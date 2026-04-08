@@ -36,6 +36,7 @@ import {
   IconMessageChatbot,
   IconAlertSquareRounded,
   IconUsersGroup,
+  IconMailForward,
 } from "@tabler/icons-react";
 import { NavItem } from "@/types";
 
@@ -337,6 +338,12 @@ const SYSTEM_MODULES: NavItem[] = [
         path: "/settings/dictionaries",
       },
       {
+        id: "email-templates",
+        label: "Email Templates",
+        icon: IconMailForward,
+        path: "/settings/email-templates",
+      },
+      {
         id: "config",
         label: "Configuration",
         icon: IconDeviceDesktopCog,
@@ -347,13 +354,7 @@ const SYSTEM_MODULES: NavItem[] = [
         label: "System Information",
         icon: IconAlertSquareRounded,
         path: "/settings/system-info",
-      },
-      {
-        id: "email-templates",
-        label: "Email Templates",
-        icon: IconMessageReport, // Sử dụng icon phù hợp, có thể thay đổi
-        path: "/settings/email-templates",
-      },
+      }
     ],
   },
   {
