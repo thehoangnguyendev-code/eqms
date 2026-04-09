@@ -20,9 +20,10 @@ export {
   Input,
   Textarea,
   FormGrid,
-  FormSection,
+  ResponsiveFormSection,
   FormActions,
 } from './form/ResponsiveForm';
+export { FormSection } from './form/FormSection';
 
 // Card Components
 export {

@@ -139,7 +139,7 @@ export const ApplicationTab: React.FC<ApplicationTabProps> = ({ data }) => {
         <p className="text-sm text-slate-700 leading-relaxed">{data.description}</p>
       </SettingsCard>
 
-    <div className="flex gap-3 px-4 py-3.5 bg-blue-50 border border-blue-200 rounded-xl">
+      <div className="flex gap-3 px-4 py-3.5 bg-blue-50 border border-blue-200 rounded-xl">
         <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
         <div>
           <p className="text-xs font-semibold text-blue-900 mb-0.5">Read-only Information</p>

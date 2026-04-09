@@ -4,17 +4,17 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/components/ui/utils';
 
 const SettingsCard: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
+    title: string;
+    icon: React.ReactNode;
+    children: React.ReactNode;
 }> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100 uppercase tracking-wider">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-xs font-bold text-slate-800">{title}</h3>
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100 uppercase tracking-wider">
+            <span className="text-emerald-600">{icon}</span>
+            <h3 className="text-xs font-bold text-slate-800">{title}</h3>
+        </div>
+        <div className="p-5">{children}</div>
     </div>
-    <div className="p-5">{children}</div>
-  </div>
 );
 
 export const AppearanceTab: React.FC = () => {
@@ -73,25 +73,25 @@ export const AppearanceTab: React.FC = () => {
                     <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600 shadow-sm font-bold">
-                               <LayoutPanelTop className="h-5 w-5" />
+                                <LayoutPanelTop className="h-5 w-5" />
                             </div>
                             <div>
                                 <p className="text-sm font-medium text-slate-900">Compact Mode</p>
                                 <p className="text-xs text-slate-500">Show more content with less padding.</p>
                             </div>
                         </div>
-                       <button
+                        <button
                             className={cn(
-                            "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2",
-                            false ? "bg-emerald-500" : "bg-slate-300",
+                                "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2",
+                                false ? "bg-emerald-500" : "bg-slate-300",
                             )}
                             role="switch"
                         >
                             <span
-                            className={cn(
-                                "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200",
-                                false ? "translate-x-6" : "translate-x-1",
-                            )}
+                                className={cn(
+                                    "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200",
+                                    false ? "translate-x-6" : "translate-x-1",
+                                )}
                             />
                         </button>
                     </div>
