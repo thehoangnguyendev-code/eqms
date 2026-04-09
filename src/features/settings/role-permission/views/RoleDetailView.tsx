@@ -32,6 +32,7 @@ import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/components/ui/utils";
+import { FormSection } from "@/components/ui/form";
 import { Role, PermissionGroup } from "../types";
 import { PERMISSION_GROUPS, isALCOAPlusRequired } from "../constants";
 import { MOCK_ROLES } from "../mockData";
@@ -39,20 +40,6 @@ import { PageHeader } from "@/components/ui/page/PageHeader";
 import { roleDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  className?: string;
-}> = ({ title, icon, children, className }) => (
-  <div className={cn("bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden", className)}>
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 export const RoleDetailView: React.FC = () => {
   const navigate = useNavigate();

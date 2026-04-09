@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { Reply } from "lucide-react";
+import DOMPurify from "dompurify";
 import { EMAIL_VARIABLES } from "../constants";
 import defaultLogo from "@/assets/images/logo_nobg.png";
 
@@ -23,7 +24,9 @@ export const EmailLivePreview: React.FC<EmailLivePreviewProps> = ({
   const effectiveLogo = logoUrl || defaultLogo;
 
   const previewContent = useMemo(() => {
-    let html = content;
+    // Sanitize user input content first
+    let html = DOMPurify.sanitize(content);
+    
     variables.forEach((key) => {
       const variable = EMAIL_VARIABLES.find((v) => v.key === key);
       if (variable) {

@@ -486,72 +486,72 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
               </div>
               <div className="p-4 md:p-6">
 
-              {/* Comments List */}
-              <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
-                {comments.length > 0 ? (
-                  comments.map((comment) => (
-                    <div
-                      key={comment.id}
-                      className="flex gap-3 md:gap-4 p-3 md:p-4 bg-slate-50 rounded-lg"
-                    >
-                      <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
-                        {comment.author.charAt(0)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 md:gap-2 mb-1 flex-wrap">
-                          <span className="font-medium text-sm md:text-base text-slate-900 truncate">
-                            {comment.author}
-                          </span>
-                          <span className="text-xs text-slate-500 shrink-0">•</span>
-                          <span className="text-xs text-slate-500 truncate">
-                            {comment.role}
-                          </span>
-                          <span className="text-xs text-slate-500 shrink-0">•</span>
-                          <span className="text-xs text-slate-500 shrink-0">
-                            {formatDate(comment.date)}
-                          </span>
+                {/* Comments List */}
+                <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
+                  {comments.length > 0 ? (
+                    comments.map((comment) => (
+                      <div
+                        key={comment.id}
+                        className="flex gap-3 md:gap-4 p-3 md:p-4 bg-slate-50 rounded-lg"
+                      >
+                        <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
+                          {comment.author.charAt(0)}
                         </div>
-                        <p className="text-sm text-slate-700 break-words">
-                          {comment.content}
-                        </p>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 md:gap-2 mb-1 flex-wrap">
+                            <span className="font-medium text-sm md:text-base text-slate-900 truncate">
+                              {comment.author}
+                            </span>
+                            <span className="text-xs text-slate-500 shrink-0">•</span>
+                            <span className="text-xs text-slate-500 truncate">
+                              {comment.role}
+                            </span>
+                            <span className="text-xs text-slate-500 shrink-0">•</span>
+                            <span className="text-xs text-slate-500 shrink-0">
+                              {formatDate(comment.date)}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-700 break-words">
+                            {comment.content}
+                          </p>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-6 md:py-8 text-slate-500">
+                      <MessageSquare className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-2 md:mb-3 text-slate-300" />
+                      <p className="text-sm">
+                        No comments yet. Be the first to add a comment.
+                      </p>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-6 md:py-8 text-slate-500">
-                    <MessageSquare className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-2 md:mb-3 text-slate-300" />
-                    <p className="text-sm">
-                      No comments yet. Be the first to add a comment.
-                    </p>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
 
-              {/* Add Comment */}
-              <div className="border-t border-slate-200 pt-4">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
-                    {currentReviewer?.name.charAt(0) || "U"}
-                  </div>
-                  <div className="flex-1 flex flex-col sm:flex-row gap-2">
-                    <textarea
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                      placeholder="Add a comment..."
-                      rows={3}
-                      className="flex-1 px-3 md:px-4 py-2 md:py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 resize-none"
-                    />
-                    <button
-                      onClick={handleAddComment}
-                      disabled={!newComment.trim()}
-                      className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 sm:self-start shrink-0"
-                    >
-                      <Send className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                      <span className="text-sm sm:hidden">Send Comment</span>
-                    </button>
+                {/* Add Comment */}
+                <div className="border-t border-slate-200 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
+                      {currentReviewer?.name.charAt(0) || "U"}
+                    </div>
+                    <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                      <textarea
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="Add a comment..."
+                        rows={3}
+                        className="flex-1 px-3 md:px-4 py-2 md:py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 resize-none"
+                      />
+                      <button
+                        onClick={handleAddComment}
+                        disabled={!newComment.trim()}
+                        className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 sm:self-start shrink-0"
+                      >
+                        <Send className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                        <span className="text-sm sm:hidden">Send Comment</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
               </div>
             </div>
           </div>
@@ -576,6 +576,7 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
               validUntil: document.validUntil,
               language: document.language,
               description: document.description,
+              coAuthors: [],
             }}
             isReadOnly={true}
           />

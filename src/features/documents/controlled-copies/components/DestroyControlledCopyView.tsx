@@ -18,23 +18,11 @@ import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
 import { useToast } from "@/components/ui/toast/Toast";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { FormSection } from "@/components/ui/form";
 import { destroyControlledCopy } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { MOCK_DESTROY_CONTROLLED_COPY as MOCK_CONTROLLED_COPY } from "../mockData";
 import { Select } from "@/components/ui/select/Select";
 
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden h-full">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 interface EvidenceFile {
   file: File;

@@ -19,25 +19,13 @@ import {
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading";
 import { cn } from "@/components/ui/utils";
+import { FormSection } from "@/components/ui/form";
 import { ROUTES } from "@/app/routes.constants";
 import { formatDate } from "./constants";
 import type { EmployeeRow, SOPColumn } from "../../types";
 import { MOCK_SOPS, MOCK_EMPLOYEES, getCell } from "../../mockData";
 import { IconBook, IconInfoCircle, IconLocation } from "@tabler/icons-react";
 
-const FormSection: React.FC<{
-    title: string;
-    icon: React.ReactNode;
-    children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-            <span className="text-emerald-600">{icon}</span>
-            <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-        </div>
-        <div className="p-5">{children}</div>
-    </div>
-);
 
 // ─── Props ────────────────────────────────────────────────────────────
 export interface HeaderActionDrawerProps {

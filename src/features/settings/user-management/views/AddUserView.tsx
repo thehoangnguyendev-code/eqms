@@ -13,22 +13,10 @@ import { BUSINESS_UNIT_DEPARTMENTS, USER_MANAGEMENT_ROUTES } from"../constants";
 import { removeAccents, generateUsername, generatePassword } from"../utils";
 import { EXISTING_USERS, MOCK_USERS } from"../mockData";
 import { PageHeader } from"@/components/ui/page/PageHeader";
+import { FormSection } from "@/components/ui/form";
 import { addUser as addUserBreadcrumb } from"@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from"@/components/ui/loading/Loading";
 
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 export const AddUserView: React.FC = () => {
  const navigate = useNavigate();

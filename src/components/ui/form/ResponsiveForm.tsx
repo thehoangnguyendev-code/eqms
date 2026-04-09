@@ -171,14 +171,14 @@ export const FormGrid: React.FC<FormGridProps> = ({
 };
 
 // Form Section with Header
-interface FormSectionProps {
+interface ResponsiveFormSectionProps {
   title: string;
   description?: string;
   children: React.ReactNode;
   className?: string;
 }
 
-export const FormSection: React.FC<FormSectionProps> = ({
+export const ResponsiveFormSection: React.FC<ResponsiveFormSectionProps> = ({
   title,
   description,
   children,

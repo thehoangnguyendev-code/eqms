@@ -181,53 +181,20 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
 
     return (
         <>
-        {isNavigating && <FullPageLoading text="Loading..." />}
-        <DocumentWorkflowLayout
-            title="Approve Revision"
-            breadcrumbs={breadcrumbs}
-            onBack={handleBack}
-            documentId={`${revision.documentId} v${revision.version}`}
-            documentStatus={revision.status}
-            statusSteps={statusSteps}
-            currentStatus={revision.status}
-            tabs={DEFAULT_WORKFLOW_TABS}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            headerActions={
-                canApprove ? (
-                    <>
-                        <Button
-                            onClick={handleReject}
-                            variant="outline"
-                            size="sm"
-                            disabled={isSubmitting}
-                            className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
-                        >
-                            Reject
-                        </Button>
-                        <Button
-                            onClick={handleApprove}
-                            variant="outline"
-                            size="sm"
-                            disabled={isSubmitting}
-                            className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
-                        >
-                            Complete Approve
-                        </Button>
-                    </>
-                ) : undefined
-            }
-            footerActions={
-                <>
-                    <Button
-                        onClick={handleBack}
-                        variant="outline"
-                        size="sm"
-                        className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
-                    >
-                        Back
-                    </Button>
-                    {canApprove && (
+            {isNavigating && <FullPageLoading text="Loading..." />}
+            <DocumentWorkflowLayout
+                title="Approve Revision"
+                breadcrumbs={breadcrumbs}
+                onBack={handleBack}
+                documentId={`${revision.documentId} v${revision.version}`}
+                documentStatus={revision.status}
+                statusSteps={statusSteps}
+                currentStatus={revision.status}
+                tabs={DEFAULT_WORKFLOW_TABS}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                headerActions={
+                    canApprove ? (
                         <>
                             <Button
                                 onClick={handleReject}
@@ -248,120 +215,153 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
                                 Complete Approve
                             </Button>
                         </>
-                    )}
-                </>
-            }
-            afterTabContent={
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <TabNav tabs={[{ id: "originalDocument", label: "Original Document" }]} activeTab="originalDocument" onChange={() => {}} />
-                    <div className="p-3 sm:p-4 md:p-6">
-                        <OriginalDocumentTab document={MOCK_ORIGINAL_DOCUMENT} />
-                    </div>
-                </div>
-            }
-        >
-            {activeTab === "document" && (
-                <div className="space-y-6">
-                    {/* PDF Preview Section - Read Only */}
-                    <DocumentTab mode="view" />
-
-                    {/* Comments Section */}
+                    ) : undefined
+                }
+                footerActions={
+                    <>
+                        <Button
+                            onClick={handleBack}
+                            variant="outline"
+                            size="sm"
+                            className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
+                        >
+                            Back
+                        </Button>
+                        {canApprove && (
+                            <>
+                                <Button
+                                    onClick={handleReject}
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={isSubmitting}
+                                    className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                                >
+                                    Reject
+                                </Button>
+                                <Button
+                                    onClick={handleApprove}
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={isSubmitting}
+                                    className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                                >
+                                    Complete Approve
+                                </Button>
+                            </>
+                        )}
+                    </>
+                }
+                afterTabContent={
                     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-                        <span className="text-emerald-600"><MessageSquare className="h-4 w-4" /></span>
-                        <h3 className="text-sm font-semibold text-slate-800">Comments & Discussion</h3>
-                      </div>
-                      <div className="p-4 lg:p-6">
+                        <TabNav tabs={[{ id: "originalDocument", label: "Original Document" }]} activeTab="originalDocument" onChange={() => { }} />
+                        <div className="p-3 sm:p-4 md:p-6">
+                            <OriginalDocumentTab document={MOCK_ORIGINAL_DOCUMENT} />
+                        </div>
+                    </div>
+                }
+            >
+                {activeTab === "document" && (
+                    <div className="space-y-6">
+                        {/* PDF Preview Section - Read Only */}
+                        <DocumentTab mode="view" />
 
-                        {/* Comments List */}
-                        <div className="space-y-3 lg:space-y-4 mb-4 lg:mb-6">
-                            {comments.length > 0 ? (
-                                comments.map((comment) => (
-                                    <div key={comment.id} className="flex gap-3 lg:gap-4 p-3 lg:p-4 bg-slate-50 rounded-lg">
-                                        <div className="h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
-                                            {comment.author.charAt(0)}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-1.5 lg:gap-2 mb-1 flex-wrap">
-                                                <span className="font-medium text-sm lg:text-base text-slate-900 truncate">{comment.author}</span>
-                                                <span className="text-xs text-slate-500 shrink-0">•</span>
-                                                <span className="text-xs text-slate-500 truncate">{comment.role}</span>
-                                                <span className="text-xs text-slate-500 shrink-0">•</span>
-                                                <span className="text-xs text-slate-500 shrink-0">{formatDate(comment.date)}</span>
+                        {/* Comments Section */}
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+                                <span className="text-emerald-600"><MessageSquare className="h-4 w-4" /></span>
+                                <h3 className="text-sm font-semibold text-slate-800">Comments & Discussion</h3>
+                            </div>
+                            <div className="p-4 lg:p-6">
+
+                                {/* Comments List */}
+                                <div className="space-y-3 lg:space-y-4 mb-4 lg:mb-6">
+                                    {comments.length > 0 ? (
+                                        comments.map((comment) => (
+                                            <div key={comment.id} className="flex gap-3 lg:gap-4 p-3 lg:p-4 bg-slate-50 rounded-lg">
+                                                <div className="h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
+                                                    {comment.author.charAt(0)}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-1.5 lg:gap-2 mb-1 flex-wrap">
+                                                        <span className="font-medium text-sm lg:text-base text-slate-900 truncate">{comment.author}</span>
+                                                        <span className="text-xs text-slate-500 shrink-0">•</span>
+                                                        <span className="text-xs text-slate-500 truncate">{comment.role}</span>
+                                                        <span className="text-xs text-slate-500 shrink-0">•</span>
+                                                        <span className="text-xs text-slate-500 shrink-0">{formatDate(comment.date)}</span>
+                                                    </div>
+                                                    <p className="text-sm text-slate-700 break-words">{comment.content}</p>
+                                                </div>
                                             </div>
-                                            <p className="text-sm text-slate-700 break-words">{comment.content}</p>
+                                        ))
+                                    ) : (
+                                        <div className="text-center py-6 lg:py-8 text-slate-500">
+                                            <MessageSquare className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-2 lg:mb-3 text-slate-300" />
+                                            <p className="text-sm">No comments yet. Be the first to add a comment.</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Add Comment */}
+                                <div className="border-t border-slate-200 pt-4">
+                                    <div className="flex flex-col sm:flex-row gap-3">
+                                        <div className="h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
+                                            {approver?.name.charAt(0) || "U"}
+                                        </div>
+                                        <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                                            <textarea
+                                                value={newComment}
+                                                onChange={(e) => setNewComment(e.target.value)}
+                                                placeholder="Add a comment..."
+                                                rows={3}
+                                                className="flex-1 px-3 lg:px-4 py-2 lg:py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 resize-none"
+                                            />
+                                            <button
+                                                onClick={handleAddComment}
+                                                disabled={!newComment.trim()}
+                                                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 sm:self-start shrink-0"
+                                            >
+                                                <Send className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
+                                                <span className="text-sm sm:hidden">Send Comment</span>
+                                            </button>
                                         </div>
                                     </div>
-                                ))
-                            ) : (
-                                <div className="text-center py-6 lg:py-8 text-slate-500">
-                                    <MessageSquare className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-2 lg:mb-3 text-slate-300" />
-                                    <p className="text-sm">No comments yet. Be the first to add a comment.</p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Add Comment */}
-                        <div className="border-t border-slate-200 pt-4">
-                            <div className="flex flex-col sm:flex-row gap-3">
-                                <div className="h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
-                                    {approver?.name.charAt(0) || "U"}
-                                </div>
-                                <div className="flex-1 flex flex-col sm:flex-row gap-2">
-                                    <textarea
-                                        value={newComment}
-                                        onChange={(e) => setNewComment(e.target.value)}
-                                        placeholder="Add a comment..."
-                                        rows={3}
-                                        className="flex-1 px-3 lg:px-4 py-2 lg:py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 resize-none"
-                                    />
-                                    <button
-                                        onClick={handleAddComment}
-                                        disabled={!newComment.trim()}
-                                        className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 sm:self-start shrink-0"
-                                    >
-                                        <Send className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
-                                        <span className="text-sm sm:hidden">Send Comment</span>
-                                    </button>
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
-                </div>
-            )}
-            {activeTab === "general" && (
-                <GeneralTab
-                    formData={formData}
-                    onFormChange={setFormData}
+                )}
+                {activeTab === "general" && (
+                    <GeneralTab
+                        formData={formData}
+                        onFormChange={setFormData}
+                    />
+                )}
+                {activeTab === "workingNotes" && <WorkingNotesTab />}
+                {activeTab === "documentInfo" && <InfoFromDocumentTab />}
+                {activeTab === "training" && <TrainingInformationTab isReadOnly />}
+                {activeTab === "reviewers" && <WorkspaceReviewersTab reviewers={[]} />}
+                {activeTab === "approvers" && <WorkspaceApproversTab approvers={[]} />}
+                {activeTab === "signatures" && <SignaturesTab />}
+                {activeTab === "audit" && <AuditTrailTab />}
+
+                {/* Reject Warning Modal */}
+                <AlertModal
+                    isOpen={showRejectWarning}
+                    onClose={() => setShowRejectWarning(false)}
+                    onConfirm={handleRejectWarningConfirm}
+                    type="warning"
+                    title="Reject Revision?"
+                    description="When rejecting this revision at Pending Approval stage, the document will return to Pending Review status. Are you sure you want to continue?"
                 />
-            )}
-            {activeTab === "workingNotes" && <WorkingNotesTab />}
-            {activeTab === "documentInfo" && <InfoFromDocumentTab />}
-            {activeTab === "training" && <TrainingInformationTab isReadOnly />}
-            {activeTab === "reviewers" && <WorkspaceReviewersTab reviewers={[]} />}
-            {activeTab === "approvers" && <WorkspaceApproversTab approvers={[]} />}
-            {activeTab === "signatures" && <SignaturesTab />}
-            {activeTab === "audit" && <AuditTrailTab />}
 
-            {/* Reject Warning Modal */}
-            <AlertModal
-                isOpen={showRejectWarning}
-                onClose={() => setShowRejectWarning(false)}
-                onConfirm={handleRejectWarningConfirm}
-                type="warning"
-                title="Reject Revision?"
-                description="When rejecting this revision at Pending Approval stage, the document will return to Pending Review status. Are you sure you want to continue?"
-            />
-
-            {/* E-Signature Modal */}
-            <ESignatureModal
-                isOpen={showesignModal}
-                onClose={() => setshowesignModal(false)}
-                onConfirm={handleESignConfirm}
-                actionTitle={eSignAction === 'approve' ? 'Approve Revision' : 'Reject Revision'}
-            />
-        </DocumentWorkflowLayout>
+                {/* E-Signature Modal */}
+                <ESignatureModal
+                    isOpen={showesignModal}
+                    onClose={() => setshowesignModal(false)}
+                    onConfirm={handleESignConfirm}
+                    actionTitle={eSignAction === 'approve' ? 'Approve Revision' : 'Reject Revision'}
+                />
+            </DocumentWorkflowLayout>
         </>
     );
 };

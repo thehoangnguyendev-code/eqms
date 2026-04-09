@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { cn } from "@/components/ui/utils";
+import { FormSection } from "@/components/ui/form";
 import type { Task } from "../types";
 import {
   getModuleIcon,
@@ -33,19 +34,6 @@ const useIsMobile = () => {
   return isMobile;
 };
 
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 export const TaskDetailDrawer: React.FC<{
   task: Task | null;

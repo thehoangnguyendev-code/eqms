@@ -15,6 +15,8 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { IconRefresh } from "@tabler/icons-react";
+import { cn } from "@/components/ui/utils";
+import { FormSection } from "@/components/ui/form";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { materialNewRevision } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
@@ -22,7 +24,6 @@ import { ButtonLoading, FullPageLoading } from "@/components/ui/loading/Loading"
 import { Select } from "@/components/ui/select/Select";
 import { AlertModal, AlertModalType } from "@/components/ui/modal/AlertModal";
 import { ESignatureModal } from "@/components/ui/esign-modal";
-import { cn } from "@/components/ui/utils";
 import { getFileIconSrc } from "@/utils/fileIcons";
 import { BUSINESS_UNIT_DEPARTMENTS } from "@/features/settings/user-management/constants";
 
@@ -258,20 +259,6 @@ export const NewRevisionView: React.FC = () => {
   return <NewRevisionForm materialId={materialId!} source={source} />;
 };
 
-// ─── FormSection ───────────────────────────────────────────────────
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 // ─── Inner Form ─────────────────────────────────────────────────────
 interface NewRevisionFormProps {

@@ -146,29 +146,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   { id: "createdBy", label: "Created By", visible: true, order: 8 },
 ];
 
-// CKEditor Configuration
-export const CKEDITOR_CONFIG = {
-  toolbar: [
-    'heading', '|',
-    'bold', 'italic', 'underline', 'strikethrough', '|',
-    'link', 'bulletedList', 'numberedList', '|',
-    'indent', 'outdent', '|',
-    'insertTable', 'blockQuote', '|',
-    'undo', 'redo'
-  ],
-  heading: {
-    options: [
-      { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-      { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-      { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-      { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
-    ]
-  },
-  table: {
-    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-  },
-  language: 'en'
-};
+
 
 // File upload configuration for logos
 export const LOGO_UPLOAD_CONFIG = {

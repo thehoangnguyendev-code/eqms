@@ -22,8 +22,8 @@ export { capaApi } from './capa';
 export { complaintApi } from './complaints';
 
 // Change & Risk Management
-export { changeControlApi } from './change-control';
-export { riskApi } from './risk-management';
+export { changeControlApi } from './changeControl';
+export { riskApi } from './riskManagement';
 
 // Operations
 export { equipmentApi } from './equipment';
@@ -33,7 +33,7 @@ export { productApi } from './product';
 
 // Regulatory & Compliance
 export { regulatoryApi } from './regulatory';
-export { auditTrailApi } from './audit-trail';
+export { auditTrailApi } from './auditTrail';
 
 // Platform
 export { notificationApi } from './notifications';
@@ -49,11 +49,11 @@ export type { GetUsersParams } from './settings';
 export type { GetDeviationsParams } from './deviations';
 export type { GetCapaParams } from './capa';
 export type { GetComplaintsParams } from './complaints';
-export type { GetChangeControlParams } from './change-control';
+export type { GetChangeControlParams } from './changeControl';
 export type { GetEquipmentParams } from './equipment';
 export type { GetSuppliersParams } from './supplier';
-export type { GetRisksParams } from './risk-management';
-export type { GetAuditTrailParams } from './audit-trail';
+export type { GetRisksParams } from './riskManagement';
+export type { GetAuditTrailParams } from './auditTrail';
 export type { GetRegulatoryParams } from './regulatory';
 export type { GetProductsParams } from './product';
 export type { Notification } from './notifications';

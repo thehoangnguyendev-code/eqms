@@ -10,10 +10,9 @@ export { EmailTemplatePreviewView } from './views/EmailTemplatePreviewView';
 export { useEmailTemplatesList } from './hooks/useEmailTemplatesList';
 
 // Components
-export { EmailTemplateModal } from './components/EmailTemplateModal';
-export { EmailTemplateActionMenu } from './components/EmailTemplateActionMenu';
-export { EmailTemplatePreviewModal } from './components/EmailTemplatePreviewModal';
-export { CKEditorEditor } from './components/CKEditorEditor';
+export { EmailLivePreview } from './components/EmailLivePreview';
+export { LexicalEditor } from './components/LexicalEditor';
+export { LogoUploader } from './components/LogoUploader';
 
 // Types
 export type * from './types';

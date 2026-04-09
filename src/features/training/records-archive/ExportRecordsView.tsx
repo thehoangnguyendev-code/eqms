@@ -18,6 +18,7 @@ import { Select } from "@/components/ui/select/Select";
 import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
 import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { formatDateUS } from "@/utils/format";
+import { FormSection } from "@/components/ui/form";
 
 interface ExportConfig {
   reportType: string;
@@ -30,20 +31,6 @@ interface ExportConfig {
   format: string;
 }
 
-// ─── FormSection ───────────────────────────────────────────────────
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 export const ExportRecordsView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
@@ -189,6 +176,7 @@ export const ExportRecordsView: React.FC = () => {
               />
             </div>
           </div>
+        </div>
       </FormSection>
 
       {/* Export Preview */}

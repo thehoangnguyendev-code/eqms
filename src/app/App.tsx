@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRoutes } from './routes';
+import { AppRoutes } from './AppRoutes';
 import { ToastProvider } from '@/components/ui/toast';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 

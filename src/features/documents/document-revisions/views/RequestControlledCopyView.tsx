@@ -11,6 +11,7 @@ import { AlertModal } from '@/components/ui/modal/AlertModal';
 import { useToast } from '@/components/ui/toast/Toast';
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { requestControlledCopy } from "@/components/ui/breadcrumb/breadcrumbs.config";
+import { FormSection } from "@/components/ui/form";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { useNavigateWithLoading } from "@/hooks";
 
@@ -42,19 +43,6 @@ export interface ControlledCopyRequest {
 }
 
 // --- Internal Components ---
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden h-full">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 // --- Mock Data: Distribution Locations ---
 const DISTRIBUTION_LOCATIONS: DistributionLocation[] = [

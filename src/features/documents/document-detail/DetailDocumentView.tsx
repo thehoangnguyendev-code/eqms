@@ -95,32 +95,32 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
     USE_EMPTY_STATE
       ? []
       : document.reviewers.map((name, i) => ({
-          id: String(i + 1),
-          name,
-          username: name.toLowerCase().replace(" ", "."),
-          role: "Reviewer",
-          email: `${name.toLowerCase().replace(" ", ".")}@company.com`,
-          department: document.department,
-          order: i + 1,
-        })),
+        id: String(i + 1),
+        name,
+        username: name.toLowerCase().replace(" ", "."),
+        role: "Reviewer",
+        email: `${name.toLowerCase().replace(" ", ".")}@company.com`,
+        department: document.department,
+        order: i + 1,
+      })),
   );
   const [approvers, setApprovers] = useState<Approver[]>(
     USE_EMPTY_STATE
       ? []
       : document.approvers.map((name, i) => ({
-          id: String(i + 1),
-          name,
-          username: name.toLowerCase().replace(" ", "."),
-          role: "Approver",
-          email: `${name.toLowerCase().replace(" ", ".")}@company.com`,
-          department: document.department,
-        })),
+        id: String(i + 1),
+        name,
+        username: name.toLowerCase().replace(" ", "."),
+        role: "Approver",
+        email: `${name.toLowerCase().replace(" ", ".")}@company.com`,
+        department: document.department,
+      })),
   );
   const [relatedDocuments, setRelatedDocuments] = useState<RelatedDocument[]>(
     USE_EMPTY_STATE ? [] : MOCK_RELATED_DOCUMENTS,
   );
-  const [parentDocument, setParentDocument] = useState<ParentDocument | null>(
-    USE_EMPTY_STATE ? null : MOCK_PARENT_DOCUMENT,
+  const [correlatedDocuments, setCorrelatedDocuments] = useState<ParentDocument[]>(
+    USE_EMPTY_STATE ? [] : [MOCK_PARENT_DOCUMENT],
   );
 
   // Document status workflow steps
@@ -299,8 +299,8 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
             )}
             {activeSubTab === "correlatedDocuments" && (
               <CorrelatedDocumentsTab
-                parentDocument={parentDocument}
-                onParentDocumentChange={setParentDocument}
+                correlatedDocuments={correlatedDocuments}
+                onCorrelatedDocumentsChange={setCorrelatedDocuments}
               />
             )}
           </div>

@@ -160,15 +160,15 @@ export const DetailRevisionView: React.FC<DetailRevisionViewProps> = ({
                       isCompleted
                         ? "bg-emerald-100"
                         : isCurrent
-                        ? "bg-emerald-600"
-                        : "bg-slate-100"
+                          ? "bg-emerald-600"
+                          : "bg-slate-100"
                     )}
                     style={{
                       clipPath: isFirst
                         ? "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%)"
                         : isLast
-                        ? "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 20px 50%)"
-                        : "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%, 20px 50%)",
+                          ? "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 20px 50%)"
+                          : "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%, 20px 50%)",
                     }}
                   />
 
@@ -183,8 +183,8 @@ export const DetailRevisionView: React.FC<DetailRevisionViewProps> = ({
                         isCurrent
                           ? "text-white"
                           : isCompleted
-                          ? "text-slate-700"
-                          : "text-slate-400"
+                            ? "text-slate-700"
+                            : "text-slate-400"
                       )}
                     >
                       {step}
@@ -222,30 +222,30 @@ export const DetailRevisionView: React.FC<DetailRevisionViewProps> = ({
       </div>
 
       {/* Button below the card — standalone */}
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-            <Button
-              onClick={handleBack}
-              size="sm"
-              variant="outline-emerald"
-              className="whitespace-nowrap gap-2"
-            >
-              Back
-            </Button>
-            {document.status === "Effective" && (
-              <Button
-                size="sm"
-                variant="outline-emerald"
-                className="whitespace-nowrap gap-2"
-                onClick={handleRequestControlledCopy}
-              >
-                Request Controlled Copy
-              </Button>
-            )}
-          </div>
+      <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+        <Button
+          onClick={handleBack}
+          size="sm"
+          variant="outline-emerald"
+          className="whitespace-nowrap gap-2"
+        >
+          Back
+        </Button>
+        {document.status === "Effective" && (
+          <Button
+            size="sm"
+            variant="outline-emerald"
+            className="whitespace-nowrap gap-2"
+            onClick={handleRequestControlledCopy}
+          >
+            Request Controlled Copy
+          </Button>
+        )}
+      </div>
 
       {/* Sub-tab: Original Document */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <TabNav tabs={[{ id: "originalDocument", label: "Original Document" }]} activeTab="originalDocument" onChange={() => {}} />
+        <TabNav tabs={[{ id: "originalDocument", label: "Original Document" }]} activeTab="originalDocument" onChange={() => { }} />
         <div className="p-3 sm:p-4 md:p-6">
           <OriginalDocumentTab document={MOCK_ORIGINAL_DOCUMENT} />
         </div>

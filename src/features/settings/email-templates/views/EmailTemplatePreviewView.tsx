@@ -4,6 +4,7 @@ import { Mail, Info, Variable } from "lucide-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FormSection } from "@/components/ui/form";
 import { Loading } from "@/components/ui/loading";
 import { useNavigateWithLoading } from "@/hooks/useNavigateWithLoading";
 import { EMAIL_TEMPLATE_TYPES, EMAIL_VARIABLES } from "../constants";
@@ -11,19 +12,6 @@ import { emailTemplates } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { EmailLivePreview } from "../components/EmailLivePreview";
 import type { EmailTemplate } from "../types";
 
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 export const EmailTemplatePreviewView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();

@@ -5,7 +5,7 @@ import { config } from"@/config";
 import"@react-pdf-viewer/core/lib/styles/index.css";
 import"@react-pdf-viewer/default-layout/lib/styles/index.css";
 import"./docx-preview.css";
-import FilePreviewLib from"reactjs-file-preview";
+
 import filePlaceholder from"@/assets/images/image-file/file.png";
 import { renderAsync } from"docx-preview";
 import { Button } from"@/components/ui/button/Button";
@@ -288,11 +288,17 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
  <div className="h-full flex items-center justify-center p-4 md:p-6">
  <div className="text-center w-full">
  <div className="w-full h-[calc(100vh-280px)]" style={{ minHeight:"500px" }}>
- <FilePreviewLib
- preview={file}
- placeHolderImage={filePlaceholder}
- errorImage={filePlaceholder}
- />
+ <div className="flex flex-col items-center justify-center h-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-8">
+  <AlertTriangle className="h-12 w-12 text-amber-500 mb-4" />
+  <p className="text-slate-700 font-semibold mb-2">Detailed Preview Unavailable</p>
+  <p className="text-slate-500 text-sm max-w-xs mx-auto mb-6">
+    This file type does not support in-browser previewing. Please download the file to view its contents.
+  </p>
+  <div className="flex flex-col items-center p-4 bg-white rounded-lg border border-slate-200">
+    <img src={filePlaceholder} alt="File" className="h-16 w-16 mb-2 opacity-50" />
+    <span className="text-xs font-medium text-slate-900">{file.name}</span>
+  </div>
+</div>
  </div>
  <div className="text-[10px] md:text-xs text-slate-500 bg-slate-50 rounded-lg p-3 md:p-4 text-left mt-3 md:mt-4 inline-block text-left">
  <p className="font-semibold mb-1.5 md:mb-2">Supported formats:</p>

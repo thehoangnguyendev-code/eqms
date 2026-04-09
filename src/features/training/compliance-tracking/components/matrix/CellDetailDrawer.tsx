@@ -3,22 +3,10 @@ import { createPortal } from "react-dom";
 import { X, User, FileText, CalendarDays, Trophy, Clock, AlertTriangle, CalendarCheck, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
+import { FormSection } from "@/components/ui/form";
 import type { TrainingCell, EmployeeRow, SOPColumn } from "../../types";
 import { CELL_CONFIG, formatDate } from "./constants";
 
-const FormSection: React.FC<{
-    title: string;
-    icon: React.ReactNode;
-    children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-            <span className="text-emerald-600">{icon}</span>
-            <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-        </div>
-        <div className="p-5">{children}</div>
-    </div>
-);
 
 interface CellDetailDrawerProps {
     cell: TrainingCell;

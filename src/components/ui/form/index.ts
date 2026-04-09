@@ -3,7 +3,8 @@ export {
   Input,
   Textarea,
   FormGrid, 
-  FormSection, 
   FormActions
 } from './ResponsiveForm';
+export { FormSection } from './FormSection';
 export type { FormFieldProps } from './ResponsiveForm';
+export type { FormSectionProps } from './FormSection';

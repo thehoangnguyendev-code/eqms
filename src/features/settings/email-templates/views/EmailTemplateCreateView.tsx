@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Settings, Variable, Mail, Eye } from "lucide-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea } from "@/components/ui/form";
+import { Input, Textarea, FormSection } from "@/components/ui/form";
 import { Select } from "@/components/ui/select";
 import { LexicalEditor } from "../components/LexicalEditor";
 import { EmailLivePreview } from "../components/EmailLivePreview";
@@ -17,20 +17,6 @@ import { EMAIL_TEMPLATE_TYPES, EMAIL_VARIABLES } from "../constants";
 import { useEmailTemplatesList } from "../hooks/useEmailTemplatesList";
 import type { EmailTemplateType, EmailTemplateStatus } from "../types";
 
-// Card section matching MaterialDetailView's FormSection pattern
-const FormSection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-      <span className="text-emerald-600">{icon}</span>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-    </div>
-    <div className="p-5">{children}</div>
-  </div>
-);
 
 // Field wrapper matching DocumentFilters label style
 const Field: React.FC<{
