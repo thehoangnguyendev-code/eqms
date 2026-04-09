@@ -258,6 +258,21 @@ export const NewRevisionView: React.FC = () => {
   return <NewRevisionForm materialId={materialId!} source={source} />;
 };
 
+// ─── FormSection ───────────────────────────────────────────────────
+const FormSection: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
+
 // ─── Inner Form ─────────────────────────────────────────────────────
 interface NewRevisionFormProps {
   materialId: string;
@@ -521,12 +536,11 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
       </div>
 
       {/* ─── Revision Type Selector ───────────────────────────── */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-200">
-          <h3 className="text-sm font-semibold text-slate-900">Revision Type</h3>
-          <p className="text-xs text-slate-500 mt-0.5">Choose whether this is a minor update or a major revision.</p>
-        </div>
-        <div className="p-5">
+      <FormSection
+        title="Revision Type"
+        icon={<GitBranch className="h-4 w-4" />}
+      >
+        <p className="text-xs text-slate-500 -mt-2 mb-4">Choose whether this is a minor update or a major revision.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Minor Revision */}
             <button
@@ -598,19 +612,17 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
               </div>
             </button>
           </div>
-        </div>
-      </div>
+      </FormSection>
 
       {/* ─── Main Content Grid ────────────────────────────────── */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 lg:gap-6">
         {/* ── Left: File / Resource ──────────────────────────── */}
         <div className="xl:col-span-5 space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900">File / Resource</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Keep the existing file or upload a new one for this revision.</p>
-            </div>
-            <div className="p-5">
+          <FormSection
+            title="File / Resource"
+            icon={<CloudUpload className="h-4 w-4" />}
+          >
+            <p className="text-xs text-slate-500 -mt-2 mb-4">Keep the existing file or upload a new one for this revision.</p>
               {/* Upload mode tabs */}
               <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg mb-4">
                 {(["file", "link"] as UploadMode[]).map((mode) => (
@@ -781,8 +793,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="hidden"
               />
-            </div>
-          </div>
+          </FormSection>
 
           {/* Revision Notes */}
           <div className="bg-white rounded-xl border border-amber-200 shadow-sm overflow-hidden">
@@ -826,12 +837,12 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
         <div className="xl:col-span-7 space-y-4">
 
           {/* Material Information */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900">Material Information</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Pre-filled from previous version. Update as needed.</p>
-            </div>
-            <div className="p-5 space-y-5">
+          <FormSection
+            title="Material Information"
+            icon={<FileText className="h-4 w-4" />}
+          >
+            <p className="text-xs text-slate-500 -mt-2 mb-5">Pre-filled from previous version. Update as needed.</p>
+            <div className="space-y-5">
               {/* Material Name */}
               <div>
                 <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
@@ -948,7 +959,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                 />
               </div>
             </div>
-          </div>
+          </FormSection>
         </div>
       </div>
 

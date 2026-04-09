@@ -17,7 +17,7 @@ import {
   AuditTrailTab,
 } from "./tabs";
 import { Button } from "@/components/ui/button/Button";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { revisionDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { ROUTES } from "@/app/routes.constants";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
@@ -109,34 +109,32 @@ export const DetailRevisionView: React.FC<DetailRevisionViewProps> = ({
       {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header: Title + Breadcrumb + Actions */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
-          <div className="min-w-[200px] flex-1">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              Revision Details
-            </h1>
-            <Breadcrumb items={revisionDetail(navigateTo)} />
-          </div>
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-            <Button
-              onClick={handleBack}
-              size="sm"
-              variant="outline-emerald"
-              className="whitespace-nowrap gap-2"
-            >
-              Back
-            </Button>
-            {document.status === "Effective" && (
+        <PageHeader
+          title="Revision Details"
+          breadcrumbItems={revisionDetail(navigateTo)}
+          actions={
+            <>
               <Button
+                onClick={handleBack}
                 size="sm"
                 variant="outline-emerald"
                 className="whitespace-nowrap gap-2"
-                onClick={handleRequestControlledCopy}
               >
-                Request Controlled Copy
+                Back
               </Button>
-            )}
-          </div>
-        </div>
+              {document.status === "Effective" && (
+                <Button
+                  size="sm"
+                  variant="outline-emerald"
+                  className="whitespace-nowrap gap-2"
+                  onClick={handleRequestControlledCopy}
+                >
+                  Request Controlled Copy
+                </Button>
+              )}
+            </>
+          }
+        />
       </div>
 
       {/* Status Stepper */}

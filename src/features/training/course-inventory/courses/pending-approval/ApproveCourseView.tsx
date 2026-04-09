@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
 import { XCircle, Check } from "lucide-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { coursePendingApproval } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { ESignatureModal } from "@/components/ui/esign-modal";
@@ -175,17 +175,11 @@ export const ApproveCourseView: React.FC = () => {
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col">
       {/* Header */}
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              Pending Approval
-            </h1>
-            <Breadcrumb items={coursePendingApproval(navigate)} />
-          </div>
-
-          {/* Header Action Buttons */}
-          <div className="flex items-center gap-2 shrink-0">
+      <PageHeader
+        title="Pending Approval"
+        breadcrumbItems={coursePendingApproval(navigate)}
+        actions={
+          <>
             <Button
               variant="outline-emerald"
               size="sm"
@@ -226,9 +220,9 @@ export const ApproveCourseView: React.FC = () => {
                 </Button>
               </>
             )}
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Workflow Stepper */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">

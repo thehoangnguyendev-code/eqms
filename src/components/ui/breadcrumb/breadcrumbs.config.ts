@@ -434,13 +434,13 @@ export const myTraining = (navigate?: (path: string) => void): BreadcrumbItem[] 
 
 export const userManagement = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
-  { label: "Settings" },
+  { label: "System Administration" },
   { label: "User Management", isActive: true },
 ];
 
 export const addUser = (_navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(_navigate),
-  { label: "Settings" },
+  { label: "System Administration" },
   { label: "User Management" },
   { label: "Add User", isActive: true },
 ];
@@ -450,7 +450,7 @@ export const editUser = (
   employeeId?: string
 ): BreadcrumbItem[] => [
   dashboard(_navigate),
-  { label: "Settings" },
+  { label: "System Administration" },
   { label: "User Management" },
   { label: employeeId || "Edit User", isActive: true },
 ];
@@ -460,15 +460,15 @@ export const userProfile = (
   _fullName?: string
 ): BreadcrumbItem[] => [
   dashboard(_navigate),
-  { label: "Settings" },
+  { label: "System Administration" },
   { label: "User Management" },
   { label: "User Profile", isActive: true },
 ];
 
 export const rolePermissions = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
-  { label: "Settings" },
-  { label: "Role & Permissions", isActive: true },
+  { label: "System Administration" },
+  { label: "Roles & Permissions", isActive: true },
 ];
 
 export const roleDetail = (
@@ -483,8 +483,8 @@ export const roleDetail = (
   };
   return [
     dashboard(_navigate),
-    { label: "Setting" },
-    { label: "Role & Permissions" },
+    { label: "System Administration" },
+    { label: "Roles & Permissions" },
     { label: labels[mode || "view"] || roleName || "Role Details", isActive: true },
   ];
 };
@@ -495,7 +495,7 @@ export const dictionaries = (
 ): BreadcrumbItem[] => {
   const base: BreadcrumbItem[] = [
     dashboard(_navigate),
-    { label: "Setting" },
+    { label: "Configure Settings" },
   ];
 
   if (activeTabLabel) {
@@ -510,26 +510,26 @@ export const dictionaries = (
 
 export const configuration = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
-  { label: "Setting" },
+  { label: "Configure Settings" },
   { label: "System Configuration", isActive: true },
 ];
 
 export const systemInformation = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
-  { label: "Setting" },
+  { label: "Configure Settings" },
   { label: "System Information", isActive: true },
 ];
 
 export const emailTemplates = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
-  { label: "Setting" },
+  { label: "Configure Settings" },
   { label: "Email Templates", isActive: true },
 ];
 
 export const emailTemplateCreate = (_navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(_navigate),
-  { label: "Setting" },
-  { label: "Email Templates", href: ROUTES.SETTINGS.EMAIL_TEMPLATES },
+  { label: "Configure Settings" },
+  { label: "Email Templates" },
   { label: "Create Template", isActive: true },
 ];
 
@@ -538,8 +538,8 @@ export const emailTemplateEdit = (
   templateName?: string
 ): BreadcrumbItem[] => [
   dashboard(_navigate),
-  { label: "Setting" },
-  { label: "Email Templates", href: ROUTES.SETTINGS.EMAIL_TEMPLATES },
+  { label: "Configure Settings" },
+  { label: "Email Templates" },
   { label: templateName || "Edit Template", isActive: true },
 ];
 

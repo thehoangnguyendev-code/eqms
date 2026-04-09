@@ -1,43 +1,46 @@
-import React, { useState, useRef } from "react";
-import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/routes.constants";
+import React, { useState } from "react";
 import {
-  User,
   Calendar,
   Globe,
-  Monitor,
-  Shield,
   FileText,
   AlertCircle,
   Check,
   X,
   Download,
+  Info,
+  Activity,
+  Database,
 } from "lucide-react";
-import { IconReportAnalytics } from "@tabler/icons-react";
+import { IconExchange, IconReportAnalytics } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { auditTrailDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
+import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { cn } from "@/components/ui/utils";
 import { formatDateTime } from "@/utils/format";
+import { AuditExportModal } from "./components/AuditExportModal";
 import type { AuditTrailRecord } from "./types";
 
-// Info Row Component
-interface InfoRowProps {
-  label: string;
-  value: React.ReactNode;
-  icon?: React.ReactNode;
-}
-
-const InfoRow: React.FC<InfoRowProps> = ({ label, value, icon }) => (
-  <div className="flex items-center gap-3 py-3 border-b border-slate-100 last:border-0">
-    {icon && (
-      <div className="flex items-center justify-center flex-shrink-0 w-5 h-5 text-slate-500">{icon}</div>
-    )}
-    <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2 items-center">
-      <span className="text-sm font-medium text-slate-700">{label}:</span>
-      <span className="sm:col-span-2 text-sm text-slate-900">{value}</span>
+// FormSection — matches DestroyControlledCopyView
+const FormSection: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
     </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
+
+// InfoRow — label/value layout matching DestroyControlledCopyView
+const InfoRow: React.FC<{ label: string; value: React.ReactNode; last?: boolean }> = ({ label, value, last }) => (
+  <div className={cn("flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2", !last && "pb-3 lg:pb-4 border-b border-slate-200")}>
+    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">{label}</label>
+    <div className="text-xs lg:text-sm text-slate-900 flex-1">{value}</div>
   </div>
 );
 
@@ -73,167 +76,17 @@ const getSeverityBadge = (severity: string) => {
     High: "bg-amber-50 text-amber-700 border-amber-200",
     Critical: "bg-red-50 text-red-700 border-red-200",
   };
-
   const icons = {
     Low: <Check className="h-3.5 w-3.5" />,
     Medium: <AlertCircle className="h-3.5 w-3.5" />,
     High: <AlertCircle className="h-3.5 w-3.5" />,
     Critical: <X className="h-3.5 w-3.5" />,
   };
-
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border",
-        colors[severity as keyof typeof colors] || colors.Low,
-      )}
-    >
+    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border", colors[severity as keyof typeof colors] || colors.Low)}>
       {icons[severity as keyof typeof icons]}
       {severity}
     </span>
-  );
-};
-
-// Export Modal Component
-interface ExportModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  record: AuditTrailRecord;
-}
-
-const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, record }) => {
-  if (!isOpen) return null;
-
-  const handleExportJSON = () => {
-    const dataStr = JSON.stringify(record, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `audit-trail-${record.id}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-    onClose();
-  };
-
-  const handleExportPDF = () => {
-    // TODO: Implement PDF export
-    console.log("PDF export not implemented yet");
-    onClose();
-  };
-
-  const handleExportText = () => {
-    const text = `
-Audit Trail Record
-==================
-ID: ${record.id}
-Timestamp: ${formatDateTime(record.timestamp)}
-User: ${record.user} (${record.userId})
-IP Address: ${record.ipAddress}
-Device: ${record.device || "Not recorded"}
-Module: ${record.module}
-Action: ${record.action}
-Entity: ${record.entityName} (${record.entityId})
-Description: ${record.description}
-Severity: ${record.severity}
-
-${record.changes && record.changes.length > 0
-        ? `Changes:\n${record.changes.map((c) => `- ${c.field}: "${c.oldValue}" → "${c.newValue}"`).join("\n")}`
-        : ""
-      }
-
-${record.metadata && Object.keys(record.metadata).length > 0
-        ? `Metadata:\n${Object.entries(record.metadata)
-          .map(([k, v]) => `- ${k}: ${v}`)
-          .join("\n")}`
-        : ""
-      }
-    `.trim();
-    const blob = new Blob([text], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `audit-trail-${record.id}.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
-    onClose();
-  };
-
-  return createPortal(
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-200"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div
-          className="relative bg-white rounded-xl shadow-2xl w-full max-w-md animate-in zoom-in-95 fade-in duration-200"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-            <h3 className="text-lg font-semibold text-slate-900">Export Audit Record</h3>
-            <button
-              onClick={onClose}
-              className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-slate-100 transition-colors"
-              aria-label="Close"
-            >
-              <X className="h-4 w-4 text-slate-500" />
-            </button>
-          </div>
-
-          {/* Content */}
-          <div className="px-6 py-4">
-            <p className="text-sm text-slate-600 mb-4">
-              Select export format for audit record <span className=" font-medium text-slate-900">{record.id}</span>
-            </p>
-            <div className="space-y-2">
-              <button
-                onClick={handleExportJSON}
-                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors"
-              >
-                <FileText className="h-4 w-4 text-slate-500" />
-                <div className="flex-1 text-left">
-                  <div className="font-medium">Export as JSON</div>
-                  <div className="text-xs text-slate-500">Structured data format</div>
-                </div>
-              </button>
-              <button
-                onClick={handleExportPDF}
-                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors"
-              >
-                <FileText className="h-4 w-4 text-slate-500" />
-                <div className="flex-1 text-left">
-                  <div className="font-medium">Export as PDF</div>
-                  <div className="text-xs text-slate-500">Printable document format</div>
-                </div>
-              </button>
-              <button
-                onClick={handleExportText}
-                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors"
-              >
-                <FileText className="h-4 w-4 text-slate-500" />
-                <div className="flex-1 text-left">
-                  <div className="font-medium">Export as TXT</div>
-                  <div className="text-xs text-slate-500">Plain text format</div>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
-            <Button variant="outline" size="sm" onClick={onClose}>
-              Cancel
-            </Button>
-          </div>
-        </div>
-      </div>
-    </>,
-    document.body
   );
 };
 
@@ -243,35 +96,26 @@ interface AuditTrailDetailViewProps {
   onBack: () => void;
 }
 
-export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({
-  record,
-  onBack,
-}) => {
-  const navigate = useNavigate();
+export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({ record, onBack }) => {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const handleBack = () => {
+    setIsNavigating(true);
+    setTimeout(() => onBack(), 600);
+  };
 
   return (
     <div className="space-y-6 w-full">
-      {/* Header: Title + Breadcrumb + Actions */}
       <PageHeader
         title="Audit Trail Detail"
         breadcrumbItems={auditTrailDetail()}
         actions={
           <>
-            <Button
-              onClick={onBack}
-              size="sm"
-              variant="outline-emerald"
-              className="whitespace-nowrap gap-2"
-            >
+            <Button onClick={handleBack} size="sm" variant="outline-emerald" className="whitespace-nowrap gap-2">
               Back
             </Button>
-            <Button
-              onClick={() => setIsExportModalOpen(true)}
-              size="sm"
-              variant="default"
-              className="whitespace-nowrap gap-2"
-            >
+            <Button onClick={() => setIsExportModalOpen(true)} size="sm" variant="outline" className="whitespace-nowrap gap-2">
               <Download className="h-4 w-4" />
               Export
             </Button>
@@ -279,74 +123,36 @@ export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({
         }
       />
 
-      {/* Content Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 lg:gap-6">
-        {/* Left Column: Main Information */}
+        {/* Left Column */}
         <div className="xl:col-span-8 space-y-5">
-          {/* General Information Card */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900">
-                General Information
-              </h3>
-            </div>
-            <div className="p-5">
-              <InfoRow
-                label="Audit ID"
-                value={<span className="">{record.id}</span>}
-                icon={<FileText className="h-5 w-5" />}
-              />
-              <InfoRow
-                label="Timestamp"
-                value={formatDateTime(record.timestamp)}
-                icon={<Calendar className="h-5 w-5" />}
-              />
+          {/* General Information */}
+          <FormSection title="General Information" icon={<Info className="h-4 w-4" />}>
+            <div className="space-y-3 lg:space-y-4">
+              <InfoRow label="Audit ID" value={<span className="font-medium">{record.id}</span>} />
+              <InfoRow label="Timestamp" value={formatDateTime(record.timestamp)} />
               <InfoRow
                 label="User"
                 value={
                   <div className="flex flex-col">
                     <span className="font-medium">{record.user}</span>
-                    <span className="text-xs text-slate-500">
-                      {record.userId}
-                    </span>
+                    <span className="text-xs text-slate-500">{record.userId}</span>
                   </div>
                 }
-                icon={<User className="h-5 w-5" />}
               />
-              <InfoRow
-                label="IP Address"
-                value={<span className="">{record.ipAddress}</span>}
-                icon={<Globe className="h-5 w-5" />}
-              />
-              <InfoRow
-                label="Device"
-                value={
-                  <span className="">
-                    {record.device || "(Not recorded)"}
-                  </span>
-                }
-                icon={<Monitor className="h-5 w-5" />}
-              />
-              <InfoRow
-                label="Severity"
-                value={getSeverityBadge(record.severity)}
-                icon={<Shield className="h-5 w-5" />}
-              />
+              <InfoRow label="IP Address" value={record.ipAddress} />
+              <InfoRow label="Device" value={record.device || "(Not recorded)"} />
+              <InfoRow label="Severity" value={getSeverityBadge(record.severity)} last />
             </div>
-          </div>
+          </FormSection>
 
-          {/* Action Details Card */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Action Details
-              </h3>
-            </div>
-            <div className="p-5">
+          {/* Action Details */}
+          <FormSection title="Action Details" icon={<Activity className="h-4 w-4" />}>
+            <div className="space-y-3 lg:space-y-4">
               <InfoRow
                 label="Module"
                 value={
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 text-slate-700 border-slate-200">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 text-slate-700 border-slate-200">
                     {record.module}
                   </span>
                 }
@@ -354,164 +160,98 @@ export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({
               <InfoRow
                 label="Action"
                 value={
-                  <span
-                    className={cn(
-                      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border",
-                      getActionColor(record.action),
-                    )}
-                  >
+                  <span className={cn("inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border", getActionColor(record.action))}>
                     {record.action}
                   </span>
                 }
               />
-              <InfoRow
-                label="Entity ID"
-                value={<span className="">{record.entityId}</span>}
-              />
+              <InfoRow label="Entity ID" value={record.entityId} />
               <InfoRow label="Entity Name" value={record.entityName} />
-              <InfoRow label="Description" value={record.description} />
+              <InfoRow label="Description" value={record.description} last />
             </div>
-          </div>
+          </FormSection>
 
-          {/* Changes Table (if changes exist) */}
+          {/* Changes Table */}
           {record.changes && record.changes.length > 0 && (
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-200">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Changes Made
-                </h3>
-              </div>
-              <div className="overflow-x-auto">
+            <FormSection title="Changes Made" icon={<IconExchange className="h-4 w-4" />}>
+              <div className="overflow-x-auto -mx-5 -mb-5">
                 <table className="w-full">
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
-                      <th className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Field
-                      </th>
-                      <th className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        Old Value
-                      </th>
-                      <th className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                        New Value
-                      </th>
+                      {["Field", "Old Value", "New Value"].map(h => (
+                        <th key={h} className="py-3 px-5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                          {h}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 bg-white">
                     {record.changes.map((change, index) => (
                       <tr key={index} className="hover:bg-slate-50/80">
-                        <td className="py-3 px-4 text-sm font-medium text-slate-900 whitespace-nowrap">
-                          {change.field}
+                        <td className="py-3 px-5 text-xs lg:text-sm font-medium text-slate-900 whitespace-nowrap">{change.field}</td>
+                        <td className="py-3 px-5 text-xs lg:text-sm text-slate-600 whitespace-nowrap">
+                          {change.oldValue || <span className="text-slate-400 italic">(empty)</span>}
                         </td>
-                        <td className="py-3 px-4 text-sm text-slate-600 whitespace-nowrap">
-                          {change.oldValue || (
-                            <span className="text-slate-400 italic">
-                              (empty)
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-sm text-slate-900 whitespace-nowrap">
-                          {change.newValue || (
-                            <span className="text-slate-400 italic">
-                              (empty)
-                            </span>
-                          )}
+                        <td className="py-3 px-5 text-xs lg:text-sm text-slate-900 whitespace-nowrap">
+                          {change.newValue || <span className="text-slate-400 italic">(empty)</span>}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
+            </FormSection>
           )}
         </div>
 
-        {/* Right Column: Metadata */}
+        {/* Right Column */}
         <div className="xl:col-span-4 space-y-5">
-          {/* Metadata Card */}
+          {/* Metadata */}
           {record.metadata && Object.keys(record.metadata).length > 0 && (
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-200">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Additional Metadata
-                </h3>
+            <FormSection title="Additional Metadata" icon={<Database className="h-4 w-4" />}>
+              <div className="space-y-3 lg:space-y-4">
+                {Object.entries(record.metadata).map(([key, value], i, arr) => (
+                  <InfoRow
+                    key={key}
+                    label={key.replace(/([A-Z])/g, " $1").trim()}
+                    value={typeof value === "object" ? JSON.stringify(value, null, 2) : String(value)}
+                    last={i === arr.length - 1}
+                  />
+                ))}
               </div>
-              <div className="p-5">
-                <div className="space-y-3">
-                  {Object.entries(record.metadata).map(([key, value]) => (
-                    <div
-                      key={key}
-                      className="flex flex-col gap-1 pb-3 border-b border-slate-100 last:border-0"
-                    >
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">
-                        {key.replace(/([A-Z])/g, " $1").trim()}
-                      </span>
-                      <span className="text-sm text-slate-900">
-                        {typeof value === "object"
-                          ? JSON.stringify(value, null, 2)
-                          : String(value)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            </FormSection>
           )}
 
-
-
-          {/* Summary Card */}
-          <div className="bg-gradient-to-br from-emerald-50 via-emerald-50/50 to-white rounded-xl border-2 border-emerald-200 shadow-md overflow-hidden">
-            <div className="p-5">
-              <h3 className="text-base font-bold text-emerald-900 mb-3 flex items-center gap-2">
-                <IconReportAnalytics className="h-4 w-4" />
-                Record Summary
-              </h3>
-              <div className="space-y-2.5 text-sm text-slate-700">
-                <p className="leading-relaxed">
-                  <span className="font-bold text-emerald-900">
-                    {record.user}
-                  </span>{" "}
-                  performed a{" "}
-                  <span className="font-bold text-emerald-900">
-                    {record.action}
-                  </span>{" "}
-                  action on{" "}
-                  <span className="font-bold text-emerald-900">
-                    {record.module}
-                  </span>{" "}
-                  module.
-                </p>
-                {record.changes && record.changes.length > 0 && (
-                  <p className="leading-relaxed">
-                    This action modified{" "}
-                    <span className="font-bold text-emerald-900">
-                      {record.changes.length}
-                    </span>{" "}
-                    field{record.changes.length !== 1 ? "s" : ""}.
-                  </p>
-                )}
-                <div className="pt-2 mt-3 border-t border-emerald-200">
-                  <p className="text-xs text-slate-600 flex items-center gap-2">
-                    <Calendar className="h-3 w-3" />
-                    {formatDateTime(record.timestamp)}
-                  </p>
-                  <p className="text-xs text-slate-600 flex items-center gap-2 mt-1">
-                    <Globe className="h-3 w-3" />
-                    {record.ipAddress}
-                  </p>
-                </div>
-              </div>
+          {/* Summary */}
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 md:p-5">
+            <h3 className="text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2">
+              <IconReportAnalytics className="h-4 w-4" />
+              Record Summary
+            </h3>
+            <div className="space-y-2 text-sm text-emerald-800">
+              <p className="leading-relaxed">
+                • <span className="font-semibold">{record.user}</span> performed a{" "}
+                <span className="font-semibold">{record.action}</span> action on{" "}
+                <span className="font-semibold">{record.module}</span> module.
+              </p>
+              {record.changes && record.changes.length > 0 && (
+                <p>• This action modified <span className="font-semibold">{record.changes.length}</span> field{record.changes.length !== 1 ? "s" : ""}.</p>
+              )}
+              <p className="flex items-center gap-2">
+                <Calendar className="h-3 w-3 flex-shrink-0" />
+                {formatDateTime(record.timestamp)}
+              </p>
+              <p className="flex items-center gap-2">
+                <Globe className="h-3 w-3 flex-shrink-0" />
+                {record.ipAddress}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Export Modal */}
-      <ExportModal
-        isOpen={isExportModalOpen}
-        onClose={() => setIsExportModalOpen(false)}
-        record={record}
-      />
+      <AuditExportModal isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)} record={record} />
+      {isNavigating && <FullPageLoading text="Loading..." />}
     </div>
   );
 };

@@ -437,7 +437,7 @@ export const MyTrainingView: React.FC = () => {
                 {...dragEvents}
               >
                 <table className="w-full min-w-[800px] lg:min-w-[1200px]">
-                  <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
+                  <thead className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                     <tr>
                       <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
                         No.
@@ -654,7 +654,7 @@ export const MyTrainingView: React.FC = () => {
                 {...dragEvents}
               >
                 <table className="w-full min-w-[800px] lg:min-w-[1200px]">
-                  <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
+                  <thead className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                     <tr>
                       <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
                         No.

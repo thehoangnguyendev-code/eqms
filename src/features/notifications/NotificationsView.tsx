@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { notifications as notificationsBreadcrumb } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import {
   Search,
@@ -622,35 +622,33 @@ export const NotificationsView: React.FC = () => {
   return (
     <div className="flex flex-col h-full gap-4 md:gap-6">
       {/* Header: Title + Action Button */}
-      <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
-        <div className="min-w-[200px] flex-1">
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-            Notifications
-          </h1>
-          <Breadcrumb items={notificationsBreadcrumb(navigate)} />
-        </div>
-        <div className="flex items-center gap-2 md:gap-3 shrink-0 flex-wrap">
-          <Button
-            onClick={() => console.log("Export notifications")}
-            variant="outline"
-            size="sm"
-            className="whitespace-nowrap gap-2"
-          >
-            <Download className="h-4 w-4" />
-            Export
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsMarkAllModalOpen(true)}
-            disabled={counts.unread === 0}
-            className="whitespace-nowrap gap-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
-          >
-            <CheckCheck className="h-4 w-4" />
-            <span className="inline">Mark all as read</span>
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Notifications"
+        breadcrumbItems={notificationsBreadcrumb(navigate)}
+        actions={
+          <>
+            <Button
+              onClick={() => console.log("Export notifications")}
+              variant="outline"
+              size="sm"
+              className="whitespace-nowrap gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsMarkAllModalOpen(true)}
+              disabled={counts.unread === 0}
+              className="whitespace-nowrap gap-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+            >
+              <CheckCheck className="h-4 w-4" />
+              <span className="inline">Mark all as read</span>
+            </Button>
+          </>
+        }
+      />
 
       {/* Unified Content Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">

@@ -10,6 +10,8 @@ import {
   Package,
   Scale,
   FileBarChart,
+  ShieldCheck,
+  Info,
 } from "lucide-react";
 import {
   IconFileDescription,
@@ -36,6 +38,21 @@ import { MOCK_ROLES } from "../mockData";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { roleDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
+
+const FormSection: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+}> = ({ title, icon, children, className }) => (
+  <div className={cn("bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden", className)}>
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
 
 export const RoleDetailView: React.FC = () => {
   const navigate = useNavigate();
@@ -295,84 +312,81 @@ export const RoleDetailView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
 
         {/* Left: Role Information */}
-        <div className="lg:col-span-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <h3 className="text-base font-semibold text-slate-900 mb-4">Role Information</h3>
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
-                Role Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={roleName}
-                onChange={(e) => handleNameChange(e.target.value)}
-                placeholder="Enter role name"
-                disabled={isViewMode}
-                className={cn(
-                  "block w-full h-9 px-3 border rounded-lg bg-white focus:outline-none focus:ring-1 text-sm transition-all placeholder:text-slate-400",
-                  nameError
-                    ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                    : "border-slate-200 focus:ring-emerald-500 focus:border-emerald-500",
-                  isViewMode && "bg-slate-100 text-slate-600 cursor-not-allowed"
-                )}
-              />
-              {nameError && <p className="text-xs text-red-600 mt-1">{nameError}</p>}
-            </div>
-            <div>
-              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Description</label>
-              <textarea
-                rows={4}
-                value={roleDescription}
-                onChange={(e) => {
-                  setRoleDescription(e.target.value);
-                  setHasUnsavedChanges(true);
-                }}
-                placeholder="Enter role description"
-                disabled={isViewMode}
-                className={cn(
-                  "block w-full px-3 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400 resize-none",
-                  isViewMode && "bg-slate-100 text-slate-600 cursor-not-allowed"
-                )}
-              />
-            </div>
-            {/* Summary */}
-            <div className="pt-3 border-t border-slate-100">
-              <p className="text-xs font-medium text-slate-500 mb-2">Permissions Summary</p>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
-                  <div
-                    className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-                    style={{ width: `${permissionCount.total > 0 ? Math.round((permissionCount.selected / permissionCount.total) * 100) : 0}%` }}
-                  />
+        <div className="lg:col-span-4">
+          <FormSection title="Role Information" icon={<Info className="h-4 w-4" />}>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+                  Role Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={roleName}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  placeholder="Enter role name"
+                  disabled={isViewMode}
+                  className={cn(
+                    "block w-full h-9 px-3 border rounded-lg bg-white focus:outline-none focus:ring-1 text-sm transition-all placeholder:text-slate-400",
+                    nameError
+                      ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                      : "border-slate-200 focus:ring-emerald-500 focus:border-emerald-500",
+                    isViewMode && "bg-slate-100 text-slate-600 cursor-not-allowed"
+                  )}
+                />
+                {nameError && <p className="text-xs text-red-600 mt-1">{nameError}</p>}
+              </div>
+              <div>
+                <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Description</label>
+                <textarea
+                  rows={4}
+                  value={roleDescription}
+                  onChange={(e) => {
+                    setRoleDescription(e.target.value);
+                    setHasUnsavedChanges(true);
+                  }}
+                  placeholder="Enter role description"
+                  disabled={isViewMode}
+                  className={cn(
+                    "block w-full px-3 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400 resize-none",
+                    isViewMode && "bg-slate-100 text-slate-600 cursor-not-allowed"
+                  )}
+                />
+              </div>
+              {/* Summary */}
+              <div className="pt-3 border-t border-slate-100">
+                <p className="text-xs font-medium text-slate-500 mb-2">Permissions Summary</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                      style={{ width: `${permissionCount.total > 0 ? Math.round((permissionCount.selected / permissionCount.total) * 100) : 0}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-semibold text-slate-700 shrink-0">
+                    {permissionCount.selected} / {permissionCount.total}
+                  </span>
                 </div>
-                <span className="text-xs font-semibold text-slate-700 shrink-0">
-                  {permissionCount.selected} / {permissionCount.total}
-                </span>
               </div>
             </div>
-          </div>
+          </FormSection>
         </div>
 
         {/* Right: Permission Section */}
         <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[520px] lg:h-[calc(100vh-280px)]">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 bg-white shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="flex-1">
-            <h2 className="text-base font-semibold text-slate-900">Permissions</h2>
-            <p className="text-xs text-slate-500 mt-1">
-              Select permissions to grant access to specific features
-            </p>
+        <div className="flex items-center justify-between gap-2.5 px-5 py-4 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <span className="text-emerald-600"><ShieldCheck className="h-4 w-4" /></span>
+            <h3 className="text-sm font-semibold text-slate-800">Permissions</h3>
           </div>
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 md:shrink-0">
-            <div className="flex items-center gap-2 text-xs text-slate-600">
-              <span className="inline-flex items-center px-2 py-1 rounded-full bg-slate-100 text-slate-700">
-                {permissionCount.selected} selected
-              </span>
-              <span className="text-slate-400">/</span>
-              <span className="inline-flex items-center px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
-                {permissionCount.total} total
-              </span>
-            </div>
+          <div className="flex items-center gap-2 text-xs text-slate-600">
+            <span className="inline-flex items-center px-2 py-1 rounded-full bg-slate-100 text-slate-700">
+              {permissionCount.selected} selected
+            </span>
+            <span className="text-slate-400">/</span>
+            <span className="inline-flex items-center px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
+              {permissionCount.total} total
+            </span>
           </div>
         </div>
 

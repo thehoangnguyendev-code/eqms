@@ -479,11 +479,12 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
             </div>
 
             {/* Comments Section */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 md:p-6">
-              <h3 className="text-base md:text-lg font-bold text-slate-900 mb-3 md:mb-4 flex items-center gap-2">
-                <IconMessage2 className="h-4 w-4 md:h-5 md:w-5 text-slate-600" />
-                Comments & Discussion
-              </h3>
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+                <span className="text-emerald-600"><MessageSquare className="h-4 w-4" /></span>
+                <h3 className="text-sm font-semibold text-slate-800">Comments & Discussion</h3>
+              </div>
+              <div className="p-4 md:p-6">
 
               {/* Comments List */}
               <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
@@ -550,6 +551,7 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
                     </button>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>

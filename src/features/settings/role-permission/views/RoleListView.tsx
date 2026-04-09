@@ -2,8 +2,8 @@ import React, { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
-import { Plus, Search, MoreVertical, Users, Lock, Download, ChevronUp, ChevronDown, Trash2 } from "lucide-react";
-import { IconEye, IconEdit, IconTrash } from "@tabler/icons-react";
+import { Plus, Search, MoreVertical, Users, Lock, Download, ChevronUp, ChevronDown, Trash2, Edit } from "lucide-react";
+import { IconEye, IconEdit, IconTrash, IconInfoCircle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button/Button";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { TablePagination } from "@/components/ui/table/TablePagination";
@@ -41,31 +41,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const menuItems = [
-    {
-      icon: IconEye,
-      label: "View Role",
-      onClick: onView,
-      color: "text-slate-500",
-    },
-    {
-      icon: IconEdit,
-      label: "Edit Role",
-      onClick: onEdit,
-      color: "text-slate-500",
-    },
-    {
-      icon: Trash2,
-      label: "Delete Role",
-      onClick: onDelete,
-      color: canDelete ? "text-slate-500" : "text-slate-300",
-      disabled: !canDelete,
-    },
-  ];
-
   return createPortal(
     <>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 z-40 animate-in fade-in duration-150"
         onClick={(e) => {
@@ -74,36 +51,36 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
         }}
         aria-hidden="true"
       />
-      {/* Menu */}
       <div
-        className="absolute z-50 min-w-[160px] w-[200px] max-w-[90vw] max-h-[300px] overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        className="absolute z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
         style={position.style}
       >
         <div className="py-1">
-          {menuItems.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={index}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!item.disabled) {
-                    item.onClick();
-                    onClose();
-                  }
-                }}
-                disabled={item.disabled}
-                className={cn(
-                  "flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-slate-50 active:bg-slate-100 transition-colors",
-                  item.disabled && "opacity-50 cursor-not-allowed",
-                  item.color
-                )}
-              >
-                <Icon className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            );
-          })}
+          <button
+            onClick={(e) => { e.stopPropagation(); onView(); onClose(); }}
+            className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+          >
+            <IconInfoCircle className="h-4 w-4 text-slate-400 flex-shrink-0" />
+            <span className="font-medium text-slate-600">View Role</span>
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onEdit(); onClose(); }}
+            className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+          >
+            <Edit className="h-4 w-4 text-slate-400 flex-shrink-0" />
+            <span className="font-medium text-slate-600">Edit Role</span>
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); if (canDelete) { onDelete(); onClose(); } }}
+            disabled={!canDelete}
+            className={cn(
+              "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors font-medium border-t border-slate-50 mt-1 pt-2",
+              !canDelete ? "text-slate-300 cursor-not-allowed opacity-50" : "text-slate-500 hover:bg-slate-50 active:bg-slate-100"
+            )}
+          >
+            <Trash2 className={cn("h-4 w-4 flex-shrink-0", !canDelete ? "text-slate-300" : "text-slate-500")} />
+            <span>Delete Role</span>
+          </button>
         </div>
       </div>
     </>,
@@ -244,7 +221,7 @@ export const RoleListView: React.FC = () => {
     <div className="space-y-6 w-full flex-1 flex flex-col">
       {/* Header */}
       <PageHeader
-        title="Role & Permissions"
+        title="Roles & Permissions"
         breadcrumbItems={rolePermissions()}
         actions={
           <>

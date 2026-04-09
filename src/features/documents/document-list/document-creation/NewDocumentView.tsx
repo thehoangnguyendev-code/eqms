@@ -36,7 +36,7 @@ import {
   type UploadedFile,
 } from "@/features/documents/document-list/document-creation/new-tabs";
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { newDocument } from "@/components/ui/breadcrumb/breadcrumbs.config";
 
 // --- Types ---
@@ -347,17 +347,11 @@ export const NewDocumentView: React.FC = () => {
       {(isSaving || isNavigating) && <FullPageLoading text={isSaving ? "Processing..." : "Loading..."} />}
       {/* Header: Title + Breadcrumb + Actions */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 lg:gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              New Document
-            </h1>
-            <Breadcrumb items={newDocument(navigateTo)} />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-            {documentStatus === "Closed - Cancelled" ? (
+        <PageHeader
+          title="New Document"
+          breadcrumbItems={newDocument(navigateTo)}
+          actions={
+            documentStatus === "Closed - Cancelled" ? (
               <Button
                 onClick={handleBackToList}
                 variant="outline-emerald"
@@ -368,7 +362,6 @@ export const NewDocumentView: React.FC = () => {
               </Button>
             ) : (
               <>
-
                 <Button
                   onClick={handleCancel}
                   variant="outline-emerald"
@@ -410,9 +403,9 @@ export const NewDocumentView: React.FC = () => {
                   </Button>
                 )}
               </>
-            )}
-          </div>
-        </div>
+            )
+          }
+        />
       </div>
 
       {/* Status Stepper */}

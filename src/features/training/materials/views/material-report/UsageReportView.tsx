@@ -284,10 +284,10 @@ export const UsageReportView: React.FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 lg:gap-5">
         {/* Version Breakdown */}
         <div className="xl:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <GitBranch className="h-4 w-4 text-purple-600" />
-              <h3 className="text-sm font-semibold text-slate-900">Usage by Version</h3>
+              <h3 className="text-sm font-semibold text-slate-800">Usage by Version</h3>
             </div>
             <span className="text-xs text-slate-500">{versionBreakdown.length} version{versionBreakdown.length !== 1 ? "s" : ""}</span>
           </div>
@@ -329,10 +329,10 @@ export const UsageReportView: React.FC = () => {
 
         {/* Department Breakdown */}
         <div className="xl:col-span-4 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <Building2 className="h-4 w-4 text-blue-600" />
-              <h3 className="text-sm font-semibold text-slate-900">Usage by Department</h3>
+              <h3 className="text-sm font-semibold text-slate-800">Usage by Department</h3>
             </div>
           </div>
           <div className="p-5 space-y-3">
@@ -358,10 +358,10 @@ export const UsageReportView: React.FC = () => {
 
         {/* Quick Insights */}
         <div className="xl:col-span-3 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-200">
+          <div className="px-5 py-4 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <Award className="h-4 w-4 text-amber-600" />
-              <h3 className="text-sm font-semibold text-slate-900">Insights</h3>
+              <h3 className="text-sm font-semibold text-slate-800">Insights</h3>
             </div>
           </div>
           <div className="p-5 space-y-3">

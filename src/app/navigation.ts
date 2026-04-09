@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   BookText,
   GraduationCap,
+  UserStar,
 } from "lucide-react";
 
 import {
@@ -37,6 +38,7 @@ import {
   IconAlertSquareRounded,
   IconUsersGroup,
   IconMailForward,
+  IconChartBar,
 } from "@tabler/icons-react";
 import { NavItem } from "@/types";
 
@@ -304,7 +306,7 @@ const SYSTEM_MODULES: NavItem[] = [
   {
     id: "report",
     label: "Reports & Analytics",
-    icon: IconChartHistogram,
+    icon: IconChartBar,
     path: "/report",
   },
   {
@@ -315,9 +317,9 @@ const SYSTEM_MODULES: NavItem[] = [
     path: "/audit-trail",
   },
   {
-    id: "settings",
-    label: "Setting",
-    icon: IconSettings2,
+    id: "system-administration",
+    label: "System Administration",
+    icon: UserStar,
     children: [
       {
         id: "user-management",
@@ -331,6 +333,13 @@ const SYSTEM_MODULES: NavItem[] = [
         icon: ShieldCheck,
         path: "/settings/roles",
       },
+    ],
+  },
+  {
+    id: "settings",
+    label: "Configure Settings",
+    icon: IconSettings2,
+    children: [
       {
         id: "dictionaries",
         label: "Dictionaries",

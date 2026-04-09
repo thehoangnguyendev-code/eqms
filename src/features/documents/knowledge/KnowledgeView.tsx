@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from '@/app/routes.constants';
 import { IconFile, IconSearch, IconPlus, IconUpload, IconDownload, IconLayoutGrid, IconLayoutList, IconFolder } from "@tabler/icons-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { knowledgeBase } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
@@ -127,31 +127,23 @@ export const KnowledgeView: React.FC = () => {
     return (
         <div className="space-y-6 w-full flex-1 flex flex-col min-h-0">
             {/* Header: Title + Breadcrumb */}
-            <div
-                className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4 shrink-0"
-            >
-                <div className="min-w-[200px] flex-1">
-                    <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900 transition-all">
-                        {selectedDepartment ? selectedDepartment.name : "Knowledge Base"}
-                    </h1>
-                    <Breadcrumb
-                        items={(() => {
-                            const baseItems = knowledgeBase(navigate);
-                            if (!selectedDepartment) return baseItems;
+            <PageHeader
+                title={selectedDepartment ? selectedDepartment.name : "Knowledge Base"}
+                breadcrumbItems={(() => {
+                    const baseItems = knowledgeBase(navigate);
+                    if (!selectedDepartment) return baseItems;
 
-                            // When a folder is open, the "Knowledge Base" item should be clickable to return
-                            const modifiedBase = baseItems.map((item, idx) => {
-                                if (idx === baseItems.length - 1) {
-                                    return { ...item, isActive: false, onClick: handleBackToFolders };
-                                }
-                                return item;
-                            });
+                    // When a folder is open, the "Knowledge Base" item should be clickable to return
+                    const modifiedBase = baseItems.map((item, idx) => {
+                        if (idx === baseItems.length - 1) {
+                            return { ...item, isActive: false, onClick: handleBackToFolders };
+                        }
+                        return item;
+                    });
 
-                            return [...modifiedBase, { label: selectedDepartment.name, isActive: true }];
-                        })()}
-                    />
-                </div>
-            </div>
+                    return [...modifiedBase, { label: selectedDepartment.name, isActive: true }];
+                })()}
+            />
 
             {!selectedDepartment ? (
                 <div className="space-y-6 flex-1 flex flex-col min-h-0">

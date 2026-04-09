@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { newRevision } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { useNavigateWithLoading } from "@/hooks";
@@ -111,33 +111,31 @@ export const NewRevisionView: React.FC = () => {
     <div className="space-y-4 md:space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 lg:gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900 mb-2">
-              Upgrade Revision - Impact Analysis
-            </h1>
-            <Breadcrumb items={newRevision(navigateTo)} />
-          </div>
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-            <Button
-              size="sm"
-              variant="outline-emerald"
-              onClick={() => setShowCancelModal(true)}
-              className="whitespace-nowrap flex items-center gap-2"
-            >
-              Cancel
-            </Button>
-            <Button
-              size="sm"
-              variant="outline-emerald"
-              onClick={handleSubmit}
-              disabled={!reasonForChange.trim()}
-              className="shadow-sm whitespace-nowrap"
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          title="Upgrade Revision - Impact Analysis"
+          breadcrumbItems={newRevision(navigateTo)}
+          actions={
+            <>
+              <Button
+                size="sm"
+                variant="outline-emerald"
+                onClick={() => setShowCancelModal(true)}
+                className="whitespace-nowrap flex items-center gap-2"
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                variant="outline-emerald"
+                onClick={handleSubmit}
+                disabled={!reasonForChange.trim()}
+                className="shadow-sm whitespace-nowrap"
+              >
+                Continue
+              </Button>
+            </>
+          }
+        />
       </div>
 
       {/* Source Document Info */}

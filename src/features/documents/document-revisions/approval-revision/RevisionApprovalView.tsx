@@ -266,11 +266,12 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
                     <DocumentTab mode="view" />
 
                     {/* Comments Section */}
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 lg:p-6">
-                        <h3 className="text-base lg:text-lg font-bold text-slate-900 mb-3 lg:mb-4 flex items-center gap-2">
-                            <IconMessage2 className="h-4 w-4 lg:h-5 lg:w-5 text-slate-600" />
-                            Comments & Discussion
-                        </h3>
+                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+                        <span className="text-emerald-600"><MessageSquare className="h-4 w-4" /></span>
+                        <h3 className="text-sm font-semibold text-slate-800">Comments & Discussion</h3>
+                      </div>
+                      <div className="p-4 lg:p-6">
 
                         {/* Comments List */}
                         <div className="space-y-3 lg:space-y-4 mb-4 lg:mb-6">
@@ -324,6 +325,7 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
                                     </button>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>

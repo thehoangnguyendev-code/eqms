@@ -165,6 +165,21 @@ const isValidUrl = (url: string): boolean => {
   }
 };
 
+// ─── FormSection ───────────────────────────────────────────────────
+const FormSection: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
+
 // ─── Component ─────────────────────────────────────────────────────
 export const EditMaterialView: React.FC = () => {
   const navigate = useNavigate();
@@ -538,16 +553,13 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 lg:gap-6">
         {/* Left: File Section */}
         <div className="xl:col-span-5">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900">
-                File / Resource
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Keep the existing file or replace it with a new one.
-              </p>
-            </div>
-            <div className="p-5">
+          <FormSection
+            title="File / Resource"
+            icon={<CloudUpload className="h-4 w-4" />}
+          >
+            <p className="text-xs text-slate-500 -mt-2 mb-4">
+              Keep the existing file or replace it with a new one.
+            </p>
               {/* Upload Mode Tabs */}
               <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg mb-4">
                 <button
@@ -846,22 +858,19 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="hidden"
               />
-            </div>
-          </div>
+          </FormSection>
         </div>
 
         {/* Right: Material Information */}
         <div className="xl:col-span-7">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Material Information
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Update the details for this training material
-              </p>
-            </div>
-            <div className="p-5 space-y-5">
+          <FormSection
+            title="Material Information"
+            icon={<FileText className="h-4 w-4" />}
+          >
+            <p className="text-xs text-slate-500 -mt-2 mb-5">
+              Update the details for this training material
+            </p>
+            <div className="space-y-5">
               {/* Material Name */}
               <div>
                 <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
@@ -996,7 +1005,7 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
                 />
               </div>
             </div>
-          </div>
+          </FormSection>
         </div>
       </div>
 

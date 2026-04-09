@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { courseProgress } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
@@ -302,39 +302,37 @@ export const CourseProgressView: React.FC = () => {
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-4">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-            Training Progress
-          </h1>
-          <Breadcrumb items={courseProgress(navigate)} />
-        </div>
-        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-          <Button
-            variant="outline-emerald"
-            size="sm"
-            onClick={() => navigateTo(-1)}
-            className="whitespace-nowrap"
-          >
-            Back
-          </Button>
-          <Button variant="outline" size="sm" className="gap-1.5">
-            <Download className="h-4 w-4" />
-            Export
-          </Button>
-          {completionPercent === 100 && (
+      <PageHeader
+        title="Training Progress"
+        breadcrumbItems={courseProgress(navigate)}
+        actions={
+          <>
             <Button
               variant="outline-emerald"
               size="sm"
-              className="gap-1.5"
-              onClick={() => setIsESignatureOpen(true)}
+              onClick={() => navigateTo(-1)}
+              className="whitespace-nowrap"
             >
-              <ShieldCheck className="h-4 w-4" />
-              Close & Sign-off
+              Back
             </Button>
-          )}
-        </div>
-      </div>
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+            {completionPercent === 100 && (
+              <Button
+                variant="outline-emerald"
+                size="sm"
+                className="gap-1.5"
+                onClick={() => setIsESignatureOpen(true)}
+              >
+                <ShieldCheck className="h-4 w-4" />
+                Close & Sign-off
+              </Button>
+            )}
+          </>
+        }
+      />
 
       {/* Course Info Card */}
       <div className="bg-white p-4 lg:p-6 rounded-xl border border-slate-200 shadow-sm overflow-hidden relative">

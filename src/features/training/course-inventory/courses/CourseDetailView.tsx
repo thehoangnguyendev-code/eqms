@@ -3,8 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
 import {
   Check,
+  BookOpen,
+  GraduationCap,
 } from "lucide-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { courseDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Button } from "@/components/ui/button/Button";
@@ -36,6 +38,21 @@ const WORKFLOW_STEPS = [
   "Effective",
   "Obsoleted",
 ] as const;
+
+// ─── FormSection ───────────────────────────────────────────────────
+const FormSection: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
 
 const getWorkflowStepForStatus = (status: TrainingStatus) => {
   // Mapping training status to workflow step
@@ -148,54 +165,50 @@ export const CourseDetailView: React.FC = () => {
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-4">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-            Course Detail
-          </h1>
-          <Breadcrumb items={courseDetail(navigate)} />
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-          <Button
-            variant="outline-emerald"
-            size="sm"
-            onClick={() => handleNavigate(-1)}
-            className="whitespace-nowrap"
-          >
-            Back
-          </Button>
-          <Button
-            variant="outline-emerald"
-            size="sm"
-            onClick={() => handleNavigate(ROUTES.TRAINING.COURSE_EDIT(courseId))}
-            className="whitespace-nowrap"
-          >
-            Edit Course
-          </Button>
-          <Button
-            variant="outline-emerald"
-            size="sm"
-            onClick={() => handleNavigate(ROUTES.TRAINING.COURSE_PROGRESS(courseId))}
-            className="whitespace-nowrap"
-          >
-            View Progress
-          </Button>
-          {course.trainingMethod === "Quiz (Paper-based/Manual)" && (
+      <PageHeader
+        title="Course Detail"
+        breadcrumbItems={courseDetail(navigate)}
+        actions={
+          <>
             <Button
               variant="outline-emerald"
               size="sm"
-              onClick={() =>
-                handleNavigate(ROUTES.TRAINING.COURSE_RESULT_ENTRY(courseId))
-              }
+              onClick={() => handleNavigate(-1)}
               className="whitespace-nowrap"
             >
-              Result Entry
+              Back
             </Button>
-          )}
-        </div>
-      </div>
+            <Button
+              variant="outline-emerald"
+              size="sm"
+              onClick={() => handleNavigate(ROUTES.TRAINING.COURSE_EDIT(courseId))}
+              className="whitespace-nowrap"
+            >
+              Edit Course
+            </Button>
+            <Button
+              variant="outline-emerald"
+              size="sm"
+              onClick={() => handleNavigate(ROUTES.TRAINING.COURSE_PROGRESS(courseId))}
+              className="whitespace-nowrap"
+            >
+              View Progress
+            </Button>
+            {course.trainingMethod === "Quiz (Paper-based/Manual)" && (
+              <Button
+                variant="outline-emerald"
+                size="sm"
+                onClick={() =>
+                  handleNavigate(ROUTES.TRAINING.COURSE_RESULT_ENTRY(courseId))
+                }
+                className="whitespace-nowrap"
+              >
+                Result Entry
+              </Button>
+            )}
+          </>
+        }
+      />
 
       {/* Status Workflow Stepper */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -254,7 +267,10 @@ export const CourseDetailView: React.FC = () => {
       </div>
 
       {/* Course Summary Card */}
-      <div className="bg-white p-4 lg:p-5 rounded-xl border border-slate-200 shadow-sm">
+      <FormSection
+        title="Course Summary"
+        icon={<GraduationCap className="h-4 w-4" />}
+      >
         <div className="flex items-center gap-3 mb-2">
           <span className="text-xs text-slate-500">{course.trainingId}</span>
           <span
@@ -274,7 +290,7 @@ export const CourseDetailView: React.FC = () => {
         <h2 className="text-base lg:text-lg font-semibold text-slate-900 mt-1">
           {course.title}
         </h2>
-      </div>
+      </FormSection>
 
       {/* Tab Container */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">

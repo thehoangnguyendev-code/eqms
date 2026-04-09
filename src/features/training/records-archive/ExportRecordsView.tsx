@@ -8,6 +8,7 @@ import {
   Users,
   Award,
   CheckCircle2,
+  Settings,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { exportRecords } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -28,6 +29,21 @@ interface ExportConfig {
   includeCertificates: boolean;
   format: string;
 }
+
+// ─── FormSection ───────────────────────────────────────────────────
+const FormSection: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+      <span className="text-emerald-600">{icon}</span>
+      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+    </div>
+    <div className="p-5">{children}</div>
+  </div>
+);
 
 export const ExportRecordsView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
@@ -79,8 +95,10 @@ export const ExportRecordsView: React.FC = () => {
       />
 
       {/* Export Configuration Form */}
-      <div className="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900 mb-6">Export Configuration</h2>
+      <FormSection
+        title="Export Configuration"
+        icon={<Settings className="h-4 w-4" />}
+      >
 
         <div className="space-y-6">
           {/* Row 1: Report Type & Department */}
@@ -171,8 +189,7 @@ export const ExportRecordsView: React.FC = () => {
               />
             </div>
           </div>
-        </div>
-      </div>
+      </FormSection>
 
       {/* Export Preview */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">

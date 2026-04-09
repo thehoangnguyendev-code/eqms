@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button/Button';
 import { cn } from '@/components/ui/utils';
 import type { ReportType, ReportStatus } from '../types';
 import { getTypeColor } from '../types';
-import { MOCK_REPORT_HISTORY } from '../data';
+import { MOCK_REPORT_HISTORY } from '../mockData';
 import { IconRefresh } from '@tabler/icons-react';
 
 /**

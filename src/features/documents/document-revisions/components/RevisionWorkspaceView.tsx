@@ -30,7 +30,7 @@ import {
 } from "../revision-tabs";
 import { StatusBadge, StatusType } from "@/components/ui/badge/Badge";
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { revisionWorkspace } from "@/components/ui/breadcrumb/breadcrumbs.config";
 
 // --- Types ---
@@ -575,68 +575,49 @@ export const RevisionWorkspaceView: React.FC = () => {
       {(isSaving || isSubmitting || isNavigating) && <FullPageLoading text="Processing..." />}
       {/* Header: Title + Breadcrumb + Actions */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 lg:gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              Revision Workspace
-            </h1>
-            <Breadcrumb items={revisionWorkspace(navigate)} />
-            {/* {state?.sourceDocument && (
-                            <div className="mt-2 text-sm text-slate-600">
-                                <span className="font-medium">Source:</span> {state.sourceDocument.code} - {state.sourceDocument.name}
-                                {state.isStandalone && (
-                                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                                        Standalone
-                                    </span>
-                                )}
-                                {!state.isStandalone && workspaceDocuments.length > 1 && (
-                                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
-                                        {workspaceDocuments.length} Documents
-                                    </span>
-                                )}
-                            </div>
-                        )} */}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-start md:justify-start">
-            <Button
-              onClick={handleBack}
-              variant="outline"
-              size="sm"
-              className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSave}
-              disabled={isSaving || isSubmitting || !allFilesUploaded}
-              variant="outline"
-              size="sm"
-              className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
-            >
-              {isSaving ? "Saving..." : "Save"}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
-              onClick={handleUploadToOffice}
-            >
-              {isUploadedToOffice ? "Edit File Online" : "Upload To Microsoft Office Online"}
-            </Button>
-            <div className="w-px h-8 bg-slate-300 mx-1" />
-            <Button
-              onClick={handleSubmitForReview}
-              disabled={isSaving || isSubmitting}
-              variant="outline"
-              size="sm"
-              className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
-            >
-              {isSubmitting ? "Submitting..." : "Submit for Review"}
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          title="Revision Workspace"
+          breadcrumbItems={revisionWorkspace(navigate)}
+          actions={
+            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-start md:justify-start">
+              <Button
+                onClick={handleBack}
+                variant="outline"
+                size="sm"
+                className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isSaving || isSubmitting || !allFilesUploaded}
+                variant="outline"
+                size="sm"
+                className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
+                onClick={handleUploadToOffice}
+              >
+                {isUploadedToOffice ? "Edit File Online" : "Upload To Microsoft Office Online"}
+              </Button>
+              <div className="w-px h-8 bg-slate-300 mx-1" />
+              <Button
+                onClick={handleSubmitForReview}
+                disabled={isSaving || isSubmitting}
+                variant="outline"
+                size="sm"
+                className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+              >
+                {isSubmitting ? "Submitting..." : "Submit for Review"}
+              </Button>
+            </div>
+          }
+        />
       </div>
 
       {/* Status Stepper */}

@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox/Checkbox';
 import { DateRangePicker } from '@/components/ui/datetime-picker/DateRangePicker';
 import { cn } from '@/components/ui/utils';
 import type { ReportType, ReportFormat, ReportPeriod, ReportField } from '../types';
-import { REPORT_TEMPLATES, COMPLIANCE_TEMPLATES } from '../data';
+import { REPORT_TEMPLATES, COMPLIANCE_TEMPLATES } from '../mockData';
 
 /**
  * Custom hook managing the Templates & Compliance tabs.

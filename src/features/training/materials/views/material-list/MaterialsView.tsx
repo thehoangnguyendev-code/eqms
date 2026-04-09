@@ -659,7 +659,7 @@ export const MaterialsView: React.FC = () => {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 lg:gap-5">
               {/* Most Used Materials */}
               <div className="xl:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300 delay-150">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-emerald-600" />
                     <h3 className="text-sm font-semibold text-slate-900">Most Used Materials</h3>
@@ -703,7 +703,7 @@ export const MaterialsView: React.FC = () => {
 
               {/* Pending & Obsolete Materials */}
               <div className="xl:col-span-4 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300 delay-200">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-amber-600" />
                     <h3 className="text-sm font-semibold text-slate-900">Needs Action & Obsoleted</h3>
@@ -771,7 +771,7 @@ export const MaterialsView: React.FC = () => {
 
               {/* Type Distribution */}
               <div className="xl:col-span-3 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300 delay-250">
-                <div className="px-5 py-4 border-b border-slate-200">
+                <div className="px-5 py-4 border-b border-slate-100">
                   <div className="flex items-center gap-2">
                     <BarChart3 className="h-4 w-4 text-slate-600" />
                     <h3 className="text-sm font-semibold text-slate-900">Type Distribution</h3>

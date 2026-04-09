@@ -12,7 +12,7 @@ import {
 } from "./tabs";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { documentDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { useNavigateWithLoading } from "@/hooks";
 
@@ -166,18 +166,12 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
     <div className="space-y-6 w-full">
       {/* Header: Title + Breadcrumb + Actions */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
-          <div className="min-w-[200px] flex-1">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              Document Details
-            </h1>
-            <Breadcrumb
-              items={documentDetail(navigateTo, {
-                fromArchive: state?.fromArchive,
-              })}
-            />
-          </div>
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+        <PageHeader
+          title="Document Details"
+          breadcrumbItems={documentDetail(navigateTo, {
+            fromArchive: state?.fromArchive,
+          })}
+          actions={
             <Button
               onClick={handleBack}
               size="sm"
@@ -186,8 +180,8 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
             >
               Back
             </Button>
-          </div>
-        </div>
+          }
+        />
       </div>
 
       {/* Status Stepper */}

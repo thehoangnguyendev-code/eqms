@@ -29,7 +29,7 @@ import {
   IconInfoCircle,
   IconFileExport,
 } from "@tabler/icons-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { pendingDocuments } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
@@ -755,14 +755,10 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
       {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header: Title + Breadcrumb */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 md:gap-4">
-          <div className="min-w-[200px] flex-1">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              {config.title}
-            </h1>
-            <Breadcrumb items={pendingDocuments(navigateTo, `pending-${viewType}`)} />
-          </div>
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+        <PageHeader
+          title={config.title}
+          breadcrumbItems={pendingDocuments(navigateTo, `pending-${viewType}`)}
+          actions={
             <Button
               onClick={() => {
                 console.log("Export triggered");
@@ -775,8 +771,8 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
               <Download className="h-4 w-4" />
               Export
             </Button>
-          </div>
-        </div>
+          }
+        />
       </div>
 
       {/* Unified Content Card */}

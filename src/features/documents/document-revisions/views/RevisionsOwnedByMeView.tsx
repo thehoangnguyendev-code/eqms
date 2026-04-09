@@ -33,7 +33,7 @@ import { cn } from "@/components/ui/utils";
 import {
   IconInfoCircle,
 } from "@tabler/icons-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { revisionsOwnedByMe } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
@@ -470,14 +470,10 @@ export const RevisionsOwnedByMeView: React.FC = () => {
       {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 md:gap-4">
-          <div className="min-w-[200px] flex-1">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              Revisions Owned By Me
-            </h1>
-            <Breadcrumb items={revisionsOwnedByMe(navigateTo)} />
-          </div>
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+        <PageHeader
+          title="Revisions Owned By Me"
+          breadcrumbItems={revisionsOwnedByMe(navigateTo)}
+          actions={
             <Button
               onClick={() => {
                 console.log("Export triggered");
@@ -490,8 +486,8 @@ export const RevisionsOwnedByMeView: React.FC = () => {
               <Download className="h-4 w-4" />
               Export
             </Button>
-          </div>
-        </div>
+          }
+        />
       </div>
 
       {/* Unified Content Card */}

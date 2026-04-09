@@ -10,7 +10,7 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { myTasks } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
@@ -218,14 +218,10 @@ export const MyTasksView: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full gap-4 md:gap-6">
-      <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
-        <div className="min-w-[200px] flex-1">
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-            My Tasks
-          </h1>
-          <Breadcrumb items={myTasks(navigate)} />
-        </div>
-      </div>
+      <PageHeader
+        title="My Tasks"
+        breadcrumbItems={myTasks(navigate)}
+      />
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col flex-1 min-h-0">
         <div className="p-4 md:p-5 flex flex-col">

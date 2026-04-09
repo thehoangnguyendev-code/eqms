@@ -24,7 +24,7 @@ import {
   IconChecks,
   IconPlus,
 } from "@tabler/icons-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { documentList } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { StatusBadge, StatusType } from "@/components/ui";
@@ -622,38 +622,36 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
     <div className="flex flex-col h-full gap-4 md:gap-6">
       {(isNavigating || isLocalNavigating) && <FullPageLoading text="Loading..." />}
       {/* Header: Title + Breadcrumb + Action Button */}
-      <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
-        <div className="min-w-[200px] flex-1">
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-            {config.title}
-          </h1>
-          <Breadcrumb items={documentList(navigateTo, viewType === "owned-by-me" ? "owned" : undefined)} />
-        </div>
-        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-          <Button
-            onClick={() => {
-              console.log("Export triggered");
-              // TODO: Implement export functionality
-            }}
-            variant="outline"
-            size="sm"
-            className="whitespace-nowrap gap-2"
-          >
-            <Download className="h-4 w-4" />
-            Export
-          </Button>
-          {config.showNewDocButton && (
+      <PageHeader
+        title={config.title}
+        breadcrumbItems={documentList(navigateTo, viewType === "owned-by-me" ? "owned" : undefined)}
+        actions={
+          <>
             <Button
-              onClick={handleNewDocument}
+              onClick={() => {
+                console.log("Export triggered");
+                // TODO: Implement export functionality
+              }}
+              variant="outline"
               size="sm"
               className="whitespace-nowrap gap-2"
             >
-              <IconPlus className="h-4 w-4" />
-              New Document
+              <Download className="h-4 w-4" />
+              Export
             </Button>
-          )}
-        </div>
-      </div>
+            {config.showNewDocButton && (
+              <Button
+                onClick={handleNewDocument}
+                size="sm"
+                className="whitespace-nowrap gap-2"
+              >
+                <IconPlus className="h-4 w-4" />
+                New Document
+              </Button>
+            )}
+          </>
+        }
+      />
 
       {isLoading ? (
         <FullPageLoading text="Loading documents..." />

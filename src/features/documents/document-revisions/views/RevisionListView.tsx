@@ -23,7 +23,7 @@ import { TableEmptyState } from '@/components/ui/table/TableEmptyState';
 import { DocumentFilters } from "@/features/documents/shared/components";
 import { cn } from '@/components/ui/utils';
 import { IconInfoCircle, IconEyeCheck, IconChecks } from "@tabler/icons-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { revisionList } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
@@ -450,14 +450,10 @@ export const RevisionListView: React.FC = () => {
     <div className="flex flex-col h-full gap-4 md:gap-6">
       {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 md:gap-4">
-        <div className="min-w-[200px] flex-1">
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-            All Revisions
-          </h1>
-          <Breadcrumb items={revisionList(navigateTo)} />
-        </div>
-        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+      <PageHeader
+        title="All Revisions"
+        breadcrumbItems={revisionList(navigateTo)}
+        actions={
           <Button
             onClick={() => {
               console.log("Export triggered");
@@ -470,8 +466,8 @@ export const RevisionListView: React.FC = () => {
             <Download className="h-4 w-4" />
             Export
           </Button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Unified Content Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">

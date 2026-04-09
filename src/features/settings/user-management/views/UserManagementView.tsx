@@ -13,14 +13,11 @@ import {
   PauseCircle,
   RotateCcw,
   SlidersHorizontal,
-  ArrowDownAZ,
-  ArrowDownZA,
   X,
   ChevronUp,
   ChevronDown,
-  Trash2,
 } from "lucide-react";
-import { IconTrash, IconUserX } from "@tabler/icons-react";
+import { IconUserX } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { userManagement } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
@@ -71,7 +68,6 @@ export const UserManagementView: React.FC = () => {
     terminateTo, setTerminateTo,
     currentPage, setCurrentPage,
     itemsPerPage, setItemsPerPage,
-    deleteUser,
     suspendUser,
     terminateUser,
     reinstateUser,
@@ -83,12 +79,10 @@ export const UserManagementView: React.FC = () => {
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
   const { navigateTo, isNavigating } = useNavigateWithLoading();
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [resetPasswordModal, setResetPasswordModal] = useState({ isOpen: false, userId: "", userName: "", password: "" });
   const [suspendModal, setSuspendModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [terminateModal, setTerminateModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [reinstateModal, setReinstateModal] = useState({ isOpen: false, userId: "", userName: "" });
-  const [esignModal, setEsignModal] = useState({ isOpen: false, userId: "", userName: "" });
   const [isFilterVisible, setIsFilterVisible] = useState(() => {
     return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
   });
@@ -108,20 +102,6 @@ export const UserManagementView: React.FC = () => {
     .filter((col) => col.visible)
     .sort((a, b) => a.order - b.order);
 
-  const handleDelete = (user: User) => {
-    if (user.role === "Admin") {
-      showToast({
-        type: "error",
-        title: "Action Restricted",
-        message: "Administrators cannot be deleted for security and system integrity reasons.",
-      });
-      closeDropdown();
-      return;
-    }
-    setDeleteModal({ isOpen: true, userId: user.id, userName: user.fullName });
-    closeDropdown();
-  };
-
   const handleResetPassword = (user: User) => {
     setResetPasswordModal({ isOpen: true, userId: user.id, userName: user.fullName, password: generatePassword() });
     closeDropdown();
@@ -140,17 +120,6 @@ export const UserManagementView: React.FC = () => {
   const handleReinstate = (user: User) => {
     setReinstateModal({ isOpen: true, userId: user.id, userName: user.fullName });
     closeDropdown();
-  };
-
-  const confirmDelete = () => {
-    // Instead of deleting directly, open E-Signature modal
-    setDeleteModal({ isOpen: false, userId: deleteModal.userId, userName: deleteModal.userName });
-    setEsignModal({ isOpen: true, userId: deleteModal.userId, userName: deleteModal.userName });
-  };
-
-  const handleESignDelete = (reason: string) => {
-    deleteUser(esignModal.userId, esignModal.userName, reason);
-    setEsignModal({ isOpen: false, userId: "", userName: "" });
   };
 
   const confirmSuspend = (reason: string, suspendedUntil: string) => {
@@ -547,28 +516,6 @@ export const UserManagementView: React.FC = () => {
         onSuspend={handleSuspend}
         onTerminate={handleTerminate}
         onReinstate={handleReinstate}
-        onDelete={handleDelete}
-      />
-
-      {/* Delete Confirmation Modal */}
-      <AlertModal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, userId: "", userName: "" })}
-        onConfirm={confirmDelete}
-        type="error"
-        title="Delete User"
-        description={`Are you sure you want to delete "${deleteModal.userName}"? This action cannot be undone.`}
-        confirmText="Confirm"
-        cancelText="Cancel"
-        showCancel
-      />
-
-      {/* E-Signature for Delete */}
-      <ESignatureModal
-        isOpen={esignModal.isOpen}
-        onClose={() => setEsignModal({ isOpen: false, userId: "", userName: "" })}
-        onConfirm={handleESignDelete}
-        actionTitle={`Delete User: ${esignModal.userName}`}
       />
 
       {/* Reset Password Modal */}
@@ -624,7 +571,6 @@ interface UserActionMenuProps {
   onSuspend: (user: User) => void;
   onTerminate: (user: User) => void;
   onReinstate: (user: User) => void;
-  onDelete: (user: User) => void;
 }
 
 const UserActionMenu: React.FC<UserActionMenuProps> = ({
@@ -637,7 +583,6 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   onSuspend,
   onTerminate,
   onReinstate,
-  onDelete,
 }) => {
   if (!isOpen || !user) return null;
 
@@ -702,7 +647,7 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
               }}
               className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
             >
-              <IconUserX className="h-4 w-4 flex-shrink-0 text-red-500" />
+              <IconUserX className="h-4 w-4 flex-shrink-0" />
               <span className="font-medium text-slate-500">Terminate Account</span>
             </button>
           )}
@@ -718,23 +663,6 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
               <span className="font-medium text-slate-500">Reinstate User</span>
             </button>
           )}
-
-          <button
-            onClick={() => {
-              if (user.role !== "Admin") {
-                onClose();
-                onDelete(user);
-              }
-            }}
-            disabled={user.role === "Admin"}
-            className={cn(
-              "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors font-medium border-t border-slate-50 mt-1 pt-2",
-              user.role === "Admin" ? "text-slate-300 cursor-not-allowed opacity-50" : "text-slate-500 hover:bg-slate-50 active:bg-slate-100"
-            )}
-          >
-            <Trash2 className="h-4 w-4 flex-shrink-0" />
-            <span>Delete User Record</span>
-          </button>
         </div>
       </div>
     </>,

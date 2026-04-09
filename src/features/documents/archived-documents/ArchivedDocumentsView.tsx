@@ -24,7 +24,7 @@ import {
 } from './utils';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { FullPageLoading } from '@/components/ui/loading/Loading';
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { archivedDocuments } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { MOCK_ARCHIVED_DOCS } from './mockData';
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
@@ -151,12 +151,10 @@ export const ArchivedDocumentsView: React.FC = () => {
         <div className="h-full flex flex-col space-y-6">
             {isNavigating && <FullPageLoading text="Loading..." />}
             {/* Header */}
-            <div className="flex flex-row flex-wrap items-end justify-between gap-3 md:gap-4">
-                <div className="min-w-[200px] flex-1">
-                    <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">Archived Documents</h1>
-                    <Breadcrumb items={archivedDocuments()} />
-                </div>
-                <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+            <PageHeader
+                title="Archived Documents"
+                breadcrumbItems={archivedDocuments()}
+                actions={
                     <Button
                         onClick={() => {
                             console.log("Export triggered");
@@ -169,8 +167,8 @@ export const ArchivedDocumentsView: React.FC = () => {
                         <Download className="h-4 w-4" />
                         Export
                     </Button>
-                </div>
-            </div>
+                }
+            />
 
             {/* Unified Content Card */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">

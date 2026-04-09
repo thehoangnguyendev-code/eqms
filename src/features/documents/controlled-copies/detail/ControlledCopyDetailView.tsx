@@ -32,8 +32,7 @@ import {
   type TimelineEvent,
 } from "../mockData";
 import { DestructionTypeSelectionModal } from "../components/DestructionTypeSelectionModal";
-import { IconFileShredder, IconShare3 } from "@tabler/icons-react";
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { controlledCopyDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import {
   DocumentInformationTab,
@@ -212,50 +211,46 @@ export const ControlledCopyDetailView: React.FC<ControlledCopyDetailViewProps> =
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 lg:gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              Controlled Copy Details
-            </h1>
-            <Breadcrumb items={controlledCopyDetail(navigate)} />
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-            <Button onClick={() => { setIsNavigating(true); setTimeout(() => onBack(), 600); }} variant="outline-emerald" size="sm" className="whitespace-nowrap gap-1.5">
-              Back
-            </Button>
-            <Button
-              onClick={handleViewOriginalDocument}
-              variant="outline-emerald"
-              size="sm"
-              className="whitespace-nowrap gap-1.5"
-            >
-              View Original
-            </Button>
-            {controlledCopy.status === "Ready for Distribution" && (
+        <PageHeader
+          title="Controlled Copy Details"
+          breadcrumbItems={controlledCopyDetail(navigate)}
+          actions={
+            <>
+              <Button onClick={() => { setIsNavigating(true); setTimeout(() => onBack(), 600); }} variant="outline-emerald" size="sm" className="whitespace-nowrap gap-1.5">
+                Back
+              </Button>
               <Button
-                onClick={handleDistribute}
+                onClick={handleViewOriginalDocument}
                 variant="outline-emerald"
                 size="sm"
-                className="gap-1.5 shadow-sm"
+                className="whitespace-nowrap gap-1.5"
               >
-                Distribute
+                View Original
               </Button>
-            )}
-            {controlledCopy.status === "Distributed" && (
-              <Button
-                onClick={handleReportLostDamaged}
-                variant="outline-emerald"
-                size="sm"
-                className="gap-1.5 shadow-sm"
-              >
-                <AlertCircle className="h-4 w-4" />
-                Report Lost
-              </Button>
-            )}
-          </div>
-        </div>
+              {controlledCopy.status === "Ready for Distribution" && (
+                <Button
+                  onClick={handleDistribute}
+                  variant="outline-emerald"
+                  size="sm"
+                  className="gap-1.5 shadow-sm"
+                >
+                  Distribute
+                </Button>
+              )}
+              {controlledCopy.status === "Distributed" && (
+                <Button
+                  onClick={handleReportLostDamaged}
+                  variant="outline-emerald"
+                  size="sm"
+                  className="gap-1.5 shadow-sm"
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  Report Lost
+                </Button>
+              )}
+            </>
+          }
+        />
       </div>
 
       {/* Status Stepper */}

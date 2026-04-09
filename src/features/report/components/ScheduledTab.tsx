@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button/Button';
 import { TablePagination } from '@/components/ui/table/TablePagination';
 import { cn } from '@/components/ui/utils';
 import { getTypeColor } from '../types';
-import { MOCK_SCHEDULED_REPORTS } from '../data';
+import { MOCK_SCHEDULED_REPORTS } from '../mockData';
 
 /**
  * Custom hook managing the Scheduled Reports tab.

@@ -172,11 +172,9 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
   <div className="p-5 space-y-5 animate-in fade-in duration-200">
     {/* Overview */}
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-        <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-100 flex-shrink-0">
-          <BookOpen className="h-4 w-4 text-emerald-600" />
-        </div>
-        <h3 className="text-sm font-semibold text-slate-900">Overview</h3>
+      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
+        <span className="text-emerald-600"><BookOpen className="h-4 w-4" /></span>
+        <h3 className="text-sm font-semibold text-slate-800">Overview</h3>
       </div>
       <div className="p-5">
         <p className="text-sm text-slate-700 leading-relaxed">{section.overview}</p>
@@ -185,11 +183,9 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
 
     {/* Key Features */}
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-        <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-blue-100 flex-shrink-0">
-          <Star className="h-4 w-4 text-blue-600" />
-        </div>
-        <h3 className="text-sm font-semibold text-slate-900">Key Features</h3>
+      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
+        <span className="text-emerald-600"><Star className="h-4 w-4" /></span>
+        <h3 className="text-sm font-semibold text-slate-800">Key Features</h3>
       </div>
       <div className="p-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -216,11 +212,9 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
 
     {/* Step-by-step Guide */}
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-        <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-purple-100 flex-shrink-0">
-          <ListChecks className="h-4 w-4 text-purple-600" />
-        </div>
-        <h3 className="text-sm font-semibold text-slate-900">Step-by-Step Guide</h3>
+      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
+        <span className="text-emerald-600"><ListChecks className="h-4 w-4" /></span>
+        <h3 className="text-sm font-semibold text-slate-800">Step-by-Step Guide</h3>
       </div>
       <div className="p-5">
         <div className="space-y-3">
@@ -250,11 +244,9 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
     {/* Tips & Notes */}
     {section.tips.length > 0 && (
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-amber-100 flex-shrink-0">
-            <Lightbulb className="h-4 w-4 text-amber-600" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-900">Tips & Notes</h3>
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
+          <span className="text-emerald-600"><Lightbulb className="h-4 w-4" /></span>
+          <h3 className="text-sm font-semibold text-slate-800">Tips & Notes</h3>
         </div>
         <div className="p-5 space-y-3">
           {section.tips.map((tip, idx) => (
@@ -386,8 +378,8 @@ export const UserManualView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
         {/* Left — Module List (col-2) — Hidden on mobile */}
         <div className="hidden lg:block lg:col-span-3 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-slate-50/70">
-            <h3 className="text-sm font-semibold text-slate-900">Modules List</h3>
+          <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+            <h3 className="text-sm font-semibold text-slate-800">Modules List</h3>
           </div>
           <div>
             {visibleTabs.map((tab) => {
@@ -419,7 +411,7 @@ export const UserManualView: React.FC = () => {
         {/* Right — Content (col-10 on desktop, full width on mobile) */}
         <div className="lg:col-span-9 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col lg:max-h-[calc(100vh-220px)]">
           {/* Module title bar — desktop only (mobile has sticky version above) */}
-          <div className="hidden lg:flex items-center gap-3 px-5 py-3 border-b border-slate-200 bg-slate-50/70 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-3 px-5 py-3 border-b border-slate-100 flex-shrink-0">
             {(() => {
               const tab = MANUAL_TABS.find((t) => t.id === activeTab)!;
               const Icon = tab.icon;

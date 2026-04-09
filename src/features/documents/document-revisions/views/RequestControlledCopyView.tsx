@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox/Checkbox';
 import { ESignatureModal } from '@/components/ui/esign-modal/ESignatureModal';
 import { AlertModal } from '@/components/ui/modal/AlertModal';
 import { useToast } from '@/components/ui/toast/Toast';
-import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
+import { PageHeader } from "@/components/ui/page/PageHeader";
 import { requestControlledCopy } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { useNavigateWithLoading } from "@/hooks";
@@ -258,35 +258,33 @@ export const RequestControlledCopyView: React.FC = () => {
     <div className="space-y-6">
       {/* Header: Title + Breadcrumb + Actions */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 lg:gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-              Request Controlled Copy
-            </h1>
-            <Breadcrumb items={requestControlledCopy(navigateTo, documentId)} />
-          </div>
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-            <Button
-              type="button"
-              variant="outline-emerald"
-              size="sm"
-              onClick={handleCancel}
-              className="whitespace-nowrap flex items-center gap-1.5 md:gap-2 touch-manipulation"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="outline-emerald"
-              size="sm"
-              disabled={!isFormValid}
-              form="controlled-copy-form"
-              className="flex items-center gap-1.5 md:gap-2 touch-manipulation"
-            >
-              Submit Request
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          title="Request Controlled Copy"
+          breadcrumbItems={requestControlledCopy(navigateTo, documentId)}
+          actions={
+            <>
+              <Button
+                type="button"
+                variant="outline-emerald"
+                size="sm"
+                onClick={handleCancel}
+                className="whitespace-nowrap flex items-center gap-1.5 md:gap-2 touch-manipulation"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="outline-emerald"
+                size="sm"
+                disabled={!isFormValid}
+                form="controlled-copy-form"
+                className="flex items-center gap-1.5 md:gap-2 touch-manipulation"
+              >
+                Submit Request
+              </Button>
+            </>
+          }
+        />
       </div>
 
       {/* Main Content */}
