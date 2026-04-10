@@ -170,37 +170,6 @@ export const FormGrid: React.FC<FormGridProps> = ({
   );
 };
 
-// Form Section with Header
-interface ResponsiveFormSectionProps {
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const ResponsiveFormSection: React.FC<ResponsiveFormSectionProps> = ({
-  title,
-  description,
-  children,
-  className,
-}) => {
-  return (
-    <div className={cn('space-y-4 md:space-y-6', className)}>
-      <div className="border-b border-slate-200 pb-3 md:pb-4">
-        <h3 className="text-base md:text-lg lg:text-xl font-semibold text-slate-900">
-          {title}
-        </h3>
-        {description && (
-          <p className="text-xs md:text-sm text-slate-600 mt-1">
-            {description}
-          </p>
-        )}
-      </div>
-      {children}
-    </div>
-  );
-};
-
 // Form Actions (Submit/Cancel buttons)
 interface FormActionsProps {
   children: React.ReactNode;

@@ -25,7 +25,7 @@ import { cn } from '../utils';
  */
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button style variant */
-  variant?: 'default' | 'outline' | 'outline-emerald' | 'ghost' | 'destructive' | 'secondary' | 'link' | 'select';
+  variant?: 'default' | 'outline' | 'outline-emerald' | 'ghost' | 'destructive' | 'secondary' | 'link';
   /** Button size with responsive support */
   size?: 'xs' | 'sm' | 'default' | 'lg' | 'xl' | 'icon' | 'icon-sm' | 'icon-lg';
   /** Make button full width */
@@ -42,7 +42,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-sm hover:shadow-md active:scale-[0.97] transition-all duration-200',
       secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200 active:scale-[0.97] transition-all duration-200',
       link: 'text-emerald-600 underline-offset-4 hover:underline active:scale-[0.97] transition-all duration-200',
-      select: 'px-5 py-2.5 rounded-xl border border-emerald-600 bg-white text-sm font-bold text-emerald-700 hover:bg-emerald-600 hover:text-white transition-all duration-200 active:scale-95 shadow-sm shadow-emerald-600/5',
     };
 
     const sizes = {

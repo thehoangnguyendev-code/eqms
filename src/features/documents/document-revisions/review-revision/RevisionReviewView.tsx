@@ -180,7 +180,7 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
   ];
 
   // Breadcrumbs
-  const breadcrumbs = revisionReview(navigate, onBack);
+  const breadcrumbs = revisionReview(navigate);
 
   return (
     <>
@@ -189,8 +189,6 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
         title="Review Revision"
         breadcrumbs={breadcrumbs}
         onBack={handleBack}
-        documentId={document.documentId}
-        documentStatus={document.status}
         statusSteps={statusSteps}
         currentStatus={document.status}
         tabs={DEFAULT_WORKFLOW_TABS}
@@ -201,19 +199,19 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
             <>
               <Button
                 onClick={handleReject}
-                variant="outline"
+                variant="outline-emerald"
                 size="sm"
                 disabled={isSubmitting}
-                className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                className="whitespace-nowrap"
               >
                 Reject
               </Button>
               <Button
                 onClick={handleApprove}
-                variant="outline"
+                variant="outline-emerald"
                 size="sm"
                 disabled={isSubmitting}
-                className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                className="whitespace-nowrap"
               >
                 Complete Review
               </Button>
@@ -224,9 +222,9 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
           <>
             <Button
               onClick={handleBack}
-              variant="outline"
+              variant="outline-emerald"
               size="sm"
-              className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
+              className="whitespace-nowrap"
             >
               Back
             </Button>
@@ -234,19 +232,19 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
               <>
                 <Button
                   onClick={handleReject}
-                  variant="outline"
+                  variant="outline-emerald"
                   size="sm"
                   disabled={isSubmitting}
-                  className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                  className="whitespace-nowrap"
                 >
                   Reject
                 </Button>
                 <Button
                   onClick={handleApprove}
-                  variant="outline"
+                  variant="outline-emerald"
                   size="sm"
                   disabled={isSubmitting}
-                  className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                  className="whitespace-nowrap"
                 >
                   Complete Review
                 </Button>

@@ -4,7 +4,7 @@ import { ROUTES } from '@/app/routes.constants';
 import { Sidebar } from '@/components/layout/sidebar/Sidebar';
 import { Header } from '@/components/layout/header/Header';
 import { Footer } from '@/components/layout/footer/Footer';
-import { NetworkStatusMonitor } from '@/components/NetworkStatusMonitor';
+import { NetworkStatusMonitor } from '@/components/layout/NetworkStatusMonitor';
 import { ScrollToTop } from '@/components/ui/scroll-to-top/ScrollToTop';
 import { useResponsiveSidebar } from './useResponsiveSidebar';
 import { useNavigation } from './useNavigation';

@@ -1,49 +1,12 @@
 /**
- * Responsive Components Index
- * Centralized exports for all responsive UI components
+ * @deprecated Import directly from '@/components/ui' instead.
+ * This file is kept for backward compatibility only.
  */
-
-// Table Components (ResponsiveTable wrappers only — TablePagination and TableEmptyState are exported via ./table)
-export {
-  ResponsiveTableContainer,
-  ResponsiveTableWrapper,
-  Table,
-  TableHeader,
-  TableBody,
-  TableCell,
-  TableRow,
-} from './table/ResponsiveTable';
-
-// Form Components
-export {
-  FormField,
-  Input,
-  Textarea,
-  FormGrid,
-  ResponsiveFormSection,
-  FormActions,
-} from './form/ResponsiveForm';
+export * from './table/ResponsiveTable';
+export * from './form/ResponsiveForm';
 export { FormSection } from './form/FormSection';
-
-// Card Components
-export {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-  CardGrid,
-  StatCard,
-} from './card/ResponsiveCard';
-
-// Re-export existing components
+export * from './card/ResponsiveCard';
 export { Button } from './button/Button';
 export { Select } from './select/Select';
 export { Checkbox } from './checkbox/Checkbox';
 export { Popover } from './popover/Popover';
-
-
-
-
-

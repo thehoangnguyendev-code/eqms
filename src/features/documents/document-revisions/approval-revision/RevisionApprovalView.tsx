@@ -177,7 +177,7 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
     const statusSteps: DocumentStatus[] = ["Draft", "Pending Review", "Pending Approval", "Pending Training", "Ready for Publishing", "Effective", "Obsoleted", "Closed - Cancelled"];
 
     // Breadcrumbs
-    const breadcrumbs = revisionApproval(navigate, onBack);
+    const breadcrumbs = revisionApproval(navigate);
 
     return (
         <>
@@ -186,8 +186,6 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
                 title="Approve Revision"
                 breadcrumbs={breadcrumbs}
                 onBack={handleBack}
-                documentId={`${revision.documentId} v${revision.version}`}
-                documentStatus={revision.status}
                 statusSteps={statusSteps}
                 currentStatus={revision.status}
                 tabs={DEFAULT_WORKFLOW_TABS}
@@ -198,19 +196,19 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
                         <>
                             <Button
                                 onClick={handleReject}
-                                variant="outline"
+                                variant="outline-emerald"
                                 size="sm"
                                 disabled={isSubmitting}
-                                className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                                className="whitespace-nowrap"
                             >
                                 Reject
                             </Button>
                             <Button
                                 onClick={handleApprove}
-                                variant="outline"
+                                variant="outline-emerald"
                                 size="sm"
                                 disabled={isSubmitting}
-                                className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                                className="whitespace-nowrap"
                             >
                                 Complete Approve
                             </Button>
@@ -221,9 +219,9 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
                     <>
                         <Button
                             onClick={handleBack}
-                            variant="outline"
+                            variant="outline-emerald"
                             size="sm"
-                            className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50"
+                            className="whitespace-nowrap"
                         >
                             Back
                         </Button>
@@ -231,19 +229,19 @@ export const RevisionApprovalView: React.FC<RevisionApprovalViewProps> = ({
                             <>
                                 <Button
                                     onClick={handleReject}
-                                    variant="outline"
+                                    variant="outline-emerald"
                                     size="sm"
                                     disabled={isSubmitting}
-                                    className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                                    className="whitespace-nowrap"
                                 >
                                     Reject
                                 </Button>
                                 <Button
                                     onClick={handleApprove}
-                                    variant="outline"
+                                    variant="outline-emerald"
                                     size="sm"
                                     disabled={isSubmitting}
-                                    className="whitespace-nowrap !border-emerald-600 !text-emerald-600 hover:!bg-emerald-50 disabled:!border-slate-300 disabled:!text-slate-400 disabled:hover:!bg-transparent"
+                                    className="whitespace-nowrap"
                                 >
                                     Complete Approve
                                 </Button>

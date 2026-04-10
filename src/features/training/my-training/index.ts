@@ -1,1 +1,1 @@
-export * from "./MyTrainingView";
+export { MyTrainingView } from './MyTrainingView';

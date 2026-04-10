@@ -1,3 +1,4 @@
+// Course Inventory
 export {
   CourseListView,
   CreateCourseView,
@@ -7,31 +8,19 @@ export {
   ApproveCourseView,
   CourseDetailView,
   EditCourseView,
-} from "./course-inventory";
+} from './course-inventory';
 
 // Materials
-export * from "./materials";
+export * from './materials';
 
-export * from "./compliance-tracking";
-export * from "./my-training";
+// Compliance Tracking
+export * from './compliance-tracking';
+
+// My Training
+export { MyTrainingView } from './my-training';
 
 // Records & Archive
-export { EmployeeTrainingFilesView } from "./records-archive/EmployeeTrainingFilesView";
-export { ExportRecordsView } from "./records-archive/ExportRecordsView";
+export * from './records-archive';
 
-export type {
-  TrainingRecord,
-  TrainingFilters,
-  TrainingStatus,
-  TrainingType,
-  Attendee,
-  AttendanceStatus,
-  TrainingConfig,
-  Question,
-  QuestionOption,
-  QuestionType,
-  TrainingTestType,
-  CourseApproval,
-  CourseApprovalStatus,
-  CourseWorkflowStatus,
-} from "./types";
+// Types
+export * from './types';

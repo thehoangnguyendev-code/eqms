@@ -20,7 +20,7 @@ import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { FormSection } from "@/components/ui/form";
 import { destroyControlledCopy } from "@/components/ui/breadcrumb/breadcrumbs.config";
-import { MOCK_DESTROY_CONTROLLED_COPY as MOCK_CONTROLLED_COPY } from "../mockData";
+import { MOCK_DESTROY_CONTROLLED_COPY as MOCK_CONTROLLED_COPY, MOCK_USERS_OPTIONS } from "../mockData";
 import { Select } from "@/components/ui/select/Select";
 
 
@@ -37,26 +37,6 @@ interface DestructionFormData {
   destructionSupervisor: string;
   evidenceFiles: EvidenceFile[];
 }
-
-// Mock data for users
-const MOCK_USERS = [
-  { value: 'john-doe', label: 'John Doe (QA Manager)' },
-  { value: 'jane-smith', label: 'Jane Smith (QA Supervisor)' },
-  { value: 'robert-johnson', label: 'Robert Johnson (Production Lead)' },
-  { value: 'sarah-williams', label: 'Sarah Williams (Lab Technician)' },
-  { value: 'michael-brown', label: 'Michael Brown (Safety Officer)' },
-  { value: 'emily-davis', label: 'Emily Davis (Quality Control)' },
-  { value: 'david-wilson', label: 'David Wilson (Production Lead)' },
-  { value: 'lisa-miller', label: 'Lisa Miller (Compliance Officer)' },
-  { value: 'james-wilson', label: 'James Wilson (Supervisor)' },
-  { value: 'susan-moore', label: 'Susan Moore (Quality Assurance)' },
-  { value: 'thomas-clark', label: 'Thomas Clark (Safety Officer)' },
-  { value: 'jennifer-lee', label: 'Jennifer Lee (Lab Technician)' },
-  { value: 'robert-chen', label: 'Robert Chen (Production Manager)' },
-  { value: 'maria-garcia', label: 'Maria Garcia (Quality Control)' },
-  { value: 'david-miller', label: 'David Miller (Safety Inspector)' },
-  { value: 'sarah-johnson', label: 'Sarah Johnson (QA Analyst)' },
-];
 
 export const DestroyControlledCopyView: React.FC = () => {
   const navigate = useNavigate();
@@ -411,7 +391,7 @@ export const DestroyControlledCopyView: React.FC = () => {
               <Select
                 value={formData.destructedBy}
                 onChange={(value) => handleInputChange("destructedBy", value)}
-                options={MOCK_USERS}
+                options={MOCK_USERS_OPTIONS}
                 placeholder="Select executor..."
                 triggerClassName={errors.destructedBy ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""}
               />
@@ -428,7 +408,7 @@ export const DestroyControlledCopyView: React.FC = () => {
               <Select
                 value={formData.destructionSupervisor}
                 onChange={(value) => handleInputChange("destructionSupervisor", value)}
-                options={MOCK_USERS}
+                options={MOCK_USERS_OPTIONS}
                 placeholder="Select supervisor..."
                 triggerClassName={errors.destructionSupervisor ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""}
               />

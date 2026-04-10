@@ -653,3 +653,23 @@ export const MOCK_DESTROY_CONTROLLED_COPY = {
   distributedDate: "2024-01-15",
   status: "Distributed" as const,
 };
+
+// --- Shared User Options (for Select components) ---
+export const MOCK_USERS_OPTIONS = [
+  { value: 'john-doe', label: 'John Doe (QA Manager)' },
+  { value: 'jane-smith', label: 'Jane Smith (QA Supervisor)' },
+  { value: 'robert-johnson', label: 'Robert Johnson (Production Lead)' },
+  { value: 'sarah-williams', label: 'Sarah Williams (Lab Technician)' },
+  { value: 'michael-brown', label: 'Michael Brown (Safety Officer)' },
+  { value: 'emily-davis', label: 'Emily Davis (Quality Control)' },
+  { value: 'david-wilson', label: 'David Wilson (Production Lead)' },
+  { value: 'lisa-miller', label: 'Lisa Miller (Compliance Officer)' },
+  { value: 'james-wilson', label: 'James Wilson (Supervisor)' },
+  { value: 'susan-moore', label: 'Susan Moore (Quality Assurance)' },
+  { value: 'thomas-clark', label: 'Thomas Clark (Safety Officer)' },
+  { value: 'jennifer-lee', label: 'Jennifer Lee (Lab Technician)' },
+  { value: 'robert-chen', label: 'Robert Chen (Production Manager)' },
+  { value: 'maria-garcia', label: 'Maria Garcia (Quality Control)' },
+  { value: 'david-miller', label: 'David Miller (Safety Inspector)' },
+  { value: 'sarah-johnson', label: 'Sarah Johnson (QA Analyst)' },
+];
