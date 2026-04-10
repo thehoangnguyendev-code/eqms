@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
@@ -33,7 +33,7 @@ import { FormModal } from "@/components/ui/modal/FormModal";
 import { AlertModal, AlertModalType } from "@/components/ui/modal/AlertModal";
 import { ESignatureModal } from "@/components/ui/esign-modal";
 import { Checkbox } from "@/components/ui/checkbox/Checkbox";
-import { FullPageLoading } from "@/components/ui/loading";
+import { SectionLoading } from "@/components/ui/loading";
 import { cn } from "@/components/ui/utils";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 import type { CourseComplianceRecord, CourseStatusFilters } from "../../../types";
@@ -314,6 +314,13 @@ export const CourseStatusView: React.FC = () => {
     direction: "asc",
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
 
   // Sorting Handler
@@ -507,6 +514,8 @@ export const CourseStatusView: React.FC = () => {
     if (type === "Overdue") return list.filter(e => e.status === "Overdue");
     return list;
   };
+
+  if (isLoading || isNavigating) return <SectionLoading minHeight="60vh" />;
 
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col">
@@ -965,7 +974,6 @@ export const CourseStatusView: React.FC = () => {
         description={alertConfig.description}
       />
 
-      {isNavigating && <FullPageLoading text="Navigating..." />}
     </div>
   );
 };

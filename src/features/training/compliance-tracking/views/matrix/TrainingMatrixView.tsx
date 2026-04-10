@@ -1,11 +1,11 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, AlertTriangle, ArrowRight } from "lucide-react";
 import { IconPlus } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { trainingMatrix } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
-import { FullPageLoading } from "@/components/ui/loading";
+import { SectionLoading } from "@/components/ui/loading";
 import { cn } from "@/components/ui/utils";
 import { useNavigateWithLoading } from "@/hooks";
 import { ROUTES } from "@/app/routes.constants";
@@ -40,6 +40,13 @@ export const TrainingMatrixView: React.FC = () => {
     status: "All",
     gapAnalysis: false,
   });
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -179,6 +186,8 @@ export const TrainingMatrixView: React.FC = () => {
   }, []);
 
   // ── Render ─────────────────────────────────────────────────────────
+  if (isLoading || isNavigating) return <SectionLoading minHeight="60vh" />;
+
   return (
     <div className="space-y-5 w-full flex-1 flex flex-col">
       {/* Page header */}
@@ -285,7 +294,6 @@ export const TrainingMatrixView: React.FC = () => {
         />
       )}
 
-      {isNavigating && <FullPageLoading text="Loading..." />}
     </div>
   );
 };

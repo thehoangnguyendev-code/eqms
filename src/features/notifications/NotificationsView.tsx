@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { notifications as notificationsBreadcrumb } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -36,6 +36,7 @@ import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { FilterCard } from "@/components/ui/card/FilterCard";
 import { cn } from "@/components/ui/utils";
 import { StatusBadge } from "@/components/ui/badge";
+import { SectionLoading } from "@/components/ui/loading/Loading";
 import type {
   Notification,
   NotificationType,
@@ -431,6 +432,13 @@ export const NotificationsView: React.FC = () => {
   const [notifications, setNotifications] =
     useState<Notification[]>(MOCK_NOTIFICATIONS);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Counts for tabs
   const counts = useMemo(() => {
     return {
@@ -618,6 +626,8 @@ export const NotificationsView: React.FC = () => {
     priority !== "all" ||
     dateFrom !== "" ||
     dateTo !== "";
+
+  if (isLoading) return <SectionLoading minHeight="60vh" />;
 
   return (
     <div className="flex flex-col h-full gap-4 md:gap-6">

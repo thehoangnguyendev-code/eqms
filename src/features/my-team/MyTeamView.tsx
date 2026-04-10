@@ -41,7 +41,7 @@ import { TabNav } from '@/components/ui/tabs/TabNav';
 import { Badge } from '@/components/ui/badge/Badge';
 import { Card } from '@/components/ui/card/ResponsiveCard';
 import { Checkbox } from '@/components/ui/checkbox/Checkbox';
-import { FullPageLoading } from '@/components/ui/loading/Loading';
+import { SectionLoading } from '@/components/ui/loading/Loading';
 
 
 // --- Types ---
@@ -905,7 +905,7 @@ export const MyTeamView: React.FC = () => {
   );
 
   if (isLoading) {
-    return <FullPageLoading text="Organizing your team..." />;
+    return <SectionLoading text="Organizing your team..." minHeight="60vh" />;
   }
 
   return (

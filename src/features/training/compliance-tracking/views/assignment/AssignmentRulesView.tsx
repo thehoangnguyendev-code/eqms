@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ToggleLeft,
@@ -24,7 +24,7 @@ import { Select } from "@/components/ui/select/Select";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/components/ui/utils";
-import { FullPageLoading } from "@/components/ui/loading";
+import { SectionLoading } from "@/components/ui/loading";
 import { useNavigateWithLoading } from "@/hooks";
 import breadcrumbs from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { MOCK_AUTO_RULES } from "../../mockData";
@@ -291,6 +291,13 @@ export const AssignmentRulesView: React.FC = () => {
   const [showActiveOnly, setShowActiveOnly] = useState(false);
   const [triggerFilter, setTriggerFilter] = useState<AssignmentTrigger | "all">("all");
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   const autoRules = useMemo(
     () => rules.filter((r) => r.trigger !== "manual"),
     [rules]
@@ -394,6 +401,8 @@ export const AssignmentRulesView: React.FC = () => {
 
     setIsESignOpen(false);
   };
+
+  if (isLoading || isNavigating) return <SectionLoading minHeight="60vh" />;
 
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col">
@@ -513,7 +522,6 @@ export const AssignmentRulesView: React.FC = () => {
             : "Update auto-assignment rule"
         }
       />
-      {isNavigating && <FullPageLoading text="Loading..." />}
     </div>
   );
 };

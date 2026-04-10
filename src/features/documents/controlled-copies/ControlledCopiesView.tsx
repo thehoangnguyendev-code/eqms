@@ -1,4 +1,4 @@
-import React, { useState, useMemo, createRef, useRef } from "react";
+import React, { useState, useMemo, createRef, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +32,7 @@ import type { ControlledCopy, ControlledCopyStatus, TableColumn } from "./types"
 import { IconInfoCircle, IconShare3 } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { controlledCopies } from "@/components/ui/breadcrumb/breadcrumbs.config";
-import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { SectionLoading } from "@/components/ui/loading/Loading";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 import { MOCK_ALL_CONTROLLED_COPIES } from './mockData';
@@ -245,6 +245,13 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
   const [createdToDate, setCreatedToDate] = useState("");
   const [validFromDate, setValidFromDate] = useState("");
   const [validToDate, setValidToDate] = useState("");
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Modal states
   const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
@@ -510,9 +517,10 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
     }
   };
 
+  if (isLoading || isNavigating) return <SectionLoading minHeight="60vh" />;
+
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col">
-      {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header */}
       <div className="flex flex-col gap-4">
         <PageHeader

@@ -439,36 +439,53 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   // Mobile: Taller touch target (h-12), Desktop: h-11
                   "h-12 md:h-11",
                   isCollapsed ? "justify-center px-0" : "justify-start pr-3",
-                  isActive && level === 0
-                    ? "text-emerald-700 bg-emerald-50"
-                    : isActive && level > 0
-                      ? "text-emerald-700 bg-emerald-50/50"
-                      : "text-slate-600 hover:text-slate-900 active:bg-slate-100",
-                  !isCollapsed && level === 0 && isActive && "rounded-lg mx-2",
+                  isActive
+                    ? "text-emerald-700"
+                    : "text-slate-600 hover:text-slate-900 active:bg-slate-100",
+                  !isCollapsed && level === 0 && "rounded-lg mx-2",
                 )}
                 style={{
                   paddingLeft: isCollapsed ? 0 : `${paddingLeft}px`,
                   WebkitTapHighlightColor: "transparent",
                 }}
               >
-                {/* Active indicator */}
+                {/* Sliding active background indicator */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeNavIndicator"
+                    className={cn(
+                      "absolute inset-0 z-0",
+                      level === 0 ? "bg-emerald-50 rounded-lg" : "bg-emerald-50/50",
+                    )}
+                    transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                  />
+                )}
+
+                {/* Active left border indicator */}
                 {level === 0 && isActive && !isCollapsed && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-full bg-emerald-600" />
+                  <motion.div
+                    layoutId="activeNavBorder"
+                    className="absolute left-0 top-0 bottom-0 w-0.5 bg-emerald-600 rounded-r-full z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.35 }}
+                  />
                 )}
 
                 {/* Icon */}
                 <div
                   className={cn(
-                    "flex items-center justify-center relative shrink-0",
+                    "flex items-center justify-center relative z-10 shrink-0",
                     isCollapsed ? "w-full" : "w-5",
                   )}
                 >
                   {Icon && (
                     <motion.div
-                      animate={shakingId === item.id ? {
-                        rotate: [0, -7, 7, -7, 7, 0],
-                        scale: [1, 1.1, 1]
-                      } : {}}
+                      animate={
+                        shakingId === item.id
+                          ? { rotate: [0, -7, 7, -7, 7, 0], scale: [1, 1.1, 1] }
+                          : isActive
+                            ? { scale: [1, 1.12, 1] }
+                            : {}
+                      }
                       onAnimationComplete={() => setShakingId(null)}
                       transition={{ duration: 0.4 }}
                     >
@@ -500,7 +517,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                 {/* Label */}
                 <div
                   className={cn(
-                    "overflow-hidden flex-1",
+                    "overflow-hidden flex-1 relative z-10",
                     isCollapsed
                       ? "max-w-0 opacity-0 ml-0 transition-all duration-150 ease-in"
                       : "opacity-100 ml-2 transition-all duration-250 ease-out delay-75",
@@ -527,7 +544,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   <div
                     onClick={(e) => toggleExpand(item.id, e)}
                     className={cn(
-                      "ml-auto rounded-lg flex items-center justify-center h-6 w-6",
+                      "ml-auto rounded-lg flex items-center justify-center h-6 w-6 relative z-10",
                     )}
                   >
                     <ChevronRight
@@ -556,7 +573,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                       );
                     }}
                     className={cn(
-                      "ml-auto flex items-center justify-center h-6 w-6 rounded-lg hover:text-emerald-600 transition-all duration-200 shrink-0",
+                      "ml-auto flex items-center justify-center h-6 w-6 rounded-lg hover:text-emerald-600 transition-all duration-200 shrink-0 relative z-10",
                       favoriteIds.includes(item.id)
                         ? "opacity-100 text-emerald-600"
                         : "opacity-100 md:opacity-0 md:group-hover:opacity-100 text-slate-400",

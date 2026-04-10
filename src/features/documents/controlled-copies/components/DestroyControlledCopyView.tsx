@@ -16,7 +16,7 @@ import { ESignatureModal } from "@/components/ui/esign-modal/ESignatureModal";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
 import { useToast } from "@/components/ui/toast/Toast";
-import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { SectionLoading } from "@/components/ui/loading/Loading";
 import { Breadcrumb } from "@/components/ui/breadcrumb/Breadcrumb";
 import { FormSection } from "@/components/ui/form";
 import { destroyControlledCopy } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -225,6 +225,8 @@ export const DestroyControlledCopyView: React.FC = () => {
     setIsNavigating(true);
     setTimeout(() => navigate(ROUTES.DOCUMENTS.CONTROLLED_COPIES.ALL), 600);
   };
+
+  if (isLoading || isNavigating) return <SectionLoading minHeight="60vh" />;
 
   return (
     <div className="space-y-6">
@@ -705,8 +707,6 @@ export const DestroyControlledCopyView: React.FC = () => {
         onConfirm={handleESignConfirm}
         actionTitle="Confirm Controlled Copy Destruction"
       />
-
-      {(isLoading || isNavigating) && <FullPageLoading text="Processing..." />}
     </div>
   );
 };
