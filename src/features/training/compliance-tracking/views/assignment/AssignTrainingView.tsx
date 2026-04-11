@@ -128,65 +128,70 @@ const StepIndicator: React.FC<{
   currentStep: WizardStep;
   onStepChange: (step: WizardStep) => void;
 }> = ({ currentStep, onStepChange }) => (
-  <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 sm:p-5">
-    <div className="max-w-5xl mx-auto">
-      <div className="flex items-center gap-3">
+  <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+      <div className="flex items-stretch min-w-full">
         {STEP_LABELS.map((label, i) => {
           const step = (i + 1) as WizardStep;
-          const Icon = STEP_ICONS[i];
           const isCompleted = step < currentStep;
           const isCurrent = step === currentStep;
-          const isUpcoming = step > currentStep;
-          const isBarFilled = step < currentStep; // bar after this step
+          const isFirst = i === 0;
+          const isLast = i === STEP_LABELS.length - 1;
 
           return (
-            <React.Fragment key={step}>
-              <button
-                type="button"
-                onClick={() => onStepChange(step)}
+            <button
+              key={step}
+              type="button"
+              onClick={() => onStepChange(step)}
+              className="relative flex-1 flex items-center justify-center min-w-[160px] cursor-pointer focus:outline-none group"
+              style={{ minHeight: "56px" }}
+            >
+              {/* Arrow Shape Background */}
+              <div
                 className={cn(
-                  "flex items-center gap-2 min-w-0 transition-transform duration-200 cursor-pointer focus:outline-none",
-                  isCurrent && "scale-[1.04]"
+                  "absolute inset-0 transition-all",
+                  isCompleted
+                    ? "bg-emerald-100"
+                    : isCurrent
+                      ? "bg-emerald-600"
+                      : "bg-slate-100",
+                  !isCurrent && !isCompleted && "group-hover:bg-slate-200"
                 )}
-              >
-                <div
-                  className={cn(
-                    "flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center border-2 transition-all duration-200",
-                    isCompleted && "bg-emerald-600 border-emerald-600 text-white",
-                    isCurrent && "bg-emerald-600 border-emerald-600 text-white shadow-sm",
-                    isUpcoming && "bg-white border-slate-300 text-slate-400"
-                  )}
-                >
-                  {isCompleted ? (
-                    <IconCheck className="h-4 w-4" />
-                  ) : (
-                    <Icon className="h-4 w-4" />
-                  )}
+                style={{
+                  clipPath: isFirst
+                    ? "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%)"
+                    : isLast
+                      ? "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 20px 50%)"
+                      : "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%, 20px 50%)",
+                }}
+              />
+
+              {/* Content */}
+              <div className="relative z-10 flex items-center gap-2 px-6">
+                <div className={cn(
+                  "h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold border leading-none pt-[1.5px]",
+                  isCurrent 
+                    ? "bg-white text-emerald-600 border-white" 
+                    : isCompleted 
+                      ? "bg-emerald-600 text-white border-emerald-600" 
+                      : "bg-slate-200 text-slate-500 border-slate-300"
+                )}>
+                  {isCompleted ? <IconCheck className="h-3 w-3" /> : step}
                 </div>
                 <span
                   className={cn(
-                    "hidden sm:block text-xs font-medium truncate transition-colors duration-200",
-                    isCurrent && "text-emerald-700 font-semibold",
-                    isCompleted && "text-emerald-600",
-                    isUpcoming && "text-slate-400"
+                    "text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap",
+                    isCurrent
+                      ? "text-white"
+                      : isCompleted
+                        ? "text-slate-700"
+                        : "text-slate-400"
                   )}
                 >
                   {label}
                 </span>
-              </button>
-
-              {/* Progress bar between steps */}
-              {i < STEP_LABELS.length - 1 && (
-                <div className="flex-1 h-1 rounded-full bg-slate-200 overflow-hidden">
-                  <div
-                    className={cn(
-                      "h-full rounded-full bg-emerald-500 transition-all duration-300 ease-out",
-                      isBarFilled ? "w-full" : "w-0"
-                    )}
-                  />
-                </div>
-              )}
-            </React.Fragment>
+              </div>
+            </button>
           );
         })}
       </div>
@@ -417,9 +422,6 @@ export const AssignTrainingView: React.FC = () => {
                 Previous
               </Button>
             )}
-
-
-
             {currentStep < 4 ? (
               <Button
                 variant="outline-emerald"
@@ -725,23 +727,16 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
                   </td>
                   <td
                     onClick={(e) => e.stopPropagation()}
-                    className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center sticky right-0 bg-white group-hover:bg-slate-50/80 transition-colors z-[2] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]"
+                    className="p-0 text-center sticky right-0 bg-white group-hover:bg-slate-50/80 transition-colors z-[2] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] w-12"
                   >
                     <Button
                       variant="ghost"
                       size="xs"
-                      // Giải thích class: 
-                      // - Mặc định (mobile): Không nền (bg-transparent), chữ/icon màu emerald, không shadow.
-                      // - Từ sm trở lên (desktop): Có nền emerald, chữ trắng, có shadow-sm như cũ.
-                      className="h-8 w-8 sm:w-auto p-0 sm:px-3 bg-transparent sm:bg-emerald-600 text-emerald-600 sm:text-white hover:bg-emerald-50 sm:hover:bg-emerald-700 shadow-none sm:shadow-sm transition-all"
+                      className="h-9 w-full p-0 bg-transparent text-emerald-600 hover:bg-emerald-50 shadow-none transition-all flex items-center justify-center rounded-none"
                       onClick={() => navigateTo(ROUTES.TRAINING.COURSE_DETAIL(c.id))}
                       title="View Detail"
                     >
-                      {/* Icon hiện ở mobile, ẩn ở desktop */}
-                      <IconInfoCircle className="h-5 w-5 sm:hidden" />
-
-                      {/* Text ẩn ở mobile, hiện ở desktop */}
-                      <span className="hidden sm:inline">View Detail</span>
+                      <IconInfoCircle className="h-6 w-6" strokeWidth={2} />
                     </Button>
                   </td>
                 </tr>
@@ -803,7 +798,7 @@ const Step2Assignees: React.FC<Step2Props> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Scope selector + content */}
         <div className="space-y-4 lg:col-span-8">
-          <TabNav tabs={SCOPE_TABS} activeTab={scopeTab} onChange={onScopeChange} variant="pill" />
+          <TabNav tabs={SCOPE_TABS} activeTab={scopeTab} onChange={onScopeChange} variant="pill" layoutId="assignmentScopeTabs" />
 
           {/* Individual */}
           {scopeTab === "individual" && (
