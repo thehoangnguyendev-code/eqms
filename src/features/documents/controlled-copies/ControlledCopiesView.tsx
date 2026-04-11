@@ -25,7 +25,6 @@ import { ESignatureModal } from "@/components/ui/esign-modal/ESignatureModal";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { formatDateUS, formatDateTimeParts } from "@/utils/format";
 import { CreateLinkModal } from "@/features/documents/shared/components";
-import { CancelDistributionModal } from "./components/CancelDistributionModal";
 import { DestructionTypeSelectionModal } from "./components/DestructionTypeSelectionModal";
 import { useToast } from "@/components/ui/toast/Toast";
 import type { ControlledCopy, ControlledCopyStatus, TableColumn } from "./types";
@@ -256,13 +255,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
   // Modal states
   const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
   const [selectedCopyForLink, setSelectedCopyForLink] = useState<ControlledCopy | null>(null);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedCopyForCancel, setSelectedCopyForCancel] = useState<ControlledCopy | null>(null);
-  const [cancelFormData, setCancelFormData] = useState({
-    cancellationReason: "",
-    returnToStage: "Draft" as "Draft" | "Cancelled"
-  });
-  const [cancelFormErrors, setCancelFormErrors] = useState<{ cancellationReason?: string }>({});
   const [isESignModalOpen, setisESignModalOpen] = useState(false);
   const [isDistributeisESignModalOpen, setisDistributeisESignModalOpen] = useState(false);
   const [selectedCopyForDistribute, setSelectedCopyForDistribute] = useState<ControlledCopy | null>(null);
@@ -411,48 +404,26 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
 
   const handleCancel = (copy: ControlledCopy) => {
     setSelectedCopyForCancel(copy);
-    setIsCancelModalOpen(true);
-    setCancelFormData({ cancellationReason: "", returnToStage: "Draft" });
-    setCancelFormErrors({});
+    setisESignModalOpen(true);
     close();
   };
 
-  const handleCancelFormSubmit = () => {
-    // Validate form
-    const errors: { cancellationReason?: string } = {};
-    if (!cancelFormData.cancellationReason.trim()) {
-      errors.cancellationReason = "Cancellation reason is required";
-    } else if (cancelFormData.cancellationReason.trim().length < 10) {
-      errors.cancellationReason = "Cancellation reason must be at least 10 characters";
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setCancelFormErrors(errors);
-      return;
-    }
-
-    // Open ESignature modal
-    setIsCancelModalOpen(false);
-    setisESignModalOpen(true);
-  };
 
   const handleESignConfirm = (reason: string) => {
+    const docNumber = selectedCopyForCancel?.documentNumber;
     // Process cancellation
     setisESignModalOpen(false);
     setSelectedCopyForCancel(null);
-    setCancelFormData({ cancellationReason: "", returnToStage: "Draft" });
 
     showToast({
       type: "success",
-      message: `Controlled copy ${selectedCopyForCancel?.documentNumber} has been cancelled and returned to ${cancelFormData.returnToStage} status.`
+      message: `Controlled copy ${docNumber} has been cancelled and moved to Closed - Cancelled status.`
     });
   };
 
   const handleCancelModalClose = () => {
-    setIsCancelModalOpen(false);
+    setisESignModalOpen(false);
     setSelectedCopyForCancel(null);
-    setCancelFormData({ cancellationReason: "", returnToStage: "Draft" });
-    setCancelFormErrors({});
   };
 
   const handleReportLostDamaged = (copy: ControlledCopy) => {
@@ -806,25 +777,18 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
         documentTitle={selectedCopyForLink?.name || ""}
       />
 
-      {/* Cancel Distribution Modal */}
-      {selectedCopyForCancel && (
-        <CancelDistributionModal
-          isOpen={isCancelModalOpen}
-          onClose={handleCancelModalClose}
-          onConfirm={handleCancelFormSubmit}
-          formData={cancelFormData}
-          onFormDataChange={setCancelFormData}
-          errors={cancelFormErrors}
-          onErrorChange={setCancelFormErrors}
-        />
-      )}
 
       {/* ESignature Modal - Cancel Distribution */}
       <ESignatureModal
         isOpen={isESignModalOpen}
-        onClose={() => setisESignModalOpen(false)}
+        onClose={handleCancelModalClose}
         onConfirm={handleESignConfirm}
-        actionTitle="Cancel Distribution"
+        transactionType="cancel-distribution"
+        documentDetails={{
+          code: selectedCopyForCancel?.documentNumber || "N/A",
+          title: selectedCopyForCancel?.name || "N/A",
+          revision: selectedCopyForCancel?.version || "—" 
+        }}
       />
 
       {/* ESignature Modal - Distribute */}
@@ -835,7 +799,12 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
           setSelectedCopyForDistribute(null);
         }}
         onConfirm={handleDistributeESignConfirm}
-        actionTitle="Confirm Distribution of Controlled Copy"
+        transactionType="distribute"
+        documentDetails={{
+          code: selectedCopyForDistribute?.documentNumber || "N/A",
+          title: selectedCopyForDistribute?.name || "N/A",
+          revision: selectedCopyForDistribute?.version || "—"
+        }}
       />
 
       {/* Destruction Type Selection Modal */}

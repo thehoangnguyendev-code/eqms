@@ -26,7 +26,7 @@ export interface ESignatureModalProps {
   /** Callback on confirm with reason */
   onConfirm: (reason: string) => void;
   /** Action title displayed in modal */
-  actionTitle: string;
+  actionTitle?: string;
   /** Optional details of changes being signed */
   changes?: {
     action: string;
@@ -40,17 +40,46 @@ export interface ESignatureModalProps {
     title?: string;
     revision?: string;
   };
+  /** Optional transaction preset for common actions */
+  transactionType?: 'distribute' | 'cancel-distribution';
 }
+
+const TRANSACTION_PRESETS = {
+  'distribute': {
+    actionTitle: "Confirm Distribution",
+    changes: [{
+      action: "Update Status",
+      oldValue: "Ready for Distribution",
+      newValue: "Distributed",
+      category: "status" as const
+    }]
+  },
+  'cancel-distribution': {
+    actionTitle: "Cancel Distribution",
+    changes: [{
+      action: "Update Status",
+      oldValue: "Ready for Distribution",
+      newValue: "Closed - Cancelled",
+      category: "status" as const
+    }]
+  }
+};
 
 export const ESignatureModal: React.FC<ESignatureModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  actionTitle,
-  changes = [],
-  documentDetails
+  actionTitle: propActionTitle,
+  changes: propChanges,
+  documentDetails,
+  transactionType
 }) => {
-  const [username, setUsername] = useState('Dr. A. Smith'); // Simulated logged-in user
+  // Use presets if provided, otherwise fallback to props
+  const preset = transactionType ? TRANSACTION_PRESETS[transactionType] : null;
+  const actionTitle = propActionTitle || preset?.actionTitle || "Electronic Signature";
+  const changes = propChanges || preset?.changes || [];
+
+  const [username, setUsername] = useState('Dr. A. Smith');
   const [password, setPassword] = useState('');
   const [reason, setReason] = useState('');
   const [error, setError] = useState('');

@@ -79,8 +79,8 @@ export const TabNav: React.FC<TabNavProps> = ({
               key={tab.id}
               onClick={() => onChange(tab.id)}
               className={cn(
-                "flex items-center justify-center gap-2 px-2.5 py-1.5 relative whitespace-nowrap",
-                "text-[11px] font-semibold rounded-lg transition-all duration-200",
+                "flex items-center justify-center gap-2 px-3 py-1.5 relative whitespace-nowrap",
+                "text-sm font-medium rounded-lg transition-all duration-200",
                 "flex-1",
                 isActive
                   ? "text-slate-900"
@@ -96,7 +96,7 @@ export const TabNav: React.FC<TabNavProps> = ({
               )}
               <span className="relative z-10 flex items-center gap-1.5">
                 {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
-                <span>{tab.label}</span>
+                <span className="font-base">{tab.label}</span>
                 {tab.count !== undefined && (
                   <span
                     className={cn(

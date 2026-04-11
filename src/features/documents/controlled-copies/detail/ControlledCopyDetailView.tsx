@@ -375,7 +375,12 @@ export const ControlledCopyDetailView: React.FC<ControlledCopyDetailViewProps> =
         isOpen={isDistributeModalOpen}
         onClose={() => setIsDistributeModalOpen(false)}
         onConfirm={handleDistributeSuccess}
-        actionTitle="Distribute Controlled Copy"
+        transactionType="distribute"
+        documentDetails={{
+          code: controlledCopy.documentNumber,
+          title: controlledCopy.name,
+          revision: controlledCopy.version 
+        }}
       />
 
       {/* Destruction Type Selection Modal */}

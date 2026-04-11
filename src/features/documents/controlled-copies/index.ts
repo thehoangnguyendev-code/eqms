@@ -10,7 +10,6 @@ export { ControlledCopyDetailView } from './detail/ControlledCopyDetailView';
 export { DestroyControlledCopyView } from './components/DestroyControlledCopyView';
 
 // Components
-export { CancelDistributionModal } from './components/CancelDistributionModal';
 export { DestructionTypeSelectionModal } from './components/DestructionTypeSelectionModal';
 
 // Types

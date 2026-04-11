@@ -183,47 +183,116 @@ export const ROUTE_NEW_REVISION_STANDALONE = '/documents/revisions/new-standalon
 
 /**
  * Path prefixes that indicate a "transactional" screen (create, edit, review,
- * approval, new, add, upload, workspace, etc.). When the user navigates away
- * from such a screen via the sidebar, a leave-confirmation modal is shown.
- * Derived from ROUTES above.
+ * approval, new, add, upload, workspace, destroy, etc.). When the user navigates
+ * away from such a screen via the sidebar, a leave-confirmation modal is shown.
+ *
+ * RULE: Only include paths that are SPECIFIC enough to never match a list/index
+ * page. Prefer explicit subpaths (e.g. `/create`, `/edit`, `/destroy`) over
+ * broad category prefixes that would also match list pages.
+ *
+ * Two matching strategies are supported (see isTransactionalRoute):
+ *   prefix: []  → path.startsWith(prefix)   (e.g. fixed action paths)
+ *   suffix: []  → path.endsWith(suffix)     (e.g. /:id/edit, /:id/destroy)
  */
-export const TRANSACTIONAL_PATH_PREFIXES: readonly string[] = [
-  // Documents
+
+/** Paths matched by startsWith — must never be the beginning of a list URL */
+export const TRANSACTIONAL_PREFIXES: readonly string[] = [
+  // ── Documents ──────────────────────────────────────────────────────────────
   '/documents/all/new',
-  '/documents/revisions/new',
-  '/documents/revisions/new-multi',
-  '/documents/revisions/new-standalone',
+  '/documents/revisions/new',          // /revisions/new, /new-multi, /new-standalone
   '/documents/revisions/workspace',
-  '/documents/revisions/review/',
-  '/documents/revisions/approval/',
-  '/documents/controlled-copies/', // detail, destroy
-  // Training – Course Inventory
+  '/documents/revisions/review/',      // /revisions/review/:id
+  '/documents/revisions/approval/',    // /revisions/approval/:id
+  '/documents/controlled-copy/request',
+
+  // ── Training – Course Inventory ────────────────────────────────────────────
   '/training-management/courses/create',
-  '/training-management/courses/', // detail, edit, progress, result-entry
-  '/training-management/pending-review/', // review/:id
-  '/training-management/pending-approval/', // approve/:id
+
+  // ── Training – Approval ────────────────────────────────────────────────────
+  // NOTE: APPROVAL_DETAIL = /pending-review/:id  (no extra subpath)
+  //       → matched by suffix '/pending-review/' below is unsafe (would match list)
+  //       → handled via TRANSACTIONAL_SEGMENTS instead
+
+  // ── Training – Assignment ──────────────────────────────────────────────────
   '/training-management/assignments/new',
-  // Training – Materials
+
+  // ── Training – Materials ───────────────────────────────────────────────────
   '/training-management/materials/upload',
-  '/training-management/materials/review/',
-  '/training-management/materials/approval/',
-  '/training-management/materials/new-revision/',
-  '/training-management/materials/', // detail, edit, usage-report,
-  // Settings
+  '/training-management/materials/review/',        // /materials/review/:id
+  '/training-management/materials/approval/',      // /materials/approval/:id
+  '/training-management/materials/new-revision/',  // /materials/new-revision/:id
+
+  // ── Settings – Users ───────────────────────────────────────────────────────
   '/settings/users/add',
-  '/settings/users/edit/',
-  '/settings/users/profile/',
+  '/settings/users/edit/',     // /users/edit/:id
+  '/settings/users/profile/',  // /users/profile/:id
+
+  // ── Settings – Roles ───────────────────────────────────────────────────────
   '/settings/roles/new',
-  '/settings/roles/', // :id, :id/edit
+
+  // ── Settings – Email Templates ─────────────────────────────────────────────
   '/settings/email-templates/new',
-  '/settings/email-templates/edit/',
+  '/settings/email-templates/edit/',  // /email-templates/edit/:id
+] as const;
+
+/**
+ * Path suffixes matched by endsWith — catches /:id/edit, /:id/destroy, etc.
+ * These patterns are safe because the list page never ends in these strings.
+ */
+export const TRANSACTIONAL_SUFFIXES: readonly string[] = [
+  '/edit',           // /documents/:id/edit, /courses/:id/edit, /materials/:id/edit, /roles/:id/edit
+  '/destroy',        // /controlled-copies/:id/destroy
+  '/result-entry',   // /courses/:id/result-entry
+  '/progress',       // /courses/:id/progress  (may have data entry)
+] as const;
+
+/**
+ * Exact route segments whose presence in the path (between slashes) identifies
+ * approval/review detail screens where the ID comes right after the segment.
+ * e.g. /training-management/pending-review/123  →  segment "pending-review"
+ *      /training-management/pending-approval/456 →  segment "pending-approval"
+ */
+export const TRANSACTIONAL_SEGMENTS: readonly string[] = [
+  'pending-review',
+  'pending-approval',
+] as const;
+
+// Keep this for backward compat — union of all three strategies
+export const TRANSACTIONAL_PATH_PREFIXES: readonly string[] = [
+  ...TRANSACTIONAL_PREFIXES,
 ] as const;
 
 /**
  * Returns true if the given path is a transactional screen (create/edit/review/approval/etc.).
  * Used by Sidebar to show leave confirmation when navigating away.
+ *
+ * Uses three strategies:
+ *  1. startsWith – for known fixed-prefix screens (create, new, upload, etc.)
+ *  2. endsWith   – for /:id/edit, /:id/destroy, /:id/result-entry, etc.
+ *  3. segments   – for /:section/:id patterns (pending-review/:id)
  */
 export function isTransactionalRoute(pathname: string): boolean {
+  // Normalise: strip query string and trailing slash
   const path = pathname.replace(/\?.*$/, '').replace(/\/$/, '') || '/';
-  return TRANSACTIONAL_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
+
+  // 1. Prefix match
+  if (TRANSACTIONAL_PREFIXES.some((prefix) => path.startsWith(prefix))) {
+    return true;
+  }
+
+  // 2. Suffix match
+  if (TRANSACTIONAL_SUFFIXES.some((suffix) => path.endsWith(suffix))) {
+    return true;
+  }
+
+  // 3. Segment match: /section/:id  where section is in TRANSACTIONAL_SEGMENTS
+  //    The path must have at least one more segment after the known segment (the :id)
+  const parts = path.split('/').filter(Boolean);
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (TRANSACTIONAL_SEGMENTS.includes(parts[i])) {
+      return true; // parts[i+1] is the :id
+    }
+  }
+
+  return false;
 }
