@@ -11,7 +11,7 @@ import { cn } from "@/components/ui/utils";
 import { Select, SelectOption } from "@/components/ui/select/Select";
 import { Button } from "@/components/ui/button/Button";
 import { FormModal } from "@/components/ui/modal/FormModal";
-import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
+import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 
 interface AuditEntry {
@@ -212,10 +212,33 @@ export const AuditTrailTab: React.FC = () => {
       selectedDepartment === "all" ||
       entry.user.department === selectedDepartment;
 
-    // Date filtering
+    // Date filtering (DateRangePicker outputs dd/MM/yyyy HH:mm:ss or dd/MM/yyyy format)
     const entryDate = new Date(entry.timestamp);
-    const matchesDateFrom = !dateFrom || entryDate >= new Date(dateFrom);
-    const matchesDateTo = !dateTo || entryDate <= new Date(dateTo);
+    let matchesDateFrom = true;
+    let matchesDateTo = true;
+
+    if (dateFrom) {
+      const dateTimeParts = dateFrom.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+      const dateParts = dateFrom.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (dateTimeParts) {
+        const from = new Date(parseInt(dateTimeParts[3]), parseInt(dateTimeParts[2]) - 1, parseInt(dateTimeParts[1]), parseInt(dateTimeParts[4]), parseInt(dateTimeParts[5]), parseInt(dateTimeParts[6]));
+        matchesDateFrom = entryDate >= from;
+      } else if (dateParts) {
+        const from = new Date(parseInt(dateParts[3]), parseInt(dateParts[2]) - 1, parseInt(dateParts[1]));
+        matchesDateFrom = entryDate >= from;
+      }
+    }
+    if (dateTo) {
+      const dateTimeParts = dateTo.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+      const dateParts = dateTo.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (dateTimeParts) {
+        const to = new Date(parseInt(dateTimeParts[3]), parseInt(dateTimeParts[2]) - 1, parseInt(dateTimeParts[1]), parseInt(dateTimeParts[4]), parseInt(dateTimeParts[5]), parseInt(dateTimeParts[6]));
+        matchesDateTo = entryDate <= to;
+      } else if (dateParts) {
+        const to = new Date(parseInt(dateParts[3]), parseInt(dateParts[2]) - 1, parseInt(dateParts[1]), 23, 59, 59);
+        matchesDateTo = entryDate <= to;
+      }
+    }
 
     return (
       matchesAction &&
@@ -333,29 +356,22 @@ export const AuditTrailTab: React.FC = () => {
             />
           </div>
 
-          {/* Date From */}
-          <div className="xl:col-span-4 w-full">
-            <DateTimePicker
-              label="From Date"
-              value={dateFrom}
-              onChange={(dateStr) => {
+          {/* Date Picker */}
+          <div className="md:col-span-2 xl:col-span-4 w-full">
+            <DateRangePicker
+              label="Timestamp Date Range"
+              startDate={dateFrom}
+              endDate={dateTo}
+              onStartDateChange={(dateStr) => {
                 setDateFrom(dateStr);
                 setCurrentPage(1);
               }}
-              placeholder="Select start date"
-            />
-          </div>
-
-          {/* Date To */}
-          <div className="xl:col-span-4 w-full">
-            <DateTimePicker
-              label="To Date"
-              value={dateTo}
-              onChange={(dateStr) => {
+              onEndDateChange={(dateStr) => {
                 setDateTo(dateStr);
                 setCurrentPage(1);
               }}
-              placeholder="Select end date"
+              placeholder="Select date range"
+              includeTime={true}
             />
           </div>
         </div>

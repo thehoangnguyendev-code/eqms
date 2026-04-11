@@ -7,9 +7,9 @@ import { Button } from '../button/Button';
 export interface DateRangePickerProps {
   /** Label displayed above picker */
   label?: string;
-  /** Start date value (dd/MM/yyyy) */
+  /** Start date value (dd/MM/yyyy HH:mm:ss or dd/MM/yyyy) */
   startDate: string;
-  /** End date value (dd/MM/yyyy) */
+  /** End date value (dd/MM/yyyy HH:mm:ss or dd/MM/yyyy) */
   endDate: string;
   /** Callback when start date changes */
   onStartDateChange: (value: string) => void;
@@ -19,11 +19,23 @@ export interface DateRangePickerProps {
   placeholder?: string;
   /** Disabled state */
   disabled?: boolean;
+  /** Whether to include time selection */
+  includeTime?: boolean;
 }
 
-// Helper to parse dd/MM/yyyy or ISO strings
+// Helper to parse dd/MM/yyyy HH:mm:ss or dd/MM/yyyy or ISO strings
 const parseDate = (dateStr: string): Date | null => {
   if (!dateStr) return null;
+
+  // Try dd/MM/yyyy HH:mm:ss format
+  const dateTimeMatch = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+  if (dateTimeMatch) {
+    const [, day, month, year, hours, minutes, seconds] = dateTimeMatch;
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hours), parseInt(minutes), parseInt(seconds));
+    return isNaN(date.getTime()) ? null : date;
+  }
+
+  // Try dd/MM/yyyy format
   const ddmmyyyyMatch = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
   if (ddmmyyyyMatch) {
     const [, day, month, year] = ddmmyyyyMatch;
@@ -34,17 +46,24 @@ const parseDate = (dateStr: string): Date | null => {
   return isNaN(date.getTime()) ? null : date;
 };
 
-const formatDateDisplay = (dateStr: string): string => {
+const formatDateDisplay = (dateStr: string, includeTime: boolean = false): string => {
   if (!dateStr) return '';
   const d = parseDate(dateStr);
   if (!d) return '';
-  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+  const datePart = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+  if (!includeTime) return datePart;
+  const timePart = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+  return `${datePart} ${timePart}`;
 };
 
-const formatDateValue = (d: Date): string => {
+const formatDateValue = (d: Date, includeTime: boolean = false): string => {
   const day = String(d.getDate()).padStart(2, '0');
   const month = String(d.getMonth() + 1).padStart(2, '0');
-  return `${day}/${month}/${d.getFullYear()}`;
+  const year = d.getFullYear();
+  const datePart = `${day}/${month}/${year}`;
+  if (!includeTime) return datePart;
+  const timePart = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+  return `${datePart} ${timePart}`;
 };
 
 const isSameDay = (a: Date, b: Date): boolean =>
@@ -54,7 +73,7 @@ const isSameDay = (a: Date, b: Date): boolean =>
 
 const isInRange = (date: Date, start: Date | null, end: Date | null): boolean => {
   if (!start || !end) return false;
-  const t = date.getTime();
+  const t = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
   const s = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
   const e = new Date(end.getFullYear(), end.getMonth(), end.getDate()).getTime();
   return t > s && t < e;
@@ -68,6 +87,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   onEndDateChange,
   placeholder = "Select date range",
   disabled = false,
+  includeTime = false,
 }) => {
   const pickerId = useId();
   const [isOpen, setIsOpen] = useState(false);
@@ -77,6 +97,31 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const [localStart, setLocalStart] = useState<Date | null>(() => parseDate(startDate));
   const [localEnd, setLocalEnd] = useState<Date | null>(() => parseDate(endDate));
   const [viewDate, setViewDate] = useState<Date>(() => parseDate(startDate) || new Date());
+
+  // Time states
+  const [startTime, setStartTime] = useState({ h: '00', m: '00', s: '00' });
+  const [endTime, setEndTime] = useState({ h: '23', m: '59', s: '59' });
+
+  // Update time states when local dates change
+  useEffect(() => {
+    if (localStart) {
+      setStartTime({
+        h: String(localStart.getHours()).padStart(2, '0'),
+        m: String(localStart.getMinutes()).padStart(2, '0'),
+        s: String(localStart.getSeconds()).padStart(2, '0'),
+      });
+    }
+  }, [localStart]);
+
+  useEffect(() => {
+    if (localEnd) {
+      setEndTime({
+        h: String(localEnd.getHours()).padStart(2, '0'),
+        m: String(localEnd.getMinutes()).padStart(2, '0'),
+        s: String(localEnd.getSeconds()).padStart(2, '0'),
+      });
+    }
+  }, [localEnd]);
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -99,8 +144,9 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
         const rect = triggerRef.current.getBoundingClientRect();
         const sw = window.innerWidth;
         const sh = window.innerHeight;
-        const pw = 300;
-        const ph = popoverRef.current?.offsetHeight || 460;
+        const isMobile = sw < 1024;
+        const pw = isMobile ? (includeTime ? 320 : 300) : (includeTime ? 460 : 440);
+        const ph = popoverRef.current?.offsetHeight || (includeTime ? 560 : 460);
 
         let left = rect.left;
         const style: React.CSSProperties = { position: 'fixed', zIndex: 9999, opacity: 1 };
@@ -129,7 +175,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
         window.removeEventListener('scroll', update, true);
       };
     }
-  }, [isOpen, viewMode, viewDate]);
+  }, [isOpen, viewMode, viewDate, includeTime]);
 
   // Click outside
   useEffect(() => {
@@ -155,10 +201,27 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
   // Sync external values
   useEffect(() => {
-    setLocalStart(parseDate(startDate));
+    const d = parseDate(startDate);
+    setLocalStart(d);
+    if (d) {
+      setStartTime({
+        h: String(d.getHours()).padStart(2, '0'),
+        m: String(d.getMinutes()).padStart(2, '0'),
+        s: String(d.getSeconds()).padStart(2, '0'),
+      });
+    }
   }, [startDate]);
+
   useEffect(() => {
-    setLocalEnd(parseDate(endDate));
+    const d = parseDate(endDate);
+    setLocalEnd(d);
+    if (d) {
+      setEndTime({
+        h: String(d.getHours()).padStart(2, '0'),
+        m: String(d.getMinutes()).padStart(2, '0'),
+        s: String(d.getSeconds()).padStart(2, '0'),
+      });
+    }
   }, [endDate]);
 
   useEffect(() => {
@@ -174,17 +237,21 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const handleDateClick = (day: number) => {
     const clicked = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
     if (activeField === 'start') {
-      setLocalStart(clicked);
+      const newStart = new Date(clicked);
+      newStart.setHours(parseInt(startTime.h), parseInt(startTime.m), parseInt(startTime.s));
+      setLocalStart(newStart);
       // If end is before start, clear it
-      if (localEnd && clicked > localEnd) setLocalEnd(null);
-      setActiveField('end');
+      if (localEnd && newStart > localEnd) setLocalEnd(null);
+      if (!includeTime) setActiveField('end');
     } else {
+      const newEnd = new Date(clicked);
+      newEnd.setHours(parseInt(endTime.h), parseInt(endTime.m), parseInt(endTime.s));
       // If clicked before start, swap
-      if (localStart && clicked < localStart) {
+      if (localStart && newEnd < localStart) {
         setLocalEnd(localStart);
-        setLocalStart(clicked);
+        setLocalStart(newEnd);
       } else {
-        setLocalEnd(clicked);
+        setLocalEnd(newEnd);
       }
     }
   };
@@ -203,17 +270,78 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
     setViewMode('calendar');
   };
 
+  const applyPreset = (preset: 'today' | 'yesterday' | 'week' | 'month' | 'quarter') => {
+    const now = new Date();
+    let start = new Date(now);
+    let end = new Date(now);
+
+    switch (preset) {
+      case 'today':
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59);
+        break;
+      case 'yesterday':
+        start.setDate(now.getDate() - 1);
+        start.setHours(0, 0, 0, 0);
+        end.setDate(now.getDate() - 1);
+        end.setHours(23, 59, 59);
+        break;
+      case 'week':
+        start.setDate(now.getDate() - 6);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59);
+        break;
+      case 'month':
+        start.setDate(now.getDate() - 29);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59);
+        break;
+      case 'quarter':
+        start.setDate(now.getDate() - 89);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59);
+        break;
+    }
+
+    setLocalStart(start);
+    setLocalEnd(end);
+    setStartTime({
+      h: String(start.getHours()).padStart(2, '0'),
+      m: String(start.getMinutes()).padStart(2, '0'),
+      s: String(start.getSeconds()).padStart(2, '0'),
+    });
+    setEndTime({
+      h: String(end.getHours()).padStart(2, '0'),
+      m: String(end.getMinutes()).padStart(2, '0'),
+      s: String(end.getSeconds()).padStart(2, '0'),
+    });
+    setViewDate(start);
+  };
+
   const handleApply = () => {
-    if (localStart) onStartDateChange(formatDateValue(localStart));
-    else onStartDateChange('');
-    if (localEnd) onEndDateChange(formatDateValue(localEnd));
-    else onEndDateChange('');
+    if (localStart) {
+      const d = new Date(localStart);
+      d.setHours(parseInt(startTime.h), parseInt(startTime.m), parseInt(startTime.s));
+      onStartDateChange(formatDateValue(d, includeTime));
+    } else {
+      onStartDateChange('');
+    }
+
+    if (localEnd) {
+      const d = new Date(localEnd);
+      d.setHours(parseInt(endTime.h), parseInt(endTime.m), parseInt(endTime.s));
+      onEndDateChange(formatDateValue(d, includeTime));
+    } else {
+      onEndDateChange('');
+    }
     setIsOpen(false);
   };
 
   const handleReset = () => {
     setLocalStart(null);
     setLocalEnd(null);
+    setStartTime({ h: '00', m: '00', s: '00' });
+    setEndTime({ h: '23', m: '59', s: '59' });
     setActiveField('start');
     onStartDateChange('');
     onEndDateChange('');
@@ -221,13 +349,13 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
   // Display value for trigger
   const displayValue = useMemo(() => {
-    const s = formatDateDisplay(startDate);
-    const e = formatDateDisplay(endDate);
+    const s = formatDateDisplay(startDate, includeTime);
+    const e = formatDateDisplay(endDate, includeTime);
     if (s && e) return `${s}  →  ${e}`;
     if (s) return `From ${s}`;
     if (e) return `To ${e}`;
     return placeholder;
-  }, [startDate, endDate, placeholder]);
+  }, [startDate, endDate, placeholder, includeTime]);
 
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
@@ -405,6 +533,72 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
     );
   };
 
+  const renderTimePicker = (type: 'start' | 'end') => {
+    const time = type === 'start' ? startTime : endTime;
+    const setTime = type === 'start' ? setStartTime : setEndTime;
+
+    const handleTimeChange = (field: 'h' | 'm' | 's', value: string) => {
+      let val = value.replace(/\D/g, '');
+      if (field === 'h') {
+        if (parseInt(val) > 23) val = '23';
+      } else {
+        if (parseInt(val) > 59) val = '59';
+      }
+      setTime(prev => ({ ...prev, [field]: val.padStart(2, '0') }));
+    };
+
+    return (
+      <div className="flex items-center gap-1">
+        <input
+          type="text"
+          value={time.h}
+          onChange={(e) => handleTimeChange('h', e.target.value)}
+          className="w-8 h-7 text-center text-xs border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          maxLength={2}
+        />
+        <span className="text-slate-400">:</span>
+        <input
+          type="text"
+          value={time.m}
+          onChange={(e) => handleTimeChange('m', e.target.value)}
+          className="w-8 h-7 text-center text-xs border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          maxLength={2}
+        />
+        <span className="text-slate-400">:</span>
+        <input
+          type="text"
+          value={time.s}
+          onChange={(e) => handleTimeChange('s', e.target.value)}
+          className="w-8 h-7 text-center text-xs border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          maxLength={2}
+        />
+      </div>
+    );
+  };
+
+  const renderPresets = () => (
+    <div className="w-full lg:w-[140px] border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col p-2 bg-slate-50/20 shrink-0">
+      <div className="grid grid-cols-3 lg:flex lg:flex-col gap-1.5">
+        {[
+          { label: 'Today', key: 'today' },
+          { label: 'Yesterday', key: 'yesterday' },
+          { label: 'Last week', key: 'week' },
+          { label: 'Last month', key: 'month' },
+          { label: 'Last quarter', key: 'quarter' },
+        ].map((p) => (
+          <button
+            key={p.key}
+            type="button"
+            onClick={() => applyPreset(p.key as any)}
+            className="text-left px-2 py-1.5 lg:py-2 text-[10px] lg:text-sm text-slate-600 border border-slate-200 lg:border-transparent hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 rounded-md lg:rounded-lg transition-all font-medium truncate"
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="relative w-full">
       {label && (
@@ -451,86 +645,108 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           aria-modal="true"
           aria-label="Choose date range"
           style={popoverStyle}
-          className="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden flex flex-col w-[300px]"
+          className={cn(
+            "bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden flex flex-col lg:flex-row",
+            includeTime ? "w-[320px] lg:w-[460px]" : "w-[300px] lg:w-[440px]"
+          )}
         >
-          {/* Start / Due date inputs */}
-          <div className="px-4 pt-4 pb-2">
-            <div className="grid grid-cols-2 gap-2">
-              {/* Start */}
-              <div>
-                <label className="text-xs font-medium text-slate-500 mb-1.5 block">Start</label>
-                <button
-                  type="button"
-                  onClick={() => setActiveField('start')}
-                  className={cn(
-                    "flex items-center gap-1.5 w-full px-3 py-1.5 h-8 rounded-lg text-sm border transition-colors",
-                    activeField === 'start'
-                      ? "border-emerald-400 ring-1 ring-emerald-200"
-                      : "border-slate-200 hover:border-slate-300"
+          <div className="flex-1 flex flex-col">
+            {/* Start / Due date inputs */}
+            <div className="px-4 pt-4 pb-2">
+              <div className={cn("flex gap-3", includeTime ? "flex-col" : "flex-row")}>
+                {/* Start */}
+                <div className={cn("flex items-center justify-between gap-4", !includeTime && "flex-1")}>
+                  <div className="flex-1 min-w-0">
+                    <label className="text-xs font-medium text-slate-500 mb-1 block">Start Date</label>
+                    <button
+                      type="button"
+                      onClick={() => setActiveField('start')}
+                      className={cn(
+                        "flex items-center gap-1.5 w-full px-2.5 py-1.5 h-8 rounded-lg text-sm border transition-colors",
+                        activeField === 'start'
+                          ? "border-emerald-400 ring-1 ring-emerald-200"
+                          : "border-slate-200 hover:border-slate-300"
+                      )}
+                    >
+                      <CalendarIcon className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                      <span className={cn("truncate text-xs", localStart ? "text-slate-900" : "text-slate-400")}>
+                        {localStart ? formatDateDisplay(formatDateValue(localStart), false) : 'dd/mm/yyyy'}
+                      </span>
+                    </button>
+                  </div>
+                  {includeTime && (
+                    <div className="shrink-0 pt-5">
+                      {renderTimePicker('start')}
+                    </div>
                   )}
-                >
-                  <CalendarIcon className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                  <span className={cn("truncate text-xs", localStart ? "text-slate-900" : "text-slate-400")}>
-                    {localStart ? formatDateDisplay(formatDateValue(localStart)) : 'dd/mm/yyyy'}
-                  </span>
-                </button>
+                </div>
+
+                {/* Due/End */}
+                <div className={cn("flex items-center justify-between gap-4", !includeTime && "flex-1")}>
+                  <div className="flex-1 min-w-0">
+                    <label className="text-xs font-medium text-slate-500 mb-1 block">End Date</label>
+                    <button
+                      type="button"
+                      onClick={() => setActiveField('end')}
+                      className={cn(
+                        "flex items-center gap-1.5 w-full px-2.5 py-1.5 h-8 rounded-lg text-sm border transition-colors",
+                        activeField === 'end'
+                          ? "border-emerald-400 ring-1 ring-emerald-200"
+                          : "border-slate-200 hover:border-slate-300"
+                      )}
+                    >
+                      <CalendarIcon className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                      <span className={cn("truncate text-xs", localEnd ? "text-slate-900" : "text-slate-400")}>
+                        {localEnd ? formatDateDisplay(formatDateValue(localEnd), false) : 'dd/mm/yyyy'}
+                      </span>
+                    </button>
+                  </div>
+                  {includeTime && (
+                    <div className="shrink-0 pt-5">
+                      {renderTimePicker('end')}
+                    </div>
+                  )}
+                </div>
               </div>
-              {/* Due/End */}
-              <div>
-                <label className="text-xs font-medium text-slate-500 mb-1.5 block">Due</label>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-slate-100" />
+
+            {/* Calendar */}
+            {renderCalendar()}
+
+            {/* Footer */}
+            <div className="border-t border-slate-100 px-4 py-3 bg-slate-50/50">
+              <div className="flex items-center justify-between">
                 <button
                   type="button"
-                  onClick={() => setActiveField('end')}
-                  className={cn(
-                    "flex items-center gap-1.5 w-full px-3 py-1.5 h-8 rounded-lg text-sm border transition-colors",
-                    activeField === 'end'
-                      ? "border-emerald-400 ring-1 ring-emerald-200"
-                      : "border-slate-200 hover:border-slate-300"
-                  )}
+                  onClick={handleReset}
+                  className="text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors"
                 >
-                  <CalendarIcon className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                  <span className={cn("truncate text-xs", localEnd ? "text-slate-900" : "text-slate-400")}>
-                    {localEnd ? formatDateDisplay(formatDateValue(localEnd)) : 'dd/mm/yyyy'}
-                  </span>
+                  Reset range
                 </button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsOpen(false)}
+                    className="h-8 text-xs px-3"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleApply}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white h-8 text-xs px-4"
+                  >
+                    Apply
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Divider */}
-          <div className="border-t border-slate-100" />
-
-          {/* Calendar */}
-          {renderCalendar()}
-
-          {/* Footer */}
-          <div className="border-t border-slate-100 px-4 py-2">
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={handleReset}
-                className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                Reset all
-              </button>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleApply}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-          </div>
+          {renderPresets()}
         </div>,
         document.body
       )}

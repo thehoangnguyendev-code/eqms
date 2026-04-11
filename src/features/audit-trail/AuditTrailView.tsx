@@ -143,20 +143,28 @@ export const AuditTrailView: React.FC = () => {
                 userFilter === "" ||
                 record.user.toLowerCase().includes(userFilter.toLowerCase());
 
-            // Date filtering (DateRangePicker outputs dd/MM/yyyy format)
+            // Date filtering (DateRangePicker outputs dd/MM/yyyy HH:mm:ss or dd/MM/yyyy format)
             let matchesDateFrom = true;
             let matchesDateTo = true;
             if (dateFrom) {
-                const parts = dateFrom.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-                if (parts) {
-                    const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]));
+                const dateTimeParts = dateFrom.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+                const dateParts = dateFrom.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                if (dateTimeParts) {
+                    const from = new Date(parseInt(dateTimeParts[3]), parseInt(dateTimeParts[2]) - 1, parseInt(dateTimeParts[1]), parseInt(dateTimeParts[4]), parseInt(dateTimeParts[5]), parseInt(dateTimeParts[6]));
+                    matchesDateFrom = new Date(record.timestamp) >= from;
+                } else if (dateParts) {
+                    const from = new Date(parseInt(dateParts[3]), parseInt(dateParts[2]) - 1, parseInt(dateParts[1]));
                     matchesDateFrom = new Date(record.timestamp) >= from;
                 }
             }
             if (dateTo) {
-                const parts = dateTo.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-                if (parts) {
-                    const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
+                const dateTimeParts = dateTo.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+                const dateParts = dateTo.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                if (dateTimeParts) {
+                    const to = new Date(parseInt(dateTimeParts[3]), parseInt(dateTimeParts[2]) - 1, parseInt(dateTimeParts[1]), parseInt(dateTimeParts[4]), parseInt(dateTimeParts[5]), parseInt(dateTimeParts[6]));
+                    matchesDateTo = new Date(record.timestamp) <= to;
+                } else if (dateParts) {
+                    const to = new Date(parseInt(dateParts[3]), parseInt(dateParts[2]) - 1, parseInt(dateParts[1]), 23, 59, 59);
                     matchesDateTo = new Date(record.timestamp) <= to;
                 }
             }
@@ -326,6 +334,7 @@ export const AuditTrailView: React.FC = () => {
                                 onStartDateChange={setDateFrom}
                                 onEndDateChange={setDateTo}
                                 placeholder="Select date range"
+                                includeTime={true}
                             />
                         </div>
                     </div>
