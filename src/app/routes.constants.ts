@@ -88,6 +88,7 @@ export const ROUTES = {
     ASSIGNMENT_RULES: '/training-management/assignment-rules',
     // Records & Archive
     EMPLOYEE_TRAINING_FILES: '/training-management/employee-training-files',
+    EMPLOYEE_DOSSIER: (id: string) => `/training-management/employee-training-files/${id}`,
     EXPORT_RECORDS: '/training-management/export-records',
     // Materials
     MATERIALS: '/training-management/materials',

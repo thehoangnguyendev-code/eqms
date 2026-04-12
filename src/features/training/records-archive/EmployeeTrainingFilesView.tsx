@@ -1,39 +1,186 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   Users,
   Award,
   Download,
-  Eye,
-  FileText,
   CheckCircle2,
   XCircle,
+  MoreVertical,
+  ChevronUp,
+  ChevronDown,
+  X,
+  History,
+  FileSignature,
+  FileText,
+  Mail,
+  Archive,
+  Fingerprint,
+  GraduationCap,
+  TrendingUp,
+  AlertCircle,
+  AlertTriangle,
+  ArrowRight,
+  Zap,
+  Info,
+  ShieldCheck
 } from "lucide-react";
+import { IconInfoCircle, IconFileDownload, IconHistory } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
-import { employeeTrainingFiles } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
-import { MoreVertical } from "lucide-react";
-import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { FullPageLoading, SectionLoading } from "@/components/ui/loading/Loading";
 import { cn } from "@/components/ui/utils";
-import { useNavigateWithLoading, useTableFilter, useTableDragScroll } from "@/hooks";
-import type { EmployeeTrainingFile, EmployeeFilters } from "../types";
+import { Badge } from "@/components/ui/badge/Badge"; // Added
+import {
+  useNavigateWithLoading,
+  useTableFilter,
+  useTableDragScroll,
+  usePortalDropdown,
+  PortalDropdownPosition
+} from "@/hooks";
+import { ROUTES } from "@/app/routes.constants";
 import { MOCK_EMPLOYEE_TRAINING_FILES } from "./mockData";
+import type { EmployeeTrainingFile, EmployeeFilters } from "../types";
+
+// ── Dropdown Menu for Employee Records ────────────────────────────
+interface EmployeeDropdownMenuProps {
+  employee: EmployeeTrainingFile;
+  isOpen: boolean;
+  onClose: () => void;
+  position: PortalDropdownPosition;
+  onNavigate: (path: string) => void;
+}
+
+const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
+  employee,
+  isOpen,
+  onClose,
+  position,
+  onNavigate,
+}) => {
+  if (!isOpen) return null;
+
+  const menuItems = [
+    {
+      icon: Zap,
+      label: "Quick Assign Gaps",
+      onClick: () => {
+        console.log("Quick assign for:", employee.id);
+        onClose();
+      },
+      color: "text-emerald-600 hover:bg-emerald-50"
+    },
+    {
+      icon: IconInfoCircle,
+      label: "View Dossier",
+      onClick: () => {
+        onNavigate(ROUTES.TRAINING.EMPLOYEE_DOSSIER(employee.id));
+        onClose();
+      },
+      color: "text-slate-500"
+    },
+    {
+      icon: IconHistory,
+      label: "View Version History",
+      onClick: () => {
+        onNavigate(ROUTES.TRAINING.EMPLOYEE_DOSSIER(employee.id) + "?tab=sops");
+        onClose();
+      },
+      color: "text-slate-500"
+    },
+    {
+      icon: IconFileDownload,
+      label: "Export Training Dossier",
+      onClick: () => {
+        console.log("Export dossier for:", employee.id);
+        onClose();
+      },
+      color: "text-slate-500"
+    },
+    {
+      icon: Mail,
+      label: "Send Reminder",
+      onClick: () => {
+        console.log("Send reminder to:", employee.id);
+        onClose();
+      },
+      color: "text-slate-500"
+    },
+    {
+      icon: Archive,
+      label: "Archive Record",
+      onClick: () => {
+        console.log("Archive:", employee.id);
+        onClose();
+      },
+      color: "text-slate-500 hover:text-red-600 hover:bg-red-50"
+    },
+  ];
+
+  return createPortal(
+    <>
+      <div
+        className="fixed inset-0 z-40 animate-in fade-in duration-150"
+        onClick={(e) => { e.stopPropagation(); onClose(); }}
+      />
+      <div
+        className="absolute z-50 min-w-[220px] py-1 rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+        style={position.style}
+      >
+        <div className="py-1">
+          {menuItems.map((item, i) => {
+            const mi = item as any;
+            const Icon = mi.icon;
+            return (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); mi.onClick(); }}
+                className={cn(
+                  "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors hover:bg-slate-50 active:bg-slate-100",
+                  mi.color
+                )}
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="font-medium">{mi.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </>,
+    document.body
+  );
+};
 
 export const EmployeeTrainingFilesView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
+  const {
+    openId: openDropdownId,
+    position: dropdownPosition,
+    getRef,
+    toggle: handleDropdownToggle,
+    close: closeDropdown
+  } = usePortalDropdown();
 
-  // Filters
+  // Filters State
   const [filters, setFilters] = useState<Omit<EmployeeFilters, "searchQuery">>({
     departmentFilter: "All",
     positionFilter: "All",
+    complianceStatus: "All",
+  });
+  const [isTableLoading, setIsTableLoading] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+    key: "employeeId",
+    direction: "asc",
   });
 
-  // Use shared Table Filter hook
+  // Filter hook
   const {
     searchQuery,
     setSearchQuery,
@@ -54,16 +201,56 @@ export const EmployeeTrainingFilesView: React.FC = () => {
       const matchesDepartment = filters.departmentFilter === "All" || employee.department === filters.departmentFilter;
       const matchesPosition = filters.positionFilter === "All" || employee.jobPosition === filters.positionFilter;
 
-      return matchesSearch && matchesDepartment && matchesPosition;
+      let matchesCompliance = true;
+      if (filters.complianceStatus === "Fully Compliant") {
+        matchesCompliance = employee.coursesCompleted === employee.totalCoursesRequired && employee.coursesObsolete === 0;
+      } else if (filters.complianceStatus === "Has Gaps") {
+        matchesCompliance = employee.coursesCompleted < employee.totalCoursesRequired;
+      } else if (filters.complianceStatus === "Has Obsolete Records") {
+        matchesCompliance = employee.coursesObsolete > 0;
+      }
+
+      return matchesSearch && matchesDepartment && matchesPosition && matchesCompliance;
     }
   });
 
-  // Reset to page 1 when extra filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters.departmentFilter, filters.positionFilter, setCurrentPage]);
+  // Sorting logic
+  const sortedData = useMemo(() => {
+    return [...filteredData].sort((a, b) => {
+      const key = sortConfig.key as keyof EmployeeTrainingFile;
+      let aValue: any = a[key] ?? "";
+      let bValue: any = b[key] ?? "";
 
-  // Filter Options
+      if (typeof aValue === "string") aValue = aValue.toLowerCase();
+      if (typeof bValue === "string") bValue = bValue.toLowerCase();
+
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredData, sortConfig]);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedSortedData = useMemo(() => {
+    return sortedData.slice(startIndex, startIndex + itemsPerPage);
+  }, [sortedData, startIndex, itemsPerPage]);
+
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+    setCurrentPage(1);
+  };
+
+  // Sync loading state
+  useEffect(() => {
+    setIsTableLoading(true);
+    const timer = setTimeout(() => setIsTableLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, filters]);
+
+  // Options
   const departmentOptions = [
     { label: "All Departments", value: "All" },
     { label: "Quality Assurance", value: "Quality Assurance" },
@@ -82,91 +269,59 @@ export const EmployeeTrainingFilesView: React.FC = () => {
     { label: "Validation Engineer", value: "Validation Engineer" },
   ];
 
-  const getCompletionRate = (employee: EmployeeTrainingFile) => {
-    return Math.round((employee.coursesCompleted / employee.totalCoursesRequired) * 100);
+  const complianceStatusOptions = [
+    { label: "All Statuses", value: "All" },
+    { label: "Fully Compliant", value: "Fully Compliant" },
+    { label: "Has Gaps", value: "Has Gaps" },
+    { label: "Has Obsolete Records", value: "Has Obsolete Records" },
+  ];
+
+  const getCompletionColor = (rate: number, isObsolete: boolean): string => {
+    if (isObsolete) return "text-orange-600";
+    if (rate >= 95) return "text-emerald-600";
+    if (rate >= 80) return "text-blue-600";
+    if (rate >= 60) return "text-amber-600";
+    return "text-red-600";
   };
+
+  // Metrics Logic
+  const stats = useMemo(() => {
+    const total = MOCK_EMPLOYEE_TRAINING_FILES.length;
+    const auditReady = MOCK_EMPLOYEE_TRAINING_FILES.filter(e => e.coursesCompleted === e.totalCoursesRequired && e.coursesObsolete === 0).length;
+    const trainingGaps = MOCK_EMPLOYEE_TRAINING_FILES.reduce((sum, e) => sum + (e.totalCoursesRequired - e.coursesCompleted), 0);
+    const obsoleteRecords = MOCK_EMPLOYEE_TRAINING_FILES.reduce((sum, e) => sum + e.coursesObsolete, 0);
+    const newHiresCount = MOCK_EMPLOYEE_TRAINING_FILES.filter(e => e.isNewHire).length;
+
+    return { total, auditReady, trainingGaps, obsoleteRecords, newHiresCount };
+  }, []);
 
   return (
     <div className="space-y-6 w-full flex-1 flex flex-col">
-      {/* Header: Title + Breadcrumb + Action Button */}
       <PageHeader
         title="Employee Training Files"
-        breadcrumbItems={employeeTrainingFiles(navigateTo)}
+        breadcrumbItems={[{ label: "Training" }, { label: "Records Archive" }, { label: "Employee Files", isActive: true }]}
         actions={
           <Button
-            onClick={() => console.log("Export files")}
+            onClick={() => console.log("Export all records")}
             variant="outline"
             size="sm"
             className="whitespace-nowrap gap-2"
           >
-            <Download className="h-4 w-4" />
-            Export
+            <Download className="h-4 w-4" /> Export
           </Button>
         }
       />
 
-      {/* Filters */}
-      <div className="bg-white p-4 lg:p-5 rounded-xl border border-slate-200 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-12 gap-4 items-end">
-          {/* Search */}
-          <div className="xl:col-span-4">
-            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
-              Search
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search by employee name or ID..."
-                value={searchQuery}
-                onChange={(e) =>
-                  setSearchQuery(e.target.value)
-                }
-                className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
-              />
-            </div>
-          </div>
-
-          {/* Department */}
-          <div className="xl:col-span-4">
-            <Select
-              label="Department"
-              value={filters.departmentFilter}
-              onChange={(val) =>
-                setFilters((prev) => ({ ...prev, departmentFilter: val }))
-              }
-              options={departmentOptions}
-            />
-          </div>
-
-          {/* Position */}
-          <div className="xl:col-span-4">
-            <Select
-              label="Position"
-              value={filters.positionFilter}
-              onChange={(val) =>
-                setFilters((prev) => ({ ...prev, positionFilter: val }))
-              }
-              options={positionOptions}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 lg:gap-4">
+      {/* Stats Cards Row - Updated for Risk Management */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-              <Users className="h-5 w-5 text-emerald-600" />
+            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+              <Users className="h-5 w-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-xs text-slate-600 font-medium">
-                Total Employees
-              </p>
-              <p className="text-2xl font-bold text-slate-900">
-                {MOCK_EMPLOYEE_TRAINING_FILES.length}
-              </p>
+              <p className="text-xs text-slate-600 font-medium">Total Employees</p>
+              <p className="text-2xl font-bold text-slate-900 leading-tight">{stats.total}</p>
             </div>
           </div>
         </div>
@@ -174,27 +329,29 @@ export const EmployeeTrainingFilesView: React.FC = () => {
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+              <ShieldCheck className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <p className="text-xs text-slate-600 font-medium">Fully Compliant</p>
-              <p className="text-2xl font-bold text-slate-900">
-                {MOCK_EMPLOYEE_TRAINING_FILES.filter((e) => e.coursesCompleted === e.totalCoursesRequired).length}
-              </p>
+              <p className="text-xs text-slate-600 font-medium">Audit Ready</p>
+              <p className="text-2xl font-bold text-emerald-600 leading-tight">{stats.auditReady}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
+          <div className={cn(
+            "absolute top-0 right-0 p-2 opacity-5",
+            stats.trainingGaps > 0 ? "text-red-600" : "text-slate-300"
+          )}>
+            <AlertCircle className="h-12 w-12" />
+          </div>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-              <XCircle className="h-5 w-5 text-red-600" />
+              <Zap className="h-5 w-5 text-red-600" />
             </div>
             <div>
-              <p className="text-xs text-slate-600 font-medium">With Overdue</p>
-              <p className="text-2xl font-bold text-slate-900">
-                {MOCK_EMPLOYEE_TRAINING_FILES.filter((e) => e.coursesOverdue > 0).length}
-              </p>
+              <p className="text-xs text-slate-600 font-medium">Training Gaps</p>
+              <p className="text-2xl font-bold text-red-600 leading-tight">{stats.trainingGaps}</p>
             </div>
           </div>
         </div>
@@ -202,179 +359,286 @@ export const EmployeeTrainingFilesView: React.FC = () => {
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Award className="h-5 w-5 text-amber-600" />
+              <History className="h-5 w-5 text-amber-600" />
             </div>
             <div>
-              <p className="text-xs text-slate-600 font-medium">Avg. Score</p>
-              <p className="text-2xl font-bold text-slate-900">
-                {Math.round(
-                  MOCK_EMPLOYEE_TRAINING_FILES.reduce((sum, e) => sum + e.averageScore, 0) /
-                  MOCK_EMPLOYEE_TRAINING_FILES.length
-                )}%
-              </p>
+              <p className="text-xs text-slate-600 font-medium">Obsolete Records</p>
+              <p className="text-2xl font-bold text-amber-600 leading-tight">{stats.obsoleteRecords}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col flex-1">
-        <div 
-          ref={scrollerRef}
-          className={cn(
-            "overflow-x-auto transition-colors",
-            isDragging ? "cursor-grabbing select-none" : "cursor-grab"
-          )}
-          {...dragEvents}
-        >
-          <table className="w-full">
-            <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
-              <tr>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-[60px]">
-                  No.
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Employee Code
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Employee Name
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Position
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Department
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Required
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Completed
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Overdue
-                </th>
-                <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                  Avg. Score
-                </th>
-                <th className="sticky right-0 bg-slate-50 py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              {paginatedData.map((employee, index) => {
-                const completionRate = getCompletionRate(employee);
-                return (
-                  <tr
-                    key={employee.id}
-                    className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
-                    onClick={() => console.log("View employee:", employee.id)}
-                  >
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap text-slate-500 font-medium">
-                      {(currentPage - 1) * itemsPerPage + index + 1}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                      <span className="font-medium text-emerald-600">
-                        {employee.employeeId}
-                      </span>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600" />
-                        <span className="font-medium text-slate-900">
-                          {employee.employeeName}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                      {employee.jobPosition}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
-                      {employee.department}
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                      <span className="text-slate-900 font-medium">
-                        {employee.totalCoursesRequired}
-                      </span>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600" />
-                        <span className="text-emerald-900 font-medium">
-                          {employee.coursesCompleted}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <XCircle className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${employee.coursesOverdue > 0 ? 'text-red-600' : 'text-slate-400'}`} />
-                        <span className={`font-medium ${employee.coursesOverdue > 0 ? 'text-red-900' : 'text-slate-500'}`}>
-                          {employee.coursesOverdue}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600" />
-                        <span className="text-slate-900 font-medium">
-                          {employee.averageScore}%
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      onClick={(e) => e.stopPropagation()}
-                      className="sticky right-0 bg-white py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center z-30 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50"
-                    >
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log("Action clicked");
-                        }}
-                        className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-100 transition-colors"
-                        aria-label="More actions"
-                      >
-                        <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      {/* Hero Banner - Smart Notification (Matching TrainingMatrixView) */}
+      <AnimatePresence>
+        {stats.newHiresCount > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between mb-2 shadow-sm relative overflow-hidden"
+          >
+            <div className="flex items-start sm:items-center gap-4 relative z-10">
+              <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                <AlertTriangle className="h-5 w-5 text-red-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-bold text-red-800">
+                  New Employee Missing Training
+                </h3>
+                <p className="text-xs text-red-600 mt-0.5 max-w-xl leading-relaxed">
+                  <span className="font-semibold text-red-700">David Brown</span> (Validation Engineer) was recently added to the system and has <span className="font-bold underline">7 missing</span> mandatory courses. Compliance at risk.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 relative z-10 w-full sm:w-auto shrink-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-red-700 hover:bg-red-100 text-xs h-8"
+                onClick={() => setFilters(prev => ({ ...prev, complianceStatus: 'Has Gaps' }))}
+              >
+                Review Records
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                className="bg-red-600 hover:bg-red-700 text-white border-none text-xs h-8 gap-2 shadow-sm"
+              >
+                Assign Training Now <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Unified Table Container */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
+        {/* Filter Section */}
+        <div className="p-4 md:p-5 border-b border-slate-50">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div>
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Search</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400 transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Employee name or ID..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all placeholder:text-slate-400 bg-white"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery("")} className="absolute inset-y-0 right-2 flex items-center text-slate-400 hover:text-slate-600 transition-colors">
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Department</label>
+              <Select
+                value={filters.departmentFilter}
+                onChange={(val) => setFilters(p => ({ ...p, departmentFilter: val }))}
+                options={departmentOptions}
+              />
+            </div>
+            <div>
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Compliance Status</label>
+              <Select
+                value={filters.complianceStatus}
+                onChange={(val) => setFilters(p => ({ ...p, complianceStatus: val as any }))}
+                options={complianceStatusOptions}
+              />
+            </div>
+            <div>
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Position</label>
+              <Select
+                value={filters.positionFilter}
+                onChange={(val) => setFilters(p => ({ ...p, positionFilter: val }))}
+                options={positionOptions}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Pagination */}
-        {filteredData.length > 0 && (
-          <TablePagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            totalItems={filteredData.length}
-            itemsPerPage={itemsPerPage}
-            onItemsPerPageChange={setItemsPerPage}
-            showItemCount={true}
-          />
-        )}
+        {/* Table Body */}
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
+          <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300">
+            <div ref={scrollerRef} className={cn("flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400", isDragging ? "cursor-grabbing select-none" : "cursor-grab")} {...dragEvents}>
+              <table className="w-full border-separate border-spacing-0 text-left">
+                <thead>
+                  <tr>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">No.</th>
+                    {[
+                      { label: "Employee code", id: "employeeId" },
+                      { label: "Employee Name", id: "employeeName" },
+                      { label: "Business Unit", id: "businessUnit" },
+                      { label: "Department", id: "department" },
+                      { label: "Email", id: "email" },
+                      { label: "Compliance", id: "coursesCompleted" },
+                      { label: "Avg. Score", id: "averageScore", align: "text-center" },
+                      { label: "Next Deadline", id: "nextDeadline" },
+                    ].map((col, idx) => {
+                      const isSorted = sortConfig.key === col.id;
+                      return (
+                        <th
+                          key={idx}
+                          onClick={() => handleSort(col.id)}
+                          className={cn(
+                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap cursor-pointer hover:bg-slate-100 transition-colors group",
+                            col.align || "text-left"
+                          )}
+                        >
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span className="truncate">{col.label}</span>
+                            <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
+                              <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
+                              <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
+                            </div>
+                          </div>
+                        </th>
+                      );
+                    })}
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10_px_-4px_rgba(0,0,0,0.05)]">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  {paginatedSortedData.length > 0 ? (
+                    paginatedSortedData.map((emp, index) => {
+                      const tdClass = "py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
+                      const completionRate = Math.round((emp.coursesCompleted / emp.totalCoursesRequired) * 100);
+                      const isObsolete = emp.coursesObsolete > 0;
+                      const hasGaps = emp.coursesCompleted < emp.totalCoursesRequired;
 
-        {/* Empty State */}
-        {filteredData.length === 0 && (
-          <TableEmptyState
-            title="No Employee Records Found"
-            description="We couldn't find any employee training records matching your filters."
-            actionLabel="Clear Filters"
-            onAction={() => {
-              setFilters({
-                departmentFilter: "All",
-                positionFilter: "All",
-              });
-              setSearchQuery("");
-              setCurrentPage(1);
-            }}
-          />
-        )}
-        {isNavigating && <FullPageLoading text="Loading..." />}
+                      return (
+                        <tr key={emp.id} className="hover:bg-slate-50/80 transition-colors group">
+                          <td className={cn(tdClass, "text-center")}>{startIndex + index + 1}</td>
+                          <td className={cn(tdClass, "font-medium text-emerald-600 hover:underline transition-colors cursor-pointer")}>
+                            <button onClick={() => navigateTo(ROUTES.TRAINING.EMPLOYEE_DOSSIER(emp.id))}>{emp.employeeId}</button>
+                          </td>
+                          <td className={cn(tdClass)}>
+                            <div className="flex flex-col">
+                              <span className="font-semibold text-slate-900 leading-tight">{emp.employeeName}</span>
+                              <span className="text-[10px] md:text-xs text-slate-500 mt-0.5">{emp.jobPosition}</span>
+                            </div>
+                          </td>
+                          <td className={tdClass}>{emp.businessUnit}</td>
+                          <td className={tdClass}>{emp.department}</td>
+                          <td className={tdClass}>
+                            <span className="text-slate-500 font-normal">{emp.email}</span>
+                          </td>
+                          <td className={cn(tdClass, "min-w-[160px]")}>
+                            <div className="flex items-center gap-3">
+                              <div className="flex-1 max-w-[70px]">
+                                <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
+                                  <div
+                                    className={cn(
+                                      "h-full rounded-full transition-all duration-500 shadow-sm",
+                                      isObsolete ? "bg-orange-500" :
+                                        completionRate >= 95 ? "bg-emerald-500" :
+                                          completionRate >= 80 ? "bg-blue-500" :
+                                            "bg-red-500"
+                                    )}
+                                    style={{ width: `${completionRate}%` }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className={cn("font-bold text-[10px] md:text-xs truncate", getCompletionColor(completionRate, isObsolete))}>
+                                  {completionRate}%
+                                </span>
+                                {isObsolete && (
+                                  <motion.div
+                                    animate={{ scale: [1, 1.05, 1] }}
+                                    transition={{ repeat: Infinity, duration: 1.5 }}
+                                    className="shrink-0"
+                                  >
+                                    <Badge color="red" size="xs" variant="soft" className="font-extrabold uppercase tracking-tight">
+                                      {emp.coursesObsolete} Obsolete
+                                    </Badge>
+                                  </motion.div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className={cn(tdClass, "text-center font-bold text-slate-700")}>{emp.averageScore === 0 ? "-" : `${emp.averageScore}%`}</td>
+                          <td className={tdClass}>
+                            <div className="flex flex-col">
+                              <span className={cn(
+                                "font-bold",
+                                (hasGaps || isObsolete) ? "text-red-600" : "text-slate-500"
+                              )}>
+                                {emp.nextDeadline || "-"}
+                              </span>
+                              {(hasGaps || isObsolete) && (
+                                <span className="text-[9px] font-medium uppercase tracking-tighter opacity-70">
+                                  {isObsolete ? "Retraining Due" : "Initial Gap"}
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3.5 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors">
+                            <button
+                              ref={getRef(emp.id)}
+                              onClick={(e) => handleDropdownToggle(emp.id, e)}
+                              className="h-8 w-8 mx-auto rounded-lg hover:bg-slate-200 flex items-center justify-center transition-colors"
+                            >
+                              <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-500" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={10}>
+                        <TableEmptyState
+                          title="No Training Records Found"
+                          description="Try broadening your search or adjusting compliance filters."
+                          actionLabel="Clear Filters"
+                          onAction={() => {
+                            setFilters({ departmentFilter: "All", positionFilter: "All", complianceStatus: "All" });
+                            setSearchQuery("");
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={sortedData.length}
+              itemsPerPage={itemsPerPage}
+              onItemsPerPageChange={(val) => {
+                setItemsPerPage(val);
+                setCurrentPage(1);
+              }}
+              showItemCount={true}
+            />
+          </div>
+        </div>
       </div>
+
+      {openDropdownId && (() => {
+        const emp = paginatedData.find(e => e.id === openDropdownId);
+        return emp ? (
+          <EmployeeDropdownMenu
+            employee={emp}
+            isOpen={openDropdownId !== null}
+            onClose={closeDropdown}
+            position={dropdownPosition}
+            onNavigate={navigateTo}
+          />
+        ) : null;
+      })()}
+
+      {isNavigating && <FullPageLoading text="Opening dossier..." />}
     </div>
   );
 };

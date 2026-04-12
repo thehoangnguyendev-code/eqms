@@ -86,6 +86,7 @@ const CourseStatusView = lazy(() => import('@/features/training').then(m => ({ d
 const AssignTrainingView = lazy(() => import('@/features/training').then(m => ({ default: m.AssignTrainingView })));
 const AssignmentRulesView = lazy(() => import('@/features/training').then(m => ({ default: m.AssignmentRulesView })));
 const EmployeeTrainingFilesView = lazy(() => import('@/features/training/records-archive/EmployeeTrainingFilesView').then(m => ({ default: m.EmployeeTrainingFilesView })));
+const EmployeeDossierView = lazy(() => import('@/features/training/records-archive/EmployeeDossierView').then(m => ({ default: m.EmployeeDossierView })));
 const ExportRecordsView = lazy(() => import('@/features/training/records-archive/ExportRecordsView').then(m => ({ default: m.ExportRecordsView })));
 const CreateCourseView = lazy(() => import('@/features/training').then(m => ({ default: m.CreateCourseView })));
 const PendingReviewView = lazy(() => import('@/features/training/course-inventory/courses/pending-review/PendingReviewView').then(m => ({ default: m.PendingReviewView })));
@@ -383,6 +384,7 @@ export const AppRoutes: React.FC = () => {
 
           {/* Records & Archive */}
           <Route path="employee-training-files" element={<Suspense fallback={<LoadingFallback />}><EmployeeTrainingFilesView /></Suspense>} />
+          <Route path="employee-training-files/:id" element={<Suspense fallback={<LoadingFallback />}><EmployeeDossierView /></Suspense>} />
           <Route path="export-records" element={<Suspense fallback={<LoadingFallback />}><ExportRecordsView /></Suspense>} />
 
           {/* Default redirect */}

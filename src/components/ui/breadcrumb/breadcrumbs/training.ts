@@ -134,11 +134,21 @@ export const employeeTrainingFiles = (navigate?: (path: string) => void): Breadc
   { label: "Employee Training Files", isActive: true },
 ];
 
+import { ROUTES } from "@/app/routes.constants";
+
 export const exportRecords = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
   { label: "Training Management" },
   { label: "Records & Archive" },
   { label: "Export Records", isActive: true },
+];
+
+export const employeeDossier = (navigate?: (path: string) => void): BreadcrumbItem[] => [
+  dashboard(navigate),
+  { label: "Training Management" },
+  { label: "Records & Archive" },
+  { label: "Employee Training Files", onClick: () => navigate?.(ROUTES.TRAINING.EMPLOYEE_TRAINING_FILES) },
+  { label: "Employee Dossier", isActive: true },
 ];
 
 export const assignTraining = (_navigate?: (path: string) => void): BreadcrumbItem[] => [
