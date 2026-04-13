@@ -18,9 +18,9 @@ export const useTableDragScroll = () => {
     // Only handle left mouse button
     if (e.button !== 0) return;
     
-    // Don't start dragging if clicking on an interactive element (except for the table container itself)
+    // Don't start dragging if clicking on an interactive element (except for buttons/links if we want to allow dragging on them)
     const target = e.target as HTMLElement;
-    if (target.closest('button, a, input, select, [role="button"]')) {
+    if (target.closest('a, input, select')) {
       return;
     }
 

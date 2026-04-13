@@ -1,4 +1,4 @@
-import type { EmployeeTrainingFile } from "../types";
+import type { EmployeeTrainingFile, PendingSignatureRecord } from "../types";
 
 // TODO: Replace with API call: GET /api/training/employees/training-files
 export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
@@ -18,6 +18,8 @@ export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
     lastTrainingDate: "2026-01-15",
     nextDeadline: "2027-01-15",
     averageScore: 92,
+    employeeType: "Internal",
+    qualificationStatus: "Qualified",
     ojtRecords: [
       {
         id: "ojt-1",
@@ -64,6 +66,8 @@ export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
     lastTrainingDate: "2026-01-20",
     nextDeadline: "2026-04-30",
     averageScore: 88,
+    employeeType: "Internal",
+    qualificationStatus: "At Risk",
   },
   {
     id: "3",
@@ -81,6 +85,8 @@ export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
     lastTrainingDate: "2026-01-10",
     nextDeadline: "2026-03-15",
     averageScore: 78,
+    employeeType: "Contractor",
+    qualificationStatus: "At Risk",
   },
   {
     id: "4",
@@ -98,6 +104,8 @@ export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
     lastTrainingDate: "2026-01-25",
     nextDeadline: "2027-01-25",
     averageScore: 95,
+    employeeType: "Internal",
+    qualificationStatus: "Qualified",
   },
   {
     id: "5",
@@ -116,5 +124,65 @@ export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
     lastTrainingDate: "2026-03-01",
     nextDeadline: "2026-04-15",
     averageScore: 0,
+    employeeType: "Internal",
+    qualificationStatus: "In Training",
   },
 ];
+
+// ─── Mock Pending Signatures (keyed by employee id) ──────────────────────────
+export const MOCK_PENDING_SIGNATURES: Record<string, PendingSignatureRecord[]> = {
+  "1": [
+    {
+      id: "ps-1-1",
+      courseCode: "SOP-QA-001",
+      courseTitle: "Internal Audit Procedure",
+      version: "v2.0",
+      missingRoles: ["Trainer"],
+      completionDate: "2026-04-05",
+      daysPending: 8,
+      trainerId: "trainer-001",
+      trainerName: "Dr. A. Smith",
+      isObsolete: false,
+    },
+    {
+      id: "ps-1-2",
+      courseCode: "SOP-QA-007",
+      courseTitle: "Deviation Management",
+      version: "v1.0",
+      missingRoles: ["Trainee", "Trainer"],
+      completionDate: "2026-04-09",
+      daysPending: 4,
+      trainerId: "trainer-002",
+      trainerName: "Sarah Connor",
+      isObsolete: true,
+    },
+  ],
+  "2": [
+    {
+      id: "ps-2-1",
+      courseCode: "SOP-QC-003",
+      courseTitle: "HPLC Method Validation",
+      version: "v1.0",
+      missingRoles: ["Trainee"],
+      completionDate: "2026-04-10",
+      daysPending: 3,
+      trainerId: "trainer-001",
+      trainerName: "Dr. A. Smith",
+      isObsolete: true,
+    },
+  ],
+  "3": [
+    {
+      id: "ps-3-1",
+      courseCode: "SOP-PRD-002",
+      courseTitle: "Cleanroom Gowning Procedure",
+      version: "v3.0",
+      missingRoles: ["Trainer"],
+      completionDate: "2026-04-01",
+      daysPending: 12,
+      trainerId: "trainer-003",
+      trainerName: "Michael Jordan",
+      isObsolete: false,
+    },
+  ],
+};

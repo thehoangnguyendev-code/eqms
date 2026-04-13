@@ -2,6 +2,7 @@ import React from "react";
 import { Search, AlertTriangle, PlusCircle, FilterX, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
+import { useTableDragScroll } from "@/hooks";
 import { ROUTES } from "@/app/routes.constants";
 import type { MatrixFilters, EmployeeRow, SOPColumn } from "../../types";
 import { MOCK_SOPS, getCell } from "../../mockData";
@@ -29,7 +30,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
   navigateTo,
 }) => {
   const [showScrollHint, setShowScrollHint] = React.useState(true);
-  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const { scrollerRef: scrollContainerRef, isDragging, dragEvents } = useTableDragScroll();
 
   React.useEffect(() => {
     const timer = setTimeout(() => setShowScrollHint(false), 3000);
@@ -73,13 +74,13 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
 
         {/* Scrollable grid - optimized for mobile */}
         <div
-          ref={scrollContainerRef}
-          className="overflow-x-auto overflow-y-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative 
-            [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 
-            [&::-webkit-scrollbar-track]:bg-slate-100 
-            [&::-webkit-scrollbar-thumb]:bg-slate-300 
-            [&::-webkit-scrollbar-thumb]:rounded-full
-            touch-pan-x"
+          ref={scrollContainerRef as any}
+          className={cn(
+            "overflow-x-auto overflow-y-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative transition-all duration-300",
+            "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full",
+            isDragging ? "cursor-grabbing select-none" : "cursor-grab"
+          )}
+          {...dragEvents}
         >
           {/* Scroll hint for mobile */}
           {showScrollHint && (
@@ -140,14 +141,14 @@ const MatrixHead: React.FC<MatrixHeadProps> = React.memo(({ onSOPHeaderClick }) 
   <thead>
     <tr>
       {/* No. column - smaller on mobile */}
-      <th className="sticky top-0 left-0 z-30 bg-white/95 backdrop-blur-sm border-b border-r border-slate-200/80 px-1.5 sm:px-2 py-2 sm:py-3 min-w-[36px] sm:min-w-[44px] max-w-[36px] sm:max-w-[44px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      <th className="sticky top-0 left-0 z-30 bg-white border-b border-r border-slate-200/80 px-1.5 sm:px-2 py-2 sm:py-3 min-w-[36px] sm:min-w-[44px] max-w-[36px] sm:max-w-[44px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
           No.
         </span>
       </th>
 
       {/* Employee column - responsive width */}
-      <th className="sticky top-0 left-[36px] sm:left-[44px] z-30 bg-white/95 backdrop-blur-sm border-b border-r border-slate-200/80 px-2 sm:px-3 py-2 sm:py-3 min-w-[120px] sm:min-w-[140px] md:min-w-[180px] text-left shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      <th className="sticky top-0 left-[36px] sm:left-[44px] z-30 bg-white border-b border-r border-slate-200/80 px-2 sm:px-3 py-2 sm:py-3 min-w-[120px] sm:min-w-[140px] md:min-w-[180px] text-left shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
           Employee
         </span>
@@ -213,9 +214,8 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
                   variant="outline"
                   size="sm"
                   onClick={onClearFilters}
-                  className="mt-1 sm:mt-2 rounded-full border-slate-200 hover:bg-slate-50 text-xs"
+                  className="mt-1 sm:mt-2 border-slate-200 hover:bg-slate-50 text-xs"
                 >
-                  <FilterX className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
                   Clear filters
                 </Button>
               )}
@@ -231,13 +231,13 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
       {employees.map((emp, index) => (
         <tr key={emp.id} className="group/row transition-colors duration-150 hover:bg-slate-50/60">
           {/* No. */}
-          <td className="sticky left-0 z-10 bg-white border-b border-r border-slate-200/60 px-1.5 sm:px-2 py-1.5 sm:py-2 min-w-[36px] sm:min-w-[44px] max-w-[36px] sm:max-w-[44px] text-center group-hover/row:bg-slate-50/60">
+          <td className="sticky left-0 z-10 bg-white border-b border-r border-slate-200/60 px-1.5 sm:px-2 py-1.5 sm:py-2 min-w-[36px] sm:min-w-[44px] max-w-[36px] sm:max-w-[44px] text-center group-hover/row:bg-slate-50">
             <span className="text-[10px] sm:text-xs text-slate-500 font-medium">{index + 1}</span>
           </td>
 
           {/* Employee name - responsive with department hidden on very small screens */}
           <td
-            className="sticky left-[36px] sm:left-[44px] z-10 bg-white border-b border-r border-slate-200/60 px-2 sm:px-3 py-1.5 sm:py-2 min-w-[120px] sm:min-w-[140px] md:min-w-[180px] cursor-pointer hover:bg-slate-50 transition-colors group-hover/row:bg-slate-50/60"
+            className="sticky left-[36px] sm:left-[44px] z-10 bg-white border-b border-r border-slate-200/60 px-2 sm:px-3 py-1.5 sm:py-2 min-w-[120px] sm:min-w-[140px] md:min-w-[180px] cursor-pointer hover:bg-slate-50 transition-colors group-hover/row:bg-slate-50"
             onClick={(e) => onEmployeeClick(e, emp)}
             title={`View details for ${emp.name}`}
           >

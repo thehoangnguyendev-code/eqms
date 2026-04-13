@@ -45,12 +45,33 @@ export interface EmployeeTrainingFile {
   ojtRecords?: OJTRecord[];
   authorizations?: TaskAuthorization[];
   isNewHire?: boolean; // For hero banner logic
+  employeeType: 'Internal' | 'Contractor'; // Added for EU-GMP
+  qualificationStatus?: 'Qualified' | 'In Training' | 'At Risk'; // Added for EU-GMP
+}
+
+// ─── Pending Signature Record ─────────────────────────────────────────────────
+export interface PendingSignatureRecord {
+  id: string;
+  courseCode: string;
+  courseTitle: string;
+  version: string;
+  missingRoles: ('Trainee' | 'Trainer')[];
+  completionDate: string;
+  daysPending: number;
+  /** ID of the trainer assigned to this course */
+  trainerId?: string;
+  /** Name of the trainer for tooltips */
+  trainerName?: string;
+  /** Whether the course version is now obsolete */
+  isObsolete?: boolean;
 }
 
 // ─── Filter State ─────────────────────────────────────────────────────────────
 export interface EmployeeFilters {
   searchQuery: string;
   departmentFilter: string;
+  businessUnitFilter: string;
   positionFilter: string;
+  employeeTypeFilter: string;
   complianceStatus: 'All' | 'Fully Compliant' | 'Has Gaps' | 'Has Obsolete Records';
 }

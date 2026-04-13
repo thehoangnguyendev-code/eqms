@@ -36,12 +36,11 @@ export const MOCK_SOPS: SOPColumn[] = [
 
 // ─── Employee Rows ──────────────────────────────────────────────────
 export const MOCK_EMPLOYEES: EmployeeRow[] = [
-  { id: "EMP-NEW", name: "Alex Turner", employeeCode: "QA-NEW", email: "alex.turner@ntp.com", department: "Quality Assurance", businessUnit: "Quality Unit", jobTitle: "QA Specialist", hireDate: "25/03/2026" },
-  { id: "EMP-001", name: "Dr. Anna Smith", employeeCode: "QA-001", email: "anna.smith@ntp.com", department: "Quality Assurance", businessUnit: "Quality Unit", jobTitle: "QA Manager", hireDate: "15/03/2019" },
-  { id: "EMP-002", name: "James Carter", employeeCode: "QA-002", email: "james.carter@ntp.com", department: "Quality Assurance", businessUnit: "Quality Unit", jobTitle: "QA Specialist", hireDate: "01/06/2020" },
-  { id: "EMP-003", name: "Maria Lopez", employeeCode: "QA-003", email: "maria.lopez@ntp.com", department: "Quality Assurance", businessUnit: "Quality Unit", jobTitle: "QA Manager", hireDate: "10/01/2021" },
-  { id: "EMP-004", name: "Robert Johnson", employeeCode: "QC-001", email: "robert.johnson@ntp.com", department: "Quality Control", businessUnit: "Quality Unit", jobTitle: "QC Analyst", hireDate: "20/08/2022" },
-  { id: "EMP-005", name: "Linda Chen", employeeCode: "QC-002", email: "linda.chen@ntp.com", department: "Quality Control", businessUnit: "Quality Unit", jobTitle: "QC Analyst", hireDate: "14/02/2023" },
+  { id: "EMP-005", name: "David Brown", employeeCode: "ENG-005", email: "david.brown@eqms.com", department: "Engineering", businessUnit: "Pharma Manufacturing", jobTitle: "Validation Engineer", hireDate: "01/03/2026" },
+  { id: "EMP-001", name: "John Smith", employeeCode: "QA-001", email: "john.smith@eqms.com", department: "Quality Assurance", businessUnit: "Pharma Manufacturing", jobTitle: "QA Manager", hireDate: "15/03/2019" },
+  { id: "EMP-002", name: "Sarah Johnson", employeeCode: "QC-002", email: "sarah.johnson@eqms.com", department: "Quality Control", businessUnit: "Pharma Manufacturing", jobTitle: "QC Analyst", hireDate: "01/06/2020" },
+  { id: "EMP-003", name: "Michael Chen", employeeCode: "PRD-003", email: "michael.chen@eqms.com", department: "Production", businessUnit: "Logistics & Supply", jobTitle: "Production Operator", hireDate: "10/01/2021" },
+  { id: "EMP-004", name: "Emma Wilson", employeeCode: "DOC-004", email: "emma.wilson@eqms.com", department: "Documentation", businessUnit: "Corporate", jobTitle: "Document Controller", hireDate: "20/08/2022" },
   { id: "EMP-006", name: "David Park", employeeCode: "QC-003", email: "david.park@ntp.com", department: "Quality Control", businessUnit: "Quality Unit", jobTitle: "Lab Technician", hireDate: "10/04/2020" },
   { id: "EMP-007", name: "Sarah Kim", employeeCode: "PRD-001", email: "sarah.kim@ntp.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Production Operator", hireDate: "20/07/2021" },
   { id: "EMP-008", name: "Michael Brown", employeeCode: "PRD-002", email: "michael.brown@ntp.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Production Operator", hireDate: "15/01/2022" },

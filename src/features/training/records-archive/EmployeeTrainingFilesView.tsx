@@ -27,8 +27,9 @@ import {
   Info,
   ShieldCheck
 } from "lucide-react";
-import { IconInfoCircle, IconFileDownload, IconHistory } from "@tabler/icons-react";
+import { IconInfoCircle, IconFileDownload, IconHistory, IconMatrix } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
+import { employeeTrainingFiles } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { TablePagination } from "@/components/ui/table/TablePagination";
@@ -44,8 +45,9 @@ import {
   PortalDropdownPosition
 } from "@/hooks";
 import { ROUTES } from "@/app/routes.constants";
-import { MOCK_EMPLOYEE_TRAINING_FILES } from "./mockData";
-import type { EmployeeTrainingFile, EmployeeFilters } from "../types";
+import { MOCK_EMPLOYEE_TRAINING_FILES, MOCK_PENDING_SIGNATURES } from "./mockData";
+import { PendingSignaturesModal } from "./PendingSignaturesModal";
+import type { EmployeeTrainingFile, EmployeeFilters, PendingSignatureRecord } from "../types";
 
 // ── Dropdown Menu for Employee Records ────────────────────────────
 interface EmployeeDropdownMenuProps {
@@ -54,6 +56,8 @@ interface EmployeeDropdownMenuProps {
   onClose: () => void;
   position: PortalDropdownPosition;
   onNavigate: (path: string) => void;
+  onOpenPendingSignatures: (employee: EmployeeTrainingFile) => void;
+  pendingSignaturesCount: number;
 }
 
 const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
@@ -62,18 +66,48 @@ const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
   onClose,
   position,
   onNavigate,
+  onOpenPendingSignatures,
+  pendingSignaturesCount,
 }) => {
   if (!isOpen) return null;
 
   const menuItems = [
     {
-      icon: Zap,
-      label: "Quick Assign Gaps",
+      icon: IconMatrix,
+      label: "Go to Matrix for Gaps",
       onClick: () => {
-        console.log("Quick assign for:", employee.id);
+        onNavigate(`${ROUTES.TRAINING.TRAINING_MATRIX}?search=${encodeURIComponent(employee.employeeName)}`);
         onClose();
       },
-      color: "text-emerald-600 hover:bg-emerald-50"
+      color: "text-slate-500"
+    },
+    ...(employee.coursesObsolete > 0 ? [{
+      icon: AlertTriangle,
+      label: "View Obsolete Details",
+      onClick: () => {
+        console.log("View obsolete details for:", employee.id);
+        onClose();
+      },
+      color: "text-slate-500"
+    }] : []),
+    {
+      icon: FileSignature,
+      label: "Pending Signatures",
+      badge: pendingSignaturesCount > 0 ? pendingSignaturesCount : null,
+      onClick: () => {
+        onOpenPendingSignatures(employee);
+        onClose();
+      },
+      color: "text-slate-500"
+    },
+    {
+      icon: Award,
+      label: "Generate Certification",
+      onClick: () => {
+        console.log("Generate certification for:", employee.id);
+        onClose();
+      },
+      color: "text-slate-500"
     },
     {
       icon: IconInfoCircle,
@@ -146,7 +180,12 @@ const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="font-medium">{mi.label}</span>
+                <span className="font-medium flex-1 text-left">{mi.label}</span>
+                {mi.badge != null && (
+                  <span className="ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+                    {mi.badge}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -171,7 +210,9 @@ export const EmployeeTrainingFilesView: React.FC = () => {
   // Filters State
   const [filters, setFilters] = useState<Omit<EmployeeFilters, "searchQuery">>({
     departmentFilter: "All",
+    businessUnitFilter: "All",
     positionFilter: "All",
+    employeeTypeFilter: "All",
     complianceStatus: "All",
   });
   const [isTableLoading, setIsTableLoading] = useState(false);
@@ -179,6 +220,9 @@ export const EmployeeTrainingFilesView: React.FC = () => {
     key: "employeeId",
     direction: "asc",
   });
+  // Pending Signatures state
+  const [pendingSignatures, setPendingSignatures] = useState<Record<string, PendingSignatureRecord[]>>(MOCK_PENDING_SIGNATURES);
+  const [pendingSigEmployee, setPendingSigEmployee] = useState<EmployeeTrainingFile | null>(null);
 
   // Filter hook
   const {
@@ -199,7 +243,9 @@ export const EmployeeTrainingFilesView: React.FC = () => {
         employee.employeeName.toLowerCase().includes(query) ||
         employee.employeeId.toLowerCase().includes(query);
       const matchesDepartment = filters.departmentFilter === "All" || employee.department === filters.departmentFilter;
+      const matchesBusinessUnit = filters.businessUnitFilter === "All" || employee.businessUnit === filters.businessUnitFilter;
       const matchesPosition = filters.positionFilter === "All" || employee.jobPosition === filters.positionFilter;
+      const matchesEmployeeType = filters.employeeTypeFilter === "All" || employee.employeeType === filters.employeeTypeFilter;
 
       let matchesCompliance = true;
       if (filters.complianceStatus === "Fully Compliant") {
@@ -210,7 +256,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
         matchesCompliance = employee.coursesObsolete > 0;
       }
 
-      return matchesSearch && matchesDepartment && matchesPosition && matchesCompliance;
+      return matchesSearch && matchesDepartment && matchesBusinessUnit && matchesPosition && matchesEmployeeType && matchesCompliance;
     }
   });
 
@@ -243,6 +289,21 @@ export const EmployeeTrainingFilesView: React.FC = () => {
     setCurrentPage(1);
   };
 
+  // Remove a signed record and update compliance data
+  const handleSignedRecord = (employeeId: string, recordId: string) => {
+    setPendingSignatures((prev) => ({
+      ...prev,
+      [employeeId]: (prev[employeeId] ?? []).filter((r) => r.id !== recordId),
+    }));
+  };
+
+  // Effective completion rate excludes courses with pending signatures
+  const getEffectiveCompletionRate = (emp: EmployeeTrainingFile): number => {
+    const pendingCount = (pendingSignatures[emp.id] ?? []).length;
+    const effective = Math.max(0, emp.coursesCompleted - pendingCount);
+    return Math.round((effective / emp.totalCoursesRequired) * 100);
+  };
+
   // Sync loading state
   useEffect(() => {
     setIsTableLoading(true);
@@ -260,6 +321,13 @@ export const EmployeeTrainingFilesView: React.FC = () => {
     { label: "Engineering", value: "Engineering" },
   ];
 
+  const businessUnitOptions = [
+    { label: "All Units", value: "All" },
+    { label: "BU - Pharmaceutical", value: "BU - Pharmaceutical" },
+    { label: "BU - Medical Device", value: "BU - Medical Device" },
+    { label: "BU - Logistics", value: "BU - Logistics" },
+  ];
+
   const positionOptions = [
     { label: "All Positions", value: "All" },
     { label: "QA Manager", value: "QA Manager" },
@@ -274,6 +342,12 @@ export const EmployeeTrainingFilesView: React.FC = () => {
     { label: "Fully Compliant", value: "Fully Compliant" },
     { label: "Has Gaps", value: "Has Gaps" },
     { label: "Has Obsolete Records", value: "Has Obsolete Records" },
+  ];
+
+  const employeeTypeOptions = [
+    { label: "All Types", value: "All" },
+    { label: "Internal (FTE)", value: "Internal" },
+    { label: "Contractor (EXT)", value: "Contractor" },
   ];
 
   const getCompletionColor = (rate: number, isObsolete: boolean): string => {
@@ -299,7 +373,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
     <div className="space-y-6 w-full flex-1 flex flex-col">
       <PageHeader
         title="Employee Training Files"
-        breadcrumbItems={[{ label: "Training" }, { label: "Records Archive" }, { label: "Employee Files", isActive: true }]}
+        breadcrumbItems={employeeTrainingFiles(navigateTo)}
         actions={
           <Button
             onClick={() => console.log("Export all records")}
@@ -416,7 +490,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
         {/* Filter Section */}
         <div className="p-4 md:p-5 border-b border-slate-50">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
             <div>
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Search</label>
               <div className="relative">
@@ -444,6 +518,14 @@ export const EmployeeTrainingFilesView: React.FC = () => {
               />
             </div>
             <div>
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Business Unit</label>
+              <Select
+                value={filters.businessUnitFilter}
+                onChange={(val) => setFilters(p => ({ ...p, businessUnitFilter: val }))}
+                options={businessUnitOptions}
+              />
+            </div>
+            <div>
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Compliance Status</label>
               <Select
                 value={filters.complianceStatus}
@@ -457,6 +539,14 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                 value={filters.positionFilter}
                 onChange={(val) => setFilters(p => ({ ...p, positionFilter: val }))}
                 options={positionOptions}
+              />
+            </div>
+            <div>
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Employee Type</label>
+              <Select
+                value={filters.employeeTypeFilter}
+                onChange={(val) => setFilters(p => ({ ...p, employeeTypeFilter: val }))}
+                options={employeeTypeOptions}
               />
             </div>
           </div>
@@ -473,9 +563,10 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                     {[
                       { label: "Employee code", id: "employeeId" },
                       { label: "Employee Name", id: "employeeName" },
+                      { label: "Type", id: "employeeType" },
                       { label: "Business Unit", id: "businessUnit" },
                       { label: "Department", id: "department" },
-                      { label: "Email", id: "email" },
+                      { label: "Qualification", id: "qualificationStatus" },
                       { label: "Compliance", id: "coursesCompleted" },
                       { label: "Avg. Score", id: "averageScore", align: "text-center" },
                       { label: "Next Deadline", id: "nextDeadline" },
@@ -507,7 +598,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                   {paginatedSortedData.length > 0 ? (
                     paginatedSortedData.map((emp, index) => {
                       const tdClass = "py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
-                      const completionRate = Math.round((emp.coursesCompleted / emp.totalCoursesRequired) * 100);
+                      const completionRate = getEffectiveCompletionRate(emp);
                       const isObsolete = emp.coursesObsolete > 0;
                       const hasGaps = emp.coursesCompleted < emp.totalCoursesRequired;
 
@@ -523,10 +614,28 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                               <span className="text-[10px] md:text-xs text-slate-500 mt-0.5">{emp.jobPosition}</span>
                             </div>
                           </td>
+                          <td className={tdClass}>
+                            <Badge
+                              color={emp.employeeType === 'Internal' ? 'blue' : 'slate'}
+                              size="xs"
+                            >
+                              {emp.employeeType === 'Internal' ? 'FTE' : 'EXT'}
+                            </Badge>
+                          </td>
                           <td className={tdClass}>{emp.businessUnit}</td>
                           <td className={tdClass}>{emp.department}</td>
                           <td className={tdClass}>
-                            <span className="text-slate-500 font-normal">{emp.email}</span>
+                            <Badge
+                              color={
+                                emp.qualificationStatus === 'Qualified' ? 'emerald' :
+                                  emp.qualificationStatus === 'At Risk' ? 'red' :
+                                    'blue'
+                              }
+                              size="xs"
+                              showDot
+                            >
+                              {emp.qualificationStatus}
+                            </Badge>
                           </td>
                           <td className={cn(tdClass, "min-w-[160px]")}>
                             <div className="flex items-center gap-3">
@@ -554,7 +663,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                                     transition={{ repeat: Infinity, duration: 1.5 }}
                                     className="shrink-0"
                                   >
-                                    <Badge color="red" size="xs" variant="soft" className="font-extrabold uppercase tracking-tight">
+                                    <Badge color="red" size="xs">
                                       {emp.coursesObsolete} Obsolete
                                     </Badge>
                                   </motion.div>
@@ -598,7 +707,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                           description="Try broadening your search or adjusting compliance filters."
                           actionLabel="Clear Filters"
                           onAction={() => {
-                            setFilters({ departmentFilter: "All", positionFilter: "All", complianceStatus: "All" });
+                            setFilters({ departmentFilter: "All", businessUnitFilter: "All", positionFilter: "All", employeeTypeFilter: "All", complianceStatus: "All" });
                             setSearchQuery("");
                           }}
                         />
@@ -634,9 +743,19 @@ export const EmployeeTrainingFilesView: React.FC = () => {
             onClose={closeDropdown}
             position={dropdownPosition}
             onNavigate={navigateTo}
+            onOpenPendingSignatures={(e) => { setPendingSigEmployee(e); closeDropdown(); }}
+            pendingSignaturesCount={(pendingSignatures[emp.id] ?? []).length}
           />
         ) : null;
       })()}
+
+      <PendingSignaturesModal
+        isOpen={!!pendingSigEmployee}
+        onClose={() => setPendingSigEmployee(null)}
+        employee={pendingSigEmployee || MOCK_EMPLOYEE_TRAINING_FILES[0]}
+        pendingRecords={pendingSigEmployee ? (pendingSignatures[pendingSigEmployee.id] ?? []) : []}
+        onSigned={(recordId) => pendingSigEmployee && handleSignedRecord(pendingSigEmployee.id, recordId)}
+      />
 
       {isNavigating && <FullPageLoading text="Opening dossier..." />}
     </div>

@@ -33,12 +33,16 @@ export const TrainingMatrixView: React.FC = () => {
   };
 
   // ── State ─────────────────────────────────────────────────────────
-  const [filters, setFilters] = useState<MatrixFilters>({
-    searchQuery: "",
-    department: "All",
-    jobTitle: "All",
-    status: "All",
-    gapAnalysis: false,
+  const [filters, setFilters] = useState<MatrixFilters>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get("search") || "";
+    return {
+      searchQuery: searchParam,
+      department: "All",
+      jobTitle: "All",
+      status: "All",
+      gapAnalysis: false,
+    };
   });
 
   const [isLoading, setIsLoading] = useState(true);
