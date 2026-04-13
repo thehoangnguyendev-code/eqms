@@ -452,7 +452,7 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
               <History className="h-4 w-4 text-emerald-600" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] text-slate-400 font-medium">History</p>
+              <p className="text-[11px] text-slate-400 font-medium">Version History</p>
               <p className="text-sm font-bold text-slate-800 truncate">{material.title}</p>
             </div>
           </div>

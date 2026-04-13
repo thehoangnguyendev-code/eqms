@@ -47,6 +47,7 @@ export interface EmployeeTrainingFile {
   isNewHire?: boolean; // For hero banner logic
   employeeType: 'Internal' | 'Contractor'; // Added for EU-GMP
   qualificationStatus?: 'Qualified' | 'In Training' | 'At Risk'; // Added for EU-GMP
+  completedCourses?: CompletedCourseRecord[]; // Added for Certification logic
 }
 
 // ─── Pending Signature Record ─────────────────────────────────────────────────
@@ -64,6 +65,26 @@ export interface PendingSignatureRecord {
   trainerName?: string;
   /** Whether the course version is now obsolete */
   isObsolete?: boolean;
+}
+
+// ─── Completed Course Record (for Certification) ─────────────────────────────
+export interface CompletedCourseRecord {
+  id: string;
+  courseCode: string;
+  courseTitle: string;
+  version: string;
+  completionDate: string;
+  expiryDate?: string;
+  score: number;
+  passingScore: number;
+  traineeName: string;
+  traineeId: string;
+  traineeEsignDate: string;
+  trainerName: string;
+  trainerId: string;
+  trainerEsignDate: string;
+  status: "Pass" | "Fail";
+  pendingSignaturesCount: number;
 }
 
 // ─── Filter State ─────────────────────────────────────────────────────────────

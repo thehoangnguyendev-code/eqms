@@ -1113,7 +1113,7 @@ export const MaterialsView: React.FC = () => {
                                 <span className="font-medium">{m.usageCount}</span>
                               </td>
 
-                              <td className={cn(tdClass, "text-center")}>
+                              <td className={tdClass}>
                                 <StatusBadge status={mapMaterialStatusToStatusType(getEffectiveStatus(m) as TrainingMaterial["status"])} />
                               </td>
 

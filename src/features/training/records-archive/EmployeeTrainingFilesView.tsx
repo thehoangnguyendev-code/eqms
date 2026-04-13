@@ -46,8 +46,11 @@ import {
 } from "@/hooks";
 import { ROUTES } from "@/app/routes.constants";
 import { MOCK_EMPLOYEE_TRAINING_FILES, MOCK_PENDING_SIGNATURES } from "./mockData";
-import { PendingSignaturesModal } from "./PendingSignaturesModal";
-import type { EmployeeTrainingFile, EmployeeFilters, PendingSignatureRecord } from "../types";
+import { PendingSignaturesModal } from "./components/PendingSignaturesModal";
+import { CertificationCourseSelectionModal } from "./components/CertificationCourseSelectionModal";
+import { CertificatePreviewModal } from "./components/CertificatePreviewModal";
+import { LearningHistoryDrawer } from "./components/LearningHistoryDrawer";
+import type { EmployeeTrainingFile, EmployeeFilters, PendingSignatureRecord, CompletedCourseRecord } from "../types";
 
 // ── Dropdown Menu for Employee Records ────────────────────────────
 interface EmployeeDropdownMenuProps {
@@ -57,6 +60,8 @@ interface EmployeeDropdownMenuProps {
   position: PortalDropdownPosition;
   onNavigate: (path: string) => void;
   onOpenPendingSignatures: (employee: EmployeeTrainingFile) => void;
+  onGenerateCertification: (employee: EmployeeTrainingFile) => void;
+  onOpenHistory: (employee: EmployeeTrainingFile) => void;
   pendingSignaturesCount: number;
 }
 
@@ -67,6 +72,8 @@ const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
   position,
   onNavigate,
   onOpenPendingSignatures,
+  onGenerateCertification,
+  onOpenHistory,
   pendingSignaturesCount,
 }) => {
   if (!isOpen) return null;
@@ -104,7 +111,7 @@ const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
       icon: Award,
       label: "Generate Certification",
       onClick: () => {
-        console.log("Generate certification for:", employee.id);
+        onGenerateCertification(employee);
         onClose();
       },
       color: "text-slate-500"
@@ -120,12 +127,12 @@ const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
     },
     {
       icon: IconHistory,
-      label: "View Version History",
+      label: "Version History",
       onClick: () => {
-        onNavigate(ROUTES.TRAINING.EMPLOYEE_DOSSIER(employee.id) + "?tab=sops");
+        onOpenHistory(employee);
         onClose();
       },
-      color: "text-slate-500"
+      color: "text-slate-500 font-bold"
     },
     {
       icon: IconFileDownload,
@@ -223,6 +230,11 @@ export const EmployeeTrainingFilesView: React.FC = () => {
   // Pending Signatures state
   const [pendingSignatures, setPendingSignatures] = useState<Record<string, PendingSignatureRecord[]>>(MOCK_PENDING_SIGNATURES);
   const [pendingSigEmployee, setPendingSigEmployee] = useState<EmployeeTrainingFile | null>(null);
+
+  // Certification state
+  const [certSelectionEmployee, setCertSelectionEmployee] = useState<EmployeeTrainingFile | null>(null);
+  const [certCourseTarget, setCertCourseTarget] = useState<CompletedCourseRecord | null>(null);
+  const [historyEmployee, setHistoryEmployee] = useState<EmployeeTrainingFile | null>(null);
 
   // Filter hook
   const {
@@ -744,7 +756,43 @@ export const EmployeeTrainingFilesView: React.FC = () => {
             position={dropdownPosition}
             onNavigate={navigateTo}
             onOpenPendingSignatures={(e) => { setPendingSigEmployee(e); closeDropdown(); }}
+            onGenerateCertification={(e) => { setCertSelectionEmployee(e); closeDropdown(); }}
+            onOpenHistory={(e) => { setHistoryEmployee(e); closeDropdown(); }}
             pendingSignaturesCount={(pendingSignatures[emp.id] ?? []).length}
+          />
+        ) : null;
+      })()}
+
+      {/* Certification Flow Modals */}
+      <CertificationCourseSelectionModal
+        isOpen={!!certSelectionEmployee}
+        onClose={() => setCertSelectionEmployee(null)}
+        employee={certSelectionEmployee || MOCK_EMPLOYEE_TRAINING_FILES[0]}
+        onSelectCourse={(course) => {
+          setCertCourseTarget(course);
+          setCertSelectionEmployee(null);
+        }}
+      />
+
+      {certSelectionEmployee && certCourseTarget && (
+        <CertificatePreviewModal
+          isOpen={!!certCourseTarget}
+          onClose={() => setCertCourseTarget(null)}
+          employee={certSelectionEmployee}
+          course={certCourseTarget}
+        />
+      )}
+
+      {/* Handle Case where selection modal is closed and we open preview directly or from state */}
+      {!certSelectionEmployee && certCourseTarget && (() => {
+        // Find the employee again if needed, or we can use a dedicated state for the 'employee in preview'
+        const emp = MOCK_EMPLOYEE_TRAINING_FILES.find(e => e.employeeId === certCourseTarget.traineeId);
+        return emp ? (
+          <CertificatePreviewModal
+            isOpen={!!certCourseTarget}
+            onClose={() => setCertCourseTarget(null)}
+            employee={emp}
+            course={certCourseTarget}
           />
         ) : null;
       })()}
@@ -756,6 +804,16 @@ export const EmployeeTrainingFilesView: React.FC = () => {
         pendingRecords={pendingSigEmployee ? (pendingSignatures[pendingSigEmployee.id] ?? []) : []}
         onSigned={(recordId) => pendingSigEmployee && handleSignedRecord(pendingSigEmployee.id, recordId)}
       />
+
+      {historyEmployee && (
+        <LearningHistoryDrawer
+          employee={historyEmployee}
+          onClose={() => setHistoryEmployee(null)}
+          onViewCertificate={(course) => {
+            setCertCourseTarget(course);
+          }}
+        />
+      )}
 
       {isNavigating && <FullPageLoading text="Opening dossier..." />}
     </div>

@@ -48,6 +48,43 @@ export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
         status: "Active",
         signedBy: "Site QA Director"
       }
+    ],
+    completedCourses: [
+      {
+        id: "cc-1-1",
+        courseCode: "SOP-QA-001",
+        courseTitle: "Internal Audit Procedure",
+        version: "v2.0",
+        completionDate: "2026-04-05",
+        expiryDate: "2027-04-05",
+        score: 95,
+        passingScore: 80,
+        traineeName: "John Smith",
+        traineeId: "EMP-001",
+        traineeEsignDate: "2026-04-05T14:30:22Z",
+        trainerName: "Dr. A. Smith",
+        trainerId: "trainer-001",
+        trainerEsignDate: "2026-05-13T09:15:00Z", // Simulation of signed later
+        status: "Pass",
+        pendingSignaturesCount: 0
+      },
+      {
+        id: "cc-1-2",
+        courseCode: "SOP-QA-007",
+        courseTitle: "Deviation Management",
+        version: "v1.0",
+        completionDate: "2026-04-09",
+        score: 85,
+        passingScore: 80,
+        traineeName: "John Smith",
+        traineeId: "EMP-001",
+        traineeEsignDate: "2026-04-09T10:00:00Z",
+        trainerName: "Sarah Connor",
+        trainerId: "trainer-002",
+        trainerEsignDate: "",
+        status: "Pass",
+        pendingSignaturesCount: 1 // Ineligible due to trainer sign
+      }
     ]
   },
   {
@@ -68,6 +105,26 @@ export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
     averageScore: 88,
     employeeType: "Internal",
     qualificationStatus: "At Risk",
+    completedCourses: [
+      {
+        id: "cc-2-1",
+        courseCode: "SOP-QC-003",
+        courseTitle: "HPLC Method Validation",
+        version: "v1.0",
+        completionDate: "2026-04-10",
+        expiryDate: "2027-04-10",
+        score: 88,
+        passingScore: 80,
+        traineeName: "Sarah Johnson",
+        traineeId: "EMP-002",
+        traineeEsignDate: "2026-04-10T11:20:00Z",
+        trainerName: "Dr. A. Smith",
+        trainerId: "trainer-001",
+        trainerEsignDate: "2026-04-11T08:00:00Z",
+        status: "Pass",
+        pendingSignaturesCount: 0
+      }
+    ]
   },
   {
     id: "3",

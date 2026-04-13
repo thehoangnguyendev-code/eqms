@@ -7,7 +7,7 @@ import { FormModal } from "@/components/ui/modal/FormModal";
 import { ESignatureModal } from "@/components/ui/esign-modal/ESignatureModal";
 import { cn } from "@/components/ui/utils";
 import { usePortalDropdown, PortalDropdownPosition } from "@/hooks";
-import type { EmployeeTrainingFile, PendingSignatureRecord } from "../types";
+import type { EmployeeTrainingFile, PendingSignatureRecord } from "../../types";
 
 const CURRENT_TRAINER_ID = "trainer-001";
 
