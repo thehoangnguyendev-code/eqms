@@ -36,7 +36,7 @@ import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDr
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 
 import { MOCK_DOCUMENTS, CURRENT_USER } from './mockData';
-import type { Document, RelatedDocument, CorrelatedDocument } from './mockData';
+import type { Document, RelatedDocument, CorrelatedDocument } from './types';
 
 // --- Types ---
 type ViewType = "all" | "owned-by-me";

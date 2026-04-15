@@ -9,3 +9,6 @@ export { DocumentsView } from './DocumentsView';
 
 // Single document creation
 export { NewDocumentView } from './document-creation/NewDocumentView';
+
+// Local list view types
+export type { Document, RelatedDocument, CorrelatedDocument } from './types';

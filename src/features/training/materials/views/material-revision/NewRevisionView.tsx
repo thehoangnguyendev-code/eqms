@@ -27,34 +27,16 @@ import { ESignatureModal } from "@/components/ui/esign-modal";
 import { getFileIconSrc } from "@/utils/fileIcons";
 import { BUSINESS_UNIT_DEPARTMENTS } from "@/features/settings/user-management/constants";
 
-import { type MaterialStatus, WORKFLOW_STEPS } from "@/features/training/materials/types";
+import {
+  type MaterialStatus,
+  type MaterialUploadMode,
+  type MaterialUploadedFile,
+  type MaterialRevisionFormData,
+  WORKFLOW_STEPS,
+} from "@/features/training/materials/types";
 
 // ─── Types ─────────────────────────────────────────────────────────
 type RevisionType = "minor" | "major";
-type UploadMode = "file" | "link";
-
-interface UploadedFile {
-  id: string;
-  file: File | null;
-  name: string;
-  size: number;
-  progress: number;
-  status: "uploading" | "success" | "error";
-}
-
-interface RevisionFormData {
-  materialName: string;
-  materialCode: string;
-  version: string;
-  author: string;
-  businessUnit: string;
-  department: string;
-  reviewer: string;
-  approver: string;
-  description: string;
-  revisionNotes: string;
-  externalUrl: string;
-}
 
 const ACCEPTED_EXTENSIONS = [".pdf", ".mp4", ".jpg", ".jpeg", ".png"];
 const MAX_FILE_SIZE_MB = 500;
@@ -85,9 +67,9 @@ const APPROVER_OPTIONS = [
 // ─── Mock Source Data ───────────────────────────────────────────────
 interface SourceMaterial {
   status: MaterialStatus;
-  uploadMode: UploadMode;
+  uploadMode: MaterialUploadMode;
   existingFile: { name: string; size: number };
-  form: Omit<RevisionFormData, "revisionNotes" | "externalUrl">;
+  form: Omit<MaterialRevisionFormData, "revisionNotes" | "externalUrl">;
 }
 
 const MOCK_MATERIAL_SOURCE: Record<string, SourceMaterial> = {
@@ -272,17 +254,17 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
 
   const [revisionType, setRevisionType] = useState<RevisionType>("minor");
 
-  const [formData, setFormData] = useState<RevisionFormData>({
+  const [formData, setFormData] = useState<MaterialRevisionFormData>({
     ...source.form,
     version: suggestVersion(source.form.version, "minor"),
     revisionNotes: "",
     externalUrl: "",
   });
 
-  const [uploadMode, setUploadMode] = useState<UploadMode>(source.uploadMode);
+  const [uploadMode, setUploadMode] = useState<MaterialUploadMode>(source.uploadMode);
   const [isDragActive, setIsDragActive] = useState(false);
   const [keepExistingFile, setKeepExistingFile] = useState(true);
-  const [newFile, setNewFile] = useState<UploadedFile | null>(null);
+  const [newFile, setNewFile] = useState<MaterialUploadedFile | null>(null);
 
   // Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -305,7 +287,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
     ];
   }, [formData.businessUnit]);
 
-  const updateField = <K extends keyof RevisionFormData>(key: K, val: RevisionFormData[K]) =>
+  const updateField = <K extends keyof MaterialRevisionFormData>(key: K, val: MaterialRevisionFormData[K]) =>
     setFormData((prev) => ({ ...prev, [key]: val }));
 
   // When revision type changes, re-suggest version
@@ -325,7 +307,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
   };
 
   const simulateUpload = (file: File) => {
-    const entry: UploadedFile = {
+    const entry: MaterialUploadedFile = {
       id: Date.now().toString(),
       file,
       name: file.name,

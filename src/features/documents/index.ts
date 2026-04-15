@@ -59,38 +59,35 @@ export {
 // =============================================================================
 // DOCUMENT LIST & VIEWS
 // =============================================================================
-export { DocumentsView } from './document-list/DocumentsView';
+export { DocumentsView, NewDocumentView } from './document-list';
 export { DetailDocumentView } from './document-detail/DetailDocumentView';
-
-// Document Creation
-export { NewDocumentView } from './document-list/document-creation/NewDocumentView';
 
 // =============================================================================
 // DOCUMENT REVISIONS
 // =============================================================================
-export { RevisionListView } from './document-revisions/views/RevisionListView';
-export { RevisionsOwnedByMeView } from './document-revisions/views/RevisionsOwnedByMeView';
-export { PendingDocumentsView } from './document-revisions/views/PendingDocumentsView';
-export { DetailRevisionView } from './document-revisions/detail-revision/DetailRevisionView';
-export { NewRevisionView } from './document-revisions/components/NewRevisionView';
-export { RevisionWorkspaceView } from './document-revisions/components/RevisionWorkspaceView';
-export { UpgradeRevisionView } from './document-revisions/components/UpgradeRevisionView';
-export { RevisionReviewView } from './document-revisions/review-revision/RevisionReviewView';
-export { RevisionApprovalView } from './document-revisions/approval-revision/RevisionApprovalView';
+export {
+  RevisionListView,
+  RevisionsOwnedByMeView,
+  PendingDocumentsView,
+  DetailRevisionView,
+  NewRevisionView,
+  RevisionWorkspaceView,
+  UpgradeRevisionView,
+  RevisionReviewView,
+  RevisionApprovalView,
+} from './document-revisions';
 
 // =============================================================================
 // CONTROLLED COPIES
 // =============================================================================
-export { ControlledCopiesView } from './controlled-copies/ControlledCopiesView';
-export { ControlledCopyDetailView } from './controlled-copies/detail/ControlledCopyDetailView';
-export { DestroyControlledCopyView } from './controlled-copies/components/DestroyControlledCopyView';
-export { RequestControlledCopyView } from './document-revisions/views/RequestControlledCopyView';
+export { ControlledCopiesView, ControlledCopyDetailView, DestroyControlledCopyView } from './controlled-copies';
+export { RequestControlledCopyView } from './document-revisions';
 
 
 // =============================================================================
 // ARCHIVED DOCUMENTS
 // =============================================================================
-export { ArchivedDocumentsView } from './archived-documents/ArchivedDocumentsView';
+export { ArchivedDocumentsView } from './archived-documents';
 
 // =============================================================================
 // KNOWLEDGE BASE

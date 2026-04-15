@@ -28,33 +28,13 @@ import { AlertModal, AlertModalType } from "@/components/ui/modal/AlertModal";
 import { ESignatureModal } from "@/components/ui/esign-modal";
 import { getFileIconSrc } from "@/utils/fileIcons";
 import { BUSINESS_UNIT_DEPARTMENTS } from "@/features/settings/user-management/constants";
-import { type MaterialStatus, WORKFLOW_STEPS } from "@/features/training/materials/types";
-
-// ─── Types ─────────────────────────────────────────────────────────
-interface UploadedFile {
-  id: string;
-  file: File;
-  name: string;
-  size: number;
-  type: string;
-  progress: number;
-  status: "uploading" | "success" | "error";
-}
-
-type UploadMode = "file" | "link";
-
-interface MaterialFormData {
-  materialName: string;
-  materialCode: string;
-  version: string;
-  author: string;
-  businessUnit: string;
-  department: string;
-  reviewer: string;
-  approver: string;
-  description: string;
-  externalUrl: string;
-}
+import {
+  type MaterialStatus,
+  type MaterialWorkflowFormData,
+  type MaterialUploadMode,
+  type MaterialUploadedFile,
+  WORKFLOW_STEPS,
+} from "@/features/training/materials/types";
 
 const ACCEPTED_FORMATS: Record<string, string[]> = {
   "application/pdf": [".pdf"],
@@ -131,7 +111,7 @@ export const UploadMaterialView: React.FC = () => {
   const currentStepIndex = WORKFLOW_STEPS.indexOf(currentStatus);
 
   // Form state
-  const [formData, setFormData] = useState<MaterialFormData>({
+  const [formData, setFormData] = useState<MaterialWorkflowFormData>({
     materialName: "",
     materialCode: "",
     version: "1.0",
@@ -155,10 +135,10 @@ export const UploadMaterialView: React.FC = () => {
   }, [formData.businessUnit]);
 
   // Upload mode state
-  const [uploadMode, setUploadMode] = useState<UploadMode>("file");
+  const [uploadMode, setUploadMode] = useState<MaterialUploadMode>("file");
 
   // File state
-  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<MaterialUploadedFile | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
 
   // Modal state
@@ -175,7 +155,7 @@ export const UploadMaterialView: React.FC = () => {
   const [eSignAction, setESignAction] = useState<"submit" | null>(null);
 
   // ─── Form handlers ────────────────────────────────────────────
-  const updateField = <K extends keyof MaterialFormData>(key: K, value: MaterialFormData[K]) => {
+  const updateField = <K extends keyof MaterialWorkflowFormData>(key: K, value: MaterialWorkflowFormData[K]) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 

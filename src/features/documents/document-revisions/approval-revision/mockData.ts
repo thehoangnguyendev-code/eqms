@@ -1,5 +1,5 @@
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
-import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/sub-tab";
+import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/subtabs";
 
 // --- Types ---
 export type ApprovalStatus = "pending" | "approved" | "rejected";

@@ -37,8 +37,8 @@ import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
-import type { RelatedDocument, CorrelatedDocument, Revision } from "./mockData";
 import { MOCK_REVISIONS } from "./mockData";
+import type { RelatedDocument, CorrelatedDocument, Revision } from "./types";
 import { mapStatusToStatusType } from "@/utils/status";
 
 // --- Types ---

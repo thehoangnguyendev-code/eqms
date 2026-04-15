@@ -26,33 +26,17 @@ import { ESignatureModal } from "@/components/ui/esign-modal";
 import { getFileIconSrc } from "@/utils/fileIcons";
 import { BUSINESS_UNIT_DEPARTMENTS } from "@/features/settings/user-management/constants";
 
-import { type MaterialStatus, WORKFLOW_STEPS } from "@/features/training/materials/types";
+import {
+  type MaterialStatus,
+  type MaterialUploadMode,
+  type MaterialUploadedFile,
+  type MaterialWorkflowFormData,
+  WORKFLOW_STEPS,
+} from "@/features/training/materials/types";
 
-// ─── Types ─────────────────────────────────────────────────────────
-interface UploadedFile {
-  id: string;
-  file: File | null;
-  name: string;
-  size: number;
-  type: string;
-  progress: number;
-  status: "uploading" | "success" | "error" | "existing";
-}
-
-type UploadMode = "file" | "link";
-
-interface MaterialFormData {
-  materialName: string;
-  materialCode: string;
-  version: string;
-  author: string;
-  businessUnit: string;
-  department: string;
-  reviewer: string;
-  approver: string;
-  description: string;
-  externalUrl: string;
-}
+type EditUploadedFile = MaterialUploadedFile & {
+  status: MaterialUploadedFile["status"] | "existing";
+};
 
 const ACCEPTED_EXTENSIONS = [".pdf", ".mp4", ".jpg", ".jpeg", ".png"];
 const MAX_FILE_SIZE_MB = 500;
@@ -88,9 +72,9 @@ const MOCK_MATERIAL_DATA: Record<
   string,
   {
     status: MaterialStatus;
-    form: MaterialFormData;
+    form: MaterialWorkflowFormData;
     existingFile: { name: string; size: number };
-    uploadMode: UploadMode;
+    uploadMode: MaterialUploadMode;
   }
 > = {
   "5": {
@@ -230,15 +214,15 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
   const currentStepIndex = 0; // Always Draft when editing
 
   // Form state (pre-populated)
-  const [formData, setFormData] = useState<MaterialFormData>(existingData.form);
-  const [uploadMode, setUploadMode] = useState<UploadMode>(
+  const [formData, setFormData] = useState<MaterialWorkflowFormData>(existingData.form);
+  const [uploadMode, setUploadMode] = useState<MaterialUploadMode>(
     existingData.uploadMode,
   );
   const [isDragActive, setIsDragActive] = useState(false);
   const [isReplacingFile, setIsReplacingFile] = useState(false);
 
   // File replace state — null means "keep existing"
-  const [newFile, setNewFile] = useState<UploadedFile | null>(null);
+  const [newFile, setNewFile] = useState<EditUploadedFile | null>(null);
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -262,9 +246,9 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
     ];
   }, [formData.businessUnit]);
 
-  const updateField = <K extends keyof MaterialFormData>(
+  const updateField = <K extends keyof MaterialWorkflowFormData>(
     key: K,
-    value: MaterialFormData[K],
+    value: MaterialWorkflowFormData[K],
   ) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
@@ -282,7 +266,7 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
   };
 
   const simulateUpload = (file: File) => {
-    const uploadFile: UploadedFile = {
+    const uploadFile: EditUploadedFile = {
       id: Date.now().toString(),
       file,
       name: file.name,

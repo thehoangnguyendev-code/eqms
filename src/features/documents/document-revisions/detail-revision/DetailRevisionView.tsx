@@ -22,8 +22,8 @@ import { revisionDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { ROUTES } from "@/app/routes.constants";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { useNavigateWithLoading } from "@/hooks";
-import { OriginalDocumentTab } from "@/features/documents/document-revisions/sub-tab";
-import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/sub-tab";
+import { OriginalDocumentTab } from "@/features/documents/document-revisions/subtabs";
+import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/subtabs";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 import {

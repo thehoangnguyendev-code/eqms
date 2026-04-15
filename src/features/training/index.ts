@@ -11,16 +11,37 @@ export {
 } from './course-inventory';
 
 // Materials
-export * from './materials';
+export {
+  MaterialsView,
+  MaterialDetailView,
+  MaterialReviewView,
+  MaterialApprovalView,
+  UploadMaterialView,
+  EditMaterialView,
+  NewRevisionView,
+  UsageReportView,
+  MarkObsoleteModal,
+} from './materials';
 
 // Compliance Tracking
-export * from './compliance-tracking';
+export {
+  CourseStatusView,
+  TrainingMatrixView,
+  ResultEntryView,
+  CourseProgressView,
+  AssignTrainingView,
+  AssignmentRulesView,
+} from './compliance-tracking';
 
 // My Training
 export { MyTrainingView } from './my-training';
 
 // Records & Archive
-export * from './records-archive';
+export {
+  EmployeeTrainingFilesView,
+  ExportRecordsView,
+  EmployeeDossierView,
+} from './records-archive';
 
 // Types
 export * from './types';

@@ -82,6 +82,38 @@ export interface MaterialFilters {
   dateTo: string;
 }
 
+// ─── Upload / Revision Form Shapes ───────────────────────────────────────────
+export type MaterialUploadMode = "file" | "link";
+
+export type MaterialUploadFileStatus = "uploading" | "success" | "error";
+
+export interface MaterialUploadedFile {
+  id: string;
+  file: File | null;
+  name: string;
+  size: number;
+  progress: number;
+  status: MaterialUploadFileStatus;
+  type?: string;
+}
+
+export interface MaterialWorkflowFormData {
+  materialName: string;
+  materialCode: string;
+  version: string;
+  author: string;
+  businessUnit: string;
+  department: string;
+  reviewer: string;
+  approver: string;
+  description: string;
+  externalUrl: string;
+}
+
+export interface MaterialRevisionFormData extends MaterialWorkflowFormData {
+  revisionNotes: string;
+}
+
 // ─── Workflow Steps ───────────────────────────────────────────────────────────
 export const WORKFLOW_STEPS: MaterialStatus[] = [
   "Draft",

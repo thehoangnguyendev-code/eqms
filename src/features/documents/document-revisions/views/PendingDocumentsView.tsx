@@ -33,7 +33,7 @@ import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
-import type { RelatedDocument, CorrelatedDocument } from "@/features/documents/document-revisions/views/mockData";
+import type { RelatedDocument, CorrelatedDocument } from "@/features/documents/document-revisions/views/types";
 import { MOCK_DOCUMENTS as ALL_DOCUMENTS } from "@/features/documents/document-list/mockData";
 import { MOCK_REVISIONS as ALL_REVISIONS } from "@/features/documents/document-revisions/views/mockData";
 

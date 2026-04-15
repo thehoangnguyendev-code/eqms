@@ -13,8 +13,8 @@ import { FullPageLoading } from '@/components/ui/loading/Loading';
 import { useToast } from '@/components/ui/toast';
 import { formatDate } from '@/utils/format';
 import { revisionApproval } from "@/components/ui/breadcrumb/breadcrumbs.config";
-import { OriginalDocumentTab } from "@/features/documents/document-revisions/sub-tab";
-import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/sub-tab";
+import { OriginalDocumentTab } from "@/features/documents/document-revisions/subtabs";
+import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/subtabs";
 import { DocumentWorkflowLayout, DEFAULT_WORKFLOW_TABS } from "@/features/documents/shared/layouts";
 import {
     GeneralTab,

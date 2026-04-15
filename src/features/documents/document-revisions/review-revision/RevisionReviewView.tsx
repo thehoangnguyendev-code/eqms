@@ -21,8 +21,8 @@ import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { formatDate } from "@/utils/format";
 import { revisionReview } from "@/components/ui/breadcrumb/breadcrumbs.config";
-import { OriginalDocumentTab } from "@/features/documents/document-revisions/sub-tab";
-import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/sub-tab";
+import { OriginalDocumentTab } from "@/features/documents/document-revisions/subtabs";
+import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/subtabs";
 import {
   DocumentWorkflowLayout,
   DEFAULT_WORKFLOW_TABS,
