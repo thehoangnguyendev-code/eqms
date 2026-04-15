@@ -48,6 +48,7 @@ interface DocumentFiltersProps {
     onTemplateFilterChange?: (value: string) => void;
     onClearFilters?: () => void;
     hideSearch?: boolean;
+    showCard?: boolean;
 }
 
 export const DocumentFilters: React.FC<DocumentFiltersProps> = ({
@@ -89,6 +90,7 @@ export const DocumentFilters: React.FC<DocumentFiltersProps> = ({
     onTemplateFilterChange = () => { },
     onClearFilters = () => { },
     hideSearch = false,
+    showCard = true,
 }) => {
     // Default status options for All Revisions view
     const defaultStatusOptions = [
@@ -334,7 +336,7 @@ export const DocumentFilters: React.FC<DocumentFiltersProps> = ({
         </div>
     );
 
-    return hideSearch ? content : (
+    return hideSearch || !showCard ? content : (
         <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm w-full">
             {content}
         </div>

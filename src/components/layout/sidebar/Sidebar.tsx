@@ -106,7 +106,6 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
     const [pendingNavId, setPendingNavId] = useState<string | null>(null);
     const [pendingNavLabel, setPendingNavLabel] = useState<string>("");
     const [pendingPageTitle, setPendingPageTitle] = useState<string>("");
-    const [shakingId, setShakingId] = useState<string | null>(null);
 
     // Filter nav items based on user role
     const filteredNav = useMemo(
@@ -300,7 +299,6 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
     // Handle click on menu item (collapsed mode)
     const handleMenuItemClick = useCallback(
       (item: NavItem, event: React.MouseEvent<HTMLButtonElement>) => {
-        if (item.icon) setShakingId(item.id);
         if (!isCollapsed || !item.children?.length) return;
 
         event.stopPropagation();
@@ -334,7 +332,6 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
     // Memoized item click handler
     const handleItemClick = useCallback(
       (item: NavItem) => {
-        if (item.icon) setShakingId(item.id);
         if (item.children && !isCollapsed) {
           setExpandedItems((prev) =>
             prev.includes(item.id)
@@ -479,14 +476,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                 >
                   {Icon && (
                     <motion.div
-                      animate={
-                        shakingId === item.id
-                          ? { rotate: [0, -7, 7, -7, 7, 0], scale: [1, 1.1, 1] }
-                          : isActive
-                            ? { scale: [1, 1.12, 1] }
-                            : {}
-                      }
-                      onAnimationComplete={() => setShakingId(null)}
+                      animate={isActive ? { scale: [1, 1.12, 1] } : {}}
                       transition={{ duration: 0.4 }}
                     >
                       <Icon
@@ -639,7 +629,6 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         onClose,
         favoriteIds,
         setFavoriteIds,
-        shakingId,
       ],
     );
 
@@ -666,7 +655,6 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
     // Handle hover menu sub-item click
     const handleSubItemClick = useCallback(
       (item: NavItem, hasChildren: boolean) => {
-        if (item.icon) setShakingId(item.id);
         if (hasChildren) {
           setHoverMenu((prev) => ({
             ...prev,

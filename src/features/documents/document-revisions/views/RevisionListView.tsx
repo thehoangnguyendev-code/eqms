@@ -12,9 +12,6 @@ import {
   Download,
   FilePlusCorner,
   FileStack,
-  Search,
-  SlidersHorizontal,
-  X,
 } from "lucide-react";
 import { Button } from '@/components/ui/button/Button';
 import { StatusBadge, StatusType } from '@/components/ui/badge';
@@ -88,9 +85,6 @@ export const RevisionListView: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [isFilterVisible, setIsFilterVisible] = useState(() => {
-    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
-  });
   const [isTableLoading, setIsTableLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
     key: "revisionName",
@@ -473,68 +467,9 @@ export const RevisionListView: React.FC = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
-          {/* Search Row + Primary Actions */}
-          <div className="flex flex-row gap-2 sm:gap-3 items-end">
-            <div className="flex-1">
-              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
-                Search
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                  <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search revisions..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="flex-shrink-0">
-              <Button
-                variant={isFilterVisible ? "default" : "outline"}
-                onClick={() => setIsFilterVisible(!isFilterVisible)}
-                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
-                size="sm"
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                <span className="hidden sm:inline">Filters</span>
-              </Button>
-            </div>
-          </div>
-
-          {/* Conditional Filters Tray: Accordion Effect */}
-          <AnimatePresence>
-            {isFilterVisible && (
-              <motion.div
-                initial={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
-                animate={{ height: "auto", opacity: 1, y: 0, marginTop: 16 }}
-                exit={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
-                transition={{
-                  height: { type: "spring", bounce: 0, duration: 0.4 },
-                  marginTop: { type: "spring", bounce: 0, duration: 0.4 },
-                  opacity: { duration: 0.25 },
-                  y: { duration: 0.3 }
-                }}
-                className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
-              >
-                <div className="pt-2">
-                  <DocumentFilters
-                    hideSearch
+          <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
+            <DocumentFilters
+                    showCard={false}
                     searchQuery={searchQuery}
                     onSearchChange={(value) => {
                       setSearchQuery(value);
@@ -613,11 +548,8 @@ export const RevisionListView: React.FC = () => {
                       setCurrentPage(1);
                     }}
                     onClearFilters={handleClearFilters}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            />
+          </div>
         </div>
 
         {/* Table Section */}

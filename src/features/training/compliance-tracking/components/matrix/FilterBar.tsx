@@ -1,9 +1,8 @@
 import React from "react";
-import { Search, SlidersHorizontal, ToggleLeft, ToggleRight, X } from "lucide-react";
+import { Search, ToggleLeft, ToggleRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { cn } from "@/components/ui/utils";
-import { motion, AnimatePresence } from "framer-motion";
 import type { MatrixFilters, CellStatus } from "../../types";
 import {
   DEPARTMENT_OPTIONS,
@@ -14,15 +13,11 @@ import {
 interface FilterBarProps {
   filters: MatrixFilters;
   onChange: (filters: MatrixFilters) => void;
-  showFilters: boolean;
-  onToggleFilters: () => void;
 }
 
 export const FilterBar: React.FC<FilterBarProps> = React.memo(({
   filters,
   onChange,
-  showFilters,
-  onToggleFilters,
 }) => {
   const set = (patch: Partial<MatrixFilters>) =>
     onChange({ ...filters, ...patch });
@@ -32,12 +27,6 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
     filters.department !== "All" ||
     filters.jobTitle !== "All" ||
     filters.status !== "All";
-
-  const activeCount = [
-    filters.department !== "All",
-    filters.jobTitle !== "All",
-    filters.status !== "All",
-  ].filter(Boolean).length;
 
   const clearAll = () =>
     onChange({
@@ -50,14 +39,12 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
 
   return (
     <div className="p-4 lg:p-5 space-y-4 bg-slate-50/30 border-b border-slate-100">
-      {/* Row 1: Search + action buttons */}
-      <div className="flex flex-col gap-1.5 w-full">
-        <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5">
-          Search
-        </label>
-        <div className="flex gap-2 items-center w-full">
-          {/* Search */}
-          <div className="relative flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 items-end">
+        <div className="w-full">
+          <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
+            Search
+          </label>
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 transition-colors" />
             <input
               type="text"
@@ -67,86 +54,50 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
               className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-all"
             />
           </div>
+        </div>
 
-          {/* Filter toggle */}
-          <div className="flex-shrink-0">
-            <Button
-              variant={showFilters ? "default" : "outline"}
-              size="sm"
-              className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
-              onClick={onToggleFilters}
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              <span className="hidden sm:inline">Filters</span>
-              {hasActiveFilters && (
-                <span className="ml-0.5 inline-flex items-center justify-center h-5 w-5 rounded-full bg-white/20 text-[10px] font-bold">
-                  {activeCount}
-                </span>
-              )}
-            </Button>
-          </div>
+        <Select
+          label="Department"
+          value={filters.department}
+          onChange={(val) => set({ department: val })}
+          options={DEPARTMENT_OPTIONS}
+        />
+        <Select
+          label="Job Title"
+          value={filters.jobTitle}
+          onChange={(val) => set({ jobTitle: val })}
+          options={JOB_TITLE_OPTIONS}
+        />
+        <Select
+          label="Status"
+          value={filters.status}
+          onChange={(val) => set({ status: val as CellStatus | "All" })}
+          options={STATUS_OPTIONS}
+        />
 
-          {/* Gap Analysis toggle - Hidden text on very small mobile if needed, but keeping for now */}
-          <div className="flex-shrink-0">
-            <button
-              onClick={() => set({ gapAnalysis: !filters.gapAnalysis })}
-              className={cn(
-                "inline-flex items-center gap-2 h-9 px-3 rounded-lg border text-sm font-medium transition-all shadow-sm",
-                filters.gapAnalysis
-                  ? "bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
-                  : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
-              )}
-              title="Gap Analysis"
-            >
-              {filters.gapAnalysis ? (
-                <ToggleRight className="h-4 w-4 text-red-500" />
-              ) : (
-                <ToggleLeft className="h-4 w-4 text-slate-400" />
-              )}
-              <span className="hidden sm:inline">Gap Analysis</span>
-            </button>
-          </div>
+        <div className="flex items-end gap-2 flex-wrap">
+          <button
+            onClick={() => set({ gapAnalysis: !filters.gapAnalysis })}
+            className={cn(
+              "inline-flex items-center gap-2 h-9 px-3 rounded-lg border text-sm font-medium transition-all shadow-sm",
+              filters.gapAnalysis
+                ? "bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+                : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+            )}
+            title="Gap Analysis"
+          >
+            {filters.gapAnalysis ? (
+              <ToggleRight className="h-4 w-4 text-red-500" />
+            ) : (
+              <ToggleLeft className="h-4 w-4 text-slate-400" />
+            )}
+            <span>Gap Analysis</span>
+          </button>
+          <Button variant="outline" size="sm" onClick={clearAll} className="h-9">
+            Clear all
+          </Button>
         </div>
       </div>
-
-      {/* Row 2: Expanded filter selects with Animation */}
-      <AnimatePresence>
-        {showFilters && (
-          <motion.div
-            initial={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
-            animate={{ height: "auto", opacity: 1, y: 0, marginTop: 8 }}
-            exit={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
-            transition={{
-              height: { type: "spring", bounce: 0, duration: 0.4 },
-              marginTop: { type: "spring", bounce: 0, duration: 0.4 },
-              opacity: { duration: 0.25 },
-              y: { duration: 0.3 },
-            }}
-            className="overflow-hidden"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-4 pb-2">
-              <Select
-                label="Department"
-                value={filters.department}
-                onChange={(val) => set({ department: val })}
-                options={DEPARTMENT_OPTIONS}
-              />
-              <Select
-                label="Job Title"
-                value={filters.jobTitle}
-                onChange={(val) => set({ jobTitle: val })}
-                options={JOB_TITLE_OPTIONS}
-              />
-              <Select
-                label="Status"
-                value={filters.status}
-                onChange={(val) => set({ status: val as CellStatus | "All" })}
-                options={STATUS_OPTIONS}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Active filter chips */}
       {hasActiveFilters && (
@@ -169,9 +120,6 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
               onRemove={() => set({ status: "All" })}
             />
           )}
-          <Button variant="outline" size="xs" onClick={clearAll}>
-            Clear all
-          </Button>
         </div>
       )}
     </div>

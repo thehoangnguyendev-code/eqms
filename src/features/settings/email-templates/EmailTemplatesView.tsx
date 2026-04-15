@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronUp, ChevronDown, MoreVertical, Plus, Download, Search, X, SlidersHorizontal, Edit, Copy, Eye, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
+import { ChevronUp, ChevronDown, MoreVertical, Plus, Download, Search, X, Edit, Copy, Eye, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
 import { createPortal } from "react-dom";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { AlertModal } from "@/components/ui/modal";
-import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { formatDateNumeric } from "@/utils/format";
 import { usePortalDropdown } from "@/hooks/usePortalDropdown";
@@ -63,9 +62,6 @@ export const EmailTemplatesView: React.FC = () => {
   const [columns, setColumns] = useState<TableColumn[]>([...DEFAULT_COLUMNS]);
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
-  const [isFilterVisible, setIsFilterVisible] = useState(() => {
-    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
-  });
   const [isTableLoading, setIsTableLoading] = useState(false);
 
   const [deleteModal, setDeleteModal] = useState({
@@ -177,66 +173,37 @@ export const EmailTemplatesView: React.FC = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
-          {/* Search Row + Primary Actions */}
-          <div className="flex flex-row gap-2 sm:gap-3 items-end">
-            <div className="flex-1">
-              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
-                Search
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                  <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search by name, subject, description..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            </div>
+          <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-end">
+                  <div className="w-full">
+                    <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
+                      Search
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                        <Search className="h-4 w-4 text-slate-400 transition-colors" />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Search by name, subject, description..."
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery("")}
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
 
-            <div className="flex-shrink-0">
-              <Button
-                variant={isFilterVisible ? "default" : "outline"}
-                onClick={() => setIsFilterVisible(!isFilterVisible)}
-                className="h-9 px-3 sm:px-4 gap-2 whitespace-nowrap rounded-lg"
-                size="sm"
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                <span className="hidden sm:inline">Filters</span>
-              </Button>
-            </div>
-          </div>
-
-          {/* Conditional Filters Tray: Accordion Effect */}
-          <AnimatePresence>
-            {isFilterVisible && (
-              <motion.div
-                initial={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
-                animate={{ height: "auto", opacity: 1, y: 0, marginTop: 16 }}
-                exit={{ height: 0, opacity: 0, y: -10, marginTop: 0 }}
-                transition={{
-                  height: { type: "spring", bounce: 0, duration: 0.4 },
-                  marginTop: { type: "spring", bounce: 0, duration: 0.4 },
-                  opacity: { duration: 0.25 },
-                  y: { duration: 0.3 }
-                }}
-                className="overflow-hidden px-1.5 -mx-1.5 pb-1.5 -mb-1.5"
-              >
-                <div className="pt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {/* Type Filter */}
                   <Select
                     label="Template Type"
@@ -294,10 +261,8 @@ export const EmailTemplatesView: React.FC = () => {
                       Clear Filters
                     </Button>
                   </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            </div>
+          </div>
         </div>
 
         {/* Table Section */}

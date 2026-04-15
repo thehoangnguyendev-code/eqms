@@ -52,8 +52,6 @@ export const TrainingMatrixView: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const [showFilters, setShowFilters] = useState(false);
-
   const [activeCellDrawer, setActiveCellDrawer] = useState<{
     cell: TrainingCell;
     employee: EmployeeRow;
@@ -175,10 +173,6 @@ export const TrainingMatrixView: React.FC = () => {
     []
   );
 
-  const handleToggleFilters = useCallback(() => {
-    setShowFilters((v) => !v);
-  }, []);
-
   const clearFilters = useCallback(() => {
     setFilters((prev) => ({
       ...prev,
@@ -251,8 +245,6 @@ export const TrainingMatrixView: React.FC = () => {
         <FilterBar
           filters={filters}
           onChange={setFilters}
-          showFilters={showFilters}
-          onToggleFilters={handleToggleFilters}
         />
 
         {/* Color Legend Bar */}
