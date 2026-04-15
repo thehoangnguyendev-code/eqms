@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
-import { Plus, Search, MoreVertical, Users, Lock, Download, ChevronUp, ChevronDown, Trash2, Edit } from "lucide-react";
+import { Plus, Search, MoreVertical, Users, Lock, Download, ChevronUp, ChevronDown, Trash2, Edit, X } from "lucide-react";
 import { IconEye, IconEdit, IconTrash, IconInfoCircle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button/Button";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
@@ -260,8 +260,21 @@ export const RoleListView: React.FC = () => {
                     setSearchQuery(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="block w-full pl-10 pr-3 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
+                  className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setCurrentPage(1);
+                    }}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -281,7 +294,7 @@ export const RoleListView: React.FC = () => {
                   )}
                   {...dragEvents}
                 >
-                  <table className="w-full">
+                  <table className="w-full min-w-[860px] md:min-w-[1020px] lg:min-w-[1160px] xl:min-w-[1260px]">
                     <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
                       <tr>
                         <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">

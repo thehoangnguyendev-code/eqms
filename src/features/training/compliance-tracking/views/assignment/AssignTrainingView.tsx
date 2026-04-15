@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Search,
+  X,
   GraduationCap,
   Building2,
   Briefcase,
@@ -597,8 +598,18 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
                 value={courseSearch}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search courses…"
-                className="w-full h-9 pl-9 pr-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400"
+                className="w-full h-9 pl-9 pr-10 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400"
               />
+              {courseSearch && (
+                <button
+                  type="button"
+                  onClick={() => onSearchChange("")}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </div>
           <Select label="Category" value={categoryFilter} onChange={onCategoryChange} options={CATEGORY_OPTIONS} />
@@ -813,8 +824,18 @@ const Step2Assignees: React.FC<Step2Props> = ({
                     value={employeeSearch}
                     onChange={(e) => onEmployeeSearchChange(e.target.value)}
                     placeholder="Search by name, department, code…"
-                    className="w-full h-9 pl-9 pr-3 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400"
+                    className="w-full h-9 pl-9 pr-10 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400"
                   />
+                  {employeeSearch && (
+                    <button
+                      type="button"
+                      onClick={() => onEmployeeSearchChange("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                      aria-label="Clear employee search"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
                 <div className="border border-slate-200 rounded-xl bg-slate-50/60">
                   <div className="px-3 pt-3 pb-2">

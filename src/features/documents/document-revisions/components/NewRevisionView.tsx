@@ -208,7 +208,7 @@ export const NewRevisionView: React.FC = () => {
 
         {/* Table Content */}
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[720px] md:min-w-[900px] lg:min-w-[1040px]">
             <thead className="bg-slate-50/80 border-b border-slate-200">
               <tr>
                 <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider w-10 sm:w-16">

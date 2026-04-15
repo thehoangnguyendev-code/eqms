@@ -166,7 +166,7 @@ export const UserManagementView: React.FC = () => {
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
                   <div className="w-full">
                     <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
                       Search

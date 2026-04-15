@@ -529,7 +529,7 @@ export const MaterialsView: React.FC = () => {
         {activeTab === "overview" ? (
           <div className="p-4 lg:p-5 space-y-5">
             {/* Stats cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 lg:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-4">
               {/* Total Materials */}
               <div className="group bg-white p-4 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-emerald-200">
                 <div className="flex items-center gap-3">

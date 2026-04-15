@@ -276,7 +276,7 @@ export const CourseListView: React.FC = () => {
         {/* Filter Section */}
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
                   <div className="w-full">
                     <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
                       Search
@@ -394,7 +394,7 @@ export const CourseListView: React.FC = () => {
               )}
               {...dragEvents}
             >
-              <table className="w-full border-separate border-spacing-0 text-left">
+              <table className="w-full min-w-[800px] md:min-w-[980px] lg:min-w-[1160px] xl:min-w-[1320px] border-separate border-spacing-0 text-left">
                 <thead>
                   <tr>
                     <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">

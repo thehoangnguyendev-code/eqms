@@ -161,7 +161,7 @@ export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({ reco
           {record.changes && record.changes.length > 0 && (
             <FormSection title="Changes Made" icon={<IconExchange className="h-4 w-4" />}>
               <div className="overflow-x-auto -mx-5 -mb-5">
-                <table className="w-full">
+                <table className="w-full min-w-[620px] md:min-w-[760px] lg:min-w-[900px]">
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
                       {["Field", "Old Value", "New Value"].map(h => (

@@ -298,8 +298,21 @@ export const AuditTrailView: React.FC = () => {
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search by entity, user, or description..."
-                                    className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-all bg-white"
+                                    className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-all bg-white"
                                 />
+                                {searchQuery && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setSearchQuery("");
+                                            setCurrentPage(1);
+                                        }}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                                        aria-label="Clear search"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </button>
+                                )}
                             </div>
                         </div>
 
@@ -353,7 +366,7 @@ export const AuditTrailView: React.FC = () => {
                                     )}
                                     {...dragEvents}
                                 >
-                                    <table className="w-full">
+                                    <table className="w-full min-w-[980px] md:min-w-[1180px] lg:min-w-[1380px] xl:min-w-[1560px]">
                                         {/* Table Header */}
                                         <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
                                             <tr>

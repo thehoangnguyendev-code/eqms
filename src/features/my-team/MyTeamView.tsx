@@ -505,6 +505,16 @@ const AddMemberModal: React.FC<{
               onChange={(e) => setSearch(e.target.value)}
               className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
             />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                aria-label="Clear search"
+              >
+                <XIcon className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
 

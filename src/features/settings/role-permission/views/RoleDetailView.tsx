@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
 import {
   Search,
+  X,
   Lock,
   ChevronDown,
   ChevronUp,
@@ -387,8 +388,18 @@ export const RoleDetailView: React.FC = () => {
                 value={permissionSearch}
                 onChange={(e) => setPermissionSearch(e.target.value)}
                 placeholder="Search permissions..."
-                className="w-full h-9 pl-9 pr-4 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full h-9 pl-9 pr-10 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
               />
+              {permissionSearch && (
+                <button
+                  type="button"
+                  onClick={() => setPermissionSearch("")}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
             <Button
               variant="outline"

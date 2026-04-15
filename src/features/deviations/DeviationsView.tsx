@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import {
   Search,
+  X,
   AlertTriangle,
   Calendar,
   Users,
@@ -199,7 +200,7 @@ export const DeviationsView: React.FC = () => {
       />
 
       {/* Filters */}
-      <div className="bg-white p-4 lg:p-5 rounded-xl border border-slate-200 shadow-sm">
+      <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
         {/* Row 1: Search + Category + Severity */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-9 gap-4 items-end">
           <div className="md:col-span-2 xl:col-span-3">
@@ -215,8 +216,20 @@ export const DeviationsView: React.FC = () => {
                 onChange={(e) =>
                   setFilters({ ...filters, searchQuery: e.target.value })
                 }
-                className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
+                className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
               />
+              {filters.searchQuery && (
+                <button
+                  onClick={() => {
+                    setFilters({ ...filters, searchQuery: "" });
+                    setCurrentPage(1);
+                  }}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -362,7 +375,7 @@ export const DeviationsView: React.FC = () => {
               )}
               {...dragEvents}
             >
-              <table className="w-full">
+              <table className="w-full min-w-[820px] md:min-w-[980px] lg:min-w-[1120px] xl:min-w-[1260px]">
                 <thead className="bg-slate-50/80 border-b-2 border-slate-200 sticky top-0 z-30">
                   <tr>
                     <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">

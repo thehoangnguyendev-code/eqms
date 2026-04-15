@@ -436,7 +436,7 @@ export const MyTrainingView: React.FC = () => {
                 )}
                 {...dragEvents}
               >
-                <table className="w-full min-w-[800px] lg:min-w-[1200px]">
+                <table className="w-full min-w-[800px] md:min-w-[950px] lg:min-w-[1100px] xl:min-w-[1300px]">
                   <thead className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                     <tr>
                       <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
@@ -475,7 +475,7 @@ export const MyTrainingView: React.FC = () => {
                           </th>
                         );
                       })}
-                      <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px]">
+                      <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 md:px-5 lg:px-6 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
                         Action
                       </th>
                     </tr>
@@ -565,7 +565,7 @@ export const MyTrainingView: React.FC = () => {
                               {statusStyle.label}
                             </Badge>
                           </td>
-                          <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px]">
+                          <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 md:px-5 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
                             <Button
                               size="xs"
                               className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
@@ -653,7 +653,7 @@ export const MyTrainingView: React.FC = () => {
                 )}
                 {...dragEvents}
               >
-                <table className="w-full min-w-[800px] lg:min-w-[1200px]">
+                <table className="w-full min-w-[800px] md:min-w-[950px] lg:min-w-[1100px] xl:min-w-[1300px]">
                   <thead className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                     <tr>
                       <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
@@ -690,7 +690,7 @@ export const MyTrainingView: React.FC = () => {
                           </th>
                         );
                       })}
-                      <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px]">
+                      <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 md:px-5 lg:px-6 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
                         E-Certificate
                       </th>
                     </tr>
@@ -739,7 +739,7 @@ export const MyTrainingView: React.FC = () => {
                             {record.score}%
                           </Badge>
                         </td>
-                        <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px]">
+                        <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 md:px-5 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
                           <Button
                             size="sm"
                             variant="ghost"

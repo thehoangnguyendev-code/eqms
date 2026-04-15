@@ -14,6 +14,7 @@ import {
   Clock,
   XCircle,
   Search,
+  X,
   Download,
   FileText,
   Video,
@@ -432,8 +433,18 @@ export const UsageReportView: React.FC = () => {
                   placeholder="Search course ID, name, instructor..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
+                  className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
             </div>
             <Select
@@ -457,7 +468,7 @@ export const UsageReportView: React.FC = () => {
         <div className="p-5 flex-1 flex flex-col relative">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col bg-white">
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[920px] md:min-w-[1120px] lg:min-w-[1280px] xl:min-w-[1420px]">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
                     <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-12">No.</th>
