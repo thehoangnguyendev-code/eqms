@@ -141,10 +141,10 @@ export const EmployeeDossierView: React.FC = () => {
                 {employee.employeeName}
               </h2>
               <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-                <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+                <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200">
                   <Briefcase className="h-3.5 w-3.5 text-emerald-500" /> {employee.jobPosition}
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+                <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200">
                   <MapPin className="h-3.5 w-3.5 text-emerald-500" /> {employee.department}
                 </div>
                 <StatusBadge status="effective" label="GMP COMPLIANT" size="xs" className="h-5" />

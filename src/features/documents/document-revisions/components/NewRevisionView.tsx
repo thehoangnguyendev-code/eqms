@@ -195,11 +195,11 @@ export const NewRevisionView: React.FC = () => {
           </div>
           <div className="flex items-center gap-2 text-[10px] sm:text-xs lg:text-sm flex-wrap">
             <span className="text-slate-600 font-medium mr-1">Legend:</span>
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-100">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-50 border border-slate-200">
               <div className="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
               <span className="text-[11px] text-slate-600 font-medium">Keep</span>
             </div>
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-emerald-50 border border-emerald-100">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-50 border border-emerald-200">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
               <span className="text-[11px] text-emerald-700 font-medium">Upgrade</span>
             </div>
@@ -351,13 +351,13 @@ export const NewRevisionView: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">To be Upgraded:</span>
-              <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+              <span className="font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
                 {upgradeCount}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Keep Current:</span>
-              <span className="font-bold text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+              <span className="font-medium text-slate-700 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200">
                 {MOCK_LINKED_DOCUMENTS.length - upgradeCount}
               </span>
             </div>

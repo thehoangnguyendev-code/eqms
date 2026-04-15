@@ -10,7 +10,7 @@ const SettingsCard: React.FC<{
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100 uppercase tracking-wider">
             <span className="text-emerald-600">{icon}</span>
-            <h3 className="text-xs font-bold text-slate-800">{title}</h3>
+            <h3 className="text-xs font-bold text-slate-900">{title}</h3>
         </div>
         <div className="p-5">{children}</div>
     </div>
@@ -35,7 +35,7 @@ export const NotificationSettingsTab: React.FC = () => {
                 <div className="bg-white rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
                     <div className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                         <div className="flex flex-col gap-1">
-                            <p className="text-sm font-medium text-slate-800">New Task Assigned</p>
+                            <p className="text-sm font-medium text-slate-900">New Task Assigned</p>
                             <p className="text-xs text-slate-500">Receive an email when you are assigned a new task in DMS/Deviation/CAPA.</p>
                         </div>
                         <button
@@ -57,7 +57,7 @@ export const NotificationSettingsTab: React.FC = () => {
 
                     <div className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                         <div className="flex flex-col gap-1">
-                            <p className="text-sm font-medium text-slate-800">Training Reminders</p>
+                            <p className="text-sm font-medium text-slate-900">Training Reminders</p>
                             <p className="text-xs text-slate-500">Receive an email before training deadlines and license renewals.</p>
                         </div>
                         <button
@@ -88,7 +88,7 @@ export const NotificationSettingsTab: React.FC = () => {
                                 <MousePointer2 className="h-4 w-4 text-slate-600" />
                             </div>
                             <div className="flex flex-col gap-1">
-                                <p className="text-sm font-medium text-slate-800">New Task Assigned</p>
+                                <p className="text-sm font-medium text-slate-900">New Task Assigned</p>
                                 <p className="text-xs text-slate-500">Show a popup and update notification center for new tasks.</p>
                             </div>
                         </div>
@@ -115,7 +115,7 @@ export const NotificationSettingsTab: React.FC = () => {
                                 <Smartphone className="h-4 w-4 text-slate-600" />
                             </div>
                             <div className="flex flex-col gap-1">
-                                <p className="text-sm font-medium text-slate-800">Document Updates</p>
+                                <p className="text-sm font-medium text-slate-900">Document Updates</p>
                                 <p className="text-xs text-slate-500">Notify when a document you follow is updated or archived.</p>
                             </div>
                         </div>
@@ -140,3 +140,4 @@ export const NotificationSettingsTab: React.FC = () => {
         </div>
     );
 };
+

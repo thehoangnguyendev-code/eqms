@@ -107,7 +107,7 @@ export const SuspendModal: React.FC<SuspendModalProps> = ({
             {/* Body */}
             <div className="p-5 space-y-4 overflow-y-auto flex-1 min-h-0">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
                   Reason <span className="text-red-500">*</span>
                 </label>
                 <textarea

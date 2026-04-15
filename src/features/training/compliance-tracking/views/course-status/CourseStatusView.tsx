@@ -35,9 +35,10 @@ import { ESignatureModal } from "@/components/ui/esign-modal";
 import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { SectionLoading } from "@/components/ui/loading";
 import { cn } from "@/components/ui/utils";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
+import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import type { PortalDropdownPosition, UsePortalDropdownReturn } from "@/hooks";
 import type { CourseComplianceRecord, CourseStatusFilters } from "../../../types";
-import { MOCK_COURSE_STATUS } from "../../mockData";
+import { complianceTrackingRepository } from "../../repository";
 
 // --- Sub-components ---
 const CourseRow: React.FC<{
@@ -47,8 +48,8 @@ const CourseRow: React.FC<{
   itemsPerPage: number;
   onViewProgress: (id: string) => void;
   showDetailList: (course: CourseComplianceRecord, type: "Total" | "Completed" | "InProgress" | "Overdue") => void;
-  getRef: (id: string) => any;
-  handleDropdownToggle: (id: string, e: React.MouseEvent) => void;
+  getRef: UsePortalDropdownReturn["getRef"];
+  handleDropdownToggle: UsePortalDropdownReturn["toggle"];
   openDropdownId: string | null;
   closeDropdown: () => void;
   dropdownPosition: PortalDropdownPosition;
@@ -298,6 +299,7 @@ const CourseActionMenu: React.FC<CourseActionMenuProps> = ({
 export const CourseStatusView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
+  const courseStatusData = complianceTrackingRepository.getCourseStatusData();
 
 
   // Filters
@@ -378,7 +380,7 @@ export const CourseStatusView: React.FC = () => {
 
   // Filtered Data
   const filteredData = useMemo(() => {
-    return MOCK_COURSE_STATUS.filter((course) => {
+    return courseStatusData.filter((course) => {
       const matchesSearch =
         course.courseTitle
           .toLowerCase()
@@ -392,7 +394,7 @@ export const CourseStatusView: React.FC = () => {
 
       return matchesSearch && matchesDepartment && matchesType;
     });
-  }, [filters]);
+  }, [courseStatusData, filters]);
 
   const sortedData = useMemo(() => {
     if (!sortConfig.key) return filteredData;
@@ -424,15 +426,15 @@ export const CourseStatusView: React.FC = () => {
 
   // Memoized stats for dashboard
   const stats = useMemo(() => {
-    const totalCourses = MOCK_COURSE_STATUS.length;
-    const totalAssigned = MOCK_COURSE_STATUS.reduce((sum, c) => sum + c.totalAssigned, 0);
-    const completed = MOCK_COURSE_STATUS.reduce((sum, c) => sum + c.completed, 0);
+    const totalCourses = courseStatusData.length;
+    const totalAssigned = courseStatusData.reduce((sum, c) => sum + c.totalAssigned, 0);
+    const completed = courseStatusData.reduce((sum, c) => sum + c.completed, 0);
     const avgScore = totalCourses > 0
-      ? Math.round(MOCK_COURSE_STATUS.reduce((sum, c) => sum + c.averageScore, 0) / totalCourses)
+      ? Math.round(courseStatusData.reduce((sum, c) => sum + c.averageScore, 0) / totalCourses)
       : 0;
 
     return { totalCourses, totalAssigned, completed, avgScore };
-  }, []);
+  }, [courseStatusData]);
 
   // --- Handlers ---
   const handleViewProgress = useCallback((courseId: string) => {
@@ -835,7 +837,7 @@ export const CourseStatusView: React.FC = () => {
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-[10px] sm:text-sm font-medium text-slate-700">Affected Employees</label>
+              <label className="text-xs sm:text-sm font-medium text-slate-700">Affected Employees</label>
               <button
                 onClick={() => selectAllAffected(["EMP-1010", "EMP-1005", "EMP-1015", "EMP-1022", "EMP-1033", "EMP-1045"])}
                 className="text-[10px] sm:text-xs text-emerald-600 font-semibold hover:underline transition-colors"
@@ -977,6 +979,7 @@ export const CourseStatusView: React.FC = () => {
     </div>
   );
 };
+
 
 
 

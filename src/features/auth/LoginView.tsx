@@ -413,7 +413,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                     />
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
                       {isCapsLockOn && (
-                        <div className="p-1 bg-slate-50 border border-emerald-200 rounded-md animate-in fade-in zoom-in duration-200 shadow-sm" title="Caps Lock is ON">
+                        <div className="p-1 bg-slate-50 border border-emerald-200 rounded-lg animate-in fade-in zoom-in duration-200 shadow-sm" title="Caps Lock is ON">
                           <IconArrowBigUpFilled className="h-4 w-4 text-emerald-500" />
                         </div>
                       )}

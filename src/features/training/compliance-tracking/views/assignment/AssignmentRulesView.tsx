@@ -27,7 +27,7 @@ import { cn } from "@/components/ui/utils";
 import { SectionLoading } from "@/components/ui/loading";
 import { useNavigateWithLoading } from "@/hooks";
 import breadcrumbs from "@/components/ui/breadcrumb/breadcrumbs.config";
-import { MOCK_AUTO_RULES } from "../../mockData";
+import { complianceTrackingRepository } from "../../repository";
 import {
   TRIGGER_LABELS,
   type AutoAssignmentRule,
@@ -285,7 +285,7 @@ export const AssignmentRulesView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
   const { showToast } = useToast();
 
-  const [rules, setRules] = useState<AutoAssignmentRule[]>(MOCK_AUTO_RULES);
+  const [rules, setRules] = useState<AutoAssignmentRule[]>(complianceTrackingRepository.getAutoAssignmentRules());
   const [pendingToggle, setPendingToggle] = useState<PendingToggle | null>(null);
   const [isESignOpen, setIsESignOpen] = useState(false);
   const [showActiveOnly, setShowActiveOnly] = useState(false);
@@ -525,5 +525,7 @@ export const AssignmentRulesView: React.FC = () => {
     </div>
   );
 };
+
+
 
 

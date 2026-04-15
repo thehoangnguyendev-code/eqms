@@ -52,7 +52,7 @@ export const SectionCard: React.FC<{
         <span className="text-emerald-600">{icon}</span>
         <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
         {isEditing && (
-          <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+          <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
             Editing
           </span>
         )}

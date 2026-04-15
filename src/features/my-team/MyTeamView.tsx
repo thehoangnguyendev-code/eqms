@@ -550,7 +550,7 @@ const AddMemberModal: React.FC<{
                       </div>
                     </div>
                     {isSelected && (
-                      <div className="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-md shrink-0 uppercase tracking-wider">
+                      <div className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full shrink-0 uppercase tracking-wider border border-emerald-200">
                         Selected
                       </div>
                     )}
@@ -946,7 +946,7 @@ export const MyTeamView: React.FC = () => {
               <section className="space-y-4">
                 <div className="flex items-center gap-2 px-1">
                   <IconUserCheck className="w-4 h-4 text-emerald-600" />
-                  <h2 className="text-sm font-semibold text-slate-800">Department Head</h2>
+                  <h2 className="text-sm font-semibold text-slate-900">Department Head</h2>
                   <div className="flex-1 h-px bg-slate-100 ml-2" />
                 </div>
                 <div className="max-w-md">
@@ -959,7 +959,7 @@ export const MyTeamView: React.FC = () => {
             <section className="space-y-4">
               <div className="flex items-center gap-2 px-1">
                 <IconBriefcase className="w-4 h-4 text-emerald-600" />
-                <h2 className="text-sm font-semibold text-slate-800">Team Members ({otherEmployees.length})</h2>
+                <h2 className="text-sm font-semibold text-slate-900">Team Members ({otherEmployees.length})</h2>
                 <div className="flex-1 h-px bg-slate-100 ml-2" />
               </div>
               <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">

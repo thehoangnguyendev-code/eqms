@@ -512,7 +512,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                   placeholder="Employee name or ID..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all placeholder:text-slate-400 bg-white"
+                  className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all placeholder:text-slate-400 bg-white"
                 />
                 {searchQuery && (
                   <button onClick={() => setSearchQuery("")} className="absolute inset-y-0 right-2 flex items-center text-slate-400 hover:text-slate-600 transition-colors">

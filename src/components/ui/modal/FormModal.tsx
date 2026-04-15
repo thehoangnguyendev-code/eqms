@@ -89,11 +89,11 @@ export const FormModal: React.FC<FormModalProps> = ({
             style={{ maxHeight: 'calc(100dvh - 2rem)' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3 border-b border-slate-100 bg-white min-h-[64px] shrink-0">
+            <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3 border-b border-slate-200 bg-white min-h-[64px] shrink-0">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   {title && (
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-6 truncate">{title}</h3>
+                    <h3 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900 leading-6 truncate">{title}</h3>
                   )}
                 </div>
                 <button
@@ -113,7 +113,7 @@ export const FormModal: React.FC<FormModalProps> = ({
               {children}
             </div>
 
-            <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-2 sm:gap-3 shrink-0">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50/50 border-t border-slate-200 flex justify-end gap-2 sm:gap-3 shrink-0">
               {showCancel && (
                 <Button size="sm" variant="outline" onClick={onClose} disabled={isLoading}>
                   {cancelText}

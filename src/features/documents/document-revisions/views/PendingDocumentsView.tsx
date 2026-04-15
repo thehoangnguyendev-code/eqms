@@ -916,7 +916,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                                 if (hasDocs) setExpandedRowId(isExpanded ? null : rev.id);
                               }}>
                                 {hasDocs && (
-                                  <button className="flex items-center justify-center h-5 w-5 md:h-6 md:w-6 rounded-md hover:bg-slate-200 transition-colors">
+                                  <button className="flex items-center justify-center h-5 w-5 md:h-6 md:w-6 rounded-lg hover:bg-slate-200 transition-colors">
                                     <ChevronRight className={cn("h-3.5 w-3.5 md:h-4 md:w-4 text-slate-500 transition-transform duration-200", isExpanded && "rotate-90")} />
                                   </button>
                                 )}

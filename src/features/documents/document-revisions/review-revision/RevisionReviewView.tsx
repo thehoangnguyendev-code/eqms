@@ -275,7 +275,7 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
                 className="w-full flex items-center justify-between p-4 lg:p-6 hover:bg-slate-50 transition-colors"
               >
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3">
-                  <h3 className="text-base lg:text-lg font-bold text-slate-900">
+                  <h3 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900">
                     Review Workflow
                   </h3>
                   <div className="inline-flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-1 lg:py-1.5 bg-slate-50 border border-slate-200 rounded-lg w-fit">
@@ -369,7 +369,7 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
                                       <div className="flex items-center gap-2 flex-wrap">
                                         <h4 className="font-medium text-sm lg:text-base text-slate-900 truncate">{reviewer.name}</h4>
                                         {isCurrentUserReviewer && (
-                                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-lg shrink-0">
+                                          <span className="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-200 shrink-0">
                                             You
                                           </span>
                                         )}
@@ -442,7 +442,7 @@ export const RevisionReviewView: React.FC<RevisionReviewViewProps> = ({
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <h4 className="font-medium text-sm lg:text-base text-slate-900 truncate">{reviewer.name}</h4>
                                     {isCurrentUserReviewer && (
-                                      <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full shrink-0">
+                                      <span className="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-200 shrink-0">
                                         You
                                       </span>
                                     )}

@@ -966,7 +966,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   {activeTab === "all" && (
                     <motion.div
                       layoutId="activeTabIndicator"
-                      className="absolute inset-0 bg-white rounded-md shadow-sm pointer-events-none"
+                      className="absolute inset-0 bg-white rounded-lg shadow-sm pointer-events-none"
                       transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
                     />
                   )}
@@ -984,7 +984,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   {activeTab === "favourite" && (
                     <motion.div
                       layoutId="activeTabIndicator"
-                      className="absolute inset-0 bg-white rounded-md shadow-sm pointer-events-none"
+                      className="absolute inset-0 bg-white rounded-lg shadow-sm pointer-events-none"
                       transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
                     />
                   )}

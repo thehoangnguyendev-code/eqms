@@ -565,7 +565,7 @@ export const AuditTrailTab: React.FC = () => {
                         <div className="text-[10px] uppercase tracking-wider font-bold text-red-600 mb-1.5 flex items-center gap-1.5">
                           Old Value
                         </div>
-                        <div className="text-xs sm:text-sm text-slate-700 break-words bg-white/60 p-2 rounded-md border border-red-100/50 min-h-[2.5rem]">
+                        <div className="text-xs sm:text-sm text-slate-700 break-words bg-white/60 p-2 rounded-lg border border-red-100 min-h-[2.5rem]">
                           {change.oldValue || <span className="text-slate-400 italic">None</span>}
                         </div>
                       </div>
@@ -573,7 +573,7 @@ export const AuditTrailTab: React.FC = () => {
                         <div className="text-[10px] uppercase tracking-wider font-bold text-emerald-600 mb-1.5 flex items-center gap-1.5">
                           New Value
                         </div>
-                        <div className="text-xs sm:text-sm text-slate-700 break-words bg-white/60 p-2 rounded-md border border-emerald-100/50 min-h-[2.5rem]">
+                        <div className="text-xs sm:text-sm text-slate-700 break-words bg-white/60 p-2 rounded-lg border border-emerald-100 min-h-[2.5rem]">
                           {change.newValue || <span className="text-slate-400 italic">None</span>}
                         </div>
                       </div>

@@ -148,7 +148,7 @@ export const MultiDocumentUpload: React.FC<MultiDocumentUploadProps> = ({
                                         {slot.name}
                                     </p>
                                     <div className="flex flex-wrap items-center gap-1.5 md:gap-2 text-xs">
-                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-full">
+                                        <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-medium border border-slate-200">
                                             {slot.type}
                                         </span>
                                         <span className="text-slate-500">

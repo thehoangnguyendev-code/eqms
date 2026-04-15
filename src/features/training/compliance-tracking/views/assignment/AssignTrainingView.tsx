@@ -18,7 +18,16 @@ import {
   Clock,
   ChevronRight,
 } from "lucide-react";
-import { IconAdjustmentsHorizontal, IconBuilding, IconCheck, IconChecklist, IconClock, IconInfoCircle, IconUser, IconUsers } from "@tabler/icons-react";
+import {
+  IconAdjustmentsHorizontal,
+  IconBuilding,
+  IconCheck,
+  IconChecklist,
+  IconClock,
+  IconInfoCircle,
+  IconUser,
+  IconUsers,
+} from "@tabler/icons-react";
 import { ROUTES } from "@/app/routes.constants";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { Button } from "@/components/ui/button/Button";
@@ -44,7 +53,7 @@ import {
   type AssignmentPriority,
   type AssignmentScope,
 } from "../../../types/assignment.types";
-import { MOCK_EMPLOYEES, MOCK_CELLS } from "../../mockData";
+import { complianceTrackingRepository } from "../../repository";
 import type { EmployeeRow } from "../../types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -63,24 +72,138 @@ interface ApprovedCourse {
 
 type WizardStep = 1 | 2 | 3 | 4;
 
-const STEP_LABELS = ["Select Course", "Select Assignees", "Configure", "Review & Submit"];
-const STEP_ICONS = [GraduationCap, IconUsers, IconAdjustmentsHorizontal, IconChecklist];
+const STEP_LABELS = [
+  "Select Course",
+  "Select Assignees",
+  "Configure",
+  "Review & Submit",
+];
+const STEP_ICONS = [
+  GraduationCap,
+  IconUsers,
+  IconAdjustmentsHorizontal,
+  IconChecklist,
+];
 
 // ─── Approved courses (filter from mock) ─────────────────────────────────────
 const APPROVED_COURSES: ApprovedCourse[] = [
-  { id: "1", trainingId: "TRN-2026-001", title: "GMP Basic Principles", type: "GMP", trainingMethod: "Quiz (Paper-based/Manual)", duration: 4, passScore: 80, mandatory: true, linkedDocumentTitle: "SOP-QA-001", instructor: "Dr. Sarah Williams" },
-  { id: "2", trainingId: "TRN-2026-002", title: "Cleanroom Qualification", type: "Technical", trainingMethod: "Hands-on/OJT", duration: 8, passScore: 75, mandatory: true, linkedDocumentTitle: "SOP-002", instructor: "Jennifer Lee" },
-  { id: "3", trainingId: "TRN-2026-003", title: "Data Integrity (ALCOA+)", type: "Compliance", trainingMethod: "Read & Understood", duration: 2, passScore: 90, mandatory: true, linkedDocumentTitle: "SOP-010", instructor: "Dr. Anna Smith" },
-  { id: "4", trainingId: "TRN-2026-004", title: "ISO 9001 Internal Auditor", type: "Compliance", trainingMethod: "Quiz (Paper-based/Manual)", duration: 16, passScore: 70, mandatory: false, instructor: "External Trainer" },
-  { id: "5", trainingId: "TRN-2026-005", title: "HPLC Operations", type: "Technical", trainingMethod: "Hands-on/OJT", duration: 8, passScore: 80, mandatory: true, instructor: "Robert Johnson" },
-  { id: "6", trainingId: "TRN-2026-006", title: "Workplace Safety & HSE", type: "Safety", trainingMethod: "Read & Understood", duration: 2, passScore: 80, mandatory: true, instructor: "Chris Anderson" },
-  { id: "7", trainingId: "TRN-2026-007", title: "Risk Assessment & FMEA", type: "Compliance", trainingMethod: "Quiz (Paper-based/Manual)", duration: 4, passScore: 75, mandatory: false, instructor: "Dr. Anna Smith" },
-  { id: "8", trainingId: "TRN-2026-008", title: "Deviation & CAPA Handling", type: "GMP", trainingMethod: "Read & Understood", duration: 3, passScore: 80, mandatory: true, instructor: "Maria Lopez" },
+  {
+    id: "1",
+    trainingId: "TRN-2026-001",
+    title: "GMP Basic Principles",
+    type: "GMP",
+    trainingMethod: "Quiz (Paper-based/Manual)",
+    duration: 4,
+    passScore: 80,
+    mandatory: true,
+    linkedDocumentTitle: "SOP-QA-001",
+    instructor: "Dr. Sarah Williams",
+  },
+  {
+    id: "2",
+    trainingId: "TRN-2026-002",
+    title: "Cleanroom Qualification",
+    type: "Technical",
+    trainingMethod: "Hands-on/OJT",
+    duration: 8,
+    passScore: 75,
+    mandatory: true,
+    linkedDocumentTitle: "SOP-002",
+    instructor: "Jennifer Lee",
+  },
+  {
+    id: "3",
+    trainingId: "TRN-2026-003",
+    title: "Data Integrity (ALCOA+)",
+    type: "Compliance",
+    trainingMethod: "Read & Understood",
+    duration: 2,
+    passScore: 90,
+    mandatory: true,
+    linkedDocumentTitle: "SOP-010",
+    instructor: "Dr. Anna Smith",
+  },
+  {
+    id: "4",
+    trainingId: "TRN-2026-004",
+    title: "ISO 9001 Internal Auditor",
+    type: "Compliance",
+    trainingMethod: "Quiz (Paper-based/Manual)",
+    duration: 16,
+    passScore: 70,
+    mandatory: false,
+    instructor: "External Trainer",
+  },
+  {
+    id: "5",
+    trainingId: "TRN-2026-005",
+    title: "HPLC Operations",
+    type: "Technical",
+    trainingMethod: "Hands-on/OJT",
+    duration: 8,
+    passScore: 80,
+    mandatory: true,
+    instructor: "Robert Johnson",
+  },
+  {
+    id: "6",
+    trainingId: "TRN-2026-006",
+    title: "Workplace Safety & HSE",
+    type: "Safety",
+    trainingMethod: "Read & Understood",
+    duration: 2,
+    passScore: 80,
+    mandatory: true,
+    instructor: "Chris Anderson",
+  },
+  {
+    id: "7",
+    trainingId: "TRN-2026-007",
+    title: "Risk Assessment & FMEA",
+    type: "Compliance",
+    trainingMethod: "Quiz (Paper-based/Manual)",
+    duration: 4,
+    passScore: 75,
+    mandatory: false,
+    instructor: "Dr. Anna Smith",
+  },
+  {
+    id: "8",
+    trainingId: "TRN-2026-008",
+    title: "Deviation & CAPA Handling",
+    type: "GMP",
+    trainingMethod: "Read & Understood",
+    duration: 3,
+    passScore: 80,
+    mandatory: true,
+    instructor: "Maria Lopez",
+  },
 ];
 
 const BUSINESS_UNITS = ["Quality Unit", "Operation Unit", "Support Unit"];
-const DEPARTMENTS = ["Quality Assurance", "Quality Control", "Production", "Engineering", "Documentation", "HSE", "Supply Chain"];
-const JOB_TITLES = ["QA Manager", "QA Specialist", "QC Analyst", "Lab Technician", "Production Operator", "Production Supervisor", "Validation Engineer", "Engineering Manager", "Document Controller", "HSE Coordinator", "HSE Specialist", "Warehouse Operator"];
+const DEPARTMENTS = [
+  "Quality Assurance",
+  "Quality Control",
+  "Production",
+  "Engineering",
+  "Documentation",
+  "HSE",
+  "Supply Chain",
+];
+const JOB_TITLES = [
+  "QA Manager",
+  "QA Specialist",
+  "QC Analyst",
+  "Lab Technician",
+  "Production Operator",
+  "Production Supervisor",
+  "Validation Engineer",
+  "Engineering Manager",
+  "Document Controller",
+  "HSE Coordinator",
+  "HSE Specialist",
+  "Warehouse Operator",
+];
 const CATEGORY_OPTIONS = [
   { label: "All Categories", value: "All" },
   { label: "GMP", value: "GMP" },
@@ -122,7 +245,13 @@ const addDays = (days: number): string => {
 };
 
 const getInitials = (name: string) =>
-  name.split(" ").filter(Boolean).slice(0, 2).map((n) => n[0]).join("").toUpperCase();
+  name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
 
 // ─── Step indicator ───────────────────────────────────────────────────────────
 const StepIndicator: React.FC<{
@@ -156,7 +285,7 @@ const StepIndicator: React.FC<{
                     : isCurrent
                       ? "bg-emerald-600"
                       : "bg-slate-100",
-                  !isCurrent && !isCompleted && "group-hover:bg-slate-200"
+                  !isCurrent && !isCompleted && "group-hover:bg-slate-200",
                 )}
                 style={{
                   clipPath: isFirst
@@ -169,14 +298,16 @@ const StepIndicator: React.FC<{
 
               {/* Content */}
               <div className="relative z-10 flex items-center gap-2 px-6">
-                <div className={cn(
-                  "h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold border leading-none pt-[1.5px]",
-                  isCurrent
-                    ? "bg-white text-emerald-600 border-white"
-                    : isCompleted
-                      ? "bg-emerald-600 text-white border-emerald-600"
-                      : "bg-slate-200 text-slate-500 border-slate-300"
-                )}>
+                <div
+                  className={cn(
+                    "h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold border leading-none pt-[1.5px]",
+                    isCurrent
+                      ? "bg-white text-emerald-600 border-white"
+                      : isCompleted
+                        ? "bg-emerald-600 text-white border-emerald-600"
+                        : "bg-slate-200 text-slate-500 border-slate-300",
+                  )}
+                >
                   {isCompleted ? <IconCheck className="h-3 w-3" /> : step}
                 </div>
                 <span
@@ -186,7 +317,7 @@ const StepIndicator: React.FC<{
                       ? "text-white"
                       : isCompleted
                         ? "text-slate-700"
-                        : "text-slate-400"
+                        : "text-slate-400",
                   )}
                 >
                   {label}
@@ -205,13 +336,15 @@ export const AssignTrainingView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
   const [searchParams] = useSearchParams();
   const { showToast } = useToast();
+  const employees = complianceTrackingRepository.getMatrixEmployees();
+  const cells = complianceTrackingRepository.getCells();
 
   const prefilledCourseId = searchParams.get("courseId") ?? "";
   const prefilledEmployeeId = searchParams.get("employeeId") ?? "";
 
   // ── Wizard state ─────────────────────────────────────────────────
   const [currentStep, setCurrentStep] = useState<WizardStep>(
-    prefilledCourseId && prefilledEmployeeId ? 3 : prefilledCourseId ? 2 : 1
+    prefilledCourseId && prefilledEmployeeId ? 3 : prefilledCourseId ? 2 : 1,
   );
   const [showESign, setShowESign] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -223,7 +356,8 @@ export const AssignTrainingView: React.FC = () => {
   };
 
   // ── Step 1: Course selection ──────────────────────────────────────
-  const [selectedCourseId, setSelectedCourseId] = useState<string>(prefilledCourseId);
+  const [selectedCourseId, setSelectedCourseId] =
+    useState<string>(prefilledCourseId);
   const [courseSearch, setCourseSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [methodFilter, setMethodFilter] = useState("All");
@@ -232,26 +366,39 @@ export const AssignTrainingView: React.FC = () => {
   const [reasonForAssignment, setReasonForAssignment] = useState("");
 
   // ── Step 2: Assignees ─────────────────────────────────────────────
-  const [scopeTab, setScopeTab] = useState<AssignmentScope>(prefilledEmployeeId ? "individual" : "business_unit");
-  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState<string[]>([]);
+  const [scopeTab, setScopeTab] = useState<AssignmentScope>(
+    prefilledEmployeeId ? "individual" : "business_unit",
+  );
+  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState<string[]>(
+    [],
+  );
   const [selectedEmployeeIds, setSelectedEmployeeIds] = useState<string[]>(
-    prefilledEmployeeId ? [prefilledEmployeeId] : []
+    prefilledEmployeeId ? [prefilledEmployeeId] : [],
   );
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [employeeSearch, setEmployeeSearch] = useState("");
 
   // ── Step 3: Config ────────────────────────────────────────────────
   const [priority, setPriority] = useState<AssignmentPriority>("Medium");
-  const [deadlineDate, setDeadlineDate] = useState(addDays(PRIORITY_DEADLINE_DAYS["Medium"]));
-  const [trainingBeforeAuthorized, setTrainingBeforeAuthorized] = useState(false);
+  const [deadlineDate, setDeadlineDate] = useState(
+    addDays(PRIORITY_DEADLINE_DAYS["Medium"]),
+  );
+  const [trainingBeforeAuthorized, setTrainingBeforeAuthorized] =
+    useState(false);
   const [requiresESign, setRequiresESign] = useState(false);
   const [isCrossTraining, setIsCrossTraining] = useState(false);
   const [reminders, setReminders] = useState<number[]>([7]);
 
   // ── Derived data ──────────────────────────────────────────────────
   const selectedCourse = useMemo(
-    () => APPROVED_COURSES.find((c) => c.id === selectedCourseId || c.trainingId === selectedCourseId || c.linkedDocumentTitle === selectedCourseId) ?? null,
-    [selectedCourseId]
+    () =>
+      APPROVED_COURSES.find(
+        (c) =>
+          c.id === selectedCourseId ||
+          c.trainingId === selectedCourseId ||
+          c.linkedDocumentTitle === selectedCourseId,
+      ) ?? null,
+    [selectedCourseId],
   );
 
   const filteredCourses = useMemo(() => {
@@ -261,13 +408,19 @@ export const AssignTrainingView: React.FC = () => {
         c.title.toLowerCase().includes(courseSearch.toLowerCase()) ||
         c.trainingId.toLowerCase().includes(courseSearch.toLowerCase());
       const matchesCat = categoryFilter === "All" || c.type === categoryFilter;
-      const matchesMethod = methodFilter === "All" || c.trainingMethod === methodFilter;
+      const matchesMethod =
+        methodFilter === "All" || c.trainingMethod === methodFilter;
 
       let matchesDate = true;
       if (dateFrom || dateTo) {
         const d = new Date(2026, 2, 25); // Mocked date for all in this view for now
-        if (dateFrom) matchesDate = matchesDate && d >= new Date(dateFrom.split('/').reverse().join('-'));
-        if (dateTo) matchesDate = matchesDate && d <= new Date(dateTo.split('/').reverse().join('-'));
+        if (dateFrom)
+          matchesDate =
+            matchesDate &&
+            d >= new Date(dateFrom.split("/").reverse().join("-"));
+        if (dateTo)
+          matchesDate =
+            matchesDate && d <= new Date(dateTo.split("/").reverse().join("-"));
       }
 
       return matchesSearch && matchesCat && matchesMethod && matchesDate;
@@ -275,7 +428,7 @@ export const AssignTrainingView: React.FC = () => {
   }, [courseSearch, categoryFilter, methodFilter, dateFrom, dateTo]);
 
   const filteredEmployees = useMemo(() => {
-    return MOCK_EMPLOYEES.filter((e) => {
+    return employees.filter((e) => {
       const q = employeeSearch.toLowerCase();
       return (
         !q ||
@@ -289,13 +442,22 @@ export const AssignTrainingView: React.FC = () => {
 
   const resolvedAssignees = useMemo((): EmployeeRow[] => {
     if (scopeTab === "individual")
-      return MOCK_EMPLOYEES.filter((e) => selectedEmployeeIds.includes(e.id));
+      return employees.filter((e) => selectedEmployeeIds.includes(e.id));
     if (scopeTab === "department")
-      return MOCK_EMPLOYEES.filter((e) => selectedDepartments.includes(e.department));
+      return employees.filter((e) =>
+        selectedDepartments.includes(e.department),
+      );
     if (scopeTab === "business_unit")
-      return MOCK_EMPLOYEES.filter((e) => selectedBusinessUnits.includes(e.businessUnit || "Operation Unit"));
+      return employees.filter((e) =>
+        selectedBusinessUnits.includes(e.businessUnit || "Operation Unit"),
+      );
     return [];
-  }, [scopeTab, selectedEmployeeIds, selectedDepartments, selectedBusinessUnits]);
+  }, [
+    scopeTab,
+    selectedEmployeeIds,
+    selectedDepartments,
+    selectedBusinessUnits,
+  ]);
 
   const totalAssignees = resolvedAssignees.length;
 
@@ -315,34 +477,34 @@ export const AssignTrainingView: React.FC = () => {
 
   const handleReminderToggle = (days: number) => {
     setReminders((prev) =>
-      prev.includes(days) ? prev.filter((d) => d !== days) : [...prev, days]
+      prev.includes(days) ? prev.filter((d) => d !== days) : [...prev, days],
     );
   };
 
   const handleBusinessUnitToggle = (bu: string) => {
     setSelectedBusinessUnits((prev) =>
-      prev.includes(bu) ? prev.filter((b) => b !== bu) : [...prev, bu]
+      prev.includes(bu) ? prev.filter((b) => b !== bu) : [...prev, bu],
     );
   };
 
   const handleDeptToggle = (dept: string) => {
     setSelectedDepartments((prev) =>
-      prev.includes(dept) ? prev.filter((d) => d !== dept) : [...prev, dept]
+      prev.includes(dept) ? prev.filter((d) => d !== dept) : [...prev, dept],
     );
   };
 
   const handleEmployeeToggle = (id: string) => {
     setSelectedEmployeeIds((prev) =>
-      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id],
     );
   };
 
   const handleNext = () => {
-    if (currentStep < 4) setCurrentStep(((currentStep + 1) as WizardStep));
+    if (currentStep < 4) setCurrentStep((currentStep + 1) as WizardStep);
   };
 
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(((currentStep - 1) as WizardStep));
+    if (currentStep > 1) setCurrentStep((currentStep - 1) as WizardStep);
   };
 
   const handleCancel = () => {
@@ -367,9 +529,9 @@ export const AssignTrainingView: React.FC = () => {
       // "Đã giao bài, đang chờ kết quả".
       if (prefilledEmployeeId && prefilledCourseId) {
         const key = `${prefilledEmployeeId}|${prefilledCourseId}`;
-        const existing = MOCK_CELLS.get(key);
+        const existing = cells.get(key);
         if (existing) {
-          MOCK_CELLS.set(key, {
+          cells.set(key, {
             ...existing,
             status: "InProgress",
           });
@@ -389,9 +551,16 @@ export const AssignTrainingView: React.FC = () => {
 
   // ── Target summary string ─────────────────────────────────────────
   const targetSummary = useMemo(() => {
-    if (scopeTab === "individual") return `${totalAssignees} employee${totalAssignees !== 1 ? "s" : ""} selected`;
-    if (scopeTab === "department") return selectedDepartments.length > 0 ? `${selectedDepartments.join(", ")} (${totalAssignees} employees)` : "No departments selected";
-    if (scopeTab === "business_unit") return selectedBusinessUnits.length > 0 ? `${selectedBusinessUnits.join(", ")} (${totalAssignees} employees)` : "No business units selected";
+    if (scopeTab === "individual")
+      return `${totalAssignees} employee${totalAssignees !== 1 ? "s" : ""} selected`;
+    if (scopeTab === "department")
+      return selectedDepartments.length > 0
+        ? `${selectedDepartments.join(", ")} (${totalAssignees} employees)`
+        : "No departments selected";
+    if (scopeTab === "business_unit")
+      return selectedBusinessUnits.length > 0
+        ? `${selectedBusinessUnits.join(", ")} (${totalAssignees} employees)`
+        : "No business units selected";
     return "No assignees selected";
   }, [scopeTab, totalAssignees, selectedDepartments, selectedBusinessUnits]);
 
@@ -406,20 +575,12 @@ export const AssignTrainingView: React.FC = () => {
         breadcrumbItems={breadcrumbs.assignTraining(navigateTo)}
         actions={
           <div className="flex items-center gap-2 flex-wrap justify-end">
-            <Button
-              variant="outline-emerald"
-              size="sm"
-              onClick={handleCancel}
-            >
+            <Button variant="outline-emerald" size="sm" onClick={handleCancel}>
               Cancel
             </Button>
 
             {currentStep > 1 && (
-              <Button
-                variant="outline-emerald"
-                size="sm"
-                onClick={handleBack}
-              >
+              <Button variant="outline-emerald" size="sm" onClick={handleBack}>
                 Previous
               </Button>
             )}
@@ -451,7 +612,10 @@ export const AssignTrainingView: React.FC = () => {
       />
 
       {/* Step indicator */}
-      <StepIndicator currentStep={currentStep} onStepChange={handleStepChange} />
+      <StepIndicator
+        currentStep={currentStep}
+        onStepChange={handleStepChange}
+      />
 
       {/* Step content */}
       <div className="flex-1 w-full animate-in fade-in duration-300">
@@ -529,7 +693,10 @@ export const AssignTrainingView: React.FC = () => {
       <ESignatureModal
         isOpen={showESign}
         onClose={() => setShowESign(false)}
-        onConfirm={(reason) => { setShowESign(false); doSubmit(reason); }}
+        onConfirm={(reason) => {
+          setShowESign(false);
+          doSubmit(reason);
+        }}
         actionTitle="Authorize Training Assignment"
       />
 
@@ -572,12 +739,19 @@ interface Step1Props {
 }
 
 const Step1CourseSelect: React.FC<Step1Props> = ({
-  courses, selectedCourseId, onSelectCourse,
-  courseSearch, onSearchChange,
-  categoryFilter, onCategoryChange,
-  methodFilter, onMethodChange,
-  dateFrom, onDateFromChange,
-  dateTo, onDateToChange,
+  courses,
+  selectedCourseId,
+  onSelectCourse,
+  courseSearch,
+  onSearchChange,
+  categoryFilter,
+  onCategoryChange,
+  methodFilter,
+  onMethodChange,
+  dateFrom,
+  onDateFromChange,
+  dateTo,
+  onDateToChange,
   selectedCourse,
   navigateTo,
 }) => (
@@ -591,7 +765,9 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
         {/* Filters with adaptive grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-3 items-end">
           <div className="flex flex-col">
-            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Search</label>
+            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+              Search
+            </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <input
@@ -612,8 +788,18 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
               )}
             </div>
           </div>
-          <Select label="Category" value={categoryFilter} onChange={onCategoryChange} options={CATEGORY_OPTIONS} />
-          <Select label="Method" value={methodFilter} onChange={onMethodChange} options={METHOD_OPTIONS} />
+          <Select
+            label="Category"
+            value={categoryFilter}
+            onChange={onCategoryChange}
+            options={CATEGORY_OPTIONS}
+          />
+          <Select
+            label="Method"
+            value={methodFilter}
+            onChange={onMethodChange}
+            options={METHOD_OPTIONS}
+          />
           <DateRangePicker
             label="Scheduled Date Range"
             startDate={dateFrom}
@@ -631,8 +817,7 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200">
-                  <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-4">
-                  </th>
+                  <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-4"></th>
                   <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-12">
                     No.
                   </th>
@@ -671,9 +856,14 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
               <tbody className="divide-y divide-slate-200 bg-white">
                 {courses.length === 0 && (
                   <tr>
-                    <td colSpan={12} className="py-16 text-center text-slate-400">
+                    <td
+                      colSpan={12}
+                      className="py-16 text-center text-slate-400"
+                    >
                       <GraduationCap className="h-10 w-10 mx-auto mb-3 text-slate-300" />
-                      <p className="text-sm font-medium text-slate-500">No effective courses found</p>
+                      <p className="text-sm font-medium text-slate-500">
+                        No effective courses found
+                      </p>
                     </td>
                   </tr>
                 )}
@@ -682,11 +872,11 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
                     key={c.id}
                     onClick={() => onSelectCourse(c.id)}
                     className={cn(
-                      "hover:bg-slate-50/80 transition-colors cursor-pointer group",
-                      selectedCourseId === c.id && "bg-emerald-50/50"
+                      "hover:bg-slate-50 transition-colors cursor-pointer group",
+                      selectedCourseId === c.id && "bg-emerald-50/50",
                     )}
                   >
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-center">
                       <div className="flex justify-center">
                         <Checkbox
                           checked={selectedCourseId === c.id}
@@ -694,15 +884,15 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
                         />
                       </div>
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center font-medium text-slate-500">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-center font-medium text-slate-500">
                       {idx + 1}
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap">
                       <span className="font-medium text-emerald-600">
                         {c.trainingId}
                       </span>
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm">
                       <div className="flex items-start gap-1.5 sm:gap-2.5">
                         <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                         <div>
@@ -717,24 +907,24 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
                         {c.type}
                       </Badge>
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap font-medium text-slate-700">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap font-medium text-slate-700">
                       {c.trainingMethod}
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap text-center">
                       <div className="inline-flex items-center gap-1 sm:gap-1.5 text-slate-600">
                         <IconClock className="h-3.5 w-3.5 text-slate-400" />
                         <span>{c.duration}h</span>
                       </div>
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center font-medium text-emerald-600">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap text-center font-medium text-emerald-600">
                       {c.passScore}%
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap">
                       <Badge color="emerald" size="sm" pill>
                         Effective
                       </Badge>
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap text-slate-600">
                       {c.instructor}
                     </td>
                     <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-600">
@@ -742,16 +932,21 @@ const Step1CourseSelect: React.FC<Step1Props> = ({
                     </td>
                     <td
                       onClick={(e) => e.stopPropagation()}
-                      className="p-0 text-center sticky right-0 bg-white group-hover:bg-slate-50/80 transition-colors z-[2] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] w-12"
+                      className="p-0 text-center sticky right-0 bg-white group-hover:bg-slate-50 transition-colors z-[2] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] w-12"
                     >
                       <Button
                         variant="ghost"
                         size="xs"
                         className="h-9 w-full p-0 bg-transparent text-emerald-600 hover:bg-emerald-50 shadow-none transition-all flex items-center justify-center rounded-none"
-                        onClick={() => navigateTo(ROUTES.TRAINING.COURSE_DETAIL(c.id))}
+                        onClick={() =>
+                          navigateTo(ROUTES.TRAINING.COURSE_DETAIL(c.id))
+                        }
                         title="View Detail"
                       >
-                        <IconInfoCircle className="h-4 w-4 sm:h-6 sm:w-6" strokeWidth={2} />
+                        <IconInfoCircle
+                          className="h-4 w-4 sm:h-6 sm:w-6"
+                          strokeWidth={2}
+                        />
                       </Button>
                     </td>
                   </tr>
@@ -784,24 +979,40 @@ interface Step2Props {
 }
 
 const Step2Assignees: React.FC<Step2Props> = ({
-  scopeTab, onScopeChange,
-  employees, selectedEmployeeIds, onEmployeeToggle,
-  selectedDepartments, onDeptToggle,
-  selectedBusinessUnits, onBusinessUnitToggle,
+  scopeTab,
+  onScopeChange,
+  employees,
+  selectedEmployeeIds,
+  onEmployeeToggle,
+  selectedDepartments,
+  onDeptToggle,
+  selectedBusinessUnits,
+  onBusinessUnitToggle,
   resolvedAssignees,
-  employeeSearch, onEmployeeSearchChange,
+  employeeSearch,
+  onEmployeeSearchChange,
 }) => {
-  const deptEmployeeCount = useMemo(() =>
-    DEPARTMENTS.reduce<Record<string, number>>((acc, dept) => {
-      acc[dept] = MOCK_EMPLOYEES.filter((e) => e.department === dept).length;
-      return acc;
-    }, {}), []);
+  const deptEmployeeCount = useMemo(
+    () =>
+      DEPARTMENTS.reduce<Record<string, number>>((acc, dept) => {
+        acc[dept] = employees.filter((e) => e.department === dept).length;
+        return acc;
+      }, {}),
+    [],
+  );
 
-  const buEmployeeCount = useMemo(() =>
-    BUSINESS_UNITS.reduce<Record<string, number>>((acc, bu) => {
-      acc[bu] = MOCK_EMPLOYEES.filter((e) => e.businessUnit === bu || (bu === "Operation Unit" && !e.businessUnit)).length;
-      return acc;
-    }, {}), []);
+  const buEmployeeCount = useMemo(
+    () =>
+      BUSINESS_UNITS.reduce<Record<string, number>>((acc, bu) => {
+        acc[bu] = employees.filter(
+          (e) =>
+            e.businessUnit === bu ||
+            (bu === "Operation Unit" && !e.businessUnit),
+        ).length;
+        return acc;
+      }, {}),
+    [],
+  );
 
   return (
     <FormSection
@@ -809,11 +1020,16 @@ const Step2Assignees: React.FC<Step2Props> = ({
       icon={<IconUsers className="h-4 w-4" />}
     >
       <div className="space-y-5">
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: Scope selector + content */}
           <div className="space-y-4 lg:col-span-8">
-            <TabNav tabs={SCOPE_TABS} activeTab={scopeTab} onChange={onScopeChange} variant="pill" layoutId="assignmentScopeTabs" />
+            <TabNav
+              tabs={SCOPE_TABS}
+              activeTab={scopeTab}
+              onChange={onScopeChange}
+              variant="pill"
+              layoutId="assignmentScopeTabs"
+            />
 
             {/* Individual */}
             {scopeTab === "individual" && (
@@ -862,7 +1078,7 @@ const Step2Assignees: React.FC<Step2Props> = ({
                             <p className="text-sm font-medium text-slate-900 truncate leading-tight">
                               {emp.name}
                             </p>
-                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md flex-shrink-0">
+                            <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full flex-shrink-0 border border-emerald-200">
                               {emp.employeeCode}
                             </span>
                           </div>
@@ -888,17 +1104,30 @@ const Step2Assignees: React.FC<Step2Props> = ({
                       "text-left p-4 rounded-xl border-2 transition-all",
                       selectedBusinessUnits.includes(bu)
                         ? "border-emerald-500 bg-emerald-50"
-                        : "border-slate-200 bg-white hover:border-slate-300"
+                        : "border-slate-200 bg-white hover:border-slate-300",
                     )}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Building2 className={cn("h-4 w-4", selectedBusinessUnits.includes(bu) ? "text-emerald-600" : "text-slate-400")} />
-                        <span className="text-sm font-medium text-slate-800">{bu}</span>
+                        <Building2
+                          className={cn(
+                            "h-4 w-4",
+                            selectedBusinessUnits.includes(bu)
+                              ? "text-emerald-600"
+                              : "text-slate-400",
+                          )}
+                        />
+                        <span className="text-sm font-medium text-slate-800">
+                          {bu}
+                        </span>
                       </div>
-                      {selectedBusinessUnits.includes(bu) && <IconCheck className="h-4 w-4 text-emerald-500" />}
+                      {selectedBusinessUnits.includes(bu) && (
+                        <IconCheck className="h-4 w-4 text-emerald-500" />
+                      )}
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 ml-6">{buEmployeeCount[bu] ?? 0} employees</p>
+                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 ml-6">
+                      {buEmployeeCount[bu] ?? 0} employees
+                    </p>
                   </button>
                 ))}
               </div>
@@ -915,22 +1144,34 @@ const Step2Assignees: React.FC<Step2Props> = ({
                       "text-left p-4 rounded-xl border-2 transition-all",
                       selectedDepartments.includes(dept)
                         ? "border-emerald-500 bg-emerald-50"
-                        : "border-slate-200 bg-white hover:border-slate-300"
+                        : "border-slate-200 bg-white hover:border-slate-300",
                     )}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Briefcase className={cn("h-4 w-4", selectedDepartments.includes(dept) ? "text-emerald-600" : "text-slate-400")} />
-                        <span className="text-sm font-medium text-slate-800">{dept}</span>
+                        <Briefcase
+                          className={cn(
+                            "h-4 w-4",
+                            selectedDepartments.includes(dept)
+                              ? "text-emerald-600"
+                              : "text-slate-400",
+                          )}
+                        />
+                        <span className="text-sm font-medium text-slate-800">
+                          {dept}
+                        </span>
                       </div>
-                      {selectedDepartments.includes(dept) && <IconCheck className="h-4 w-4 text-emerald-500" />}
+                      {selectedDepartments.includes(dept) && (
+                        <IconCheck className="h-4 w-4 text-emerald-500" />
+                      )}
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 ml-6">{deptEmployeeCount[dept] ?? 0} employees</p>
+                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 ml-6">
+                      {deptEmployeeCount[dept] ?? 0} employees
+                    </p>
                   </button>
                 ))}
               </div>
             )}
-
           </div>
 
           {/* Right: Selected summary */}
@@ -940,7 +1181,8 @@ const Step2Assignees: React.FC<Step2Props> = ({
                 <p className="text-sm font-semibold text-slate-700">Selected</p>
                 {resolvedAssignees.length > 0 && (
                   <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">
-                    {resolvedAssignees.length} employee{resolvedAssignees.length !== 1 ? "s" : ""}
+                    {resolvedAssignees.length} employee
+                    {resolvedAssignees.length !== 1 ? "s" : ""}
                   </span>
                 )}
               </div>
@@ -951,7 +1193,10 @@ const Step2Assignees: React.FC<Step2Props> = ({
               ) : (
                 <div className="space-y-1 max-h-[300px] overflow-y-auto">
                   {resolvedAssignees.slice(0, 12).map((e, index) => (
-                    <div key={e.id} className="flex items-center gap-2.5 py-1.5 border-b border-slate-100 last:border-0 group">
+                    <div
+                      key={e.id}
+                      className="flex items-center gap-2.5 py-1.5 border-b border-slate-100 last:border-0 group"
+                    >
                       <div className="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-emerald-700">
                         {getInitials(e.name)}
                       </div>
@@ -971,7 +1216,9 @@ const Step2Assignees: React.FC<Step2Props> = ({
                     </div>
                   ))}
                   {resolvedAssignees.length > 12 && (
-                    <p className="text-xs text-slate-400 pl-2">+{resolvedAssignees.length - 12} more…</p>
+                    <p className="text-xs text-slate-400 pl-2">
+                      +{resolvedAssignees.length - 12} more…
+                    </p>
                   )}
                 </div>
               )}
@@ -1002,31 +1249,44 @@ interface Step3Props {
 }
 
 const Step3Config: React.FC<Step3Props> = ({
-  priority, onPriorityChange,
-  deadlineDate, onDeadlineChange,
-  trainingBeforeAuthorized, onToggleBeforeAuth,
-  requiresESign, onToggleESign,
-  isCrossTraining, onToggleCrossTraining,
-  reminders, onReminderToggle,
+  priority,
+  onPriorityChange,
+  deadlineDate,
+  onDeadlineChange,
+  trainingBeforeAuthorized,
+  onToggleBeforeAuth,
+  requiresESign,
+  onToggleESign,
+  isCrossTraining,
+  onToggleCrossTraining,
+  reminders,
+  onReminderToggle,
 }) => (
   <FormSection
     title="Assignment Configuration"
     icon={<IconAdjustmentsHorizontal className="h-4 w-4" />}
   >
     <div className="space-y-6">
-
       {priority === "Critical" && (
         <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
           <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-red-800">Critical Priority Selected</p>
-            <p className="text-sm text-red-600">An e-signature will be required at submission to authorize this assignment (EU-GMP Annex 11).</p>
+            <p className="text-sm font-semibold text-red-800">
+              Critical Priority Selected
+            </p>
+            <p className="text-sm text-red-600">
+              An e-signature will be required at submission to authorize this
+              assignment (EU-GMP Annex 11).
+            </p>
           </div>
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <FormSection title="Schedules & Priority" icon={<CalendarDays className="h-4 w-4" />}>
+        <FormSection
+          title="Schedules & Priority"
+          icon={<CalendarDays className="h-4 w-4" />}
+        >
           <div className="space-y-4">
             <div>
               <Select
@@ -1036,7 +1296,8 @@ const Step3Config: React.FC<Step3Props> = ({
                 options={PRIORITY_OPTIONS}
               />
               <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 flex items-center gap-1">
-                Recommended deadline: within {PRIORITY_DEADLINE_DAYS[priority]} days from today
+                Recommended deadline: within {PRIORITY_DEADLINE_DAYS[priority]}{" "}
+                days from today
               </p>
             </div>
 
@@ -1050,7 +1311,7 @@ const Step3Config: React.FC<Step3Props> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
                 <Bell className="h-4 w-4 inline mr-1 text-slate-400" />
                 Reminders Before Deadline
               </label>
@@ -1080,7 +1341,10 @@ const Step3Config: React.FC<Step3Props> = ({
           </div>
         </FormSection>
 
-        <FormSection title="Compliance Controls" icon={<ShieldCheck className="h-4 w-4" />}>
+        <FormSection
+          title="Compliance Controls"
+          icon={<ShieldCheck className="h-4 w-4" />}
+        >
           <div className="space-y-4">
             <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
               {/* Training Before Authorized */}
@@ -1092,14 +1356,30 @@ const Step3Config: React.FC<Step3Props> = ({
                     aria-checked={trainingBeforeAuthorized}
                     className={cn(
                       "relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 mt-0.5",
-                      trainingBeforeAuthorized ? "bg-emerald-600" : "bg-slate-200"
+                      trainingBeforeAuthorized
+                        ? "bg-emerald-600"
+                        : "bg-slate-200",
                     )}
                   >
-                    <span className={cn("pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200", trainingBeforeAuthorized ? "translate-x-4" : "translate-x-0")} />
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200",
+                        trainingBeforeAuthorized
+                          ? "translate-x-4"
+                          : "translate-x-0",
+                      )}
+                    />
                   </button>
                   <div>
-                    <p className="text-sm font-medium text-slate-800">Training Before Authorized</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Block system tasks until training is completed <span className="text-emerald-600 font-medium">(EU-GMP Chapter 2.8)</span></p>
+                    <p className="text-sm font-medium text-slate-800">
+                      Training Before Authorized
+                    </p>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Block system tasks until training is completed{" "}
+                      <span className="text-emerald-600 font-medium">
+                        (EU-GMP Chapter 2.8)
+                      </span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1113,14 +1393,26 @@ const Step3Config: React.FC<Step3Props> = ({
                     aria-checked={requiresESign}
                     className={cn(
                       "relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 mt-0.5",
-                      requiresESign ? "bg-emerald-600" : "bg-slate-200"
+                      requiresESign ? "bg-emerald-600" : "bg-slate-200",
                     )}
                   >
-                    <span className={cn("pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200", requiresESign ? "translate-x-4" : "translate-x-0")} />
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200",
+                        requiresESign ? "translate-x-4" : "translate-x-0",
+                      )}
+                    />
                   </button>
                   <div>
-                    <p className="text-sm font-medium text-slate-800">Require E-Signature on Completion</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Trainees must e-sign when marking training complete <span className="text-emerald-600 font-medium">(Annex 11)</span></p>
+                    <p className="text-sm font-medium text-slate-800">
+                      Require E-Signature on Completion
+                    </p>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Trainees must e-sign when marking training complete{" "}
+                      <span className="text-emerald-600 font-medium">
+                        (Annex 11)
+                      </span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1134,14 +1426,24 @@ const Step3Config: React.FC<Step3Props> = ({
                     aria-checked={isCrossTraining}
                     className={cn(
                       "relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 mt-0.5",
-                      isCrossTraining ? "bg-emerald-600" : "bg-slate-200"
+                      isCrossTraining ? "bg-emerald-600" : "bg-slate-200",
                     )}
                   >
-                    <span className={cn("pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200", isCrossTraining ? "translate-x-4" : "translate-x-0")} />
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200",
+                        isCrossTraining ? "translate-x-4" : "translate-x-0",
+                      )}
+                    />
                   </button>
                   <div>
-                    <p className="text-sm font-medium text-slate-800">Cross-Training Assignment</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Does not count toward mandatory compliance rate — for skills versatility only</p>
+                    <p className="text-sm font-medium text-slate-800">
+                      Cross-Training Assignment
+                    </p>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Does not count toward mandatory compliance rate — for
+                      skills versatility only
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1172,12 +1474,23 @@ interface Step4Props {
 }
 
 const Step4Review: React.FC<Step4Props> = ({
-  course, reasonForAssignment, targetSummary, resolvedAssignees,
-  priority, deadlineDate, trainingBeforeAuthorized, requiresESign,
-  isCrossTraining, reminders, needsESign, onReasonChange,
+  course,
+  reasonForAssignment,
+  targetSummary,
+  resolvedAssignees,
+  priority,
+  deadlineDate,
+  trainingBeforeAuthorized,
+  requiresESign,
+  isCrossTraining,
+  reminders,
+  needsESign,
+  onReasonChange,
 }) => {
   const [showAllAssignees, setShowAllAssignees] = useState(false);
-  const displayAssignees = showAllAssignees ? resolvedAssignees : resolvedAssignees.slice(0, 5);
+  const displayAssignees = showAllAssignees
+    ? resolvedAssignees
+    : resolvedAssignees.slice(0, 5);
 
   return (
     <FormSection
@@ -1185,7 +1498,6 @@ const Step4Review: React.FC<Step4Props> = ({
       icon={<IconChecklist className="h-4 w-4" />}
     >
       <div className="space-y-5">
-
         {needsESign && (
           <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
             <p className="text-sm text-amber-800">
@@ -1202,18 +1514,19 @@ const Step4Review: React.FC<Step4Props> = ({
             <FormSection
               title="Course Information"
               icon={<GraduationCap className="h-4 w-4" />}
-              headerRight={course?.type && (
-                <Badge
-                  className={cn(
-                    "text-[10px] font-bold px-2 py-0 border-emerald-200 bg-emerald-50 text-emerald-700",
-                    TYPE_BADGE_COLORS[course.type]
-                  )}
-                >
-                  {course.type}
-                </Badge>
-              )}
+              headerRight={
+                course?.type && (
+                  <Badge
+                    className={cn(
+                      "text-[10px] font-bold px-2 py-0 border-emerald-200 bg-emerald-50 text-emerald-700",
+                      TYPE_BADGE_COLORS[course.type],
+                    )}
+                  >
+                    {course.type}
+                  </Badge>
+                )
+              }
             >
-
               <div className="p-5 space-y-5">
                 {/* Course Summary Content */}
                 {course ? (
@@ -1234,10 +1547,12 @@ const Step4Review: React.FC<Step4Props> = ({
                           {course.trainingId}
                         </span>
                         <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                          <Clock className="h-3 w-3" /> {course.duration}h duration
+                          <Clock className="h-3 w-3" /> {course.duration}h
+                          duration
                         </span>
                         <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                          <IconAdjustmentsHorizontal className="h-3 w-3" /> {course.trainingMethod}
+                          <IconAdjustmentsHorizontal className="h-3 w-3" />{" "}
+                          {course.trainingMethod}
                         </span>
                       </div>
                     </div>
@@ -1252,12 +1567,17 @@ const Step4Review: React.FC<Step4Props> = ({
                 <div className="pt-4 border-t border-slate-100">
                   <label className="flex items-center justify-between mb-2">
                     <label className="text-xs sm:text-sm font-medium text-slate-700">
-                      Reason for Assignment <span className="text-rose-500">*</span>
+                      Reason for Assignment{" "}
+                      <span className="text-rose-500">*</span>
                     </label>
-                    <span className={cn(
-                      "text-[10px] font-medium px-1.5 py-0.5 rounded",
-                      reasonForAssignment.trim().length < 10 ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-600"
-                    )}>
+                    <span
+                      className={cn(
+                        "text-[10px] font-medium px-1.5 py-0.5 rounded",
+                        reasonForAssignment.trim().length < 10
+                          ? "bg-rose-50 text-rose-600"
+                          : "bg-emerald-50 text-emerald-600",
+                      )}
+                    >
                       {reasonForAssignment.length} / 10 min chars
                     </span>
                   </label>
@@ -1270,7 +1590,8 @@ const Step4Review: React.FC<Step4Props> = ({
                     className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-slate-50/30 transition-all placeholder:text-slate-400"
                   />
                   <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 flex items-center gap-1">
-                    Note: This justification will be recorded in the audit trail for compliance verification.
+                    Note: This justification will be recorded in the audit trail
+                    for compliance verification.
                   </p>
                 </div>
               </div>
@@ -1281,7 +1602,8 @@ const Step4Review: React.FC<Step4Props> = ({
               icon={<IconUsers className="h-4 w-4" />}
               headerRight={
                 <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full shadow-sm">
-                  {resolvedAssignees.length} Employee{resolvedAssignees.length !== 1 ? "s" : ""}
+                  {resolvedAssignees.length} Employee
+                  {resolvedAssignees.length !== 1 ? "s" : ""}
                 </span>
               }
             >
@@ -1296,7 +1618,6 @@ const Step4Review: React.FC<Step4Props> = ({
               {/* Scrollable List Area */}
               <div className="border border-slate-100 rounded-lg bg-slate-50/30 overflow-hidden">
                 <div className="max-h-[320px] overflow-y-auto divide-y divide-slate-100">
-
                   {displayAssignees.map((e, index) => (
                     <div
                       key={e.id}
@@ -1319,7 +1640,9 @@ const Step4Review: React.FC<Step4Props> = ({
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-500 truncate mt-0.5 font-medium">
-                          {e.jobTitle} <span className="text-slate-300 mx-1">•</span> {e.department}
+                          {e.jobTitle}{" "}
+                          <span className="text-slate-300 mx-1">•</span>{" "}
+                          {e.department}
                         </p>
                       </div>
 
@@ -1340,9 +1663,14 @@ const Step4Review: React.FC<Step4Props> = ({
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors py-1 px-3 rounded-full hover:bg-emerald-50"
                   >
                     {showAllAssignees ? (
-                      <>Show less <ChevronRight className="h-3 w-3 rotate-90" /></>
+                      <>
+                        Show less <ChevronRight className="h-3 w-3 rotate-90" />
+                      </>
                     ) : (
-                      <>Show all {resolvedAssignees.length} employees <ChevronRight className="h-3 w-3" /></>
+                      <>
+                        Show all {resolvedAssignees.length} employees{" "}
+                        <ChevronRight className="h-3 w-3" />
+                      </>
                     )}
                   </button>
                 </div>
@@ -1352,49 +1680,93 @@ const Step4Review: React.FC<Step4Props> = ({
 
           {/* Right column: Config + Assigned by */}
           <div className="space-y-6">
-            <FormSection title="Assignment Configuration" icon={<IconAdjustmentsHorizontal className="h-4 w-4" />}>
+            <FormSection
+              title="Assignment Configuration"
+              icon={<IconAdjustmentsHorizontal className="h-4 w-4" />}
+            >
               <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
                 {/* Row 1: Priority & Deadline */}
                 <div className="grid grid-cols-2 divide-x divide-slate-100">
                   <div className="p-4 flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-slate-50 text-slate-500"><Flag className="h-4 w-4" /></div>
+                    <div className="p-2 rounded-lg bg-slate-50 text-slate-500">
+                      <Flag className="h-4 w-4" />
+                    </div>
                     <div>
-                      <p className="text-xs sm:text-sm font-medium text-slate-700">Priority</p>
+                      <p className="text-xs sm:text-sm font-medium text-slate-700">
+                        Priority
+                      </p>
                       <div className="mt-1">
-                        <span className={cn("inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border", PRIORITY_COLORS[priority])}>
+                        <span
+                          className={cn(
+                            "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border",
+                            PRIORITY_COLORS[priority],
+                          )}
+                        >
                           {priority}
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className="p-4 flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-slate-50 text-slate-500"><CalendarDays className="h-4 w-4" /></div>
+                    <div className="p-2 rounded-lg bg-slate-50 text-slate-500">
+                      <CalendarDays className="h-4 w-4" />
+                    </div>
                     <div>
-                      <p className="text-xs sm:text-sm font-medium text-slate-700">Deadline</p>
-                      <p className="text-sm font-semibold text-slate-700 mt-0.5">{deadlineDate ? formatDate(deadlineDate) : "—"}</p>
+                      <p className="text-xs sm:text-sm font-medium text-slate-700">
+                        Deadline
+                      </p>
+                      <p className="text-sm font-semibold text-slate-700 mt-0.5">
+                        {deadlineDate ? formatDate(deadlineDate) : "—"}
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Row 2: Compliance with Checkboxes */}
                 <div className="p-4 space-y-3">
-                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tight mb-2">Compliance & Controls</p>
+                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tight mb-2">
+                    Compliance & Controls
+                  </p>
 
                   {[
-                    { label: "Block tasks until completed", val: trainingBeforeAuthorized, icon: ShieldCheck },
-                    { label: "Require E-Signature on Completion", val: requiresESign, icon: PenTool },
-                    { label: "Cross-training (Non-mandatory)", val: isCrossTraining, icon: Zap },
+                    {
+                      label: "Block tasks until completed",
+                      val: trainingBeforeAuthorized,
+                      icon: ShieldCheck,
+                    },
+                    {
+                      label: "Require E-Signature on Completion",
+                      val: requiresESign,
+                      icon: PenTool,
+                    },
+                    {
+                      label: "Cross-training (Non-mandatory)",
+                      val: isCrossTraining,
+                      icon: Zap,
+                    },
                   ].map((item, i) => (
-                    <div key={i} className="flex items-center justify-between group">
+                    <div
+                      key={i}
+                      className="flex items-center justify-between group"
+                    >
                       <div className="flex items-center gap-2.5 text-xs md:text-sm text-slate-600">
-                        <item.icon className={cn("h-4 w-4", item.val ? "text-emerald-500" : "text-slate-300")} />
+                        <item.icon
+                          className={cn(
+                            "h-4 w-4",
+                            item.val ? "text-emerald-500" : "text-slate-300",
+                          )}
+                        />
                         <span>{item.label}</span>
                       </div>
                       {/* Read-only Checkbox UI */}
-                      <div className={cn(
-                        "h-5 w-5 rounded border flex items-center justify-center transition-colors",
-                        item.val ? "bg-emerald-500 border-emerald-500 text-white" : "bg-slate-50 border-slate-200 text-transparent"
-                      )}>
+                      <div
+                        className={cn(
+                          "h-5 w-5 rounded border flex items-center justify-center transition-colors",
+                          item.val
+                            ? "bg-emerald-500 border-emerald-500 text-white"
+                            : "bg-slate-50 border-slate-200 text-transparent",
+                        )}
+                      >
                         <IconCheck className="h-3.5 w-3.5 stroke-[3]" />
                       </div>
                     </div>
@@ -1404,15 +1776,28 @@ const Step4Review: React.FC<Step4Props> = ({
                 {/* Row 3: Reminders */}
                 <div className="p-4 bg-emerald-50/20">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-white text-emerald-600 shadow-sm border border-emerald-100"><BellRing className="h-4 w-4" /></div>
+                    <div className="p-2 rounded-lg bg-white text-emerald-600 shadow-sm border border-emerald-100">
+                      <BellRing className="h-4 w-4" />
+                    </div>
                     <div>
-                      <p className="text-[10px] text-emerald-600 uppercase font-semibold tracking-normal">System Reminders</p>
+                      <p className="text-[10px] text-emerald-600 uppercase font-semibold tracking-normal">
+                        System Reminders
+                      </p>
                       <div className="flex flex-wrap gap-1.5 mt-2">
-                        {reminders.length > 0 ? reminders.map(d => (
-                          <span key={d} className="inline-flex items-center px-2 py-0.5 rounded bg-white border border-emerald-200 text-[11px] font-medium text-emerald-700 shadow-sm">
-                            {d} days before
+                        {reminders.length > 0 ? (
+                          reminders.map((d) => (
+                            <span
+                              key={d}
+                              className="inline-flex items-center px-2 py-0.5 rounded bg-white border border-emerald-200 text-[11px] font-medium text-emerald-700 shadow-sm"
+                            >
+                              {d} days before
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-xs text-slate-400 italic">
+                            No reminders
                           </span>
-                        )) : <span className="text-xs text-slate-400 italic">No reminders</span>}
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1424,7 +1809,11 @@ const Step4Review: React.FC<Step4Props> = ({
               title="Authorization Details"
               icon={<UserCheck className="h-4 w-4" />}
               headerRight={
-                <Badge color="emerald" variant="soft" className="bg-emerald-50 text-emerald-700 border-emerald-100 text-[10px] px-1.5 py-0">
+                <Badge
+                  color="emerald"
+                  variant="soft"
+                  className="bg-emerald-50 text-emerald-700 border-emerald-100 text-[10px] px-1.5 py-0"
+                >
                   Verified
                 </Badge>
               }
@@ -1442,20 +1831,30 @@ const Step4Review: React.FC<Step4Props> = ({
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-bold text-slate-900 truncate">Dr. Anna Smith</p>
-                    <span className="text-[10px] font-medium text-slate-400">ID: MGR-088</span>
+                    <p className="text-sm font-bold text-slate-900 truncate">
+                      Dr. Anna Smith
+                    </p>
+                    <span className="text-[10px] font-medium text-slate-400">
+                      ID: MGR-088
+                    </span>
                   </div>
-                  <p className="text-xs text-slate-500 font-medium">Quality Assurance Manager</p>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Quality Assurance Manager
+                  </p>
 
                   {/* Timestamp with Icon */}
                   <div className="flex items-center gap-3 mt-2 pt-2 border-t border-slate-50">
                     <div className="flex items-center gap-1.5 text-slate-400">
                       <Clock className="h-3.5 w-3.5" />
-                      <span className="text-[11px] font-medium">{new Date().toLocaleString('vi-VN')}</span>
+                      <span className="text-[11px] font-medium">
+                        {new Date().toLocaleString("vi-VN")}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1.5 text-slate-400">
                       <Building2 className="h-3.5 w-3.5" />
-                      <span className="text-[11px] font-medium uppercase">Quality Unit</span>
+                      <span className="text-[11px] font-medium uppercase">
+                        Quality Unit
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1464,7 +1863,8 @@ const Step4Review: React.FC<Step4Props> = ({
               {/* Footer Disclaimer for GMP */}
               <div className="mt-6 pt-4 border-t border-slate-100 italic">
                 <p className="text-xs text-slate-400 flex items-center gap-1">
-                  This assignment will be electronically signed and timestamped upon submission in accordance with EU-GMP Annex 11.
+                  This assignment will be electronically signed and timestamped
+                  upon submission in accordance with EU-GMP Annex 11.
                 </p>
               </div>
             </FormSection>
@@ -1474,5 +1874,3 @@ const Step4Review: React.FC<Step4Props> = ({
     </FormSection>
   );
 };
-
-

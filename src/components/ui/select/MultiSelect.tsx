@@ -341,7 +341,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                   <button
                     type="button"
                     onClick={(e) => handleRemoveTag(option.value, e)}
-                    className="hover:bg-emerald-200/50 rounded-sm p-0.5 flex items-center justify-center transition-colors"
+                    className="hover:bg-emerald-200/50 rounded-md p-0.5 flex items-center justify-center transition-colors"
                     aria-label={`Remove ${option.label}`}
                   >
                     <X className="h-2.5 w-2.5" />
@@ -402,7 +402,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         >
           {/* Search */}
           {enableSearch && (
-            <div className="p-2 border-b border-slate-100">
+            <div className="p-2 border-b border-slate-200">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
@@ -439,7 +439,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
               <>
                 {/* Select All */}
                 {filteredOptions.length > 1 && (
-                  <div className="sticky top-0 bg-white border-b border-slate-100 z-10">
+                  <div className="sticky top-0 bg-white border-b border-slate-200 z-10">
                     <button
                       type="button"
                       role="option"
@@ -519,9 +519,9 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
             transform: 'translate(-50%, -100%)',
           }}
         >
-          <div className="relative bg-white text-slate-900 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-slate-100 overflow-hidden min-w-[160px] max-w-[260px]">
+          <div className="relative bg-white text-slate-900 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-slate-200 overflow-hidden min-w-[160px] max-w-[260px]">
             {/* Header */}
-            <div className="flex items-center justify-between gap-3 px-3 py-2 border-b border-slate-100 bg-slate-50/50">
+            <div className="flex items-center justify-between gap-3 px-3 py-2 border-b border-slate-200 bg-slate-50/50">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Selected</span>
               <span className="inline-flex items-center justify-center h-4 min-w-[1rem] px-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold border border-emerald-200">
                 {remainingOptions.length}

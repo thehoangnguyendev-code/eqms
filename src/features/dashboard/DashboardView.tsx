@@ -217,7 +217,7 @@ export const DashboardView: React.FC = () => {
                 </h1>
 
                 <p className="text-slate-500 text-base md:text-lg max-w-xl leading-relaxed mb-8">
-                  Here is what's happening in your Quality Management System today. You have <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-emerald-700 bg-emerald-50 border border-emerald-100 font-semibold text-base mx-1">12 pending tasks</span> requiring attention.
+                  Here is what's happening in your Quality Management System today. You have <span className="inline-flex items-center px-2.5 py-1 rounded-full text-emerald-700 bg-emerald-50 border border-emerald-100 font-medium text-xs mx-1">12 pending tasks</span> requiring attention.
                 </p>
               </motion.div>
 
@@ -478,7 +478,7 @@ export const DashboardView: React.FC = () => {
                   <Clock className="h-4 w-4 text-slate-500" />
                   Priority Deadlines
                 </h3>
-                <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">3 High</span>
+                <span className="bg-red-100 text-red-700 text-xs font-medium px-2.5 py-1 rounded-full border border-red-200">3 High</span>
               </div>
               <div className="divide-y divide-slate-100">
                 {MOCK_DEADLINES.slice(0, 3).map((item, idx) => (

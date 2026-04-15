@@ -147,13 +147,13 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header - Fixed */}
-            <div className="flex-shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50/50 min-h-[56px]">
+            <div className="flex-shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-slate-200 bg-slate-50/50 min-h-[56px]">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
                   <PenTool className="h-4 w-4 text-emerald-700 -rotate-[90deg] transition-transform" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 leading-tight">Electronic Signature</h3>
+                  <h3 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900 leading-tight">Electronic Signature</h3>
                   <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium">21 CFR Part 11 Compliant</p>
                 </div>
               </div>
@@ -227,7 +227,7 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
                             key={idx}
                             className={cn(
                               "group transition-colors hover:bg-slate-50/50",
-                              idx !== changes.length - 1 ? "border-b border-slate-100" : ""
+                              idx !== changes.length - 1 ? "border-b border-slate-200" : ""
                             )}
                           >
                             <td className="px-3 py-2.5 text-[11px] font-semibold text-slate-700 truncate" title={change.action}>
@@ -301,7 +301,7 @@ export const ESignatureModal: React.FC<ESignatureModalProps> = ({
             </div>
 
             {/* Footer - Fixed */}
-            <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-slate-50/30 flex justify-end gap-2 min-h-[56px]">
+            <div className="flex-shrink-0 px-5 py-3 border-t border-slate-200 bg-slate-50/30 flex justify-end gap-2 min-h-[56px]">
               <Button type="button" size='sm' variant="outline" onClick={onClose} className="min-w-[5rem]">Cancel</Button>
               <Button type="submit" onClick={handleSubmit} size='sm' className="min-w-[5rem]">Sign & Confirm</Button>
             </div>

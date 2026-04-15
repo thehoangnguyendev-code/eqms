@@ -178,7 +178,7 @@ export const CertificatePreviewModal: React.FC<CertificatePreviewModalProps> = (
             <div className="flex-shrink-0 bg-white border-b border-slate-100 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">Certificate Preview</h3>
+                  <h3 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900 leading-tight">Certificate Preview</h3>
                 </div>
               </div>
               <div className="flex items-center gap-2">

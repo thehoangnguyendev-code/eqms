@@ -42,7 +42,7 @@ import { cn } from "@/components/ui/utils";
 import { formatDateUS } from "@/utils/format";
 import { getStatusColorClass } from "@/utils/status";
 import type { EnrollmentStatus, ResultStatus, EmployeeProgress, CourseProgressInfo } from "../../../types";
-import { MOCK_PROGRESS_INFO, MOCK_EMPLOYEE_PROGRESS } from "../../mockData";
+import { complianceTrackingRepository } from "../../repository";
 
 /* ------------------------------------------------------------------ */
 /*  Local Dropdown Component                                           */
@@ -187,8 +187,11 @@ export const CourseProgressView: React.FC = () => {
   const { openId: openDropdownId, position: dropdownPosition, getRef, toggle: handleDropdownToggle, close: closeDropdown } = usePortalDropdown();
   const [isESignatureOpen, setIsESignatureOpen] = useState(false);
 
+  const progressInfoData = complianceTrackingRepository.getCourseProgressInfo();
+  const employeeProgressData = complianceTrackingRepository.getEmployeeProgressData();
+
   const info = {
-    ...MOCK_PROGRESS_INFO,
+    ...progressInfoData,
     dueDate: "2026-04-15",
   };
 
@@ -217,17 +220,17 @@ export const CourseProgressView: React.FC = () => {
 
   // Derived data
   const uniqueDepartments = useMemo(
-    () => Array.from(new Set(MOCK_EMPLOYEE_PROGRESS.map((e) => e.department))).sort(),
-    []
+    () => Array.from(new Set(employeeProgressData.map((e) => e.department))).sort(),
+    [employeeProgressData]
   );
 
   const uniqueBusinessUnits = useMemo(
-    () => Array.from(new Set(MOCK_EMPLOYEE_PROGRESS.map((e) => e.businessUnit))).sort(),
-    []
+    () => Array.from(new Set(employeeProgressData.map((e) => e.businessUnit))).sort(),
+    [employeeProgressData]
   );
 
   const filteredEmployees = useMemo(() => {
-    let filtered = MOCK_EMPLOYEE_PROGRESS;
+    let filtered = employeeProgressData;
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -258,7 +261,7 @@ export const CourseProgressView: React.FC = () => {
     }
 
     return filtered;
-  }, [searchQuery, enrollmentFilter, resultFilter, departmentFilter, businessUnitFilter]);
+  }, [employeeProgressData, searchQuery, enrollmentFilter, resultFilter, departmentFilter, businessUnitFilter]);
 
   const sortedEmployees = useMemo(() => {
     if (!sortConfig.key) return filteredEmployees;
@@ -335,7 +338,7 @@ export const CourseProgressView: React.FC = () => {
 
         <div className="relative z-10">
           <div className="mb-6">
-            <div className="inline-flex items-center px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2 border border-emerald-100/50">
+            <div className="inline-flex items-center px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-2 border border-emerald-100">
               {info.trainingId}
             </div>
             <h2 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight leading-tight">
@@ -349,7 +352,7 @@ export const CourseProgressView: React.FC = () => {
                 <Target className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-[11px] sm:text-sm text-slate-500 font-medium">Requirement</p>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">Requirement</p>
                 <p className="text-sm sm:text-base font-semibold text-slate-900 mt-0.5">
                   Passing: ≥ {info.passingScore}{info.passingGradeType === "percentage" ? "%" : "/10"}
                 </p>
@@ -361,7 +364,7 @@ export const CourseProgressView: React.FC = () => {
                 <Clock className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-[11px] sm:text-sm text-slate-500 font-medium">Due Date</p>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">Due Date</p>
                 <p className="text-sm sm:text-base font-semibold text-slate-900 mt-0.5">
                   {formatDateUS(info.dueDate)}
                 </p>
@@ -373,7 +376,7 @@ export const CourseProgressView: React.FC = () => {
                 <TrendingUp className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-[11px] sm:text-sm text-slate-500 font-medium">Time Remaining</p>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">Time Remaining</p>
                 <p className="text-sm sm:text-base font-semibold text-slate-900 mt-0.5">
                   30 Days Left
                 </p>
@@ -812,6 +815,7 @@ export const CourseProgressView: React.FC = () => {
     </div>
   );
 };
+
 
 
 

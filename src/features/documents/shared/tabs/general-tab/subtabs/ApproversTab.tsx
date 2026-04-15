@@ -117,7 +117,7 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
                                             </div>
                                         </div>
                                         {isSelected && (
-                                            <div className="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-md shrink-0 uppercase tracking-wider">
+                                            <div className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full shrink-0 uppercase tracking-wider border border-emerald-200">
                                                 Selected
                                             </div>
                                         )}
@@ -254,7 +254,7 @@ export const ApproversTab: React.FC<ApproversTabProps> = ({
                                             {approver.department}
                                         </td>
                                         <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
-                                            <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                                                 <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />
                                                 Approver
                                             </span>

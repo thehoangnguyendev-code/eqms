@@ -577,7 +577,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   };
 
   const renderPresets = () => (
-    <div className="w-full lg:w-[140px] border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col p-2 bg-slate-50/20 shrink-0">
+    <div className="w-full lg:w-[140px] border-t lg:border-t-0 lg:border-l border-slate-200 flex flex-col p-2 bg-slate-50/20 shrink-0">
       <div className="grid grid-cols-3 lg:flex lg:flex-col gap-1.5">
         {[
           { label: 'Today', key: 'today' },
@@ -590,7 +590,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
             key={p.key}
             type="button"
             onClick={() => applyPreset(p.key as any)}
-            className="text-left px-2 py-1.5 lg:py-2 text-[10px] lg:text-sm text-slate-600 border border-slate-200 lg:border-transparent hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 rounded-md lg:rounded-lg transition-all font-medium truncate"
+            className="text-left px-2 py-1.5 lg:py-2 text-xs lg:text-sm text-slate-600 border border-slate-200 lg:border-transparent hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 rounded-lg transition-all font-medium truncate"
           >
             {p.label}
           </button>
@@ -711,13 +711,13 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
             </div>
 
             {/* Divider */}
-            <div className="border-t border-slate-100" />
+            <div className="border-t border-slate-200" />
 
             {/* Calendar */}
             {renderCalendar()}
 
             {/* Footer */}
-            <div className="border-t border-slate-100 px-4 py-3 bg-slate-50/50">
+            <div className="border-t border-slate-200 px-4 py-3 bg-slate-50/50">
               <div className="flex items-center justify-between">
                 <button
                   type="button"

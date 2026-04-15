@@ -391,7 +391,7 @@ export const IntegrationTab: React.FC<IntegrationTabProps> = ({ config, onChange
                           {webhook.enabled ? 'ACTIVE' : 'INACTIVE'}
                         </span>
                         {webhook.failureCount > 0 && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
                             <AlertTriangle className="h-2.5 w-2.5" />
                             {webhook.failureCount} FAILURES
                           </span>
@@ -402,7 +402,7 @@ export const IntegrationTab: React.FC<IntegrationTabProps> = ({ config, onChange
                         {webhook.events.map((event) => (
                           <span
                             key={event}
-                            className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded uppercase border border-slate-200"
+                            className="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded-full border border-slate-200"
                           >
                             {event}
                           </span>

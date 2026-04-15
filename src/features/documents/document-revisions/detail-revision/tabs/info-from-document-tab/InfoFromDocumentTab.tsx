@@ -20,7 +20,7 @@ export const InfoFromDocumentTab: React.FC<InfoFromDocumentTabProps> = ({
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {/* Document Name — full width */}
       <div className="sm:col-span-2 flex flex-col gap-1.5">
-        <label className="block text-sm font-medium text-slate-700">Document Name</label>
+        <label className="block text-xs sm:text-sm font-medium text-slate-700">Document Name</label>
         <input
           type="text"
           value={documentName ?? ""}
@@ -31,7 +31,7 @@ export const InfoFromDocumentTab: React.FC<InfoFromDocumentTabProps> = ({
       </div>
       {/* Document Number + Document Created — same row */}
       <div className="flex flex-col gap-1.5">
-        <label className="block text-sm font-medium text-slate-700">Document Number</label>
+        <label className="block text-xs sm:text-sm font-medium text-slate-700">Document Number</label>
         <input
           type="text"
           value={documentCode ?? ""}
@@ -41,7 +41,7 @@ export const InfoFromDocumentTab: React.FC<InfoFromDocumentTabProps> = ({
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label className="block text-sm font-medium text-slate-700">Document Created</label>
+        <label className="block text-xs sm:text-sm font-medium text-slate-700">Document Created</label>
         <input
           type="text"
           value={documentCreated ?? ""}

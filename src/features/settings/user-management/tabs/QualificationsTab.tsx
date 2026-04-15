@@ -108,7 +108,7 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
             <span className="text-emerald-600 flex-shrink-0"><IconSchool className="h-4 w-4" /></span>
             <h3 className="text-sm font-semibold text-slate-800 truncate">Education Details</h3>
             {educationList.length > 0 && (
-              <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full flex-shrink-0">
+              <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full flex-shrink-0 border border-slate-200">
                 {educationList.length}
               </span>
             )}
@@ -231,7 +231,7 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
             <span className="text-emerald-600 flex-shrink-0"><IconCertificate className="h-4 w-4" /></span>
             <h3 className="text-sm font-semibold text-slate-800 truncate">External Certifications</h3>
             {certifications.length > 0 && (
-              <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full flex-shrink-0">
+              <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full flex-shrink-0 border border-slate-200">
                 {certifications.length}
               </span>
             )}

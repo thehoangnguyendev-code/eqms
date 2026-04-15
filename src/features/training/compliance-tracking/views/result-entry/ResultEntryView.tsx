@@ -29,7 +29,7 @@ import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { cn } from "@/components/ui/utils";
 import { TrainingMethod } from "../../../types";
-import { MOCK_CELLS, MOCK_SOPS } from "../../mockData";
+import { complianceTrackingRepository } from "../../repository";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -161,6 +161,7 @@ const ImagePreviewModal: React.FC<{
 export const ResultEntryView: React.FC = () => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
+  const cells = complianceTrackingRepository.getCells();
   const course = MOCK_COURSE; // In real app, fetch by courseId
 
   // Data
@@ -471,11 +472,11 @@ export const ResultEntryView: React.FC = () => {
             const status = getScoreStatus(row) === "pass" ? "Qualified" : "Required"; // Red to Green mapping
             const sopId = course.id;
             const key = `${row.userId}|${sopId}`;
-            const existing = MOCK_CELLS.get(key);
+            const existing = cells.get(key);
             if (existing) {
-              MOCK_CELLS.set(key, { ...existing, status, score: row.score, lastTrainedDate: row.examDate });
+              cells.set(key, { ...existing, status, score: row.score, lastTrainedDate: row.examDate });
             } else {
-              MOCK_CELLS.set(key, {
+              cells.set(key, {
                 employeeId: row.userId,
                 sopId,
                 status,
@@ -578,7 +579,7 @@ export const ResultEntryView: React.FC = () => {
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-purple-50 text-purple-700 border-purple-200">
               Quiz (Manual)
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
               Passing: {getPassingLabel()}
             </span>
           </div>
@@ -632,7 +633,7 @@ export const ResultEntryView: React.FC = () => {
                     setSearchQuery(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors bg-white"
+                  className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors bg-white"
                 />
               </div>
             </div>
@@ -870,12 +871,12 @@ export const ResultEntryView: React.FC = () => {
                             {status === "none" ? (
                               <span className="text-xs text-slate-400">—</span>
                             ) : status === "pass" ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] md:text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                                 <CheckCircle2 className="h-3.5 w-3.5" />
                                 PASS
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] md:text-xs font-bold bg-red-50 text-red-700 border border-red-200">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
                                 <XCircle className="h-3.5 w-3.5" />
                                 FAIL
                               </span>
@@ -982,7 +983,7 @@ export const ResultEntryView: React.FC = () => {
       >
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-slate-700 mb-1.5 block">
+            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
               Reason for Change <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -1038,5 +1039,6 @@ export const ResultEntryView: React.FC = () => {
     </div>
   );
 };
+
 
 

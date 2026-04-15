@@ -41,6 +41,7 @@ import {
   IconChartBar,
 } from "@tabler/icons-react";
 import { NavItem } from "@/types";
+import { ROUTES } from "./routes.constants";
 
 // ============================================================================
 // CORE NAVIGATION (Dashboard, Tasks, Notifications)
@@ -50,26 +51,26 @@ const CORE_NAV: NavItem[] = [
     id: "notifications",
     label: "Notifications",
     icon: Bell,
-    path: "/notifications"
+    path: ROUTES.NOTIFICATIONS
   },
   {
     id: "dashboard",
     label: "Dashboard",
     icon: IconLayoutGrid,
-    path: "/dashboard",
+    path: ROUTES.DASHBOARD,
     showDividerAfter: true,
   },
   {
     id: "my-tasks",
     label: "My Tasks",
     icon: IconBrandAsana,
-    path: "/my-tasks",
+    path: ROUTES.MY_TASKS,
   },
   {
     id: "my-team",
     label: "My Team",
     icon: IconUsersGroup,
-    path: "/my-team",
+    path: ROUTES.MY_TEAM,
     showDividerAfter: true,
   }
 ];
@@ -86,14 +87,14 @@ const FOUNDATION_MODULES: NavItem[] = [
       {
         id: "knowledge-base",
         label: "Knowledge Base",
-        path: "/documents/knowledge",
+        path: ROUTES.DOCUMENTS.KNOWLEDGE,
       },
       {
         id: "doc-owned-me",
         label: "Documents Owned By Me",
-        path: "/documents/owned",
+        path: ROUTES.DOCUMENTS.OWNED,
       },
-      { id: "doc-all", label: "All Documents", path: "/documents/all" },
+      { id: "doc-all", label: "All Documents", path: ROUTES.DOCUMENTS.ALL },
       {
         id: "doc-revisions",
         label: "Document Revisions",
@@ -101,22 +102,22 @@ const FOUNDATION_MODULES: NavItem[] = [
           {
             id: "rev-owned-me",
             label: "Revisions Owned By Me",
-            path: "/documents/revisions/owned",
+            path: ROUTES.DOCUMENTS.REVISIONS.OWNED,
           },
           {
             id: "rev-all",
             label: "All Revisions",
-            path: "/documents/revisions/all",
+            path: ROUTES.DOCUMENTS.REVISIONS.ALL,
           },
           {
             id: "pending-review",
             label: "Pending My Review",
-            path: "/documents/revisions/pending-review",
+            path: ROUTES.DOCUMENTS.REVISIONS.PENDING_REVIEW,
           },
           {
             id: "pending-approval",
             label: "Pending My Approval",
-            path: "/documents/revisions/pending-approval",
+            path: ROUTES.DOCUMENTS.REVISIONS.PENDING_APPROVAL,
           },
         ],
       },
@@ -127,24 +128,24 @@ const FOUNDATION_MODULES: NavItem[] = [
           {
             id: "cc-all",
             label: "All Controlled Copies",
-            path: "/documents/controlled-copies/all",
+            path: ROUTES.DOCUMENTS.CONTROLLED_COPIES.ALL,
           },
           {
             id: "cc-ready",
             label: "Ready for Distribution",
-            path: "/documents/controlled-copies/ready",
+            path: ROUTES.DOCUMENTS.CONTROLLED_COPIES.READY,
           },
           {
             id: "cc-distributed",
             label: "Distributed Copies",
-            path: "/documents/controlled-copies/distributed",
+            path: ROUTES.DOCUMENTS.CONTROLLED_COPIES.DISTRIBUTED,
           },
         ],
       },
       {
         id: "archive-documents",
         label: "Archived Documents",
-        path: "/documents/archived",
+        path: ROUTES.DOCUMENTS.ARCHIVED,
       },
     ],
   },
@@ -156,12 +157,12 @@ const FOUNDATION_MODULES: NavItem[] = [
       {
         id: "my-training",
         label: "My Training",
-        path: "/training-management/my-training",
+        path: ROUTES.TRAINING.MY_TRAINING,
       },
       {
         id: "training-materials",
         label: "Training Material",
-        path: "/training-management/materials",
+        path: ROUTES.TRAINING.MATERIALS,
       },
       {
         id: "course-inventory",
@@ -170,18 +171,18 @@ const FOUNDATION_MODULES: NavItem[] = [
           {
             id: "courses-list",
             label: "Courses List",
-            path: "/training-management/courses-list",
+            path: ROUTES.TRAINING.COURSES_LIST,
           },
           {
             id: "training-pending-review",
             label: "Pending Review",
-            path: "/training-management/pending-review",
+            path: ROUTES.TRAINING.PENDING_REVIEW,
             allowedRoles: ["admin", "manager"],
           },
           {
             id: "training-pending-approval",
             label: "Pending Approval",
-            path: "/training-management/pending-approval",
+            path: ROUTES.TRAINING.PENDING_APPROVAL,
             allowedRoles: ["admin", "manager"],
           },
         ],
@@ -193,17 +194,17 @@ const FOUNDATION_MODULES: NavItem[] = [
           {
             id: "auto-assignment-rules",
             label: "Auto-Assignment Rules",
-            path: "/training-management/assignment-rules",
+            path: ROUTES.TRAINING.ASSIGNMENT_RULES,
           },
           {
             id: "training-matrix",
             label: "Training Matrix",
-            path: "/training-management/training-matrix",
+            path: ROUTES.TRAINING.TRAINING_MATRIX,
           },
           {
             id: "course-status",
             label: "Course Status",
-            path: "/training-management/course-status",
+            path: ROUTES.TRAINING.COURSE_STATUS,
           },
         ],
       },
@@ -214,12 +215,12 @@ const FOUNDATION_MODULES: NavItem[] = [
           {
             id: "employee-training-files",
             label: "Employee Training Files",
-            path: "/training-management/employee-training-files",
+            path: ROUTES.TRAINING.EMPLOYEE_TRAINING_FILES,
           },
           {
             id: "export-records",
             label: "Export Records",
-            path: "/training-management/export-records",
+            path: ROUTES.TRAINING.EXPORT_RECORDS,
           },
         ],
       },
@@ -235,31 +236,31 @@ const QUALITY_MODULES: NavItem[] = [
     id: "deviation-ncs",
     label: "Deviation & NCs",
     icon: IconAlertTriangle,
-    path: "/deviations-ncs",
+    path: ROUTES.DEVIATIONS,
   },
   {
     id: "capa-management",
     label: "CAPA Management",
     icon: IconClipboardCheck,
-    path: "/capa-management",
+    path: ROUTES.CAPA,
   },
   {
     id: "change-control",
     label: "Change Controls",
     icon: IconReplace,
-    path: "/change-management",
+    path: ROUTES.CHANGE_CONTROL,
   },
   {
     id: "complaints-management",
     label: "Complaints Management",
     icon: IconMessageReport,
-    path: "/complaints-management",
+    path: ROUTES.COMPLAINTS,
   },
   {
     id: "risk-management",
     label: "Risk Management",
     icon: IconShieldExclamation,
-    path: "/risk-management",
+    path: ROUTES.RISK,
   },
 ];
 
@@ -271,19 +272,19 @@ const OPERATIONS_MODULES: NavItem[] = [
     id: "equipment-management",
     label: "Equipment Management",
     icon: IconDeviceLaptop,
-    path: "/equipment-management",
+    path: ROUTES.EQUIPMENT,
   },
   {
     id: "supplier-management",
     label: "Supplier Management",
     icon: IconBuildingStore,
-    path: "/supplier-management",
+    path: ROUTES.SUPPLIER,
   },
   {
     id: "product-management",
     label: "Product Management",
     icon: Package,
-    path: "/product-management",
+    path: ROUTES.PRODUCT,
   },
 ];
 
@@ -295,7 +296,7 @@ const REGULATORY_MODULE: NavItem[] = [
     id: "regulatory-management",
     label: "Regulatory Management",
     icon: Scale,
-    path: "/regulatory-management",
+    path: ROUTES.REGULATORY,
   },
 ];
 
@@ -307,14 +308,14 @@ const SYSTEM_MODULES: NavItem[] = [
     id: "report",
     label: "Reports & Analytics",
     icon: IconChartBar,
-    path: "/report",
+    path: ROUTES.REPORT,
   },
   {
     id: "audit-trail",
     label: "Audit Trail System",
     icon: IconFilter2Search,
     showDividerAfter: true,
-    path: "/audit-trail",
+    path: ROUTES.AUDIT_TRAIL,
   },
   {
     id: "system-administration",
@@ -325,13 +326,13 @@ const SYSTEM_MODULES: NavItem[] = [
         id: "user-management",
         label: "User Management",
         icon: IconUsers,
-        path: "/settings/users",
+        path: ROUTES.SETTINGS.USERS,
       },
       {
         id: "roles",
         label: "Roles & Permissions",
         icon: ShieldCheck,
-        path: "/settings/roles",
+        path: ROUTES.SETTINGS.ROLES,
       },
     ],
   },
@@ -344,25 +345,25 @@ const SYSTEM_MODULES: NavItem[] = [
         id: "dictionaries",
         label: "Dictionaries",
         icon: BookText,
-        path: "/settings/dictionaries",
+        path: ROUTES.SETTINGS.DICTIONARIES,
       },
       {
         id: "email-templates",
         label: "Email Templates",
         icon: IconMailForward,
-        path: "/settings/email-templates",
+        path: ROUTES.SETTINGS.EMAIL_TEMPLATES,
       },
       {
         id: "config",
         label: "Configuration",
         icon: IconDeviceDesktopCog,
-        path: "/settings/configuration",
+        path: ROUTES.SETTINGS.CONFIGURATION,
       },
       {
         id: "info-sys",
         label: "System Information",
         icon: IconAlertSquareRounded,
-        path: "/settings/system-info",
+        path: ROUTES.SETTINGS.SYSTEM_INFO,
       }
     ],
   },
@@ -375,13 +376,13 @@ const SYSTEM_MODULES: NavItem[] = [
         id: "user-manual",
         label: "User Manual",
         icon: IconBook,
-        path: "/help-support/manual",
+        path: ROUTES.HELP_SUPPORT_MANUAL,
       },
       {
         id: "contact-support",
         label: "Contact Support",
         icon: IconMessageReport,
-        path: "/help-support/contact",
+        path: ROUTES.HELP_SUPPORT_CONTACT,
       },
     ],
   },
@@ -389,7 +390,7 @@ const SYSTEM_MODULES: NavItem[] = [
     id: "preferences",
     label: "Preferences",
     icon: IconAdjustmentsHorizontal,
-    path: "/preferences",
+    path: ROUTES.PREFERENCES,
   },
 ];
 

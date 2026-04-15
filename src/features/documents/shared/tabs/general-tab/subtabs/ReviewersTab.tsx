@@ -129,7 +129,7 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
                                             </div>
                                         </div>
                                         {isSelected && (
-                                            <div className="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-md shrink-0 uppercase tracking-wider">
+                                            <div className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full shrink-0 uppercase tracking-wider border border-emerald-200">
                                                 Selected
                                             </div>
                                         )}

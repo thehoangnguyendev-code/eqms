@@ -367,7 +367,7 @@ export const Select: React.FC<SelectProps> = ({
         >
           {/* Search */}
           {enableSearch && (
-            <div className="p-2 border-b border-slate-100">
+            <div className="p-2 border-b border-slate-200">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
@@ -406,7 +406,7 @@ export const Select: React.FC<SelectProps> = ({
               // Render grouped options
               filteredGroups.map((group, groupIndex) => (
                 <div key={group.groupLabel} className="py-1">
-                  <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider sticky top-0 bg-slate-50 border-b border-slate-100">
+                  <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider sticky top-0 bg-slate-50 border-b border-slate-200">
                     {group.groupLabel}
                   </div>
                   {group.options.map((option, optionIndex) => {

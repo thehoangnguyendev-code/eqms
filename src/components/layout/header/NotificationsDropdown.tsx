@@ -288,7 +288,7 @@ const NotificationItem: React.FC<{
           </div>
 
           <div className="flex items-center justify-between gap-2">
-            <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-50 text-slate-500 border border-slate-100 group-hover:bg-emerald-50 group-hover:border-emerald-100 group-hover:text-emerald-700 transition-colors">
+            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-50 text-slate-600 border border-slate-200 group-hover:bg-emerald-50 group-hover:border-emerald-200 group-hover:text-emerald-700 transition-colors">
               <span className="text-[9px] font-bold uppercase tracking-wider opacity-70">
                 {notification.type === 'review-request' ? 'Review' :
                   notification.type === 'approval' ? 'Approval' :

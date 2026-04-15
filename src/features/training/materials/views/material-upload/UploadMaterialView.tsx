@@ -499,7 +499,7 @@ export const UploadMaterialView: React.FC = () => {
                       { icon: Video, label: "MP4", color: "text-purple-500" },
                       { icon: FileImage, label: "JPG/PNG", color: "text-blue-500" },
                     ].map(({ icon: Icon, label, color }) => (
-                      <span key={label} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-white border border-slate-200 text-slate-600">
+                      <span key={label} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-600">
                         <Icon className={cn("h-3 w-3", color)} />
                         {label}
                       </span>

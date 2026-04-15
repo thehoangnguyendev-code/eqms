@@ -299,7 +299,7 @@ export const UpgradeRevisionView: React.FC = () => {
             {/* Reason for Change */}
             <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-6">
                 <div className="mb-4">
-                    <label className="block text-sm font-semibold text-slate-900 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
                         Reason for Change <span className="text-red-500">*</span>
                     </label>
                     <p className="text-sm text-slate-500">

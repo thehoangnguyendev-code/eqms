@@ -47,7 +47,7 @@ export const DossierOJTTab: React.FC<DossierOJTTabProps> = ({ employee, onVerify
                   {record.status === 'Completed' ? <Verified className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate leading-tight group-hover:text-slate-900">
+                  <p className="text-sm font-semibold text-slate-900 truncate leading-tight group-hover:text-slate-900">
                     {record.taskName}
                   </p>
                   <div className="flex items-center gap-3 mt-1.5 text-[10px] text-slate-500 font-medium whitespace-nowrap">

@@ -384,7 +384,7 @@ export const MyTrainingView: React.FC = () => {
                     placeholder="Search by title or ID..."
                     value={searchQuery}
                     onChange={(e) => handleSearch(e.target.value)}
-                    className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
+                    className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
                   />
                 </div>
               </div>
@@ -437,9 +437,9 @@ export const MyTrainingView: React.FC = () => {
                 {...dragEvents}
               >
                 <table className="w-full min-w-[800px] md:min-w-[950px] lg:min-w-[1100px] xl:min-w-[1300px]">
-                  <thead className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
+                  <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-10">
                     <tr>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
+                      <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
                         No.
                       </th>
                       {[
@@ -458,7 +458,7 @@ export const MyTrainingView: React.FC = () => {
                             key={idx}
                             onClick={canSort ? () => handleSort(col.id!) : undefined}
                             className={cn(
-                              "py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
+                              "py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
                               canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
                               col.align || "text-left"
                             )}
@@ -475,7 +475,7 @@ export const MyTrainingView: React.FC = () => {
                           </th>
                         );
                       })}
-                      <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 md:px-5 lg:px-6 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
+                      <th className="sticky right-0 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 lg:px-6 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
                         Action
                       </th>
                     </tr>
@@ -487,19 +487,19 @@ export const MyTrainingView: React.FC = () => {
                       return (
                         <tr
                           key={task.id}
-                          className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                          className="hover:bg-slate-50 transition-colors cursor-pointer group"
                         >
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap text-center">
-                            <div className="text-xs sm:text-sm text-slate-500">
+                          <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap text-center">
+                            <div className="text-xs md:text-sm text-slate-500">
                               {(currentPage - 1) * itemsPerPage + index + 1}
                             </div>
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
-                            <span className="text-xs sm:text-sm font-medium text-emerald-600">
+                          <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
+                            <span className="text-xs md:text-sm font-medium text-emerald-600">
                               {task.id}
                             </span>
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
+                          <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
                             <div className="flex items-center gap-1.5 sm:gap-2">
                               <div
                                 className={cn(
@@ -516,24 +516,24 @@ export const MyTrainingView: React.FC = () => {
                                 )}
                               </div>
                               <div>
-                                <p className="font-medium whitespace-nowrap text-xs sm:text-sm text-slate-900 group-hover:text-emerald-700 transition-colors">
+                                <p className="font-medium whitespace-nowrap text-xs md:text-sm text-slate-900 group-hover:text-emerald-700 transition-colors">
                                   {task.title}
                                 </p>
                               </div>
                             </div>
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
-                            <span className="text-xs sm:text-sm text-slate-700 font-medium">
+                          <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
+                            <span className="text-xs md:text-sm text-slate-700 font-medium">
                               {task.materialType}
                             </span>
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                          <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap text-slate-700">
                             {task.type}
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                          <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap text-slate-700">
                             {task.testType}
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                          <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap">
                             <div
                               className={cn(
                                 "flex items-center gap-1",
@@ -553,7 +553,7 @@ export const MyTrainingView: React.FC = () => {
                               {task.deadline}
                             </div>
                           </td>
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-center">
+                          <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap text-center">
                             <Badge
                               color={statusStyle.color}
                               size="sm"
@@ -565,7 +565,7 @@ export const MyTrainingView: React.FC = () => {
                               {statusStyle.label}
                             </Badge>
                           </td>
-                          <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 md:px-5 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
+                          <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2.5 px-2 md:py-3 md:px-4 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
                             <Button
                               size="xs"
                               className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
@@ -625,7 +625,7 @@ export const MyTrainingView: React.FC = () => {
                     placeholder="Search by title or ID..."
                     value={searchQuery}
                     onChange={(e) => handleSearch(e.target.value)}
-                    className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
+                    className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
                   />
                 </div>
               </div>
@@ -654,9 +654,9 @@ export const MyTrainingView: React.FC = () => {
                 {...dragEvents}
               >
                 <table className="w-full min-w-[800px] md:min-w-[950px] lg:min-w-[1100px] xl:min-w-[1300px]">
-                  <thead className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
+                  <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-10">
                     <tr>
-                      <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
+                      <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
                         No.
                       </th>
                       {[
@@ -673,7 +673,7 @@ export const MyTrainingView: React.FC = () => {
                             key={idx}
                             onClick={canSort ? () => handleSort(col.id!) : undefined}
                             className={cn(
-                              "py-2.5 px-2 sm:py-3.5 sm:px-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
+                              "py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
                               canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
                               col.align || "text-left"
                             )}
@@ -690,7 +690,7 @@ export const MyTrainingView: React.FC = () => {
                           </th>
                         );
                       })}
-                      <th className="sticky right-0 bg-slate-50 px-1 py-2.5 sm:px-4 sm:py-3.5 md:px-5 lg:px-6 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
+                      <th className="sticky right-0 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 lg:px-6 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
                         E-Certificate
                       </th>
                     </tr>
@@ -699,37 +699,37 @@ export const MyTrainingView: React.FC = () => {
                     {paginatedTranscript.map((record, index) => (
                       <tr
                         key={record.id}
-                        className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                        className="hover:bg-slate-50 transition-colors cursor-pointer group"
                       >
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap text-center">
-                          <div className="text-xs sm:text-sm text-slate-500">
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap text-center">
+                          <div className="text-xs md:text-sm text-slate-500">
                             {(currentPage - 1) * itemsPerPage + index + 1}
                           </div>
                         </td>
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
-                          <span className="text-xs sm:text-sm font-medium text-emerald-600">
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
+                          <span className="text-xs md:text-sm font-medium text-emerald-600">
                             {record.id}
                           </span>
                         </td>
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 whitespace-nowrap">
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
                           <div className="flex items-center gap-1.5 sm:gap-2">
                             <div className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-105 transition-transform">
                               <Award className="h-4 w-4" />
                             </div>
                             <div>
-                              <p className="font-medium whitespace-nowrap text-xs sm:text-sm text-slate-900 group-hover:text-emerald-700 transition-colors">
+                              <p className="font-medium whitespace-nowrap text-xs md:text-sm text-slate-900 group-hover:text-emerald-700 transition-colors">
                                 {record.title}
                               </p>
                             </div>
                           </div>
                         </td>
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap text-slate-700">
                           {record.type}
                         </td>
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap text-slate-700">
                           {record.completedDate}
                         </td>
-                        <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-center whitespace-nowrap">
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap">
                           <Badge
                             color={record.score >= 90 ? "emerald" : "blue"}
                             pill
@@ -739,7 +739,7 @@ export const MyTrainingView: React.FC = () => {
                             {record.score}%
                           </Badge>
                         </td>
-                        <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2 px-1 sm:py-3.5 sm:px-4 md:px-5 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
+                        <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2.5 px-2 md:py-3 md:px-4 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
                           <Button
                             size="sm"
                             variant="ghost"

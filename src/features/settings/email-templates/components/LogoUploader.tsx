@@ -52,7 +52,7 @@ export const LogoUploader: React.FC<LogoUploaderProps> = ({ value, onChange }) =
               {mode === m && (
                 <motion.div
                   layoutId="logoTabIndicator"
-                  className="absolute inset-0 bg-white rounded-md shadow-sm pointer-events-none"
+                  className="absolute inset-0 bg-white rounded-lg shadow-sm pointer-events-none"
                   transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
                 />
               )}

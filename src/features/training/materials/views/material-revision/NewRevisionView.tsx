@@ -493,7 +493,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
           <p className="text-sm font-medium text-blue-800">Creating a new revision from an existing material</p>
           <p className="text-xs text-blue-700 mt-0.5">
             Current version:{" "}
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mr-1">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 mr-1">
               v{source.form.version}
             </span>
             {source.form.materialName} · {source.form.materialCode}
@@ -665,7 +665,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                       <p className="text-xs text-slate-500 mt-1">or click to browse</p>
                       <div className="flex items-center gap-2 mt-4">
                         {[{ icon: FileText, label: "PDF", color: "text-red-500" }, { icon: Video, label: "MP4", color: "text-purple-500" }, { icon: FileImage, label: "JPG/PNG", color: "text-blue-500" }].map(({ icon: Icon, label, color }) => (
-                          <span key={label} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-white border border-slate-200 text-slate-600">
+                          <span key={label} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-600">
                             <Icon className={cn("h-3 w-3", color)} /> {label}
                           </span>
                         ))}

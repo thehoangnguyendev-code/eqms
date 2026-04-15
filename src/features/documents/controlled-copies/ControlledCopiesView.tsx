@@ -531,7 +531,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
                     setCurrentPage(1);
                   }}
                   placeholder="Document #, Name, Document ID..."
-                  className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all placeholder:text-slate-400 bg-white"
+                  className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all placeholder:text-slate-400 bg-white"
                 />
               </div>
             </div>
@@ -642,7 +642,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
                     paginatedData.map((copy, index) => {
                       const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
                       const statusConfig = getStatusConfig(copy.status);
-                      const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
+                      const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
                       return (
                         <tr

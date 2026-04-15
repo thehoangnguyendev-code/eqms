@@ -103,8 +103,8 @@ export const TaskTable: React.FC<{
                       <span className="truncate">{col.label}</span>
                       {canSort && (
                         <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
-                          <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig?.direction === 'asc' ? "text-emerald-600" : "")} />
-                          <ChevronDown className={cn("h-3.5 w-3.5", isSorted && sortConfig?.direction === 'desc' ? "text-emerald-600" : "")} />
+                          <ChevronUp className={cn("h-3 w-3 -mb-0.5", isSorted && sortConfig?.direction === 'asc' ? "text-emerald-600" : "")} />
+                          <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig?.direction === 'desc' ? "text-emerald-600" : "")} />
                         </div>
                       )}
                     </div>
@@ -120,7 +120,7 @@ export const TaskTable: React.FC<{
             {tasks.map((task, idx) => {
               const remainingDays = calculateDaysLeft(task.dueDate);
               const progressPercentage = task.progress || 0;
-              const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
+              const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
               return (
                 <tr

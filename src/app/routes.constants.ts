@@ -160,6 +160,8 @@ export const ROUTES = {
 
   // Help & Support
   HELP_SUPPORT: '/help-support',
+  HELP_SUPPORT_MANUAL: '/help-support/manual',
+  HELP_SUPPORT_CONTACT: '/help-support/contact',
 
   // Profile
   PROFILE: '/profile',

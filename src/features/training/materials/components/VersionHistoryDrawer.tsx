@@ -80,12 +80,12 @@ const VersionCard: React.FC<VersionCardProps> = ({ entry, isLatest, fileType, is
       >
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-slate-900 text-white text-[10px] sm:text-[11px] font-bold tracking-wide">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-900 text-white text-xs font-medium tracking-wide">
               {entry.version}
             </span>
             <StatusBadge status={statusToType(entry.status)} size="sm" />
             {isLatest && (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
                 Current
               </span>
             )}
@@ -457,7 +457,7 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
               {material.materialId}
             </span>
             <button

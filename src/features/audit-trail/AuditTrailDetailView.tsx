@@ -165,7 +165,7 @@ export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({ reco
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
                       {["Field", "Old Value", "New Value"].map(h => (
-                        <th key={h} className="py-3 px-5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                        <th key={h} className="py-2.5 px-2 md:py-3 md:px-4 text-left text-xs md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                           {h}
                         </th>
                       ))}
@@ -174,11 +174,11 @@ export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({ reco
                   <tbody className="divide-y divide-slate-200 bg-white">
                     {record.changes.map((change, index) => (
                       <tr key={index} className="hover:bg-slate-50/80">
-                        <td className="py-3 px-5 text-xs lg:text-sm font-medium text-slate-900 whitespace-nowrap">{change.field}</td>
-                        <td className="py-3 px-5 text-xs lg:text-sm text-slate-600 whitespace-nowrap">
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm font-medium text-slate-900 whitespace-nowrap">{change.field}</td>
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-600 whitespace-nowrap">
                           {change.oldValue || <span className="text-slate-400 italic">(empty)</span>}
                         </td>
-                        <td className="py-3 px-5 text-xs lg:text-sm text-slate-900 whitespace-nowrap">
+                        <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-900 whitespace-nowrap">
                           {change.newValue || <span className="text-slate-400 italic">(empty)</span>}
                         </td>
                       </tr>

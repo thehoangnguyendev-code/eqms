@@ -326,7 +326,7 @@ export function useTemplatesTab(mode: 'templates' | 'compliance') {
                       </h3>
                       <p className="text-[11px] md:text-xs text-slate-600">{template.description}</p>
                       {template.regulatoryRef && (
-                        <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200">
+                        <div className="mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200">
                           <ShieldAlert className="h-3 w-3" />
                           {template.regulatoryRef}
                         </div>
@@ -392,7 +392,7 @@ export function useTemplatesTab(mode: 'templates' | 'compliance') {
                     <p className="text-[11px] md:text-xs text-slate-500">{template.description}</p>
                   </div>
                   {template.regulatoryRef && (
-                    <div className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200 shrink-0">
+                    <div className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200 shrink-0">
                       <ShieldAlert className="h-3 w-3" />
                       {template.regulatoryRef}
                     </div>

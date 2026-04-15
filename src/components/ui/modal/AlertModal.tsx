@@ -184,7 +184,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
                 <div className="space-y-2">
                   <h3
                     id="alert-modal-title"
-                    className="text-base sm:text-lg font-semibold text-slate-900"
+                    className="text-sm md:text-base lg:text-lg font-semibold text-slate-900"
                   >
                     {title}
                   </h3>
@@ -207,7 +207,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
               </div>
             </div>
 
-            <div className="px-5 sm:px-6 py-3 sm:py-4 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-2 sm:gap-3">
+            <div className="px-5 sm:px-6 py-3 sm:py-4 bg-slate-50/50 border-t border-slate-200 flex justify-end gap-2 sm:gap-3">
               {shouldShowCancel && (
                 <Button
                   size="sm"

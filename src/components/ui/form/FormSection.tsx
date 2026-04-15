@@ -38,7 +38,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
       transition={{ duration: 0.3, ease: "easeOut" }}
       className={cn("bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden", className)}
     >
-      <div className="flex items-center justify-between gap-2.5 px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/50">
+      <div className="flex items-center justify-between gap-2.5 px-5 py-4 border-b border-slate-200 bg-gradient-to-r from-white to-slate-50/50">
         <div className="flex items-center gap-2.5">
           {icon && (
             <span className="text-emerald-600 flex-shrink-0">
@@ -46,7 +46,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
             </span>
           )}
           <div>
-            <h3 className="text-sm font-semibold text-slate-800 tracking-tight">{title}</h3>
+            <h3 className="text-sm font-semibold text-slate-900 tracking-tight">{title}</h3>
             {description && (
               <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5">{description}</p>
             )}

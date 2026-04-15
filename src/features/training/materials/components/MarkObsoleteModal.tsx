@@ -201,7 +201,7 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
             {/* Header */}
             <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-slate-200 shrink-0 bg-white min-h-[64px]">
               <div className="min-w-0">
-                <h2 className="text-base font-bold text-slate-900">Mark as Obsolete</h2>
+                <h2 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900">Mark as Obsolete</h2>
                 <p className="text-xs text-slate-500 mt-0.5 truncate leading-tight">
                   {material.materialId} · {material.title} · v{material.version}
                 </p>
@@ -330,7 +330,7 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
 
                     {isReplacedByVersion && (
                       <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-700">New Version Material ID <span className="text-red-500">*</span></label>
+                        <label className="text-xs sm:text-sm font-medium text-slate-700">New Version Material ID <span className="text-red-500">*</span></label>
                         <input
                           type="text"
                           value={replacedByCode}
@@ -342,7 +342,7 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
                     )}
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-slate-700">Notes {justificationCode === "other" && "*"}</label>
+                      <label className="text-xs sm:text-sm font-medium text-slate-700">Notes {justificationCode === "other" && "*"}</label>
                       <textarea
                         value={justificationNote}
                         onChange={(e) => setJustificationNote(e.target.value)}
@@ -372,7 +372,7 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
 
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700">Password <span className="text-red-500">*</span></label>
+                      <label className="text-xs sm:text-sm font-medium text-slate-700">Password <span className="text-red-500">*</span></label>
                       <input
                         type="password"
                         value={password}
@@ -382,7 +382,7 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700">Regulatory Reason <span className="text-red-500">*</span></label>
+                      <label className="text-xs sm:text-sm font-medium text-slate-700">Regulatory Reason <span className="text-red-500">*</span></label>
                       <textarea
                         value={signReason}
                         onChange={(e) => { setSignReason(e.target.value); setSignError(""); }}

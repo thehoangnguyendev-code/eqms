@@ -383,7 +383,7 @@ export const CreateLinkModal: React.FC<CreateLinkModalProps> = ({
                     <label className="text-sm font-medium text-emerald-900">
                       Generated Link
                     </label>
-                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                       <Check className="h-3 w-3" />
                       Ready to Share
                     </span>

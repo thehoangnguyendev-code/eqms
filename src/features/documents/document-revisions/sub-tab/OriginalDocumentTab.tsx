@@ -91,7 +91,7 @@ export const OriginalDocumentTab: React.FC<OriginalDocumentTabProps> = ({ docume
             placeholder="Search by document number, name, author..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+            className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
           />
         </div>
       </div>
@@ -133,12 +133,12 @@ export const OriginalDocumentTab: React.FC<OriginalDocumentTabProps> = ({ docume
                 filteredDocuments.map((doc, index) => (
                   <tr
                     key={doc.documentNumber}
-                    className="hover:bg-slate-50/80 transition-colors"
+                    className="hover:bg-slate-50 transition-colors"
                   >
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-500 whitespace-nowrap">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-500 whitespace-nowrap">
                       {index + 1}
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap">
                       <button
                         onClick={() => handleDocumentClick(doc.documentNumber)}
                         className="font-medium text-emerald-600 hover:text-emerald-700 hover:underline underline-offset-2 transition-colors cursor-pointer"
@@ -146,22 +146,22 @@ export const OriginalDocumentTab: React.FC<OriginalDocumentTabProps> = ({ docume
                         {doc.documentNumber}
                       </button>
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap hidden md:table-cell">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-600 whitespace-nowrap hidden md:table-cell">
                       {formatDateTimeFull(doc.created)}
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap hidden md:table-cell">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-600 whitespace-nowrap hidden md:table-cell">
                       {doc.openedBy}
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-900 whitespace-nowrap">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-900 whitespace-nowrap">
                       {doc.documentName}
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap">
                       <StatusBadge status={mapDocumentStateToStatusType(doc.state)} />
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap hidden lg:table-cell">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-600 whitespace-nowrap hidden lg:table-cell">
                       {doc.author}
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap hidden lg:table-cell">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-600 whitespace-nowrap hidden lg:table-cell">
                       {formatDateTimeFull(doc.validUntil)}
                     </td>
                   </tr>

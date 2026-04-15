@@ -64,7 +64,7 @@ export const EmailLivePreview: React.FC<EmailLivePreviewProps> = ({
           <div className="w-3 h-3 rounded-full bg-amber-400 border border-amber-500/50" />
           <div className="w-3 h-3 rounded-full bg-emerald-400 border border-emerald-500/50" />
         </div>
-        <div className="text-xs text-slate-500 bg-white/70 px-3 py-1 rounded-md border border-slate-200/60 max-w-[50%] truncate">
+        <div className="text-xs text-slate-600 bg-white/70 px-3 py-1 rounded-lg border border-slate-200 max-w-[50%] truncate">
           {previewSubject}
         </div>
         <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400">

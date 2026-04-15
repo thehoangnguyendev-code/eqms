@@ -69,3 +69,4 @@ export type Config = typeof config;
 // Re-export sub-configurations
 export * from './responsive';
 export * from './security';
+export * from './ui-standards';

@@ -53,10 +53,10 @@ export const ReadOnlyReviewersTable: React.FC<{ reviewers: Reviewer[] }> = ({
                     key={reviewer.id}
                     className="hover:bg-slate-50/80 transition-colors"
                   >
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-500 whitespace-nowrap">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-500 whitespace-nowrap">
                       {index + 1}
                     </td>
-                    <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                    <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap">
                       <div>
                         <div className="font-medium text-slate-900">
                           {reviewer.name}

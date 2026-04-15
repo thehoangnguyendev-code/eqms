@@ -11,7 +11,7 @@ import { useNavigateWithLoading } from "@/hooks";
 import { ROUTES } from "@/app/routes.constants";
 
 import type { MatrixFilters, CellStatus, TrainingCell, SOPColumn, EmployeeRow } from "../../types";
-import { MOCK_EMPLOYEES, MOCK_SOPS, MOCK_CELLS, getCell } from "../../mockData";
+import { complianceTrackingRepository } from "../../repository";
 import {
   FilterBar,
   MatrixTable,
@@ -27,6 +27,10 @@ import {
 // ─── Main Component ──────────────────────────────────────────────────
 export const TrainingMatrixView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
+  const employees = complianceTrackingRepository.getMatrixEmployees();
+  const sops = complianceTrackingRepository.getSops();
+  const cells = complianceTrackingRepository.getCells();
+  const getCell = complianceTrackingRepository.getCell;
 
   const handleAssignTraining = () => {
     navigateTo(ROUTES.TRAINING.ASSIGNMENT_NEW);
@@ -68,7 +72,7 @@ export const TrainingMatrixView: React.FC = () => {
     const q = filters.searchQuery.toLowerCase();
     const { department, jobTitle, status } = filters;
 
-    return MOCK_EMPLOYEES.filter((emp) => {
+    return employees.filter((emp) => {
       const matchesSearch =
         !q ||
         emp.name.toLowerCase().includes(q) ||
@@ -85,7 +89,7 @@ export const TrainingMatrixView: React.FC = () => {
       if (!matchesJob) return false;
 
       if (status !== "All") {
-        const hasMatchingCell = MOCK_SOPS.some((sop) => {
+        const hasMatchingCell = sops.some((sop) => {
           const cell = getCell(emp.id, sop.id);
           return cell && cell.status === status;
         });
@@ -94,7 +98,7 @@ export const TrainingMatrixView: React.FC = () => {
 
       return true;
     });
-  }, [filters]);
+  }, [employees, sops, filters]);
 
   const hasActiveFilters = useMemo(() =>
     filters.searchQuery !== "" ||
@@ -108,7 +112,7 @@ export const TrainingMatrixView: React.FC = () => {
     const hasNewEmp = filteredEmployees.some((emp) => emp.id === "EMP-NEW");
     if (!hasNewEmp) return null;
 
-    const newEmpMissingCount = MOCK_SOPS.reduce((count, sop) => {
+    const newEmpMissingCount = sops.reduce((count, sop) => {
       const cell = getCell("EMP-NEW", sop.id);
       if (cell && (cell.status === "Required" || cell.status === "InProgress")) return count + 1;
       return count;
@@ -117,7 +121,7 @@ export const TrainingMatrixView: React.FC = () => {
     if (newEmpMissingCount === 0) return null;
 
     return { hasNewEmp, newEmpMissingCount };
-  }, [filteredEmployees]);
+  }, [filteredEmployees, sops, getCell]);
 
   const legendItems = useMemo(() => (
     (Object.entries(CELL_CONFIG) as [CellStatus, (typeof CELL_CONFIG)[CellStatus]][]).map(
@@ -293,4 +297,6 @@ export const TrainingMatrixView: React.FC = () => {
     </div>
   );
 };
+
+
 

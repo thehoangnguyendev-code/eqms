@@ -92,7 +92,7 @@ export const Popover: React.FC<PopoverProps> = ({
         >
           <div className="p-4">
             {title && (
-              <h4 className="text-sm font-semibold text-slate-900 mb-2 border-b border-slate-100 pb-2">
+              <h4 className="text-sm font-semibold text-slate-900 mb-2 border-b border-slate-200 pb-2">
                 {title}
               </h4>
             )}

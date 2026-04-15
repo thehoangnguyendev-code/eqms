@@ -216,7 +216,7 @@ export const TrainingTab: React.FC<TrainingTabProps> = ({
                         <div className="flex items-center justify-between px-1">
                             <label className="text-sm font-semibold text-slate-700">Distribution List</label>
                             {resolvedEmployees.length > 0 && (
-                                <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">
+                                <span className="text-xs bg-emerald-100 text-emerald-700 font-medium px-2.5 py-1 rounded-full border border-emerald-200">
                                     {resolvedEmployees.length} employees
                                 </span>
                             )}

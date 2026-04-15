@@ -51,7 +51,7 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
               placeholder="Search employee, department, job title..."
               value={filters.searchQuery}
               onChange={(e) => set({ searchQuery: e.target.value })}
-              className="w-full h-9 pl-10 pr-4 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-all"
+              className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-all"
             />
           </div>
         </div>

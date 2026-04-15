@@ -146,20 +146,20 @@ const MANUAL_TABS: ManualTab[] = Object.entries(manualContentData).map(([id, dat
 const TipBadge: React.FC<{ type: TipItem["type"] }> = ({ type }) => {
   if (type === "tip")
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 flex-shrink-0">
+      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 flex-shrink-0">
         <Lightbulb className="h-3 w-3" />
         Tip
       </span>
     );
   if (type === "warning")
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 flex-shrink-0">
+      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 flex-shrink-0">
         <AlertCircle className="h-3 w-3" />
         Warning
       </span>
     );
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 flex-shrink-0">
+    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 flex-shrink-0">
       <Info className="h-3 w-3" />
       Info
     </span>
@@ -174,7 +174,7 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
         <span className="text-emerald-600"><BookOpen className="h-4 w-4" /></span>
-        <h3 className="text-sm font-semibold text-slate-800">Overview</h3>
+        <h3 className="text-sm font-semibold text-slate-900">Overview</h3>
       </div>
       <div className="p-5">
         <p className="text-sm text-slate-700 leading-relaxed">{section.overview}</p>
@@ -185,7 +185,7 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
         <span className="text-emerald-600"><Star className="h-4 w-4" /></span>
-        <h3 className="text-sm font-semibold text-slate-800">Key Features</h3>
+        <h3 className="text-sm font-semibold text-slate-900">Key Features</h3>
       </div>
       <div className="p-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -214,7 +214,7 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
         <span className="text-emerald-600"><ListChecks className="h-4 w-4" /></span>
-        <h3 className="text-sm font-semibold text-slate-800">Step-by-Step Guide</h3>
+        <h3 className="text-sm font-semibold text-slate-900">Step-by-Step Guide</h3>
       </div>
       <div className="p-5">
         <div className="space-y-3">
@@ -246,7 +246,7 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
         <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
           <span className="text-emerald-600"><Lightbulb className="h-4 w-4" /></span>
-          <h3 className="text-sm font-semibold text-slate-800">Tips & Notes</h3>
+          <h3 className="text-sm font-semibold text-slate-900">Tips & Notes</h3>
         </div>
         <div className="p-5 space-y-3">
           {section.tips.map((tip, idx) => (
@@ -379,7 +379,7 @@ export const UserManualView: React.FC = () => {
         {/* Left — Module List (col-2) — Hidden on mobile */}
         <div className="hidden lg:block lg:col-span-3 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-            <h3 className="text-sm font-semibold text-slate-800">Modules List</h3>
+            <h3 className="text-sm font-semibold text-slate-900">Modules List</h3>
           </div>
           <div>
             {visibleTabs.map((tab) => {

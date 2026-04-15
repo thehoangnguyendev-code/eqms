@@ -492,7 +492,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
         >
           {renderCalendar()}
           
-          <div className="border-t border-slate-100 p-2 px-3 bg-slate-50/50">
+          <div className="border-t border-slate-200 p-2 px-3 bg-slate-50/50">
             <div className="flex items-center justify-between gap-2">
               <Button 
                 variant="ghost" 

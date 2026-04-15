@@ -373,7 +373,7 @@ export const PendingReviewView: React.FC = () => {
                           </td>
                           <td className={tdClass}>
                             {item.trainingType && (
-                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border bg-blue-50 text-blue-700 border-blue-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-blue-50 text-blue-700 border-blue-200">
                                 {item.trainingType}
                               </span>
                             )}

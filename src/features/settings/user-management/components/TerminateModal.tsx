@@ -102,7 +102,7 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
                 <UserX className="h-5 w-5 text-rose-600" />
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="text-base font-bold text-slate-900">Terminate Employee</h2>
+                <h2 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900">Terminate Employee</h2>
                 <p className="text-sm text-slate-500 mt-0.5">
                   Terminating <span className="font-semibold text-slate-700">{userName}</span>
                 </p>

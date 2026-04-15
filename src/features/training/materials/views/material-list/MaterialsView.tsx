@@ -538,7 +538,7 @@ export const MaterialsView: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-slate-500 font-medium">Total Materials</p>
-                    <p className="text-xl font-bold text-slate-900">{stats.totalMaterials}</p>
+                    <p className="text-2xl font-bold text-slate-900">{stats.totalMaterials}</p>
                   </div>
                 </div>
                 <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
@@ -557,7 +557,7 @@ export const MaterialsView: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-slate-500 font-medium">Videos</p>
-                    <p className="text-xl font-bold text-slate-900">{stats.totalVideos}</p>
+                    <p className="text-2xl font-bold text-slate-900">{stats.totalVideos}</p>
                   </div>
                 </div>
                 <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
@@ -576,7 +576,7 @@ export const MaterialsView: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-slate-500 font-medium">Documents</p>
-                    <p className="text-xl font-bold text-slate-900">{stats.totalDocuments}</p>
+                    <p className="text-2xl font-bold text-slate-900">{stats.totalDocuments}</p>
                   </div>
                 </div>
                 <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
@@ -595,7 +595,7 @@ export const MaterialsView: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-slate-500 font-medium">Images</p>
-                    <p className="text-xl font-bold text-slate-900">{stats.totalImages}</p>
+                    <p className="text-2xl font-bold text-slate-900">{stats.totalImages}</p>
                   </div>
                 </div>
                 <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
@@ -614,7 +614,7 @@ export const MaterialsView: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-amber-600 font-medium">Needs Action</p>
-                    <p className="text-xl font-bold text-amber-700">{stats.needsAction}</p>
+                    <p className="text-2xl font-bold text-amber-700">{stats.needsAction}</p>
                     <p className="text-xs text-slate-400 leading-tight">
                       {stats.pendingReview}R · {stats.pendingApproval}A
                     </p>
@@ -636,8 +636,7 @@ export const MaterialsView: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-slate-500 font-medium">Total Storage</p>
-                    <p className="text-xl font-bold text-slate-900">
-                      {stats.totalStorageMB} <span className="text-xs font-medium text-slate-500">MB</span>
+                    <p className="text-2xl font-bold text-slate-900"> <span className="text-xs font-medium text-slate-500">MB</span>
                     </p>
                   </div>
                 </div>

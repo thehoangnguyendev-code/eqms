@@ -322,7 +322,7 @@ export const RequestControlledCopyView: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2">
               <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Status</label>
               <div className="flex-1">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border bg-emerald-50 text-emerald-700 border-emerald-200">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-emerald-50 text-emerald-700 border-emerald-200">
                   Effective
                 </span>
               </div>
@@ -373,12 +373,12 @@ export const RequestControlledCopyView: React.FC = () => {
                           </span>
                           <span className="text-xs text-slate-500">v{doc.version}</span>
                           {doc.isParent && (
-                            <span className="px-1.5 lg:px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                               Parent
                             </span>
                           )}
                           {doc.status !== 'Effective' && (
-                            <span className="px-1.5 lg:px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
                               {doc.status}
                             </span>
                           )}
