@@ -277,15 +277,20 @@ html, body {
   --z-portal-escape: 9999; /* Only for portal components escaping stacking contexts */
   
   /* Primary Colors */
-  --color-primary: #6366f1; /* Indigo */
-  --color-primary-dark: #4f46e5;
-  --color-primary-light: #818cf8;
+  --color-primary: #059669; /* Emerald-600 */
+  --color-primary-dark: #047857;
+  --color-primary-light: #10b981;
+  --color-primary-rgb: 5, 150, 105;
   
   /* Status Colors */
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-info: #3b82f6;
+  --color-success-rgb: 16, 185, 129;
+  --color-warning-rgb: 245, 158, 11;
+  --color-error-rgb: 239, 68, 68;
+  --color-info-rgb: 59, 130, 246;
   
   /* Neutral Colors */
   --color-slate-50: #f8fafc;
@@ -493,4 +498,43 @@ body {
 
 .hover-scale:hover {
   transform: scale(1.02);
+}
+
+/* Accessibility: Skip link for keyboard users */
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: var(--z-toast);
+  transform: translateY(-140%);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-primary);
+  background-color: #ffffff;
+  color: var(--color-primary-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform var(--transition-fast);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
+}
+
+/* Accessibility: honor OS reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

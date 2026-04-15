@@ -300,7 +300,7 @@ export const RoleDetailView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
 
         {/* Left: Role Information */}
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-3">
           <FormSection title="Role Information" icon={<Info className="h-4 w-4" />}>
             <div className="flex flex-col gap-4">
               <div>
@@ -360,7 +360,7 @@ export const RoleDetailView: React.FC = () => {
         </div>
 
         {/* Right: Permission Section */}
-        <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[520px] lg:h-[calc(100vh-280px)]">
+        <div className="lg:col-span-9 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[520px] lg:h-[calc(100vh-280px)]">
         {/* Header */}
         <div className="flex items-center justify-between gap-2.5 px-5 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">

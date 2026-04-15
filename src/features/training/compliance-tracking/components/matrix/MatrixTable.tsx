@@ -76,7 +76,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
         <div
           ref={scrollContainerRef as any}
           className={cn(
-            "overflow-x-auto overflow-y-auto max-h-[340px] sm:max-h-[420px] md:max-h-[480px] relative transition-all duration-300",
+            "overflow-x-auto overflow-y-auto max-h-[400px] sm:max-h-[500px] md:max-h-[580px] relative transition-all duration-300",
             "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full",
             isDragging ? "cursor-grabbing select-none" : "cursor-grab"
           )}
@@ -105,7 +105,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
       </div>
 
       {/* Summary bar - responsive */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-t border-slate-200/60 bg-gradient-to-r from-slate-50/90 to-white/80 backdrop-blur-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-t border-slate-200/60 bg-white backdrop-blur-sm">
         <span className="text-[11px] sm:text-xs text-slate-500 flex items-center gap-1.5">
           <span className="font-semibold text-slate-700">{employees.length}</span> employees ×{" "}
           <span className="font-semibold text-slate-700">{MOCK_SOPS.length}</span> Courses
@@ -158,7 +158,7 @@ const MatrixHead: React.FC<MatrixHeadProps> = React.memo(({ onSOPHeaderClick }) 
       {MOCK_SOPS.map((sop) => (
         <th
           key={sop.id}
-          className="sticky top-0 z-20 bg-slate-50/90 backdrop-blur-sm border-b border-r border-slate-200/80 px-1 sm:px-1.5 py-2 sm:py-3 min-w-[55px] sm:min-w-[70px] md:min-w-[90px] max-w-[80px] sm:max-w-[100px] md:max-w-[130px] cursor-pointer hover:bg-slate-100/90 transition-all duration-200 group/sop text-left shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+          className="sticky top-0 z-20 bg-white backdrop-blur-sm border-b border-r border-slate-200/80 px-1 sm:px-1.5 py-2 sm:py-3 min-w-[55px] sm:min-w-[70px] md:min-w-[90px] max-w-[80px] sm:max-w-[100px] md:max-w-[130px] cursor-pointer hover:bg-slate-100/90 transition-all duration-200 group/sop text-left shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
           onClick={(e) => onSOPHeaderClick(e, sop)}
           title={`${sop.code}: ${sop.title}`}
         >

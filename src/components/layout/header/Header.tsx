@@ -8,7 +8,7 @@ import { cn } from '../../ui/utils';
 import { NotificationsDropdown } from './NotificationsDropdown';
 import { AlertModal } from '../../ui/modal/AlertModal';
 import { FullPageLoading } from '../../ui/loading/Loading';
-import { IconArrowBarRight, IconArrowBarToLeft, IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand, IconLogout } from '@tabler/icons-react';
+import { IconArrowBarRight, IconArrowBarToLeft, IconLogout } from '@tabler/icons-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ROUTES } from '@/app/routes.constants';
 import logoNoBg from '@/assets/images/logo_nobg.png';
@@ -106,15 +106,15 @@ export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSi
 
   return (
     <>
-      {isLoading && <FullPageLoading text="Please wait..." />}
+      {isLoading && <FullPageLoading text="Please wait" />}
       <AlertModal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={handleConfirmLogout}
         type="warning"
-        title="Confirm Logout"
+        title="Confirm Sign Out"
         description="Are you sure you want to log out? Any unsaved changes will be lost."
-        confirmText="Logout"
+        confirmText="Sign Out"
         cancelText="Cancel"
         isLoading={isLoading}
       />
@@ -217,6 +217,7 @@ export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSi
             {/* User Profile Dropdown */}
             <div className="relative">
               <button
+                type="button"
                 ref={userMenuRef}
                 className="flex items-center gap-1.5 md:gap-2 lg:gap-2.5 cursor-pointer min-h-[44px] min-w-[44px] px-1.5 py-1.5 lg:px-2 lg:py-1.5 rounded-lg border border-transparent transition-all select-none group"
                 onClick={handleToggleUserMenu}
@@ -275,22 +276,24 @@ export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSi
                         {/* Menu Items */}
                         <div className="py-0">
                           <button
+                            type="button"
                             className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 transition-colors"
                             onClick={handleProfileClick}
                           >
                             <User className="h-4 w-4 shrink-0" />
-                            <span>My Profile</span>
+                            <span>Profile</span>
                           </button>
                         </div>
 
                         {/* Logout */}
                         <div className="border-t border-slate-100">
                           <button
+                            type="button"
                             className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors"
                             onClick={handleLogoutClick}
                           >
                             <IconLogout className="h-4 w-4 shrink-0" />
-                            <span>Logout</span>
+                            <span>Sign Out</span>
                           </button>
                         </div>
                       </motion.div>

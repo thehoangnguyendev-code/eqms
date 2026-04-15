@@ -185,6 +185,7 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({ className, onClo
                       const Icon = navItem.parentIcon || navItem.icon;
                       return (
                         <button
+                          type="button"
                           key={navItem.id}
                           onClick={() => handleNavItemClick(navItem.path!)}
                           className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 rounded-lg transition-colors text-left group"

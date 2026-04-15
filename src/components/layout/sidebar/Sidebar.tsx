@@ -420,6 +420,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
               )}
 
               <button
+                type="button"
                 onClick={(e) => {
                   if (isCollapsed && hasChildren) {
                     handleMenuItemClick(item, e);
@@ -554,6 +555,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                 {/* Star icon for favorites - only for leaf nodes (no children) at any level */}
                 {!hasChildren && !isCollapsed && (
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       setFavoriteIds((prev) =>
@@ -705,6 +707,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         return (
           <div key={item.id} className="w-full">
             <button
+              type="button"
               onClick={() => handleSubItemClick(item, hasChildren)}
               className={cn(
                 "w-full flex items-center gap-2 px-4 py-2.5 text-sm transition-colors group",
@@ -778,56 +781,73 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
 
     // Hover menu portal component
     const HoverMenuPortal = () => {
-      if (!hoverMenu.isOpen || !hoverMenu.item || !isCollapsed) return null;
+      if (!isCollapsed) return null;
 
       return createPortal(
         <>
           {/* Invisible backdrop to detect outside clicks */}
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setHoverMenu((prev) => ({ ...prev, isOpen: false }))}
-            aria-hidden="true"
-          />
-
-          {/* Menu content */}
-          <div
-            className="fixed z-50 min-w-[240px] max-w-[280px] bg-white rounded-xl border border-slate-200 shadow-xl origin-left"
-            style={{
-              top: `${hoverMenu.position.top}px`,
-              left: `${hoverMenu.position.left}px`,
-              transform: hoverMenu.position.showAbove
-                ? "translateY(-100%)"
-                : "none",
-              maxHeight: "calc(100vh - 32px)",
-            }}
-          >
-            {/* Menu header */}
-            <div className="px-4 py-3 border-b border-slate-100 shrink-0">
-              <div className="flex items-center gap-3">
-                {hoverMenu.item.icon && (
-                  <hoverMenu.item.icon
-                    className={cn(
-                      "h-5 w-5",
-                      hoverMenu.item.iconColor || "text-slate-600",
-                    )}
-                  />
-                )}
-                <span className="font-semibold text-sm text-slate-900 text-left break-words leading-tight">
-                  {hoverMenu.item.label}
-                </span>
-              </div>
-            </div>
-
-            {/* Menu items */}
+          {hoverMenu.isOpen && hoverMenu.item && (
             <div
-              className="py-1 overflow-y-auto"
-              style={{ maxHeight: "calc(100vh - 120px)" }}
-            >
-              {hoverMenu.item.children?.map((child) =>
-                renderHoverSubItem(child),
-              )}
-            </div>
-          </div>
+              className="fixed inset-0 z-40"
+              onClick={() => setHoverMenu((prev) => ({ ...prev, isOpen: false }))}
+              aria-hidden="true"
+            />
+          )}
+
+          {/* Animated menu */}
+          <AnimatePresence>
+            {hoverMenu.isOpen && hoverMenu.item && (
+              <div
+                key="hover-menu"
+                className="fixed z-50"
+                style={{
+                  top: `${hoverMenu.position.top}px`,
+                  left: `${hoverMenu.position.left}px`,
+                  transform: hoverMenu.position.showAbove ? "translateY(-100%)" : undefined,
+                }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, x: -6 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, x: -6 }}
+                  transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                  className="min-w-[240px] max-w-[280px] bg-white rounded-xl border border-slate-200 shadow-xl"
+                  style={{
+                    transformOrigin: hoverMenu.position.showAbove ? "left bottom" : "left top",
+                    maxHeight: "calc(100vh - 32px)",
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* Menu header */}
+                  <div className="px-4 py-3 border-b border-slate-100 shrink-0">
+                    <div className="flex items-center gap-3">
+                      {hoverMenu.item.icon && (
+                        <hoverMenu.item.icon
+                          className={cn(
+                            "h-5 w-5",
+                            hoverMenu.item.iconColor || "text-slate-600",
+                          )}
+                        />
+                      )}
+                      <span className="font-semibold text-sm text-slate-900 text-left break-words leading-tight">
+                        {hoverMenu.item.label}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Menu items */}
+                  <div
+                    className="py-1 overflow-y-auto"
+                    style={{ maxHeight: "calc(100vh - 120px)", scrollbarWidth: "none" }}
+                  >
+                    {hoverMenu.item.children?.map((child) =>
+                      renderHoverSubItem(child),
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
         </>,
         document.body,
       );
@@ -839,7 +859,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         <TooltipPortal />
 
         {/* Hover Menu Portal */}
-        <HoverMenuPortal />
+        {HoverMenuPortal()}
 
         {/* Mobile Overlay Backdrop - Only show on mobile (<768px) */}
         {isMobileOpen && (
@@ -930,6 +950,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
             {/* Close button for mobile */}
             {!isCollapsed && (
               <button
+                type="button"
                 onClick={onClose}
                 className={cn(
                   "md:hidden flex items-center justify-center h-10 w-10 rounded-lg",
@@ -957,6 +978,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
             <div className="px-3 py-3 border-b border-slate-100 shrink-0">
               <div className="flex items-center gap-2 bg-slate-100 rounded-lg p-1 relative overflow-hidden">
                 <button
+                  type="button"
                   onClick={() => setActiveTab("all")}
                   className={cn(
                     "flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors relative z-10",
@@ -973,6 +995,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   <span className="relative z-20">All Items</span>
                 </button>
                 <button
+                  type="button"
                   onClick={() => setActiveTab("favourite")}
                   className={cn(
                     "flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors relative z-10",
@@ -989,7 +1012,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                     />
                   )}
                   <div className="relative z-20 flex items-center justify-center gap-1.5">
-                    <span>Favourite</span>
+                    <span>Favorites</span>
                   </div>
                 </button>
               </div>
@@ -1032,8 +1055,20 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   exit={{ opacity: 0, y: -5 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                 >
-                  {displayedNav.map((item, index) =>
-                    renderMenuItem(item, 0, index),
+                  {activeTab === "favourite" && displayedNav.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+                      <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+                        <IconStar className="h-5 w-5 text-slate-300" />
+                      </div>
+                      <p className="text-sm font-medium text-slate-500 mb-1">No favorites yet</p>
+                      <p className="text-xs text-slate-400 leading-relaxed">
+                        Star any menu item to add it here for quick access.
+                      </p>
+                    </div>
+                  ) : (
+                    displayedNav.map((item, index) =>
+                      renderMenuItem(item, 0, index),
+                    )
                   )}
                 </motion.div>
               </AnimatePresence>

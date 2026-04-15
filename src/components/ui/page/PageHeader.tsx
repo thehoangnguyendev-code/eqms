@@ -57,6 +57,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       <div className="w-full sm:w-auto sm:flex-1 min-w-0 overflow-hidden flex items-start gap-3">
         {onBack && (
           <button 
+            type="button"
             onClick={onBack}
             className="mt-1 flex-shrink-0 h-8 w-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:border-emerald-100 hover:bg-emerald-50 transition-all shadow-sm"
           >

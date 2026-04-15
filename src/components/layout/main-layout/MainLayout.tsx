@@ -156,6 +156,7 @@ export const MainLayout: React.FC = () => {
         {/* Scrollable Content Area - ONLY this div scrolls */}
         <div
           id="main-scroll-container"
+          tabIndex={-1}
           ref={scrollContainerRef}
           className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
           style={{

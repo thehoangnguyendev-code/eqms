@@ -260,6 +260,7 @@ const NotificationItem: React.FC<{
   return (
     <div className="w-full">
       <button
+        type="button"
         onClick={() => {
           notification.onClick();
           onClose();
@@ -529,11 +530,12 @@ const MobileDrawer: React.FC<{
         <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200">
           <h3 className="text-lg font-medium text-slate-900">Notifications</h3>
           <button
+            type="button"
             className="flex items-center gap-1.5 py-2 hover:bg-slate-100 active:bg-slate-200 rounded-lg transition-colors"
             onClick={() => console.log("Mark all as read")}
           >
             <CheckCheck className="h-4 w-4 text-emerald-600" />
-            <span className="text-xs font-medium text-emerald-600">Mark all read</span>
+            <span className="text-xs font-medium text-emerald-600">Mark All as Read</span>
           </button>
         </div>
 
@@ -571,6 +573,7 @@ const MobileDrawer: React.FC<{
         {/* Footer - View All */}
         <div className="border-t border-slate-200 px-4" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 12px)' }}>
           <button
+            type="button"
             className="w-full py-3 text-center text-sm font-medium text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100 rounded-lg transition-colors"
             onClick={() => {
               onViewAll();
@@ -678,6 +681,7 @@ const DesktopDropdown: React.FC<{
         <div className="flex items-center justify-between px-5 py-2">
           <h3 className="text-base font-bold text-slate-900 tracking-tight">Notifications</h3>
           <button
+            type="button"
             className={cn(
               "p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-emerald-600 transition-all duration-500",
               isLoading && "animate-spin text-emerald-600"
@@ -725,10 +729,11 @@ const DesktopDropdown: React.FC<{
         {/* Footer */}
         <div className="flex items-center justify-between px-5 py-3.5 border-t border-slate-100 bg-white shrink-0">
           <button
+            type="button"
             className="text-[13px] font-semibold text-slate-900 hover:text-emerald-600 underline underline-offset-4 decoration-slate-300 hover:decoration-emerald-500 transition-colors"
             onClick={handleMarkAllRead}
           >
-            Mark all as read
+            Mark All as Read
           </button>
           <Button
             variant="outline"
@@ -739,7 +744,7 @@ const DesktopDropdown: React.FC<{
             }}
             className="h-9 px-4 rounded-lg text-xs font-medium border-slate-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-all font-semibold"
           >
-            Go to notification center
+            Open Notification Center
           </Button>
         </div>
       </motion.div>

@@ -97,6 +97,7 @@ export const FormModal: React.FC<FormModalProps> = ({
                   )}
                 </div>
                 <button
+                  type="button"
                   onClick={onClose}
                   className="flex-shrink-0 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
                   aria-label="Close"

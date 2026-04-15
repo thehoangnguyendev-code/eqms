@@ -33,7 +33,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'default', size = 'default', fullWidth = false, ...props }, ref) => {
+  ({ className, variant = 'default', size = 'default', fullWidth = false, type, ...props }, ref) => {
     const variants = {
       default: 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm hover:shadow-md active:scale-[0.97] transition-all duration-200',
       outline: 'border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-200 text-slate-900 shadow-sm hover:shadow active:scale-[0.97] transition-all duration-200',
@@ -59,6 +59,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        type={type ?? 'button'}
         className={cn(
           'inline-flex items-center justify-center rounded-lg font-medium',
           'ring-offset-background transition-all duration-200',
