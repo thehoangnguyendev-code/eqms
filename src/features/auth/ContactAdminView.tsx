@@ -284,20 +284,16 @@ export const ContactAdminView: React.FC<ContactAdminViewProps> = ({
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="w-full max-w-md z-10"
         >
-          <div className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20">
-            {/* Mobile gradient top bar */}
-            <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
-
-            {/* Success State */}
-            <AnimatePresence mode="wait">
-              {isSuccess ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="px-6 sm:px-8 py-10"
-                >
+          {/* Success State */}
+          <AnimatePresence mode="wait">
+            {isSuccess ? (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20 px-6 sm:px-8 py-10"
+              >
                   <div className="text-center space-y-6">
                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 mb-2">
                       <CheckCircle2 className="h-10 w-10 text-emerald-600" aria-hidden="true" />
@@ -327,15 +323,17 @@ export const ContactAdminView: React.FC<ContactAdminViewProps> = ({
                     </div>
                   </div>
                 </motion.div>
-              ) : (
-                <motion.div
-                  key="form"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="w-full"
-                >
-                  {/* Form Header */}
+            ) : (
+              <motion.div
+                key="form"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20 w-full"
+              >
+                {/* Mobile gradient top bar */}
+                <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
+                {/* Form Header */}
                   <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
                     <div className="text-center space-y-4">
                       <div className="flex items-center justify-center mb-2">
@@ -603,10 +601,9 @@ export const ContactAdminView: React.FC<ContactAdminViewProps> = ({
                       </button>
                     </form>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </div>

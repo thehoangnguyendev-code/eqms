@@ -207,54 +207,40 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="w-full max-w-md z-10"
         >
-          <div className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20">
-            {/* Mobile gradient top bar */}
-            <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
-
-            <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
-              {/* Header */}
-              <div className="text-center space-y-4">
-                <div className="flex items-center justify-center mb-2">
-                  <img
-                    src={logoImg}
-                    alt="QMS Logo"
-                    className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                </div>
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight sm:whitespace-nowrap">
-                  Additional Authentication Required
-                </h1>
-                <p className="text-slate-500 text-sm max-w-auto mx-auto leading-relaxed">
-                  {!method
-                    ? <>Select default verification method for the account <span className="font-semibold text-slate-800">{username}</span></>
-                    : method === 'email'
-                      ? <>Enter 6 digit verification code sent to the email registered with the account: <span className="font-semibold text-slate-800">{email}</span></>
-                      : <>Enter code shown on Authenticator App with username <span className="font-semibold text-slate-800">{username}</span></>
-                  }
-                </p>
-              </div>
-
-              <div className="py-4">
-                {/* Error Alert */}
-                {error && (
-                  <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm font-medium animate-in fade-in slide-in-from-top-2 duration-300">
-                    {error}
+          <AnimatePresence mode="wait">
+            {!method ? (
+              <motion.div
+                key="selection"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20"
+              >
+                {/* Mobile gradient top bar */}
+                <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
+                <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
+                  {/* Header */}
+                  <div className="text-center space-y-4">
+                    <div className="flex items-center justify-center mb-2">
+                      <img
+                        src={logoImg}
+                        alt="QMS Logo"
+                        className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    </div>
+                    <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight sm:whitespace-nowrap">
+                      Additional Authentication Required
+                    </h1>
+                    <p className="text-slate-500 text-sm max-w-auto mx-auto leading-relaxed">
+                      Select default verification method for the account <span className="font-semibold text-slate-800">{username}</span>
+                    </p>
                   </div>
-                )}
-
-                <AnimatePresence mode="wait">
-                  {!method ? (
-                    <motion.div
-                      key="selection"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.3 }}
-                      className="grid grid-cols-1 gap-3"
-                    >
+                  <div className="py-4">
+                    <div className="grid grid-cols-1 gap-3">
                       <div className="group relative flex items-center justify-between p-4 rounded-2xl border border-slate-200/60 bg-white/50 hover:bg-white hover:border-slate-300 transition-all duration-300 shadow-sm overflow-hidden backdrop-blur-sm">
                         <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 mr-3">
                           <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-500">
@@ -307,17 +293,53 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                         <ArrowLeft size={16} />
                         Back to Sign In
                       </button>
-                    </motion.div>
-                  ) : (
-                    <motion.form
-                      key="otp-form"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
-                      onSubmit={handleSubmit}
-                      className="space-y-8"
-                    >
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.form
+                key="otp-form"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                onSubmit={handleSubmit}
+                className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20"
+              >
+                {/* Mobile gradient top bar */}
+                <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
+                <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
+                  {/* Header */}
+                  <div className="text-center space-y-4">
+                    <div className="flex items-center justify-center mb-2">
+                      <img
+                        src={logoImg}
+                        alt="QMS Logo"
+                        className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    </div>
+                    <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight sm:whitespace-nowrap">
+                      Additional Authentication Required
+                    </h1>
+                    <p className="text-slate-500 text-sm max-w-auto mx-auto leading-relaxed">
+                      {method === 'email'
+                        ? <>Enter 6 digit verification code sent to the email registered with the account: <span className="font-semibold text-slate-800">{email}</span></>
+                        : <>Enter code shown on Authenticator App with username <span className="font-semibold text-slate-800">{username}</span></>
+                      }
+                    </p>
+                  </div>
+                  <div className="py-4">
+                    {/* Error Alert */}
+                    {error && (
+                      <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm font-medium animate-in fade-in slide-in-from-top-2 duration-300">
+                        {error}
+                      </div>
+                    )}
+                    <div className="space-y-8">
                       {/* OTP Input Group */}
                       <div className="flex justify-between gap-2 sm:gap-3" onPaste={handlePaste}>
                         {otp.map((digit, index) => (
@@ -391,12 +413,12 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                           </button>
                         </div>
                       </div>
-                    </motion.form>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.form>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </div>

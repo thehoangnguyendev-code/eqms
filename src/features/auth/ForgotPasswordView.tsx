@@ -234,10 +234,6 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="w-full max-w-md z-10"
         >
-          <div className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60">
-            {/* Mobile gradient top bar */}
-            <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
-
             {/* Success State */}
             <AnimatePresence mode="wait">
               {isSuccess ? (
@@ -246,7 +242,7 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="px-6 sm:px-8 py-10"
+                  className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 px-6 sm:px-8 py-10"
                 >
                   <div className="text-center space-y-6">
                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 mb-2">
@@ -283,8 +279,10 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="w-full"
+                  className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 w-full"
                 >
+                  {/* Mobile gradient top bar */}
+                  <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
                   {/* Form Header */}
                   <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
                     <div className="text-center space-y-4">
@@ -426,7 +424,6 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
         </motion.div>
       </div>
     </div>
