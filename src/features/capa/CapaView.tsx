@@ -9,7 +9,6 @@ import {
     Plus,
     Eye,
     Edit,
-    MoreVertical,
     AlertTriangle,
     FileText,
     Download,
@@ -23,8 +22,9 @@ import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
 import { StatusBadge } from "@/components/ui";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
-import { createPortal } from "react-dom";
+import { FilterCard } from "@/components/ui/card/FilterCard";
+import { ActionDropdown } from "@/components/ui/dropdown/ActionDropdown";
+import { useNavigateWithLoading, useTableDragScroll } from "@/hooks";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { cn } from "@/components/ui/utils";
 import { CAPA, CAPAFilters, CAPAType, CAPASource, CAPAStatus } from "./types";
@@ -33,7 +33,6 @@ import { MOCK_CAPAS } from "./mockData";
 export const CAPAView: React.FC = () => {
     const { navigateTo, isNavigating } = useNavigateWithLoading();
     const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
-    const { openId, position, getRef, toggle, close } = usePortalDropdown();
     const [filters, setFilters] = useState<CAPAFilters>({
         searchQuery: "",
         typeFilter: "All",
@@ -205,10 +204,9 @@ export const CAPAView: React.FC = () => {
             />
 
             {/* Filters */}
-            <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
-                {/* Row 1: Search + Type + Source */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-9 gap-4 items-end">
-                    <div className="xl:col-span-3">
+            <FilterCard>
+                <FilterCard.Row>
+                    <FilterCard.Item span={4} mdSpan={2}>
                         <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
                             Search
                         </label>
@@ -221,10 +219,11 @@ export const CAPAView: React.FC = () => {
                                 onChange={(e) =>
                                     setFilters({ ...filters, searchQuery: e.target.value })
                                 }
-                                className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
+                                className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors"
                             />
                             {filters.searchQuery && (
                                 <button
+                                    type="button"
                                     onClick={() => {
                                         setFilters({ ...filters, searchQuery: "" });
                                         setCurrentPage(1);
@@ -236,9 +235,9 @@ export const CAPAView: React.FC = () => {
                                 </button>
                             )}
                         </div>
-                    </div>
+                    </FilterCard.Item>
 
-                    <div className="xl:col-span-3">
+                    <FilterCard.Item span={4}>
                         <Select
                             label="Type"
                             value={filters.typeFilter}
@@ -250,9 +249,9 @@ export const CAPAView: React.FC = () => {
                             }
                             options={typeOptions}
                         />
-                    </div>
+                    </FilterCard.Item>
 
-                    <div className="xl:col-span-3">
+                    <FilterCard.Item span={4}>
                         <Select
                             label="Source"
                             value={filters.sourceFilter}
@@ -264,12 +263,11 @@ export const CAPAView: React.FC = () => {
                             }
                             options={sourceOptions}
                         />
-                    </div>
-                </div>
+                    </FilterCard.Item>
+                </FilterCard.Row>
 
-                {/* Row 2: Status + Date Range */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 items-end mt-4">
-                    <div className="xl:col-span-2">
+                <FilterCard.Row className="mt-4">
+                    <FilterCard.Item span={4}>
                         <Select
                             label="Status"
                             value={filters.statusFilter}
@@ -281,25 +279,25 @@ export const CAPAView: React.FC = () => {
                             }
                             options={statusOptions}
                         />
-                    </div>
+                    </FilterCard.Item>
 
-                    <div className="xl:col-span-2">
+                    <FilterCard.Item span={4}>
                         <DateTimePicker
                             label="From Date"
                             value={filters.dateFrom}
                             onChange={(value) => setFilters({ ...filters, dateFrom: value })}
                         />
-                    </div>
+                    </FilterCard.Item>
 
-                    <div className="xl:col-span-2">
+                    <FilterCard.Item span={4}>
                         <DateTimePicker
                             label="To Date"
                             value={filters.dateTo}
                             onChange={(value) => setFilters({ ...filters, dateTo: value })}
                         />
-                    </div>
-                </div>
-            </div>
+                    </FilterCard.Item>
+                </FilterCard.Row>
+            </FilterCard>
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
@@ -467,17 +465,21 @@ export const CAPAView: React.FC = () => {
                                                 )}
                                             </td>
                                             <td className="py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-center sticky right-0 bg-white z-30 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50">
-                                                <button
-                                                    ref={getRef(capa.id)}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        toggle(capa.id, e);
-                                                    }}
-                                                    className="inline-flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-lg hover:bg-slate-200 transition-colors"
-                                                    aria-label="More actions"
-                                                >
-                                                    <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600" />
-                                                </button>
+                                                <ActionDropdown
+                                                    size="default"
+                                                    actions={[
+                                                        {
+                                                            label: "View Detail",
+                                                            icon: <Eye className="h-4 w-4" />,
+                                                            onClick: () => handleView(capa.id),
+                                                        },
+                                                        {
+                                                            label: "Edit CAPA",
+                                                            icon: <Edit className="h-4 w-4" />,
+                                                            onClick: () => handleEdit(capa.id),
+                                                        },
+                                                    ]}
+                                                />
                                             </td>
                                         </tr>
                                     ))}
@@ -514,81 +516,7 @@ export const CAPAView: React.FC = () => {
                     />
                 )}
             </div>
-
-            {/* Action Menu */}
-            <CAPAActionMenu
-                isOpen={openId !== null}
-                onClose={close}
-                position={position}
-                onView={() => {
-                    if (openId) handleView(openId);
-                }}
-                onEdit={() => {
-                    if (openId) handleEdit(openId);
-                }}
-            />
         </div>
-    );
-};
-
-interface CAPAActionMenuProps {
-    isOpen: boolean;
-    onClose: () => void;
-    position: PortalDropdownPosition;
-    onView: () => void;
-    onEdit: () => void;
-}
-
-const CAPAActionMenu: React.FC<CAPAActionMenuProps> = ({
-    isOpen,
-    onClose,
-    position,
-    onView,
-    onEdit,
-}) => {
-    if (!isOpen) return null;
-
-    return createPortal(
-        <>
-            <div
-                className="fixed inset-0 z-40 animate-in fade-in duration-150"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onClose();
-                }}
-                aria-hidden="true"
-            />
-            <div
-                className="absolute z-50 min-w-[160px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-                style={position.style}
-            >
-                <div className="py-1">
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onView();
-                            onClose();
-                        }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                    >
-                        <Eye className="h-4 w-4 flex-shrink-0" />
-                        <span>View Detail</span>
-                    </button>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onEdit();
-                            onClose();
-                        }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                    >
-                        <Edit className="h-4 w-4 flex-shrink-0" />
-                        <span>Edit CAPA</span>
-                    </button>
-                </div>
-            </div>
-        </>,
-        document.body
     );
 };
 

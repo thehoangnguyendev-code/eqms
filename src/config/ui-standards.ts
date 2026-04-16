@@ -163,7 +163,7 @@ export const SHADOW = {
 // ============================================================================
 export const COMPONENT_PRESETS = {
   // INPUT/SEARCH FIELD (PRIMARY STANDARD)
-  searchInput: 'h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors',
+  searchInput: 'h-9 pl-10 pr-10 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 transition-colors',
   
   // BADGE STANDARD
   badgeStandard: 'px-2.5 py-1 rounded-full text-xs font-medium border',
