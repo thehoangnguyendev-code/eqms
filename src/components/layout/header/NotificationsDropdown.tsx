@@ -2,12 +2,14 @@ import React, { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, DollarSign, Reply, X, RefreshCw, ExternalLink } from 'lucide-react';
+import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, DollarSign, Reply, RefreshCw, ArrowLeft } from 'lucide-react';
 import { TabNav, type TabItem } from '../../ui/tabs/TabNav';
 import { Button } from '../../ui/button/Button';
 import { cn } from '../../ui/utils';
 import { ROUTES } from '@/app/routes.constants';
 import { AlertModal } from '../../ui/modal/AlertModal';
+import logoNoBg from '@/assets/images/logo_nobg.png';
+import { IconChevronLeft } from '@tabler/icons-react';
 
 interface NotificationsDropdownProps {
   isOpen: boolean;
@@ -328,229 +330,104 @@ const NotificationSkeleton: React.FC<{ isLast?: boolean }> = ({ isLast }) => (
   </div>
 );
 
-// Mobile Bottom Drawer Component
-const MobileDrawer: React.FC<{
-  isOpen: boolean;
+// Mobile Full-Screen Notifications Component
+const MobileNotificationsScreen: React.FC<{
   onClose: () => void;
-  onViewAll: () => void;
-}> = ({ isOpen, onClose, onViewAll }) => {
-  const [animationState, setAnimationState] = useState<'closed' | 'opening' | 'open' | 'closing'>('closed');
-  const [shouldRender, setShouldRender] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [drawerHeight, setDrawerHeight] = useState(70); // Height in vh (percentage of viewport)
-  const dragStartY = useRef(0);
-  const dragStartHeight = useRef(70);
-  const drawerRef = useRef<HTMLDivElement>(null);
-
-  // Min and max height constraints (in vh)
-  const MIN_HEIGHT = 30;
-  const MAX_HEIGHT = 100;
-  const CLOSE_THRESHOLD = 20; // Close drawer if dragged below this height
+}> = ({ onClose }) => {
+  const [activeTab, setActiveTab] = useState('all');
+  const [mobileNotifications, setMobileNotifications] = useState(() => [...NOTIFICATIONS]);
 
   useEffect(() => {
-    if (isOpen) {
-      setShouldRender(true);
-      setDrawerHeight(70); // Reset to default height
-      // Start from below screen
-      setAnimationState('closed');
-      // Small delay then animate up
-      const openTimer = setTimeout(() => {
-        setAnimationState('opening');
-      }, 10);
-      // Mark as fully open
-      const openedTimer = setTimeout(() => {
-        setAnimationState('open');
-      }, 450);
-      // Lock body scroll
-      document.body.style.overflow = 'hidden';
-      return () => {
-        clearTimeout(openTimer);
-        clearTimeout(openedTimer);
-      };
-    } else {
-      if (animationState !== 'closed') {
-        setAnimationState('closing');
-        // Wait for animation to complete before unmounting
-        const timer = setTimeout(() => {
-          setShouldRender(false);
-          setAnimationState('closed');
-        }, 350);
-        // Restore body scroll
-        document.body.style.overflow = '';
-        return () => clearTimeout(timer);
-      }
-    }
-
+    document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen]);
+  }, []);
 
-  // Handle drag start
-  const handleDragStart = (clientY: number) => {
-    setIsDragging(true);
-    dragStartY.current = clientY;
-    dragStartHeight.current = drawerHeight;
+  const counts = {
+    all: mobileNotifications.length,
+    me: mobileNotifications.filter(n => (n.type as any) !== 'system').length,
+    system: mobileNotifications.filter(n => (n.type as any) === 'system').length,
   };
 
-  // Handle drag move
-  const handleDragMove = (clientY: number) => {
-    if (!isDragging) return;
+  const MOBILE_TABS: TabItem[] = [
+    { id: 'all', label: 'All', count: counts.all },
+    { id: 'me', label: 'For Me', count: counts.me },
+    { id: 'system', label: 'System', count: counts.system },
+  ];
 
-    const viewportHeight = window.innerHeight;
-    const deltaY = dragStartY.current - clientY; // Positive when dragging up
-    const deltaVh = (deltaY / viewportHeight) * 100;
+  const filteredNotifications = mobileNotifications.filter(n => {
+    if (activeTab === 'all') return true;
+    if (activeTab === 'me') return (n.type as any) !== 'system';
+    if (activeTab === 'system') return (n.type as any) === 'system';
+    return true;
+  });
 
-    let newHeight = dragStartHeight.current + deltaVh;
-    // Clamp between min and max
-    newHeight = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, newHeight));
-    setDrawerHeight(newHeight);
+  const handleMarkAllRead = () => {
+    setMobileNotifications(prev => prev.map(item => ({ ...item, status: 'read' })));
   };
-
-  // Handle drag end
-  const handleDragEnd = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-
-    // Close if dragged too low
-    if (drawerHeight < CLOSE_THRESHOLD) {
-      onClose();
-      return;
-    }
-
-    // Snap to nearest comfortable height
-    if (drawerHeight < 40) {
-      setDrawerHeight(MIN_HEIGHT);
-    } else if (drawerHeight > 90) {
-      setDrawerHeight(MAX_HEIGHT);
-    }
-    // Otherwise keep current height
-  };
-
-  // Touch handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    handleDragStart(e.touches[0].clientY);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    handleDragMove(e.touches[0].clientY);
-  };
-
-  const handleTouchEnd = () => {
-    handleDragEnd();
-  };
-
-  // Mouse handlers (for testing on desktop)
-  const handleMouseDown = (e: React.MouseEvent) => {
-    handleDragStart(e.clientY);
-  };
-
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      handleDragMove(e.clientY);
-    };
-
-    const handleMouseUp = () => {
-      handleDragEnd();
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging]);
-
-  if (!shouldRender) return null;
-
-  const isVisible = animationState === 'opening' || animationState === 'open';
-  const isFullHeight = drawerHeight >= 95;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 md:hidden">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-        style={{
-          opacity: isVisible ? 1 : 0,
-          transition: `opacity ${isVisible ? '350ms' : '250ms'} cubic-bezier(0.4, 0, 0.2, 1)`,
-        }}
-        onClick={onClose}
-      />
-
-      {/* Drawer */}
-      <div
-        ref={drawerRef}
-        className={cn(
-          "absolute bottom-0 left-0 right-0 bg-white shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.25)]",
-          isFullHeight ? "rounded-none" : "rounded-t-xl"
-        )}
-        style={{
-          height: `${drawerHeight}dvh`,
-          // Safe area for home indicator (bottom) and Dynamic Island (top when expanded)
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-          paddingTop: isFullHeight ? 'env(safe-area-inset-top, 0px)' : '0',
-          paddingLeft: 'env(safe-area-inset-left, 0px)',
-          paddingRight: 'env(safe-area-inset-right, 0px)',
-          transform: isVisible ? 'translateY(0)' : 'translateY(100%)',
-          transition: isDragging
-            ? 'none'
-            : isVisible
-              ? 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1), height 300ms cubic-bezier(0.16, 1, 0.3, 1), border-radius 200ms ease'
-              : 'transform 300ms cubic-bezier(0.4, 0, 0.6, 1)',
-          // iOS Safari optimization
-          WebkitBackfaceVisibility: 'hidden',
-          backfaceVisibility: 'hidden',
-        }}
+    <div
+      className="fixed inset-0 z-50 bg-white md:hidden"
+      style={{
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        paddingLeft: 'env(safe-area-inset-left, 0px)',
+        paddingRight: 'env(safe-area-inset-right, 0px)',
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, x: 24 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 24 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        className="flex h-full flex-col"
       >
-        {/* Drawer Handle - Draggable */}
-        <div
-          className={cn(
-            "flex justify-center py-3 cursor-grab active:cursor-grabbing select-none touch-none",
-            isFullHeight && "pt-4"
-          )}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onMouseDown={handleMouseDown}
-        >
-          <div className={cn(
-            "rounded-full transition-all duration-200",
-            isDragging
-              ? "w-20 h-1.5 bg-slate-400"
-              : "w-12 h-1 bg-slate-300 hover:bg-slate-400 hover:w-16"
-          )} />
-        </div>
-
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200">
-          <h3 className="text-lg font-medium text-slate-900">Notifications</h3>
+        {/* Top bar: Back + Logo */}
+        <div className="grid grid-cols-[40px_1fr_40px] items-center border-b border-slate-200 px-4 py-3">
           <button
             type="button"
-            className="flex items-center gap-1.5 py-2 hover:bg-slate-100 active:bg-slate-200 rounded-lg transition-colors"
-            onClick={() => console.log("Mark all as read")}
+            onClick={onClose}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 text-slate-700 transition-colors hover:bg-slate-100"
+            aria-label="Back"
+          >
+            <IconChevronLeft className="h-5 w-5" />
+          </button>
+          <div className="flex justify-center">
+            <img src={logoNoBg} alt="Logo" className="h-8 w-auto object-contain" />
+          </div>
+          <div />
+        </div>
+
+        {/* Title + Action */}
+        <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+          <h3 className="text-lg font-semibold text-slate-900">Notifications</h3>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-emerald-600 transition-colors hover:bg-emerald-50"
+            onClick={handleMarkAllRead}
           >
             <CheckCheck className="h-4 w-4 text-emerald-600" />
-            <span className="text-xs font-medium text-emerald-600">Mark All as Read</span>
+            <span>Mark All as Read</span>
           </button>
         </div>
 
+        {/* Tabs */}
+        <div className="border-b border-slate-100 px-4 py-3">
+          <TabNav
+            tabs={MOBILE_TABS}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            variant="pill"
+            layoutId="mobileNotificationTabIndicator"
+            className="w-full bg-slate-100/80"
+          />
+        </div>
+
         {/* Notifications List */}
-        <div
-          className="overflow-y-auto overscroll-contain flex-1"
-          style={{
-            // Dynamic height based on drawer height
-            height: `calc(${drawerHeight}dvh - 120px - ${isFullHeight ? 'env(safe-area-inset-top, 0px)' : '0px'} - env(safe-area-inset-bottom, 0px))`,
-            WebkitOverflowScrolling: 'touch',
-            transition: isDragging ? 'none' : 'height 300ms cubic-bezier(0.16, 1, 0.3, 1)',
-            overscrollBehavior: 'contain',
-          }}
-        >
-          {NOTIFICATIONS.length === 0 ? (
+        <div className="flex-1 overflow-y-auto overscroll-contain">
+          {filteredNotifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 px-4">
               <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
                 <Bell className="h-8 w-8 text-slate-400" />
@@ -559,32 +436,17 @@ const MobileDrawer: React.FC<{
               <p className="text-sm text-slate-500 mt-1">You're all caught up!</p>
             </div>
           ) : (
-            NOTIFICATIONS.map((notification, index) => (
+            filteredNotifications.map((notification, index) => (
               <NotificationItem
                 key={notification.id}
                 notification={notification}
-                isLast={index === NOTIFICATIONS.length - 1}
+                isLast={index === filteredNotifications.length - 1}
                 onClose={onClose}
               />
             ))
           )}
         </div>
-
-        {/* Footer - View All */}
-        <div className="border-t border-slate-200 px-4" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 12px)' }}>
-          <button
-            type="button"
-            className="w-full py-3 text-center text-sm font-medium text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100 rounded-lg transition-colors"
-            onClick={() => {
-              onViewAll();
-              onClose();
-            }}
-          >
-            View all notifications
-          </button>
-        </div>
-
-      </div>
+</motion.div>
     </div>,
     document.body
   );
@@ -794,8 +656,12 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ is
         </Button>
       </div>
 
-      {/* Mobile: Bottom Drawer */}
-      {isMobile && <MobileDrawer isOpen={isOpen} onClose={onClose} onViewAll={handleViewAllNotifications} />}
+      {/* Mobile: Full-Screen Notifications */}
+      {isMobile && (
+        <AnimatePresence>
+          {isOpen && <MobileNotificationsScreen onClose={onClose} />}
+        </AnimatePresence>
+      )}
 
       {/* Desktop: Dropdown */}
       {!isMobile && (
