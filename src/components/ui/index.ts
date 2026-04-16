@@ -16,7 +16,6 @@ export * from './card';
 export * from './table';
 export * from './dropdown';
 export * from './page';
-export * from './stepper';
 export * from './tabs';
 
 // Feedback Components
@@ -31,7 +30,6 @@ export * from './esign-modal';
 
 // Utilities
 export { cn } from './utils';
-export * from './responsive';
 
 
 

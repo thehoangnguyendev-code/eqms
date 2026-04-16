@@ -16,29 +16,6 @@ interface PageHeaderProps {
   className?: string;
 }
 
-/**
- * PageHeader — Standard page header used across all views.
- *
- * Layout:
- *   [Title + Breadcrumb]  ·····  [Actions]
- *
- * Usage:
- * ```tsx
- * import { PageHeader } from "@/components/ui/page/PageHeader";
- * import breadcrumbs from "@/components/ui/breadcrumb/breadcrumbs.config";
- *
- * <PageHeader
- *   title="Course List"
- *   breadcrumbItems={breadcrumbs.coursesList(navigate)}
- *   actions={
- *     <>
- *       <Button variant="outline" size="sm">Export</Button>
- *       <Button size="sm">+ New</Button>
- *     </>
- *   }
- * />
- * ```
- */
 export const PageHeader: React.FC<PageHeaderProps> = ({
   title,
   breadcrumbItems,
