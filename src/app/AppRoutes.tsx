@@ -14,7 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ROUTES } from './routes.constants';
 
 // Features - Auth (eager load for login page)
-import { LoginView, ForgotPasswordView, ContactAdminView, TwoFactorView } from '@/features/auth';
+import { LoginView, ForgotPasswordView, TwoFactorView } from '@/features/auth';
 import { UnderConstruction } from './UnderConstruction';
 
 // Loading & Domain Routes
@@ -31,14 +31,6 @@ const MyTeamView = lazy(() => import('@/features/my-team/MyTeamView').then(m => 
 const NotificationsView = lazy(() => import('@/features/notifications').then(m => ({ default: m.NotificationsView })));
 
 // ==================== MAIN ROUTES ====================
-
-interface AccountRequestPayload {
-  fullName: string;
-  email: string;
-  phone: string;
-  department: string;
-  position: string;
-}
 
 export const AppRoutes: React.FC = () => {
   const navigate = useNavigate();
@@ -82,22 +74,13 @@ export const AppRoutes: React.FC = () => {
     // TODO: Implement API call to send request to admin
   };
 
-  const handleContactAdmin = () => {
-    navigate(ROUTES.CONTACT_ADMIN);
-  };
-
-  const handleAccountRequest = (_data: AccountRequestPayload) => {
-    // TODO: Implement API call to send request to admin
-  };
-
   return (
     <Routes>
       {/* ==================== PUBLIC ROUTES ==================== */}
       <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
-      <Route path={ROUTES.LOGIN} element={<LoginView onLogin={handleLogin} onForgotPassword={handleForgotPassword} onContactAdmin={handleContactAdmin} />} />
+      <Route path={ROUTES.LOGIN} element={<LoginView onLogin={handleLogin} onForgotPassword={handleForgotPassword} />} />
       <Route path={ROUTES.TWO_FACTOR} element={<TwoFactorView onVerify={handleVerify2FA} onBackToLogin={handleBackToLogin} username={pendingCredentials?.username} />} />
       <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordView onBackToLogin={handleBackToLogin} onRequestSubmit={handlePasswordResetRequest} />} />
-      <Route path={ROUTES.CONTACT_ADMIN} element={<ContactAdminView onBackToLogin={handleBackToLogin} onRequestSubmit={handleAccountRequest} />} />
 
       {/* ==================== PROTECTED ROUTES (WITH LAYOUT) ==================== */}
       <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>

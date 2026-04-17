@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
@@ -7,8 +7,7 @@ import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { IconArrowBigUpFilled } from "@tabler/icons-react";
-import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { AuthBranding } from "./AuthBranding";
+import { motion } from "framer-motion";
 
 
 // ============================================================================
@@ -18,52 +17,15 @@ import { AuthBranding } from "./AuthBranding";
 const MIN_PASSWORD_LENGTH = 6;
 const LOGIN_SIMULATION_DELAY = 3500; // 1.5 seconds
 
-const SLIDE_CONTENT = [
-  {
-    tag: "Compliance First",
-    title: "Pharmaceutical Excellence",
-    description: "A comprehensive platform engineered for strict adherence to EU-GMP, FDA 21 CFR Part 11, and global GxP regulatory standards."
-  },
-  {
-    tag: "Digital Integrity",
-    title: "Streamlined Quality Workflows",
-    description: "Digitize critical processes from CAPA to Change Control. Ensure data integrity with automated audit trails and secure electronic signatures."
-  },
-  {
-    tag: "Strategic Vision",
-    title: "Real-time Quality Analytics",
-    description: "Transform operational data into strategic insights. Visualize quality trends instantly to drive continuous improvement and risk mitigation."
-  },
-  {
-    tag: "Global Synergy",
-    title: "Unified Quality Ecosystem",
-    description: "Break down operational silos. Foster seamless collaboration across departments and geographies in a secure, centralized environment."
-  },
-  {
-    tag: "Audit Readiness",
-    title: "Always Inspection-Ready",
-    description: "Maintain complete audit trails for every action, document, and decision. Stay perpetually prepared for regulatory inspections with immutable, timestamped records."
-  },
-  {
-    tag: "Risk Intelligence",
-    title: "Proactive Risk Management",
-    description: "Identify, assess, and mitigate quality risks before they escalate. Leverage integrated risk registers and automated escalation workflows to protect product integrity."
-  },
-  {
-    tag: "Supplier Trust",
-    title: "End-to-End Supplier Control",
-    description: "Manage supplier qualifications, audits, and performance metrics in one place. Ensure your supply chain meets the highest GxP and regulatory standards."
-  },
-  {
-    tag: "Training Excellence",
-    title: "Competency-Driven Workforce",
-    description: "Automate training assignments, track completions, and verify competencies across your organization. Build a culture of quality from the ground up."
-  },
-  {
-    tag: "Smart Automation",
-    title: "Intelligent Process Control",
-    description: "Eliminate manual bottlenecks with intelligent workflows and automated notifications. Accelerate review cycles while maintaining full regulatory traceability."
-  }
+const PARTNER_BRANDS = [
+  "Discord",
+  "Mailchimp",
+  "Grammarly",
+  "Attentive",
+  "HelloSign",
+  "Intercom",
+  "Square",
+  "Dropbox",
 ];
 
 const DEMO_CREDENTIALS = {
@@ -85,7 +47,6 @@ const ERROR_MESSAGES = {
 interface LoginViewProps {
   onLogin?: (username: string, password: string, rememberMe: boolean) => void;
   onForgotPassword?: () => void;
-  onContactAdmin?: () => void;
 }
 
 interface FormData {
@@ -152,7 +113,7 @@ const isFormValid = (errors: FormErrors): boolean => {
  * }} />
  * ```
  */
-export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword, onContactAdmin }) => {
+export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword }) => {
   // ========================================================================
   // STATE
   // ========================================================================
@@ -170,12 +131,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [isCapsLockOn, setIsCapsLockOn] = useState(false);
-
-  // ========================================================================
-  // MEMOIZED VALUES
-  // ========================================================================
-
-  const hasFormErrors = useMemo(() => !isFormValid(errors), [errors]);
 
   // ========================================================================
   // EVENT HANDLERS
@@ -211,15 +166,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
       onForgotPassword();
     }
   }, [onForgotPassword]);
-
-  const handleContactAdminClick = useCallback(() => {
-    blurActiveInput();
-    resetViewportZoom();
-
-    if (onContactAdmin) {
-      onContactAdmin();
-    }
-  }, [onContactAdmin]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -266,111 +212,83 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
   // ========================================================================
 
   return (
-    <div className="min-h-screen w-full flex overflow-hidden relative bg-white" role="main">
-      {/* Grid Pattern Background - Unified for all screens */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.9]"
-        style={{
-          backgroundImage: `linear-gradient(#f1f5f9 1.5px, transparent 1.5px), linear-gradient(90deg, #f1f5f9 1.5px, transparent 1.5px)`,
-          backgroundSize: '32px 32px'
-        }}
-      />
+    <div className="flex min-h-screen w-full items-center justify-center bg-slate-200 px-2 py-2 sm:px-6 sm:py-4 lg:px-8" role="main">
       {isLoading && <FullPageLoading text="Signing in..." />}
 
-      {/* ====================================================================
-          LEFT SIDE - BRANDING & IMAGE (Desktop Only)
-          ==================================================================== */}
-      <AuthBranding slides={SLIDE_CONTENT} />
-
-      {/* ====================================================================
-          RIGHT SIDE - LOGIN FORM
-          ==================================================================== */}
-      <div className="w-full lg:w-1/2 xl:w-2/5 relative flex flex-col lg:flex-row items-center justify-center p-6 sm:p-8 lg:p-12 bg-transparent">
-
-        {/* Form Container */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="w-full max-w-md z-10"
-        >
-          <div className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20">
-            {/* Mobile gradient top bar */}
-            <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
-            {/* Form Header */}
-            <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
-              <div className="text-center space-y-4">
-                <div className="flex items-center justify-center mb-2">
-                  <img
-                    src={logoImg}
-                    alt="QMS Logo"
-                    className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                </div>
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                  Sign in with your EQMS account
-                </h1>
+      <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-xl bg-transparent shadow-[0_14px_36px_rgba(15,23,42,0.16)] sm:rounded-2xl lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
+        <div className="grid w-full grid-cols-1 lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="flex items-center justify-center border border-slate-200/90 bg-white px-6 py-6 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
+          >
+            <div className="w-full max-w-[300px] sm:max-w-[420px]">
+              <div className="mb-4 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
+                <img
+                  src={logoImg}
+                  alt="EQMS Logo"
+                  className="h-7 w-auto object-contain sm:h-9"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
               </div>
-            </div>
 
-            {/* Form Body */}
-            <div className="px-6 sm:px-8 py-4 sm:py-6">
+              <div className="mb-4 space-y-1.5 sm:mb-8 sm:space-y-3">
+                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Welcome Back!</h1>
+                <p className="max-w-sm text-xs leading-5 text-slate-500 sm:text-sm sm:leading-7">
+                  Sign in to access your dashboard and continue optimizing your quality process.
+                </p>
+              </div>
+
               {/* Login Error Alert */}
               {loginError && (
                 <div
-                  className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300"
+                  className="mb-5 rounded-md border border-red-200 bg-red-50 p-3"
                   role="alert"
                   aria-live="assertive"
                 >
-                  <div className="flex-1 min-w-0 pt-0.5">
-                    <p className="text-sm font-semibold text-red-900">
-                      Authentication Failed
-                    </p>
-                    <p className="text-sm text-red-700 mt-0.5">{loginError}</p>
-                  </div>
+                  <p className="text-sm font-semibold text-red-900">Authentication Failed</p>
+                  <p className="mt-0.5 text-sm text-red-700">{loginError}</p>
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-6" noValidate>
                 {/* Username/Email Field */}
-                <div className="space-y-2">
+                <div className="space-y-1.5 sm:space-y-2.5">
                   <label
                     htmlFor="username"
-                    className="block text-sm font-medium text-slate-700"
+                    className="block text-xs font-medium text-slate-800 sm:text-sm"
                   >
-                    Username or Email <span className="text-red-500">*</span>
+                    Email or Username
                   </label>
-                  <div className="relative group">
-                    <input
-                      id="username"
-                      name="username"
-                      type="text"
-                      autoComplete="username"
-                      value={formData.username}
-                      onChange={(e) =>
-                        handleInputChange("username", e.target.value)
-                      }
-                      className={cn(
-                        "w-full h-12 px-4 text-sm font-medium border rounded-xl transition-all",
-                        "placeholder:text-slate-400 placeholder:font-normal",
-                        "focus:outline-none focus:ring-2",
-                        errors.username
-                          ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                          : "border-slate-200 bg-slate-50 hover:bg-white hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-emerald-500/20"
-                      )}
-                      placeholder="Enter your username or email"
-                      disabled={isLoading}
-                      aria-invalid={!!errors.username}
-                      aria-describedby={errors.username ? "username-error" : undefined}
-                    />
-                  </div>
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    autoComplete="username"
+                    value={formData.username}
+                    onChange={(e) =>
+                      handleInputChange("username", e.target.value)
+                    }
+                    className={cn(
+                      "h-10 w-full rounded-[10px] border bg-white px-3 text-xs text-slate-700 transition-all sm:h-12 sm:px-4 sm:text-sm",
+                      "placeholder:text-slate-400",
+                      "focus:outline-none focus:ring-2 focus:ring-teal-800/20",
+                      errors.username
+                        ? "border-red-300 focus:border-red-500"
+                        : "border-teal-700/40 hover:border-teal-700/60 focus:border-teal-700"
+                    )}
+                    placeholder="Enter your email or username"
+                    disabled={isLoading}
+                    aria-invalid={!!errors.username}
+                    aria-describedby={errors.username ? "username-error" : undefined}
+                  />
                   {errors.username && (
                     <p
                       id="username-error"
-                      className="text-xs text-red-600 font-medium flex items-center gap-1.5 mt-2 animate-in fade-in slide-in-from-top-1 duration-200"
+                      className="mt-1.5 text-xs font-medium text-red-600"
                       role="alert"
                     >
                       {errors.username}
@@ -379,14 +297,14 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                 </div>
 
                 {/* Password Field */}
-                <div className="space-y-2">
+                <div className="space-y-1.5 sm:space-y-2.5">
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-slate-700"
+                    className="block text-xs font-medium text-slate-800 sm:text-sm"
                   >
-                    Password <span className="text-red-500">*</span>
+                    Password
                   </label>
-                  <div className="relative group">
+                  <div className="relative">
                     <input
                       id="password"
                       name="password"
@@ -397,12 +315,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                         handleInputChange("password", e.target.value)
                       }
                       className={cn(
-                        "w-full h-12 pl-4 pr-12 text-sm font-medium border rounded-xl transition-all",
-                        "placeholder:text-slate-400 placeholder:font-normal",
-                        "focus:outline-none focus:ring-2",
+                        "h-10 w-full rounded-[10px] border bg-white px-3 pr-10 text-xs text-slate-700 transition-all sm:h-12 sm:px-4 sm:pr-12 sm:text-sm",
+                        "placeholder:text-slate-400",
+                        "focus:outline-none focus:ring-2 focus:ring-teal-800/20",
                         errors.password
-                          ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                          : "border-slate-200 bg-slate-50 hover:bg-white hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-emerald-500/20"
+                          ? "border-red-300 focus:border-red-500"
+                          : "border-slate-300 hover:border-slate-400 focus:border-slate-500"
                       )}
                       placeholder="Enter your password"
                       disabled={isLoading}
@@ -411,24 +329,24 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                       aria-invalid={!!errors.password}
                       aria-describedby={errors.password ? "password-error" : undefined}
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3">
                       {isCapsLockOn && (
-                        <div className="p-1 bg-slate-50 border border-emerald-200 rounded-lg animate-in fade-in zoom-in duration-200 shadow-sm" title="Caps Lock is ON">
-                          <IconArrowBigUpFilled className="h-4 w-4 text-emerald-500" />
+                        <div className="mr-2 rounded-md border border-teal-100 bg-teal-50 p-1" title="Caps Lock is ON">
+                          <IconArrowBigUpFilled className="h-4 w-4 text-teal-700" />
                         </div>
                       )}
                       <button
                         type="button"
                         onClick={handleTogglePassword}
-                        className="p-1.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors focus:outline-none focus:text-slate-700"
+                        className="flex items-center p-1 text-slate-400 transition-colors hover:text-slate-600 focus:outline-none focus:text-slate-700"
                         disabled={isLoading}
                         aria-label={showPassword ? "Hide password" : "Show password"}
                         tabIndex={-1}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-5 w-5" aria-hidden="true" />
+                          <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
                         ) : (
-                          <Eye className="h-5 w-5" aria-hidden="true" />
+                          <Eye className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
                         )}
                       </button>
                     </div>
@@ -437,7 +355,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                   {errors.password && (
                     <p
                       id="password-error"
-                      className="text-xs text-red-600 font-medium flex items-center gap-1.5 mt-2 animate-in fade-in slide-in-from-top-1 duration-200"
+                      className="mt-1.5 text-xs font-medium text-red-600"
                       role="alert"
                     >
                       {errors.password}
@@ -445,20 +363,19 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                   )}
                 </div>
 
-                {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center justify-between pt-0.5 sm:pt-1">
                   <Checkbox
                     id="rememberMe"
                     checked={formData.rememberMe}
                     onChange={handleRememberMeChange}
                     label="Remember me"
-                    labelClassName="text-xs sm:text-sm"
+                    labelClassName="text-xs text-slate-500 sm:text-sm"
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={handleForgotPasswordClick}
-                    className="text-xs sm:text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none hover:underline"
+                    className="text-xs font-medium text-teal-700 transition-colors hover:text-teal-800 focus:outline-none sm:text-sm"
                     disabled={isLoading}
                     aria-label="Forgot password"
                   >
@@ -470,43 +387,72 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword,
                 <Button
                   type="submit"
                   size="default"
-                  className="rounded-xl w-full h-12 mt-6 text-base font-semibold shadow-md shadow-emerald-500/10 active:translate-y-0 transition-all duration-200 group"
+                  className="mt-1 h-10 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:h-12 sm:text-base"
                   disabled={isLoading}
                   aria-busy={isLoading}
                 >
-                  <span className="text-base tracking-wide">Sign In</span>
+                  <span className="tracking-wide">Sign In</span>
                 </Button>
               </form>
 
-              {/* Divider */}
-              <div className="relative my-8" aria-hidden="true">
+              <div className="relative my-4 sm:my-7" aria-hidden="true">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-100"></div>
+                  <div className="w-full border-t border-slate-200"></div>
                 </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="px-4 bg-transparent text-slate-400 font-medium tracking-normal">
-                    Need help?
+                <div className="relative flex justify-center text-[11px]">
+                  <span className="bg-white px-3 font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    
                   </span>
                 </div>
               </div>
 
-              {/* Footer Text */}
               <div className="text-center">
-                <p className="text-xs sm:text-sm text-slate-500">
-                  Don't have an account?{" "}
-                  <button
-                    type="button"
-                    onClick={handleContactAdminClick}
-                    className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none hover:underline"
-                    aria-label="Contact administrator to create an account"
-                  >
-                    Contact Administrator
-                  </button>
+                <p className="text-[11px] sm:text-xs text-slate-500 sm:text-sm">
+                  Access is managed by the Ngoc Thien Pharma Dev Team
                 </p>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+
+          <motion.aside
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
+            className="relative hidden overflow-hidden bg-[#053f46] px-8 py-10 text-white lg:flex lg:flex-col xl:px-12 xl:py-14"
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_6%,rgba(146,224,224,0.35),transparent_30%)]" />
+
+            <div className="relative z-10 mt-10 max-w-[460px] space-y-6 xl:mt-24 xl:space-y-8">
+              <h2 className="text-3xl font-medium leading-[1.2] tracking-tight text-teal-50 lg:text-4xl xl:text-5xl">
+                Revolutionize QA with Smarter Automation
+              </h2>
+
+              <div className="space-y-5">
+                <p className="max-w-xl text-[30px]/[1.1] font-medium text-teal-100">
+                  SoftQA has completely transformed our testing process. It's reliable, efficient,
+                  and ensures our releases are always top-notch.
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <p className="text-base font-semibold text-white">Michael Carter</p>
+                <p className="text-sm text-teal-100/90">Software Engineer at DevCore</p>
+              </div>
+            </div>
+
+            <div className="relative z-10 mt-auto pt-10 xl:pt-16">
+              <div className="mb-7 flex items-center gap-5">
+                <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">EQMS Modules</span>
+                <span className="h-px flex-1 bg-teal-200/30" />
+              </div>
+              <div className="grid grid-cols-4 gap-x-4 gap-y-4 text-sm font-semibold text-teal-100/90">
+                {PARTNER_BRANDS.map((brand) => (
+                  <span key={brand}>{brand}</span>
+                ))}
+              </div>
+            </div>
+          </motion.aside>
+        </div>
       </div>
     </div>
   );

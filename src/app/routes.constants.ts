@@ -8,7 +8,6 @@ export const ROUTES = {
   LOGIN: '/login',
   TWO_FACTOR: '/login/2fa',
   FORGOT_PASSWORD: '/forgot-password',
-  CONTACT_ADMIN: '/contact-admin',
 
   // Dashboard
   DASHBOARD: '/dashboard',

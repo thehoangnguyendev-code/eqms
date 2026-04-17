@@ -7,7 +7,6 @@ import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { IconMailOpened, IconQrcode, IconRefresh } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthBranding } from "./AuthBranding";
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -17,17 +16,15 @@ const OTP_LENGTH = 6;
 const VERIFICATION_SIMULATION_DELAY = 2000;
 const RESEND_COOLDOWN = 60; // 60 seconds
 
-const SLIDE_CONTENT = [
-  {
-    tag: "Enhanced Security",
-    title: "Multi-Factor Protection",
-    description: "Protecting your GxP data with enterprise-grade security layers and immutable audit trails for every access point."
-  },
-  {
-    tag: "Data Integrity",
-    title: "Secure Digital Presence",
-    description: "Ensuring that every interaction with the EQMS platform is verified, authorized, and captured within our secure ecosystem."
-  }
+const PARTNER_BRANDS = [
+  "Discord",
+  "Mailchimp",
+  "Grammarly",
+  "Attentive",
+  "HelloSign",
+  "Intercom",
+  "Square",
+  "Dropbox",
 ];
 
 // ============================================================================
@@ -70,7 +67,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
 
   // Resend timer
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval> | undefined;
     if (resendTimer > 0) {
       interval = setInterval(() => {
         setResendTimer((prev) => prev - 1);
@@ -78,7 +75,11 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
     } else {
       setCanResend(true);
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
   }, [resendTimer]);
 
   // Focus first input on mount
@@ -182,244 +183,222 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
   // ========================================================================
 
   return (
-    <div className="min-h-screen w-full flex overflow-hidden relative bg-white" role="main">
-      {/* Grid Pattern Background - Unified for all screens */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.9]"
-        style={{
-          backgroundImage: `linear-gradient(#f1f5f9 1.5px, transparent 1.5px), linear-gradient(90deg, #f1f5f9 1.5px, transparent 1.5px)`,
-          backgroundSize: '32px 32px'
-        }}
-      />
+    <div className="flex min-h-screen w-full items-center justify-center bg-slate-200 px-2 py-2 sm:px-6 sm:py-4 lg:px-8" role="main">
       {isLoading && <FullPageLoading text="Verifying code..." />}
+      <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-xl bg-transparent shadow-[0_14px_36px_rgba(15,23,42,0.16)] sm:rounded-2xl lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
+        <div className="grid w-full grid-cols-1 lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="flex items-center justify-center border border-slate-200/90 bg-white px-6 py-6 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
+          >
+            <div className="w-full max-w-[300px] sm:max-w-[420px]">
+              <div className="mb-4 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
+                <img
+                  src={logoImg}
+                  alt="EQMS Logo"
+                  className="h-7 w-auto object-contain sm:h-9"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
 
-      {/* LEFT SIDE - BRANDING (Desktop) */}
-      <AuthBranding slides={SLIDE_CONTENT} />
-
-      {/* RIGHT SIDE - 2FA FORM */}
-
-      {/* RIGHT SIDE - 2FA FORM */}
-      <div className="w-full lg:w-1/2 xl:w-2/5 relative flex flex-col lg:flex-row items-center justify-center p-6 sm:p-8 lg:p-12 bg-transparent">
-
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="w-full max-w-md z-10"
-        >
-          <AnimatePresence mode="wait">
-            {!method ? (
-              <motion.div
-                key="selection"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20"
-              >
-                {/* Mobile gradient top bar */}
-                <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
-                <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
-                  {/* Header */}
-                  <div className="text-center space-y-4">
-                    <div className="flex items-center justify-center mb-2">
-                      <img
-                        src={logoImg}
-                        alt="QMS Logo"
-                        className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
-                      />
+              <AnimatePresence mode="wait">
+                {!method ? (
+                  <motion.div
+                    key="selection"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.25 }}
+                    className="space-y-3 sm:space-y-5"
+                  >
+                    <div className="space-y-1.5 sm:space-y-3">
+                      <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Verify Your Identity</h1>
+                      <p className="text-xs leading-5 text-slate-500 sm:text-sm sm:leading-7">
+                        Select a verification method for account <span className="font-semibold text-slate-700">{username}</span>.
+                      </p>
                     </div>
-                    <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight sm:whitespace-nowrap">
-                      Additional Authentication Required
-                    </h1>
-                    <p className="text-slate-500 text-sm max-w-auto mx-auto leading-relaxed">
-                      Select default verification method for the account <span className="font-semibold text-slate-800">{username}</span>
-                    </p>
-                  </div>
-                  <div className="py-4">
-                    <div className="grid grid-cols-1 gap-3">
-                      <div className="group relative flex items-center justify-between p-4 rounded-2xl border border-slate-200/60 bg-white/50 hover:bg-white hover:border-slate-300 transition-all duration-300 shadow-sm overflow-hidden backdrop-blur-sm">
-                        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 mr-3">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-500">
-                            <IconMailOpened size={32} stroke={1.5} className="w-8 h-8 sm:w-10 sm:h-10" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h3 className="font-bold text-sm sm:text-base text-slate-900 whitespace-normal">Email Authentication</h3>
-                            <p className="text-xs text-slate-500 mt-0.5 whitespace-normal leading-relaxed">Receive a verification code on your registered email</p>
-                          </div>
-                        </div>
-                        <div className="flex-shrink-0">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline-emerald"
-                            onClick={() => setMethod('email')}
-                          >
-                            Select
-                          </Button>
-                        </div>
-                      </div>
 
-                      <div className="group relative flex items-center justify-between p-4 rounded-2xl border border-slate-200/60 bg-white/50 hover:bg-white hover:border-slate-300 transition-all duration-300 shadow-sm overflow-hidden backdrop-blur-sm">
-                        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 mr-3">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-slate-500">
-                            <IconQrcode size={32} stroke={1.5} className="w-8 h-8 sm:w-10 sm:h-10" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h3 className="font-bold text-sm sm:text-base text-slate-900 whitespace-normal">Authenticator App</h3>
-                            <p className="text-xs text-slate-500 mt-0.5 whitespace-normal leading-relaxed">Use the verification code generated by the authenticator app</p>
+                    <div className="space-y-2 sm:space-y-3">
+                      <button
+                        type="button"
+                        onClick={() => setMethod("email")}
+                        className="group flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
+                      >
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <span className="rounded-lg bg-slate-100 p-1.5 text-slate-600 sm:p-2">
+                            <IconMailOpened size={18} stroke={1.8} className="sm:h-[22px] sm:w-[22px]" />
+                          </span>
+                          <div>
+                            <p className="text-xs font-semibold text-slate-900 sm:text-sm">Email Authentication</p>
+                            <p className="text-xs text-slate-500">Receive the code at {email}</p>
                           </div>
                         </div>
-                        <div className="flex-shrink-0">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline-emerald"
-                            onClick={() => setMethod('app')}
-                          >
-                            Select
-                          </Button>
-                        </div>
-                      </div>
+                        <span className="text-xs font-semibold uppercase tracking-wide text-teal-700">Select</span>
+                      </button>
 
                       <button
                         type="button"
-                        onClick={onBackToLogin}
-                        className="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-slate-400 hover:text-slate-600 transition-colors"
+                        onClick={() => setMethod("app")}
+                        className="group flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
                       >
-                        <ArrowLeft size={16} />
-                        Back to Sign In
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <span className="rounded-lg bg-slate-100 p-1.5 text-slate-600 sm:p-2">
+                            <IconQrcode size={18} stroke={1.8} className="sm:h-[22px] sm:w-[22px]" />
+                          </span>
+                          <div>
+                            <p className="text-xs font-semibold text-slate-900 sm:text-sm">Authenticator App</p>
+                            <p className="text-xs text-slate-500">Use code from your authenticator app</p>
+                          </div>
+                        </div>
+                        <span className="text-xs font-semibold uppercase tracking-wide text-teal-700">Select</span>
                       </button>
                     </div>
-                  </div>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.form
-                key="otp-form"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                onSubmit={handleSubmit}
-                className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 ring-1 ring-white/20"
-              >
-                {/* Mobile gradient top bar */}
-                <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
-                <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
-                  {/* Header */}
-                  <div className="text-center space-y-4">
-                    <div className="flex items-center justify-center mb-2">
-                      <img
-                        src={logoImg}
-                        alt="QMS Logo"
-                        className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
-                      />
+
+                    <button
+                      type="button"
+                      onClick={onBackToLogin}
+                      className="group inline-flex items-center text-xs font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:text-slate-700 sm:text-sm"
+                    >
+                      <span
+                        className="inline-flex w-0 -translate-x-1 items-center overflow-hidden opacity-0 transition-all duration-200 group-hover:mr-2 group-hover:w-4 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:mr-2 group-focus-visible:w-4 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+                        aria-hidden="true"
+                      >
+                        <ArrowLeft size={16} />
+                      </span>
+                      <span>Back to Sign In</span>
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="otp-form"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.25 }}
+                    onSubmit={handleSubmit}
+                    className="space-y-3 sm:space-y-6"
+                  >
+                    <div className="space-y-1.5 sm:space-y-3">
+                      <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Enter Verification Code</h1>
+                      <p className="text-xs leading-5 text-slate-500 sm:text-sm sm:leading-7">
+                        {method === "email"
+                          ? <>Enter the 6-digit code sent to <span className="font-semibold text-slate-700">{email}</span>.</>
+                          : <>Enter the 6-digit code from your authenticator app.</>}
+                      </p>
                     </div>
-                    <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight sm:whitespace-nowrap">
-                      Additional Authentication Required
-                    </h1>
-                    <p className="text-slate-500 text-sm max-w-auto mx-auto leading-relaxed">
-                      {method === 'email'
-                        ? <>Enter 6 digit verification code sent to the email registered with the account: <span className="font-semibold text-slate-800">{email}</span></>
-                        : <>Enter code shown on Authenticator App with username <span className="font-semibold text-slate-800">{username}</span></>
-                      }
-                    </p>
-                  </div>
-                  <div className="py-4">
-                    {/* Error Alert */}
+
                     {error && (
-                      <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm font-medium animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">
                         {error}
                       </div>
                     )}
-                    <div className="space-y-8">
-                      {/* OTP Input Group */}
-                      <div className="flex justify-between gap-2 sm:gap-3" onPaste={handlePaste}>
-                        {otp.map((digit, index) => (
-                          <input
-                            key={index}
-                            ref={(el) => {
-                              inputRefs.current[index] = el;
-                            }}
-                            type="text"
-                            inputMode="numeric"
-                            autoComplete="one-time-code"
-                            maxLength={1}
-                            value={digit}
-                            onChange={(e) => handleOtpChange(index, e.target.value)}
-                            onKeyDown={(e) => handleKeyDown(index, e)}
-                            className={cn(
-                              "w-full h-14 sm:h-16 text-center text-xl sm:text-2xl font-bold rounded-xl border transition-all duration-200 outline-none",
-                              digit
-                                ? "border-emerald-500 bg-emerald-50/30 text-emerald-700 ring-2 ring-emerald-500/10"
-                                : "border-slate-200 bg-slate-50 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                            )}
-                          />
-                        ))}
-                      </div>
 
-                      {/* Action Buttons */}
-                      <div className="space-y-4">
-                        <Button
-                          type="submit"
-                          className="rounded-xl w-full h-12 mt-3 text-base font-semibold shadow-md shadow-emerald-500/10 active:translate-y-0 transition-all duration-200 group flex items-center justify-center gap-2"
-                          disabled={isLoading || otp.join("").length < OTP_LENGTH}
-                        >
-                          <span>Submit</span>
-                        </Button>
-
-                        <div className="flex flex-col items-center gap-4 pt-2">
-                          {method === 'email' && (
-                            <button
-                              type="button"
-                              onClick={handleResend}
-                              disabled={!canResend || isLoading}
-                              className={cn(
-                                "flex items-center gap-2 text-sm font-semibold transition-colors",
-                                canResend
-                                  ? "text-emerald-600 hover:text-emerald-700"
-                                  : "text-slate-500 cursor-not-allowed"
-                              )}
-                            >
-                              <IconRefresh
-                                size={16}
-                                className={cn(
-                                  !canResend ? "animate-spin opacity-80" : "opacity-100"
-                                )}
-                                style={!canResend ? { animationDuration: '2s' } : {}}
-                              />
-                              {canResend ? "Resend Code" : `Resend in ${resendTimer}s`}
-                            </button>
+                    <div className="flex justify-between gap-1.5 sm:gap-3" onPaste={handlePaste}>
+                      {otp.map((digit, index) => (
+                        <input
+                          key={index}
+                          ref={(el) => {
+                            inputRefs.current[index] = el;
+                          }}
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="one-time-code"
+                          maxLength={1}
+                          value={digit}
+                          onChange={(e) => handleOtpChange(index, e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(index, e)}
+                          className={cn(
+                            "h-10 w-full rounded-[10px] border text-center text-base font-semibold outline-none transition-all sm:h-14 sm:text-xl",
+                            "focus:ring-2 focus:ring-teal-800/20",
+                            digit
+                              ? "border-teal-700/50 bg-teal-50/40 text-teal-800"
+                              : "border-slate-300 bg-white focus:border-teal-700"
                           )}
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setMethod(null);
-                              setOtp(new Array(OTP_LENGTH).fill(""));
-                            }}
-                            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors"
-                            disabled={isLoading}
-                          >
-                            <ArrowLeft size={16} />
-                            Change verification method
-                          </button>
-                        </div>
-                      </div>
+                        />
+                      ))}
                     </div>
-                  </div>
-                </div>
-              </motion.form>
-            )}
-          </AnimatePresence>
-        </motion.div>
+
+                    <Button
+                      type="submit"
+                      className="h-10 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:h-12 sm:text-base"
+                      disabled={isLoading || otp.join("").length < OTP_LENGTH}
+                    >
+                      Submit
+                    </Button>
+
+                    <div className="flex flex-col items-start gap-2 pt-0.5 sm:gap-3 sm:pt-1">
+                      {method === "email" && (
+                        <button
+                          type="button"
+                          onClick={handleResend}
+                          disabled={!canResend || isLoading}
+                          className={cn(
+                            "flex items-center gap-2 text-xs font-semibold transition-colors sm:text-sm",
+                            canResend ? "text-teal-700 hover:text-teal-800" : "cursor-not-allowed text-slate-500"
+                          )}
+                        >
+                          <IconRefresh
+                            size={16}
+                            className={cn(!canResend ? "animate-spin opacity-80" : "opacity-100")}
+                            style={!canResend ? { animationDuration: "2s" } : {}}
+                          />
+                          {canResend ? "Resend Code" : `Resend in ${resendTimer}s`}
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMethod(null);
+                          setOtp(new Array(OTP_LENGTH).fill(""));
+                        }}
+                        className="flex items-center gap-2 text-xs font-medium text-slate-500 transition-colors hover:text-slate-700 sm:text-sm"
+                        disabled={isLoading}
+                      >
+                        <ArrowLeft size={16} />
+                        Change verification method
+                      </button>
+                    </div>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          <motion.aside
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
+            className="relative hidden overflow-hidden bg-[#053f46] px-8 py-10 text-white lg:flex lg:flex-col xl:px-12 xl:py-14"
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_6%,rgba(146,224,224,0.35),transparent_30%)]" />
+
+            <div className="relative z-10 mt-10 max-w-[460px] space-y-6 xl:mt-24 xl:space-y-8">
+              <h2 className="text-3xl font-medium leading-[1.2] tracking-tight text-teal-50 lg:text-4xl xl:text-5xl">
+                Multi-Factor Security for Regulated Quality Systems
+              </h2>
+              <p className="text-base leading-8 text-teal-100/90">
+                Every sign-in step is verified and traceable to protect critical GMP records, audit trails, and operational workflows.
+              </p>
+            </div>
+
+            <div className="relative z-10 mt-auto pt-10 xl:pt-16">
+              <div className="mb-7 flex items-center gap-5">
+                <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">Trusted by teams</span>
+                <span className="h-px flex-1 bg-teal-200/30" />
+              </div>
+              <div className="grid grid-cols-4 gap-x-4 gap-y-4 text-sm font-semibold text-teal-100/90">
+                {PARTNER_BRANDS.map((brand) => (
+                  <span key={brand}>{brand}</span>
+                ))}
+              </div>
+            </div>
+          </motion.aside>
+        </div>
       </div>
     </div>
   );

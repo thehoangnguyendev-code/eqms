@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
-import { Button } from "@/components/ui/button/Button"; import { ButtonLoading } from '@/components/ui/loading/Loading'; import { cn } from "@/components/ui/utils";
+import React, { useState, useCallback } from "react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button/Button";
+import { ButtonLoading } from "@/components/ui/loading/Loading";
+import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import { isValidEmail } from "@/utils/validation";
 import logoImg from "@/assets/images/logo_nobg.png";
-import { AUTH_SLIDE_IMAGES, CAROUSEL_INTERVAL } from "./authCarousel";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthBranding } from "./AuthBranding";
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -14,27 +14,15 @@ import { AuthBranding } from "./AuthBranding";
 
 const REQUEST_SIMULATION_DELAY = 2000; // 2 seconds
 
-const SLIDE_CONTENT = [
-  {
-    tag: "Secure Access",
-    title: "Password Recovery Assistance",
-    description: "Request password reset from your system administrator. We prioritize security and controlled access to protect your account."
-  },
-  {
-    tag: "Admin Control",
-    title: "Controlled Reset Process",
-    description: "All password resets are handled by authorized administrators following strict security protocols for your protection."
-  },
-  {
-    tag: "Quick Response",
-    title: "Fast Administrator Support",
-    description: "Your request will be reviewed promptly by our admin team. Expect a response within 24 hours during business days."
-  },
-  {
-    tag: "Data Protection",
-    title: "Compliance & Security",
-    description: "Our password reset process follows EU-GMP guidelines and maintains complete audit trails for regulatory compliance."
-  }
+const PARTNER_BRANDS = [
+  "Discord",
+  "Mailchimp",
+  "Grammarly",
+  "Attentive",
+  "HelloSign",
+  "Intercom",
+  "Square",
+  "Dropbox",
 ];
 
 const ERROR_MESSAGES = {
@@ -138,12 +126,6 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
 
   // ========================================================================
-  // MEMOIZED VALUES
-  // ========================================================================
-
-  const hasFormErrors = useMemo(() => !isFormValid(errors), [errors]);
-
-  // ========================================================================
   // EVENT HANDLERS
   // ========================================================================
 
@@ -207,224 +189,192 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
   // ========================================================================
 
   return (
-    <div className="min-h-screen w-full flex overflow-hidden relative bg-white" role="main">
-      {/* Grid Pattern Background - Unified for all screens */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.9]"
-        style={{
-          backgroundImage: `linear-gradient(#f1f5f9 1.5px, transparent 1.5px), linear-gradient(90deg, #f1f5f9 1.5px, transparent 1.5px)`,
-          backgroundSize: '32px 32px'
-        }}
-      />
+    <div className="flex min-h-screen w-full items-center justify-center bg-slate-200 px-2 py-2 sm:px-6 sm:py-4 lg:px-8" role="main">
+      <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-xl bg-transparent shadow-[0_14px_36px_rgba(15,23,42,0.16)] sm:rounded-2xl lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
+        <div className="grid w-full grid-cols-1 lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="flex items-center justify-center border border-slate-200/90 bg-white px-6 py-6 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
+          >
+            <div className="w-full max-w-[300px] sm:max-w-[420px]">
+              <div className="mb-4 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
+                <img
+                  src={logoImg}
+                  alt="EQMS Logo"
+                  className="h-7 w-auto object-contain sm:h-9"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
 
-      {/* ====================================================================
-          LEFT SIDE - BRANDING & IMAGE (Desktop Only)
-          ==================================================================== */}
-      <AuthBranding slides={SLIDE_CONTENT} />
-
-      {/* ====================================================================
-          RIGHT SIDE - FORGOT PASSWORD FORM
-          ==================================================================== */}
-      <div className="w-full lg:w-1/2 xl:w-2/5 relative flex flex-col lg:flex-row items-center justify-center p-6 sm:p-8 lg:p-12 bg-transparent">
-
-        {/* Form Container */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="w-full max-w-md z-10"
-        >
-            {/* Success State */}
-            <AnimatePresence mode="wait">
-              {isSuccess ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 px-6 sm:px-8 py-10"
-                >
-                  <div className="text-center space-y-6">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 mb-2">
-                      <CheckCircle2 className="h-10 w-10 text-emerald-600" aria-hidden="true" />
+              <AnimatePresence mode="wait">
+                {isSuccess ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="space-y-4 sm:space-y-6"
+                  >
+                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+                      <CheckCircle2 className="h-8 w-8 text-emerald-600" aria-hidden="true" />
                     </div>
 
                     <div className="space-y-3">
-                      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-                        Request Submitted Successfully
-                      </h1>
-                      <p className="text-sm text-slate-600 leading-relaxed max-w-sm mx-auto">
-                        {SUCCESS_MESSAGE}
-                      </p>
+                      <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Request Sent</h1>
+                      <p className="text-xs leading-5 text-slate-500 sm:text-sm sm:leading-7">{SUCCESS_MESSAGE}</p>
                     </div>
 
-                    <div className="pt-6 space-y-3">
+                    <div className="space-y-2 pt-1 sm:space-y-3 sm:pt-2">
                       <Button
                         onClick={handleBackToLogin}
                         size="default"
-                        className="rounded-xl w-full h-12 text-base font-semibold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20"
+                        className="h-10 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:h-12 sm:text-base"
                       >
                         Back to Sign In
                       </Button>
 
-                      <p className="text-xs text-slate-500">
-                        Redirecting automatically in 5 seconds...
+                      <p className="text-[11px] text-slate-500 sm:text-xs">Redirecting automatically in 5 seconds...</p>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    onSubmit={handleSubmit}
+                    className="space-y-3 sm:space-y-6"
+                  >
+                    <div className="space-y-1.5 sm:space-y-3">
+                      <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Forgot Password?</h1>
+                      <p className="text-xs leading-5 text-slate-500 sm:text-sm sm:leading-7">
+                        Submit a reset request and the system administrator will assist with account recovery.
                       </p>
                     </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="form"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-slate-200/60 w-full"
-                >
-                  {/* Mobile gradient top bar */}
-                  <div className="lg:hidden h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
-                  {/* Form Header */}
-                  <div className="px-6 sm:px-8 pt-8 sm:pt-8 pb-4">
-                    <div className="text-center space-y-4">
-                      <div className="flex items-center justify-center mb-2">
-                        <img
-                          src={logoImg}
-                          alt="QMS Logo"
-                          className="h-14 sm:h-16 w-auto object-contain drop-shadow-sm"
-                          onError={(e) => {
-                            e.currentTarget.style.display = "none";
-                          }}
-                        />
-                      </div>
 
-                      <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                        Forgot your Password?
-                      </h1>
-                      {/* <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                     Submit a request and System Administrator will reset password for you.
-                    </p> */}
+                    <div className="space-y-1.5 sm:space-y-2.5">
+                      <label htmlFor="email" className="block text-xs font-medium text-slate-800 sm:text-sm">
+                        Email or Username
+                      </label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="text"
+                        autoComplete="email"
+                        value={formData.email}
+                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        className={cn(
+                          "h-10 w-full rounded-[10px] border bg-white px-3 text-xs text-slate-700 transition-all sm:h-12 sm:px-4 sm:text-sm",
+                          "placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-800/20",
+                          errors.email
+                            ? "border-red-300 focus:border-red-500"
+                            : "border-slate-300 hover:border-slate-400 focus:border-teal-700"
+                        )}
+                        placeholder="Enter your email or username"
+                        disabled={isLoading}
+                        aria-invalid={!!errors.email}
+                        aria-describedby={errors.email ? "email-error" : undefined}
+                      />
+                      {errors.email && (
+                        <p id="email-error" className="mt-1.5 text-xs font-medium text-red-600" role="alert">
+                          {errors.email}
+                        </p>
+                      )}
                     </div>
-                  </div>
 
-                  {/* Form Body */}
-                  <div className="px-6 sm:px-8 py-4 sm:py-6">
-                    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-                      {/* Email/Username Field */}
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="email"
-                          className="block text-sm font-medium text-slate-700"
-                        >
-                          Email or Username <span className="text-red-600">*</span>
-                        </label>
-                        <div className="relative group">
-                          <input
-                            id="email"
-                            name="email"
-                            type="text"
-                            autoComplete="email"
-                            value={formData.email}
-                            onChange={(e) =>
-                              handleInputChange("email", e.target.value)
-                            }
-                            className={cn(
-                              "w-full h-12 px-4 text-sm font-medium border rounded-xl transition-all",
-                              "placeholder:text-slate-400 placeholder:font-normal",
-                              "focus:outline-none focus:ring-2",
-                              errors.email
-                                ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                                : "border-slate-200 bg-slate-50 hover:bg-white hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-emerald-500/20"
-                            )}
-                            placeholder="Enter your email or username"
-                            disabled={isLoading}
-                            aria-invalid={!!errors.email}
-                            aria-describedby={errors.email ? "email-error" : undefined}
-                          />
-                        </div>
-                        {errors.email && (
-                          <p
-                            id="email-error"
-                            className="text-xs text-red-600 font-medium flex items-center gap-1.5 mt-2 animate-in fade-in slide-in-from-top-1 duration-200"
-                            role="alert"
-                          >
-                            {errors.email}
-                          </p>
+                    <div className="space-y-1.5 sm:space-y-2.5">
+                      <label htmlFor="reason" className="block text-xs font-medium text-slate-800 sm:text-sm">
+                        Reason for Request
+                      </label>
+                      <textarea
+                        id="reason"
+                        name="reason"
+                        rows={4}
+                        value={formData.reason}
+                        onChange={(e) => handleInputChange("reason", e.target.value)}
+                        className={cn(
+                          "w-full resize-none rounded-[10px] border bg-white px-3 py-2 text-xs text-slate-700 transition-all sm:px-4 sm:py-3 sm:text-sm",
+                          "placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-800/20",
+                          errors.reason
+                            ? "border-red-300 focus:border-red-500"
+                            : "border-slate-300 hover:border-slate-400 focus:border-teal-700"
                         )}
-                      </div>
-
-                      {/* Reason Field */}
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="reason"
-                          className="block text-sm font-medium text-slate-700"
-                        >
-                          Reason for Request <span className="text-red-600">*</span>
-                        </label>
-                        <div className="relative group">
-                          <textarea
-                            id="reason"
-                            name="reason"
-                            rows={4}
-                            value={formData.reason}
-                            onChange={(e) =>
-                              handleInputChange("reason", e.target.value)
-                            }
-                            className={cn(
-                              "w-full px-4 py-3 text-sm font-medium border rounded-xl transition-all resize-none",
-                              "placeholder:text-slate-400 placeholder:font-normal",
-                              "focus:outline-none focus:ring-2",
-                              errors.reason
-                                ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                                : "border-slate-200 bg-slate-50 hover:bg-white hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-emerald-500/20"
-                            )}
-                            placeholder="Please explain why you need to reset your password (e.g., forgot password, account locked, etc.)"
-                            disabled={isLoading}
-                            aria-invalid={!!errors.reason}
-                            aria-describedby={errors.reason ? "reason-error" : undefined}
-                          />
-                        </div>
-                        {errors.reason && (
-                          <p
-                            id="reason-error"
-                            className="text-xs text-red-600 font-medium flex items-center gap-1.5 mt-2 animate-in fade-in slide-in-from-top-1 duration-200"
-                            role="alert"
-                          >
-                            {errors.reason}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Submit Button */}
-                      <Button
-                        type="submit"
-                        size="default"
-                        className="rounded-xl w-full h-12 mt-6 text-base font-semibold shadow-md shadow-emerald-500/10 active:translate-y-0 transition-all duration-200"
+                        placeholder="Reason for password reset"
                         disabled={isLoading}
-                        aria-busy={isLoading}
-                      >
-                        {isLoading ? (
-                          <ButtonLoading text="Submitting Request..." light />
-                        ) : (
-                          <span className="text-base tracking-wide">Submit Request</span>
-                        )}
-                      </Button>
+                        aria-invalid={!!errors.reason}
+                        aria-describedby={errors.reason ? "reason-error" : undefined}
+                      />
+                      {errors.reason && (
+                        <p id="reason-error" className="mt-1.5 text-xs font-medium text-red-600" role="alert">
+                          {errors.reason}
+                        </p>
+                      )}
+                    </div>
 
-                      {/* Back to Login Link */}
-                      <button
-                        type="button"
-                        onClick={handleBackToLogin}
-                        className="w-full flex items-center justify-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors pt-3 pb-3 group"
-                        disabled={isLoading}
+                    <Button
+                      type="submit"
+                      size="default"
+                      className="h-10 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:h-12 sm:text-base"
+                      disabled={isLoading}
+                      aria-busy={isLoading}
+                    >
+                      {isLoading ? <ButtonLoading text="Submitting Request..." light /> : "Submit Request"}
+                    </Button>
+
+                    <button
+                      type="button"
+                      onClick={handleBackToLogin}
+                      className="group inline-flex items-center text-xs font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:text-slate-700 sm:text-sm"
+                      disabled={isLoading}
+                    >
+                      <span
+                        className="inline-flex w-0 -translate-x-1 items-center overflow-hidden opacity-0 transition-all duration-200 group-hover:mr-2 group-hover:w-4 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:mr-2 group-focus-visible:w-4 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+                        aria-hidden="true"
                       >
-                        <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
-                        <span>Back to Sign In</span>
-                      </button>
-                    </form>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-        </motion.div>
+                        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <span>Back to Sign In</span>
+                    </button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          <motion.aside
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
+            className="relative hidden overflow-hidden bg-[#053f46] px-8 py-10 text-white lg:flex lg:flex-col xl:px-12 xl:py-14"
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_6%,rgba(146,224,224,0.35),transparent_30%)]" />
+
+            <div className="relative z-10 mt-10 max-w-[460px] space-y-6 xl:mt-24 xl:space-y-8">
+              <h2 className="text-3xl font-medium leading-[1.2] tracking-tight text-teal-50 lg:text-4xl xl:text-5xl">
+                Secure Password Recovery with Full Audit Traceability
+              </h2>
+              <p className="text-base leading-8 text-teal-100/90">
+                Reset requests are routed through controlled admin workflow to preserve data integrity and access governance.
+              </p>
+            </div>
+
+            <div className="relative z-10 mt-auto pt-10 xl:pt-16">
+              <div className="mb-7 flex items-center gap-5">
+                <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">Trusted by teams</span>
+                <span className="h-px flex-1 bg-teal-200/30" />
+              </div>
+              <div className="grid grid-cols-4 gap-x-4 gap-y-4 text-sm font-semibold text-teal-100/90">
+                {PARTNER_BRANDS.map((brand) => (
+                  <span key={brand}>{brand}</span>
+                ))}
+              </div>
+            </div>
+          </motion.aside>
+        </div>
       </div>
     </div>
   );
