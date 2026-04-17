@@ -229,15 +229,15 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                         className="group flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
                       >
                         <div className="flex items-center gap-2 sm:gap-3">
-                          <span className="rounded-lg bg-slate-100 p-1.5 text-slate-600 sm:p-2">
-                            <IconMailOpened size={18} stroke={1.8} className="sm:h-[22px] sm:w-[22px]" />
+                          <span className="text-slate-600">
+                            <IconMailOpened size={26} stroke={1.5} className="h-[26px] w-[26px] sm:h-[30px] sm:w-[30px]" />
                           </span>
                           <div>
                             <p className="text-xs font-semibold text-slate-900 sm:text-sm">Email Authentication</p>
                             <p className="text-xs text-slate-500">Receive the code at {email}</p>
                           </div>
                         </div>
-                        <span className="text-xs font-semibold uppercase tracking-wide text-teal-700">Select</span>
+                        
                       </button>
 
                       <button
@@ -246,15 +246,15 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                         className="group flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
                       >
                         <div className="flex items-center gap-2 sm:gap-3">
-                          <span className="rounded-lg bg-slate-100 p-1.5 text-slate-600 sm:p-2">
-                            <IconQrcode size={18} stroke={1.8} className="sm:h-[22px] sm:w-[22px]" />
+                          <span className="text-slate-600">
+                            <IconQrcode size={26} stroke={1.5} className="h-[26px] w-[26px] sm:h-[30px] sm:w-[30px]" />
                           </span>
                           <div>
                             <p className="text-xs font-semibold text-slate-900 sm:text-sm">Authenticator App</p>
                             <p className="text-xs text-slate-500">Use code from your authenticator app</p>
                           </div>
                         </div>
-                        <span className="text-xs font-semibold uppercase tracking-wide text-teal-700">Select</span>
+                        
                       </button>
                     </div>
 
