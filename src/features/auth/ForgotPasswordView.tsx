@@ -189,21 +189,21 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
   // ========================================================================
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-slate-200 px-2 py-2 sm:px-6 sm:py-4 lg:px-8" role="main">
-      <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-xl bg-transparent shadow-[0_14px_36px_rgba(15,23,42,0.16)] sm:rounded-2xl lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
-        <div className="grid w-full grid-cols-1 lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
+    <div className="flex min-h-screen w-full items-center justify-center bg-white sm:bg-slate-200 p-0 sm:p-6 lg:p-8" role="main">
+      <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-none sm:rounded-2xl bg-transparent shadow-none sm:shadow-[0_14px_36px_rgba(15,23,42,0.16)] lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
+        <div className="grid w-full grid-cols-1 min-h-screen sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="flex items-center justify-center border border-slate-200/90 bg-white px-6 py-6 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
+            className="flex flex-col sm:flex-row items-center justify-center border-0 sm:border border-slate-200/90 bg-white px-6 py-10 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
           >
-            <div className="w-full max-w-[300px] sm:max-w-[420px]">
-              <div className="mb-4 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
+            <div className="w-full max-w-[340px] sm:max-w-[420px] flex-1 flex flex-col justify-center">
+              <div className="mb-6 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
                 <img
                   src={logoImg}
                   alt="EQMS Logo"
-                  className="h-7 w-auto object-contain sm:h-9"
+                  className="h-8 w-auto object-contain sm:h-9"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
@@ -217,18 +217,18 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="space-y-4 sm:space-y-6"
+                    className="space-y-6 sm:space-y-6"
                   >
                     <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
                       <CheckCircle2 className="h-8 w-8 text-emerald-600" aria-hidden="true" />
                     </div>
 
-                    <div className="space-y-3">
-                      <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Request Sent</h1>
-                      <p className="text-xs leading-5 text-slate-500 sm:text-sm sm:leading-7">{SUCCESS_MESSAGE}</p>
+                    <div className="space-y-3 sm:space-y-3">
+                      <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Request Sent</h1>
+                      <p className="text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">{SUCCESS_MESSAGE}</p>
                     </div>
 
-                    <div className="space-y-2 pt-1 sm:space-y-3 sm:pt-2">
+                    <div className="space-y-3 pt-2 sm:space-y-3 sm:pt-2">
                       <Button
                         onClick={handleBackToLogin}
                         size="default"
@@ -247,17 +247,17 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     onSubmit={handleSubmit}
-                    className="space-y-3 sm:space-y-6"
+                    className="space-y-5 sm:space-y-6"
                   >
-                    <div className="space-y-1.5 sm:space-y-3">
-                      <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Forgot Password?</h1>
-                      <p className="text-xs leading-5 text-slate-500 sm:text-sm sm:leading-7">
+                    <div className="space-y-2 sm:space-y-3">
+                      <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Forgot Password?</h1>
+                      <p className="text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">
                         Submit a reset request and the system administrator will assist with account recovery.
                       </p>
                     </div>
 
-                    <div className="space-y-1.5 sm:space-y-2.5">
-                      <label htmlFor="email" className="block text-xs font-medium text-slate-800 sm:text-sm">
+                    <div className="space-y-2 sm:space-y-2.5">
+                      <label htmlFor="email" className="block text-sm font-medium text-slate-800 sm:text-sm">
                         Email or Username
                       </label>
                       <input
@@ -268,7 +268,7 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
                         className={cn(
-                          "h-10 w-full rounded-[10px] border bg-white px-3 text-xs text-slate-700 transition-all sm:h-12 sm:px-4 sm:text-sm",
+                          "h-12 w-full rounded-[10px] border bg-white px-4 text-sm text-slate-700 transition-all sm:h-12 sm:px-4 sm:text-sm",
                           "placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-800/20",
                           errors.email
                             ? "border-red-300 focus:border-red-500"
@@ -286,8 +286,8 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                       )}
                     </div>
 
-                    <div className="space-y-1.5 sm:space-y-2.5">
-                      <label htmlFor="reason" className="block text-xs font-medium text-slate-800 sm:text-sm">
+                    <div className="space-y-2 sm:space-y-2.5">
+                      <label htmlFor="reason" className="block text-sm font-medium text-slate-800 sm:text-sm">
                         Reason for Request
                       </label>
                       <textarea
@@ -297,7 +297,7 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                         value={formData.reason}
                         onChange={(e) => handleInputChange("reason", e.target.value)}
                         className={cn(
-                          "w-full resize-none rounded-[10px] border bg-white px-3 py-2 text-xs text-slate-700 transition-all sm:px-4 sm:py-3 sm:text-sm",
+                          "w-full resize-none rounded-[10px] border bg-white px-4 py-3 text-sm text-slate-700 transition-all sm:px-4 sm:py-3 sm:text-sm",
                           "placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-800/20",
                           errors.reason
                             ? "border-red-300 focus:border-red-500"
@@ -318,7 +318,7 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                     <Button
                       type="submit"
                       size="default"
-                      className="h-10 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:h-12 sm:text-base"
+                      className="h-12 mt-2 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:h-12 sm:text-base"
                       disabled={isLoading}
                       aria-busy={isLoading}
                     >

@@ -212,32 +212,32 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
   // ========================================================================
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-slate-200 px-2 py-2 sm:px-6 sm:py-4 lg:px-8" role="main">
+    <div className="flex min-h-screen w-full items-center justify-center bg-white sm:bg-slate-200 p-0 sm:p-6 lg:p-8" role="main">
       {isLoading && <FullPageLoading text="Signing in..." />}
 
-      <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-xl bg-transparent shadow-[0_14px_36px_rgba(15,23,42,0.16)] sm:rounded-2xl lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
-        <div className="grid w-full grid-cols-1 lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
+      <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-none sm:rounded-2xl bg-transparent shadow-none sm:shadow-[0_14px_36px_rgba(15,23,42,0.16)] lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
+        <div className="grid w-full grid-cols-1 min-h-screen sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="flex items-center justify-center border border-slate-200/90 bg-white px-6 py-6 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
+            className="flex flex-col sm:flex-row items-center justify-center border-0 sm:border border-slate-200/90 bg-white px-6 py-10 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
           >
-            <div className="w-full max-w-[300px] sm:max-w-[420px]">
-              <div className="mb-4 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
+            <div className="w-full max-w-[340px] sm:max-w-[420px] flex-1 flex flex-col justify-center">
+              <div className="mb-6 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
                 <img
                   src={logoImg}
                   alt="EQMS Logo"
-                  className="h-7 w-auto object-contain sm:h-9"
+                  className="h-8 w-auto object-contain sm:h-9"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
               </div>
 
-              <div className="mb-4 space-y-1.5 sm:mb-8 sm:space-y-3">
-                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Welcome Back!</h1>
-                <p className="max-w-sm text-xs leading-5 text-slate-500 sm:text-sm sm:leading-7">
+              <div className="mb-6 space-y-2 sm:mb-8 sm:space-y-3">
+                <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Welcome Back!</h1>
+                <p className="max-w-sm text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">
                   Sign in to access your dashboard and continue optimizing your quality process.
                 </p>
               </div>
@@ -245,7 +245,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
               {/* Login Error Alert */}
               {loginError && (
                 <div
-                  className="mb-5 rounded-md border border-red-200 bg-red-50 p-3"
+                  className="mb-6 rounded-md border border-red-200 bg-red-50 p-3 sm:mb-5"
                   role="alert"
                   aria-live="assertive"
                 >
@@ -256,10 +256,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
 
               <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-6" noValidate>
                 {/* Username/Email Field */}
-                <div className="space-y-1.5 sm:space-y-2.5">
+                <div className="space-y-2 sm:space-y-2.5">
                   <label
                     htmlFor="username"
-                    className="block text-xs font-medium text-slate-800 sm:text-sm"
+                    className="block text-sm font-medium text-slate-800 sm:text-sm"
                   >
                     Email or Username
                   </label>
@@ -273,7 +273,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
                       handleInputChange("username", e.target.value)
                     }
                     className={cn(
-                      "h-10 w-full rounded-[10px] border bg-white px-3 text-xs text-slate-700 transition-all sm:h-12 sm:px-4 sm:text-sm",
+                      "h-12 w-full rounded-[10px] border bg-white px-4 text-sm text-slate-700 transition-all sm:h-12 sm:px-4 sm:text-sm",
                       "placeholder:text-slate-400",
                       "focus:outline-none focus:ring-2 focus:ring-teal-800/20",
                       errors.username
@@ -297,10 +297,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
                 </div>
 
                 {/* Password Field */}
-                <div className="space-y-1.5 sm:space-y-2.5">
+                <div className="space-y-2 sm:space-y-2.5">
                   <label
                     htmlFor="password"
-                    className="block text-xs font-medium text-slate-800 sm:text-sm"
+                    className="block text-sm font-medium text-slate-800 sm:text-sm"
                   >
                     Password
                   </label>
@@ -315,7 +315,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
                         handleInputChange("password", e.target.value)
                       }
                       className={cn(
-                        "h-10 w-full rounded-[10px] border bg-white px-3 pr-10 text-xs text-slate-700 transition-all sm:h-12 sm:px-4 sm:pr-12 sm:text-sm",
+                        "h-12 w-full rounded-[10px] border bg-white px-4 pr-12 text-sm text-slate-700 transition-all sm:h-12 sm:px-4 sm:pr-12 sm:text-sm",
                         "placeholder:text-slate-400",
                         "focus:outline-none focus:ring-2 focus:ring-teal-800/20",
                         errors.password
@@ -387,7 +387,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
                 <Button
                   type="submit"
                   size="default"
-                  className="mt-1 h-10 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:h-12 sm:text-base"
+                  className="mt-4 h-12 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:mt-1 sm:h-12 sm:text-base"
                   disabled={isLoading}
                   aria-busy={isLoading}
                 >
