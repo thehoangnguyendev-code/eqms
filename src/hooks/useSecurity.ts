@@ -5,7 +5,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { auditLog, SessionManager } from '@/utils/security';
+import { auditLog, SessionManager, safeRandomUUID } from '@/utils/security';
 
 /**
  * Hook to monitor session timeout
@@ -318,7 +318,7 @@ export const useSingleSessionEnforcement = () => {
   const [multipleSessionsDetected, setMultipleSessionsDetected] = useState(false);
 
   useEffect(() => {
-    const sessionId = crypto.randomUUID();
+    const sessionId = safeRandomUUID();
     sessionStorage.setItem('sessionId', sessionId);
 
     const channel = new BroadcastChannel('session_channel');

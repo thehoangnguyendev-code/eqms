@@ -15,7 +15,6 @@ import { motion } from "framer-motion";
 // ============================================================================
 
 const MIN_PASSWORD_LENGTH = 6;
-const LOGIN_SIMULATION_DELAY = 3500; // 1.5 seconds
 
 const PARTNER_BRANDS = [
   "Document Control",
@@ -25,11 +24,6 @@ const PARTNER_BRANDS = [
   "Audit Trail",
   "... and more",
 ];
-
-const DEMO_CREDENTIALS = {
-  username: "admin",
-  password: "123456",
-} as const;
 
 const ERROR_MESSAGES = {
   USERNAME_REQUIRED: "Username or email is required",
@@ -43,7 +37,11 @@ const ERROR_MESSAGES = {
 // ============================================================================
 
 interface LoginViewProps {
-  onLogin?: (username: string, password: string, rememberMe: boolean) => void;
+  onLogin?: (
+    username: string,
+    password: string,
+    rememberMe: boolean
+  ) => Promise<{ success: boolean; error?: string }>;
   onForgotPassword?: () => void;
 }
 
@@ -180,27 +178,23 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
 
       setIsLoading(true);
 
-      // Simulate API call
-      setTimeout(() => {
+      if (!onLogin) {
         setIsLoading(false);
+        setLoginError(ERROR_MESSAGES.INVALID_CREDENTIALS);
+        return;
+      }
 
-        // Check credentials
-        if (
-          formData.username === DEMO_CREDENTIALS.username &&
-          formData.password === DEMO_CREDENTIALS.password
-        ) {
-          // Login successful - Reset viewport zoom before navigation
-          blurActiveInput();
-          resetViewportZoom();
+      const result = await onLogin(formData.username, formData.password, formData.rememberMe);
+      setIsLoading(false);
 
-          if (onLogin) {
-            onLogin(formData.username, formData.password, formData.rememberMe);
-          }
-        } else {
-          // Login failed
-          setLoginError(ERROR_MESSAGES.INVALID_CREDENTIALS);
-        }
-      }, LOGIN_SIMULATION_DELAY);
+      if (result.success) {
+        // Login stage completed (direct auth or moved to 2FA), normalize viewport before navigation.
+        blurActiveInput();
+        resetViewportZoom();
+        return;
+      }
+
+      setLoginError(result.error || ERROR_MESSAGES.INVALID_CREDENTIALS);
     },
     [formData, onLogin]
   );

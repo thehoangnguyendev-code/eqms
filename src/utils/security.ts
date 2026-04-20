@@ -77,6 +77,34 @@ export const isStrongPassword = (password: string): boolean => {
  */
 const ENCRYPTION_KEY = import.meta.env.VITE_ENCRYPTION_KEY || 'EQMS_SECRET_KEY_2026';
 
+/**
+ * Generate UUID with graceful fallback for environments that do not support crypto.randomUUID.
+ */
+export const safeRandomUUID = (): string => {
+  const cryptoApi = globalThis.crypto;
+
+  if (cryptoApi?.randomUUID) {
+    return cryptoApi.randomUUID();
+  }
+
+  if (cryptoApi?.getRandomValues) {
+    const bytes = new Uint8Array(16);
+    cryptoApi.getRandomValues(bytes);
+
+    // RFC 4122 version 4 bits
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  }
+
+  // Last-resort fallback for legacy/insecure contexts.
+  const timestamp = Date.now().toString(16);
+  const random = Math.random().toString(16).slice(2, 14);
+  return `${timestamp.slice(0, 8)}-${random.slice(0, 4)}-4${random.slice(4, 7)}-a${random.slice(7, 10)}-${timestamp.slice(8)}${random.slice(10, 12)}`;
+};
+
 export const encryptData = (data: string): string => {
   try {
     const encrypted = Array.from(data)
@@ -250,7 +278,7 @@ export const preventClickjacking = (): void => {
  */
 export const csrfToken = {
   generate: (): string => {
-    return crypto.randomUUID();
+    return safeRandomUUID();
   },
 
   store: (token: string): void => {

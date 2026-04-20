@@ -176,7 +176,7 @@ export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSi
 
             {/* Page Title */}
             <div className={cn(
-              "flex-1 flex items-center min-w-0 transition-all duration-300 ease-out overflow-hidden md:-ml-9 lg:-ml-9",
+              "flex-1 flex items-center min-w-0 transition-all duration-300 ease-out overflow-hidden md:pl-2",
               showHeaderTitle && headerTitle
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 -translate-y-2 pointer-events-none"

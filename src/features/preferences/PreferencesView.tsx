@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Palette, Globe, BellRing } from 'lucide-react';
+import { Palette, Globe, BellRing, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button/Button';
 import { TabNav, TabItem } from '@/components/ui/tabs/TabNav';
@@ -10,6 +10,7 @@ import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { AppearanceTab } from "./components/AppearanceTab";
 import { LocalizationTab } from "./components/LocalizationTab";
 import { NotificationSettingsTab } from "./components/NotificationSettingsTab";
+import { SecuritySettingsTab } from "./components/SecuritySettingsTab";
 import { PreferenceTabId } from "./types";
 
 export const PreferencesView: React.FC = () => {
@@ -22,6 +23,7 @@ export const PreferencesView: React.FC = () => {
         { id: 'appearance', label: 'Appearance', icon: Palette },
         { id: 'localization', label: 'Localization', icon: Globe },
         { id: 'notifications', label: 'Notifications', icon: BellRing },
+        { id: 'security', label: 'Security', icon: ShieldCheck },
     ];
 
     const handleSave = () => {
@@ -41,6 +43,8 @@ export const PreferencesView: React.FC = () => {
                 return <LocalizationTab />;
             case 'notifications':
                 return <NotificationSettingsTab />;
+            case 'security':
+                return <SecuritySettingsTab />;
             default:
                 return null;
         }
@@ -52,6 +56,25 @@ export const PreferencesView: React.FC = () => {
             <PageHeader
                 title="User Preferences"
                 breadcrumbItems={breadcrumbs.preferences(navigate)}
+                actions={
+                    <>
+                        <Button
+                            variant="outline-emerald"
+                            size="sm"
+                            onClick={() => window.location.reload()}
+                        >
+                            Reset to Default
+                        </Button>
+                        <Button
+                        variant="outline-emerald"
+                            size="sm"
+                            onClick={handleSave}
+                            className="min-w-[120px]"
+                        >
+                            Save Preferences
+                        </Button>
+                    </>
+                }
             />
 
             {/* Main Content Card */}
@@ -66,24 +89,6 @@ export const PreferencesView: React.FC = () => {
                 {/* Content Area */}
                 <div className="p-4 sm:p-6 md:p-8 flex-1 overflow-y-auto">
                     {renderTabContent()}
-                </div>
-
-                {/* Footer Actions */}
-                <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.location.reload()}
-                    >
-                        Reset to Default
-                    </Button>
-                    <Button
-                        size="sm"
-                        onClick={handleSave}
-                        className="min-w-[120px]"
-                    >
-                        Save Preferences
-                    </Button>
                 </div>
             </div>
 

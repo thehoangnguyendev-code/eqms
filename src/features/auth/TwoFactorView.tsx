@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
@@ -13,7 +14,6 @@ import { motion, AnimatePresence } from "framer-motion";
 // ============================================================================
 
 const OTP_LENGTH = 6;
-const VERIFICATION_SIMULATION_DELAY = 2000;
 const RESEND_COOLDOWN = 60; // 60 seconds
 
 const PARTNER_BRANDS = [
@@ -30,10 +30,16 @@ const PARTNER_BRANDS = [
 // ============================================================================
 
 interface TwoFactorViewProps {
-  onVerify?: (code: string) => void;
+  onVerify?: (payload: {
+    code: string;
+    method: 'email' | 'app';
+    rememberDevice: boolean;
+  }) => Promise<{ success: boolean; error?: string }>;
+  onResend?: (method: 'email') => Promise<{ success: boolean; error?: string }>;
   onBackToLogin?: () => void;
   email?: string; // Masked email address
   username?: string;
+  availableMethods?: Array<'email' | 'app'>;
 }
 
 // ============================================================================
@@ -42,9 +48,11 @@ interface TwoFactorViewProps {
 
 export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
   onVerify,
+  onResend,
   onBackToLogin,
   email = "a***n@eqms.com",
-  username = "Unknown User"
+  username = "Unknown User",
+  availableMethods = ['email', 'app'],
 }) => {
   // ========================================================================
   // STATE
@@ -54,6 +62,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
   const [otp, setOtp] = useState<string[]>(new Array(OTP_LENGTH).fill(""));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [rememberDevice, setRememberDevice] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_COOLDOWN);
   const [canResend, setCanResend] = useState(false);
 
@@ -87,6 +96,26 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (method !== 'email') {
+      return;
+    }
+
+    setCanResend(false);
+    setResendTimer(RESEND_COOLDOWN);
+
+    if (!onResend) {
+      return;
+    }
+
+    (async () => {
+      const result = await onResend('email');
+      if (!result.success) {
+        setError(result.error || 'Unable to send email verification code.');
+      }
+    })();
+  }, [method, onResend]);
+
   // ========================================================================
   // EVENT HANDLERS
   // ========================================================================
@@ -115,7 +144,11 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").slice(0, OTP_LENGTH).split("");
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, '')
+      .slice(0, OTP_LENGTH)
+      .split("");
     const newOtp = [...otp];
 
     pastedData.forEach((char, index) => {
@@ -131,16 +164,23 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
     inputRefs.current[lastIndex]?.focus();
   };
 
-  const handleResend = useCallback(() => {
+  const handleResend = useCallback(async () => {
     if (!canResend) return;
+
+    if (!onResend) {
+      return;
+    }
+
+    const result = await onResend('email');
+    if (!result.success) {
+      setError(result.error || 'Unable to resend code. Please try again.');
+      return;
+    }
 
     // Reset timer
     setCanResend(false);
     setResendTimer(RESEND_COOLDOWN);
-
-    // Simulate resend
-    console.log("Resending code...");
-  }, [canResend]);
+  }, [canResend, onResend]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -152,29 +192,42 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
         return;
       }
 
+      if (!method) {
+        setError("Please choose a verification method first");
+        return;
+      }
+
+      if (!onVerify) {
+        setError("Verification handler is not configured");
+        return;
+      }
+
       setIsLoading(true);
       setError("");
 
-      // Simulate API call
-      setTimeout(() => {
-        setIsLoading(false);
+      const result = await onVerify({
+        code,
+        method,
+        rememberDevice,
+      });
 
-        // Demo logic: temporarily allow any 6-digit code to pass
-        if (code.length === OTP_LENGTH) {
-          blurActiveInput();
-          resetViewportZoom();
-          if (onVerify) {
-            onVerify(code);
-          }
-        } else {
-          setError("Invalid verification code. Please try again.");
-          setOtp(new Array(OTP_LENGTH).fill(""));
-          inputRefs.current[0]?.focus();
-        }
-      }, VERIFICATION_SIMULATION_DELAY);
+      setIsLoading(false);
+
+      if (result.success) {
+        blurActiveInput();
+        resetViewportZoom();
+        return;
+      }
+
+      setError(result.error || "Invalid verification code. Please try again.");
+      setOtp(new Array(OTP_LENGTH).fill(""));
+      inputRefs.current[0]?.focus();
     },
-    [otp, onVerify]
+    [method, onVerify, otp, rememberDevice]
   );
+
+  const emailMethodEnabled = availableMethods.includes('email');
+  const appMethodEnabled = availableMethods.includes('app');
 
   // ========================================================================
   // RENDER
@@ -225,6 +278,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setMethod("email")}
+                        disabled={!emailMethodEnabled}
                         className="group flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
                       >
                         <div className="flex items-center gap-2 sm:gap-3">
@@ -236,12 +290,13 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                             <p className="text-xs text-slate-500">Receive the code at {email}</p>
                           </div>
                         </div>
-                        
+                        {!emailMethodEnabled && <span className="text-xs font-medium text-slate-400">Unavailable</span>}
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setMethod("app")}
+                        disabled={!appMethodEnabled}
                         className="group flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
                       >
                         <div className="flex items-center gap-2 sm:gap-3">
@@ -253,7 +308,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                             <p className="text-xs text-slate-500">Use code from your authenticator app</p>
                           </div>
                         </div>
-                        
+                        {!appMethodEnabled && <span className="text-xs font-medium text-slate-400">Unavailable</span>}
                       </button>
                     </div>
 
@@ -329,6 +384,15 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                       Submit
                     </Button>
 
+                    <Checkbox
+                      id="rememberDevice"
+                      checked={rememberDevice}
+                      onChange={setRememberDevice}
+                      label="Remember this device for 8 hours"
+                      labelClassName="text-xs text-slate-600 sm:text-sm"
+                      disabled={isLoading}
+                    />
+
                     <div className="flex flex-col items-start gap-2 pt-0.5 sm:gap-3 sm:pt-1">
                       {method === "email" && (
                         <button
@@ -354,6 +418,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                         onClick={() => {
                           setMethod(null);
                           setOtp(new Array(OTP_LENGTH).fill(""));
+                          setError("");
                         }}
                         className="group inline-flex items-center text-xs font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:text-slate-700 sm:text-sm"
                         disabled={isLoading}

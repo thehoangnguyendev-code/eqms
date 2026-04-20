@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 // Layout
@@ -9,6 +9,8 @@ import { ProtectedRoute } from '@/middleware/ProtectedRoute';
 
 // Auth Context
 import { useAuth } from '@/contexts/AuthContext';
+import { authApi } from '@/services/api';
+import type { LoginChallengeResponse } from '@/services/api/auth';
 
 // Route Constants
 import { ROUTES } from './routes.constants';
@@ -33,32 +35,140 @@ const NotificationsView = lazy(() => import('@/features/notifications').then(m =
 // ==================== MAIN ROUTES ====================
 
 export const AppRoutes: React.FC = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const [pendingCredentials, setPendingCredentials] = useState<{ username: string, password: string, rememberMe: boolean } | null>(null);
+  const MFA_CHALLENGE_STORAGE_KEY = 'pending_mfa_challenge';
 
-  const handleLogin = async (username: string, password: string, rememberMe: boolean) => {
-    // Stage 1: Store credentials and move to 2FA
-    setPendingCredentials({ username, password, rememberMe });
-    navigate(ROUTES.TWO_FACTOR);
+  const persistChallenge = (challenge: LoginChallengeResponse) => {
+    sessionStorage.setItem(
+      MFA_CHALLENGE_STORAGE_KEY,
+      JSON.stringify({
+        challenge,
+        persistedAt: Date.now(),
+      })
+    );
   };
 
-  const handleVerify2FA = async (code: string) => {
-    if (!pendingCredentials) {
+  const clearPersistedChallenge = () => {
+    sessionStorage.removeItem(MFA_CHALLENGE_STORAGE_KEY);
+  };
+
+  const navigate = useNavigate();
+  const { initiateLogin, verifyMFA } = useAuth();
+  const [pendingChallenge, setPendingChallenge] = useState<LoginChallengeResponse | null>(null);
+  const [isChallengeHydrated, setIsChallengeHydrated] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(MFA_CHALLENGE_STORAGE_KEY);
+      if (!raw) {
+        setIsChallengeHydrated(true);
+        return;
+      }
+
+      const parsed = JSON.parse(raw) as {
+        challenge?: LoginChallengeResponse;
+        persistedAt?: number;
+      };
+
+      if (!parsed.challenge || typeof parsed.persistedAt !== 'number') {
+        clearPersistedChallenge();
+        setIsChallengeHydrated(true);
+        return;
+      }
+
+      const ageSeconds = Math.floor((Date.now() - parsed.persistedAt) / 1000);
+      const isExpired = ageSeconds >= parsed.challenge.expiresIn;
+      if (isExpired) {
+        clearPersistedChallenge();
+        setIsChallengeHydrated(true);
+        return;
+      }
+
+      setPendingChallenge(parsed.challenge);
+    } catch {
+      clearPersistedChallenge();
+    } finally {
+      setIsChallengeHydrated(true);
+    }
+  }, []);
+
+  const handleLogin = async (
+    username: string,
+    password: string,
+    rememberMe: boolean
+  ): Promise<{ success: boolean; error?: string }> => {
+    const result = await initiateLogin({ username, password });
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error?.message || 'Unable to sign in. Please try again.',
+      };
+    }
+
+    if (result.mfaRequired && result.challenge) {
+      setPendingChallenge(result.challenge);
+      persistChallenge(result.challenge);
+      navigate(ROUTES.TWO_FACTOR);
+      return { success: true };
+    }
+
+    navigate(ROUTES.DASHBOARD);
+    return { success: true };
+  };
+
+  const handleVerify2FA = async ({
+    code,
+    method,
+    rememberDevice,
+  }: {
+    code: string;
+    method: 'email' | 'app';
+    rememberDevice: boolean;
+  }): Promise<{ success: boolean; error?: string }> => {
+    if (!pendingChallenge?.mfaToken) {
       navigate(ROUTES.LOGIN);
-      return;
+      return {
+        success: false,
+        error: 'Login session has expired. Please sign in again.',
+      };
+    }
+
+    const result = await verifyMFA({
+      mfaToken: pendingChallenge.mfaToken,
+      otp: code,
+      method,
+      rememberDevice,
+    });
+
+    if (result.success) {
+      setPendingChallenge(null);
+      clearPersistedChallenge();
+      navigate(ROUTES.DASHBOARD);
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: result.error?.message || 'Verification failed. Please try again.',
+    };
+  };
+
+  const handleResend2FA = async (): Promise<{ success: boolean; error?: string }> => {
+    if (!pendingChallenge?.mfaToken) {
+      return {
+        success: false,
+        error: 'Login session has expired. Please sign in again.',
+      };
     }
 
     try {
-      // Stage 2: Verification success, perform actual login
-      await login({
-        username: pendingCredentials.username,
-        password: pendingCredentials.password
-      });
-      setPendingCredentials(null);
-      navigate(ROUTES.DASHBOARD);
+      await authApi.sendEmailOtp({ mfaToken: pendingChallenge.mfaToken });
+      return { success: true };
     } catch (error) {
-      console.error("2FA Login failed:", error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unable to resend code right now.',
+      };
     }
   };
 
@@ -67,6 +177,8 @@ export const AppRoutes: React.FC = () => {
   };
 
   const handleBackToLogin = () => {
+    setPendingChallenge(null);
+    clearPersistedChallenge();
     navigate(ROUTES.LOGIN);
   };
 
@@ -79,7 +191,25 @@ export const AppRoutes: React.FC = () => {
       {/* ==================== PUBLIC ROUTES ==================== */}
       <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
       <Route path={ROUTES.LOGIN} element={<LoginView onLogin={handleLogin} onForgotPassword={handleForgotPassword} />} />
-      <Route path={ROUTES.TWO_FACTOR} element={<TwoFactorView onVerify={handleVerify2FA} onBackToLogin={handleBackToLogin} username={pendingCredentials?.username} />} />
+      <Route
+        path={ROUTES.TWO_FACTOR}
+        element={
+          !isChallengeHydrated ? (
+            <LoadingFallback />
+          ) : pendingChallenge ? (
+            <TwoFactorView
+              onVerify={handleVerify2FA}
+              onResend={handleResend2FA}
+              onBackToLogin={handleBackToLogin}
+              username={pendingChallenge.username}
+              email={pendingChallenge.maskedEmail}
+              availableMethods={pendingChallenge.availableMethods}
+            />
+          ) : (
+            <Navigate to={ROUTES.LOGIN} replace />
+          )
+        }
+      />
       <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordView onBackToLogin={handleBackToLogin} onRequestSubmit={handlePasswordResetRequest} />} />
 
       {/* ==================== PROTECTED ROUTES (WITH LAYOUT) ==================== */}

@@ -88,7 +88,7 @@
  */
 
 import { api as apiClient } from './client';
-import { secureStorage } from '@/utils/security';
+import { secureStorage, safeRandomUUID } from '@/utils/security';
 
 export interface LoginCredentials {
   username: string;
@@ -101,6 +101,23 @@ export interface AuthResponse {
   refreshToken: string;
   expiresIn: number;
 }
+
+export type MfaMethod = 'email' | 'app';
+
+export interface LoginChallengeResponse {
+  mfaRequired: true;
+  mfaToken: string;
+  availableMethods: MfaMethod[];
+  maskedEmail?: string;
+  username?: string;
+  expiresIn: number;
+}
+
+export type LoginResult = AuthResponse | LoginChallengeResponse;
+
+const isLoginChallengeResponse = (result: LoginResult): result is LoginChallengeResponse => {
+  return 'mfaRequired' in result && result.mfaRequired === true;
+};
 
 export interface AuthUser {
   id: string;
@@ -115,36 +132,132 @@ export interface AuthUser {
   mfaEnabled?: boolean;
 }
 
+interface MockMfaChallenge {
+  username: string;
+  email: string;
+  otp: string;
+  availableMethods: MfaMethod[];
+  expiresAt: number;
+}
+
+const MOCK_CHALLENGE_TTL_SECONDS = 300;
+const MOCK_MFA_EMAIL_OTP = '123456';
+const MOCK_MFA_APP_OTP = '654321';
+const mockChallenges = new Map<string, MockMfaChallenge>();
+
+const maskEmail = (email: string): string => {
+  const [name, domain] = email.split('@');
+  if (!name || !domain) return email;
+  if (name.length <= 2) {
+    return `${name[0] ?? '*'}***@${domain}`;
+  }
+  return `${name.slice(0, 1)}***${name.slice(-1)}@${domain}`;
+};
+
+const toMockAuthResponse = (username: string): AuthResponse => {
+  const normalizedUsername = username.trim() || 'admin';
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const tokenPayload = {
+    sub: '1',
+    exp: nowSeconds + 604800,
+  };
+
+  return {
+    user: {
+      id: '1',
+      username: normalizedUsername,
+      fullName: 'System Administrator',
+      email: 'admin@eqms.com',
+      role: 'admin',
+      department: 'Quality Assurance',
+      permissions: [],
+      mfaEnabled: true,
+    },
+    accessToken: btoa(JSON.stringify(tokenPayload)),
+    refreshToken: `refresh-${safeRandomUUID()}`,
+    expiresIn: 604800,
+  };
+};
+
+const createMockChallenge = (username: string): LoginChallengeResponse => {
+  const mfaToken = safeRandomUUID();
+  const expiresAt = Date.now() + MOCK_CHALLENGE_TTL_SECONDS * 1000;
+  const email = 'admin@eqms.com';
+
+  mockChallenges.set(mfaToken, {
+    username,
+    email,
+    otp: MOCK_MFA_EMAIL_OTP,
+    availableMethods: ['email', 'app'],
+    expiresAt,
+  });
+
+  return {
+    mfaRequired: true,
+    mfaToken,
+    availableMethods: ['email', 'app'],
+    maskedEmail: maskEmail(email),
+    username,
+    expiresIn: MOCK_CHALLENGE_TTL_SECONDS,
+  };
+};
+
+const isChallengeValid = (challenge: MockMfaChallenge | undefined): challenge is MockMfaChallenge => {
+  return Boolean(challenge && challenge.expiresAt > Date.now());
+};
+
 export const authApi = {
+  /** POST /auth/login (front-end-first: returns auth success or MFA challenge) */
+  loginWithChallenge: async (credentials: LoginCredentials): Promise<LoginResult> => {
+    try {
+      const response = await apiClient.post<LoginResult>('/auth/login', credentials);
+      const data = response.data;
+
+      if (isLoginChallengeResponse(data)) {
+        return data;
+      }
+
+      secureStorage.setItem('authToken', data.accessToken, true);
+      secureStorage.setItem('refreshToken', data.refreshToken, true);
+      return data;
+    } catch (error) {
+      // Demo fallback to unblock UI/UX development before backend is ready.
+      if (credentials.username === 'admin' && credentials.password === '123456') {
+        return createMockChallenge(credentials.username);
+      }
+      throw error;
+    }
+  },
+
   /** POST /auth/login */
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/login', credentials);
-    // Lưu tokens vào secure storage
-    secureStorage.setItem('accessToken', response.data.accessToken);
-    secureStorage.setItem('refreshToken', response.data.refreshToken);
-    return response.data;
+    const result = await authApi.loginWithChallenge(credentials);
+    if (isLoginChallengeResponse(result)) {
+      throw new Error('MFA_REQUIRED');
+    }
+    return result;
   },
 
   /** POST /auth/logout */
   logout: async (): Promise<void> => {
-    const refreshToken = secureStorage.getItem('refreshToken');
+    const refreshToken = secureStorage.getItem('refreshToken', true);
     try {
       await apiClient.post('/auth/logout', { refreshToken });
     } finally {
-      secureStorage.removeItem('accessToken');
+      secureStorage.removeItem('authToken');
       secureStorage.removeItem('refreshToken');
     }
   },
 
   /** POST /auth/refresh */
   refreshToken: async (): Promise<{ accessToken: string; refreshToken: string }> => {
-    const refreshToken = secureStorage.getItem('refreshToken');
+    const refreshToken = secureStorage.getItem('refreshToken', true);
     const response = await apiClient.post<{ accessToken: string; refreshToken: string; expiresIn: number }>(
       '/auth/refresh',
       { refreshToken }
     );
-    secureStorage.setItem('accessToken', response.data.accessToken);
-    secureStorage.setItem('refreshToken', response.data.refreshToken);
+    secureStorage.setItem('authToken', response.data.accessToken, true);
+    secureStorage.setItem('refreshToken', response.data.refreshToken, true);
     return response.data;
   },
 
@@ -186,12 +299,59 @@ export const authApi = {
 
   // ─── MFA ──────────────────────────────────────────────────────────────────────
 
+  /** POST /auth/mfa/send-email-otp */
+  sendEmailOtp: async (data: { mfaToken: string }): Promise<{ expiresIn: number; cooldownSeconds: number }> => {
+    try {
+      const response = await apiClient.post<{ expiresIn: number; cooldownSeconds: number }>(
+        '/auth/mfa/send-email-otp',
+        data
+      );
+      return response.data;
+    } catch {
+      const challenge = mockChallenges.get(data.mfaToken);
+      if (!isChallengeValid(challenge)) {
+        throw new Error('MFA_CHALLENGE_EXPIRED');
+      }
+
+      challenge.otp = MOCK_MFA_EMAIL_OTP;
+      mockChallenges.set(data.mfaToken, challenge);
+
+      return {
+        expiresIn: Math.max(Math.floor((challenge.expiresAt - Date.now()) / 1000), 0),
+        cooldownSeconds: 60,
+      };
+    }
+  },
+
   /** POST /auth/mfa/verify */
-  verifyMFA: async (data: { mfaToken: string; otp: string }): Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/mfa/verify', data);
-    secureStorage.setItem('accessToken', response.data.accessToken);
-    secureStorage.setItem('refreshToken', response.data.refreshToken);
-    return response.data;
+  verifyMFA: async (data: {
+    mfaToken: string;
+    otp: string;
+    method: MfaMethod;
+    rememberDevice?: boolean;
+  }): Promise<AuthResponse> => {
+    try {
+      const response = await apiClient.post<AuthResponse>('/auth/mfa/verify', data);
+      secureStorage.setItem('authToken', response.data.accessToken, true);
+      secureStorage.setItem('refreshToken', response.data.refreshToken, true);
+      return response.data;
+    } catch {
+      const challenge = mockChallenges.get(data.mfaToken);
+      if (!isChallengeValid(challenge)) {
+        throw new Error('MFA_CHALLENGE_EXPIRED');
+      }
+
+      const expectedOtp = data.method === 'app' ? MOCK_MFA_APP_OTP : challenge.otp;
+      if (data.otp !== expectedOtp) {
+        throw new Error('MFA_INVALID_CODE');
+      }
+
+      mockChallenges.delete(data.mfaToken);
+      const authResponse = toMockAuthResponse(challenge.username);
+      secureStorage.setItem('authToken', authResponse.accessToken, true);
+      secureStorage.setItem('refreshToken', authResponse.refreshToken, true);
+      return authResponse;
+    }
   },
 
   /** POST /auth/mfa/setup */

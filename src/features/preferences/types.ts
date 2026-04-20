@@ -4,4 +4,4 @@ export interface PreferencesState extends AppSettings {
   // We can add more specific fields if needed
 }
 
-export type PreferenceTabId = 'appearance' | 'localization' | 'notifications';
+export type PreferenceTabId = 'appearance' | 'localization' | 'notifications' | 'security';

@@ -2,24 +2,34 @@ import React, { useState } from 'react';
 import { Globe, Calendar, Clock } from 'lucide-react';
 import { Select } from '@/components/ui/select/Select';
 
-const SettingsCard: React.FC<{
-    title: string;
-    icon: React.ReactNode;
-    children: React.ReactNode;
-}> = ({ title, icon, children }) => (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100 uppercase tracking-wider">
-            <span className="text-emerald-600">{icon}</span>
-            <h3 className="text-xs font-bold text-slate-900">{title}</h3>
-        </div>
-        <div className="p-5">{children}</div>
-    </div>
-);
-
 export const LocalizationTab: React.FC = () => {
     const [language, setLanguage] = useState('vi');
-    const [dateFormat, setDateFormat] = useState('DD/MM/YYYY');
+    const [dateFormat, setDateFormat] = useState('DD/MM/YYYY_HH:MM:SS');
     const [timeFormat, setTimeFormat] = useState('24h');
+
+    const getDatePreview = (format: string): string => {
+        const baseDate = '26/03/2026';
+        const baseTime = '09:00:01';
+        const shortTime = '09:00';
+        const relativeTime = '5 min ago';
+
+        switch (format) {
+            case 'DD/MM/YYYY_HH:MM:SS':
+                return `${baseDate} ${baseTime}`;
+            case 'DD/MM/YYYY_HH:MM:SS_relative':
+                return `${baseDate} ${baseTime} ${relativeTime}`;
+            case 'DD/MM/YYYY_HH:MM_relative':
+                return `${baseDate} ${shortTime} ${relativeTime}`;
+            case 'DD/MM/YYYY_HH:MM':
+                return `${baseDate} ${shortTime}`;
+            case 'DD/MM/YYYY':
+                return baseDate;
+            case 'relative_only':
+                return relativeTime;
+            default:
+                return baseDate;
+        }
+    };
 
     const languages = [
         { value: 'vi', label: 'Tiếng Việt (Vietnamese)' },
@@ -27,9 +37,12 @@ export const LocalizationTab: React.FC = () => {
     ];
 
     const dateFormats = [
+        { value: 'DD/MM/YYYY_HH:MM:SS', label: 'DD/MM/YYYY 09:00:01' },
+        { value: 'DD/MM/YYYY_HH:MM:SS_relative', label: 'DD/MM/YYYY 09:00:01 5 min ago' },
+        { value: 'DD/MM/YYYY_HH:MM_relative', label: 'DD/MM/YYYY 09:00 5 min ago' },
+        { value: 'DD/MM/YYYY_HH:MM', label: 'DD/MM/YYYY 09:00' },
         { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY' },
-        { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY' },
-        { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD' },
+        { value: 'relative_only', label: '5 min ago' },
     ];
 
     const timeFormats = [
@@ -38,17 +51,21 @@ export const LocalizationTab: React.FC = () => {
     ];
 
     return (
-        <div className="p-1 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            {/* Language Selection */}
-            <SettingsCard title="Platform Language" icon={<Globe className="h-4 w-4" />}>
-                <div>
-                    <p className="text-xs text-slate-500 mb-4">Select your preferred language for the interface.</p>
-                    <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex-1">
+        <div className="p-1 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="space-y-8">
+                <section className="space-y-4">
+                    <div className="flex items-center gap-2">
+                        <Globe className="h-4 w-4 text-emerald-600" />
+                        <h3 className="text-sm font-semibold text-slate-900">Platform Language</h3>
+                    </div>
+                    <p className="text-xs text-slate-500">Select your preferred language for the interface.</p>
+
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between py-2">
+                        <div>
                             <p className="text-sm font-medium text-slate-900">Interface Language</p>
-                            <p className="text-xs text-slate-500 mt-0.5">Change the system display language.</p>
+                            <p className="text-xs text-slate-500">Change the system display language.</p>
                         </div>
-                        <div className="w-full sm:w-64">
+                        <div className="w-full sm:w-80">
                             <Select
                                 options={languages}
                                 value={language}
@@ -56,48 +73,58 @@ export const LocalizationTab: React.FC = () => {
                             />
                         </div>
                     </div>
-                </div>
-            </SettingsCard>
+                </section>
 
-            {/* DateTime Selection */}
-            <SettingsCard title="Regional Formats" icon={<Calendar className="h-4 w-4" />}>
-                <div>
-                    <p className="text-xs text-slate-500 mb-4">How dates and times are displayed to you.</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Date Format */}
-                        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col gap-3">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                <div className="h-px bg-slate-200" />
+
+                <section className="space-y-4">
+                    <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-emerald-600" />
+                        <h3 className="text-sm font-semibold text-slate-900">Regional Formats</h3>
+                    </div>
+                    <p className="text-xs text-slate-500">How dates and times are displayed to you.</p>
+
+                    <div className="space-y-3">
+                        <div className="flex flex-col gap-3 py-2 md:flex-row md:items-center md:justify-between">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-100">
                                     <Calendar className="h-4 w-4 text-slate-600" />
+                                </span>
+                                <div>
+                                    <p className="text-sm font-medium text-slate-900">Date Format</p>
+                                    <p className="text-xs text-slate-500">Preview: {getDatePreview(dateFormat)}</p>
                                 </div>
-                                <p className="text-sm font-medium text-slate-900">Date Format</p>
                             </div>
-                            <Select
-                                options={dateFormats}
-                                value={dateFormat}
-                                onChange={(val) => setDateFormat(val as string)}
-                            />
-                            <p className="text-[10px] text-slate-500">Today: 26/03/2026</p>
+                            <div className="w-full md:w-80">
+                                <Select
+                                    options={dateFormats}
+                                    value={dateFormat}
+                                    onChange={(val) => setDateFormat(val as string)}
+                                />
+                            </div>
                         </div>
 
-                        {/* Time Format */}
-                        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col gap-3">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                        <div className="flex flex-col gap-3 py-2 md:flex-row md:items-center md:justify-between">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-100">
                                     <Clock className="h-4 w-4 text-slate-600" />
+                                </span>
+                                <div>
+                                    <p className="text-sm font-medium text-slate-900">Time Format</p>
+                                    <p className="text-xs text-slate-500">Preview: 16:33</p>
                                 </div>
-                                <p className="text-sm font-medium text-slate-900">Time Format</p>
                             </div>
-                            <Select
-                                options={timeFormats}
-                                value={timeFormat}
-                                onChange={(val) => setTimeFormat(val as string)}
-                            />
-                            <p className="text-[10px] text-slate-500">Current Time: 16:33</p>
+                            <div className="w-full md:w-80">
+                                <Select
+                                    options={timeFormats}
+                                    value={timeFormat}
+                                    onChange={(val) => setTimeFormat(val as string)}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </SettingsCard>
+                </section>
+            </div>
         </div>
     );
 };

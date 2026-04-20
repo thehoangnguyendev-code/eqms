@@ -4,7 +4,7 @@
  */
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { secureStorage } from '@/utils/security';
+import { secureStorage, safeRandomUUID } from '@/utils/security';
 import { ROUTES } from '@/app/routes.constants';
 
 // API Base URL - will be loaded from environment variables
@@ -29,7 +29,7 @@ apiClient.interceptors.request.use(
     }
 
     // Add correlation ID for request tracking
-    config.headers['X-Correlation-ID'] = crypto.randomUUID();
+    config.headers['X-Correlation-ID'] = safeRandomUUID();
 
     // Log request in development
     if (import.meta.env.DEV) {

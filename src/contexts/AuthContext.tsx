@@ -8,11 +8,21 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { authApi } from '@/services/api';
 import type { User, LoginCredentials } from '@/types';
 import { secureStorage, tokenUtils, auditLog, csrfToken } from '@/utils/security';
+import type { AuthResponse, LoginChallengeResponse, MfaMethod } from '@/services/api/auth';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAuthenticated: boolean;
+  initiateLogin: (
+    credentials: LoginCredentials
+  ) => Promise<{ success: boolean; mfaRequired?: boolean; challenge?: LoginChallengeResponse; error?: Error }>;
+  verifyMFA: (data: {
+    mfaToken: string;
+    otp: string;
+    method: MfaMethod;
+    rememberDevice?: boolean;
+  }) => Promise<{ success: boolean; error?: Error }>;
   login: (credentials: LoginCredentials) => Promise<{ success: boolean; error?: Error }>;
   logout: () => Promise<void>;
   updateUser: (user: User) => void;
@@ -29,6 +39,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const mapAuthUserToUser = (authUser: AuthResponse['user']): User => {
+    const nameParts = authUser.fullName?.trim().split(' ') ?? [];
+    return {
+      id: authUser.id,
+      username: authUser.username,
+      email: authUser.email,
+      firstName: nameParts[0] || '',
+      lastName: nameParts.slice(1).join(' ') || '',
+      role: authUser.role as any,
+      department: authUser.department,
+      avatar: authUser.avatar,
+    };
+  };
+
+  const applyAuthenticatedSession = (response: AuthResponse) => {
+    const appUser = mapAuthUserToUser(response.user);
+
+    secureStorage.setItem('authToken', response.accessToken, true);
+    secureStorage.setItem('refreshToken', response.refreshToken, true);
+    secureStorage.setItem('user', JSON.stringify(appUser), true);
+
+    setUser(appUser);
+    setIsAuthenticated(true);
+
+    const csrf = csrfToken.generate();
+    csrfToken.store(csrf);
+
+    return appUser;
+  };
 
   // Check authentication status on mount with security checks
   useEffect(() => {
@@ -88,75 +128,79 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (credentials: LoginCredentials) => {
+  const initiateLogin: AuthContextType['initiateLogin'] = async (credentials) => {
     try {
-      const response = await authApi.login(credentials);
-      
-      // Store token securely (encrypted)
-      secureStorage.setItem('authToken', response.accessToken, true);
-      
-      // We need to shape AuthUser -> User here since AuthUser is missing firstName, lastName
-      // This is a temporary measure if User is used globally and AuthUser lacks some fields
-      const appUser: User = {
-        id: response.user.id,
-        username: response.user.username,
-        email: response.user.email,
-        firstName: response.user.fullName.split(' ')[0] || '',
-        lastName: response.user.fullName.split(' ').slice(1).join(' ') || '',
-        role: response.user.role as any,
-        department: response.user.department,
-        avatar: response.user.avatar,
-      };
+      const result = await authApi.loginWithChallenge(credentials);
 
-      secureStorage.setItem('user', JSON.stringify(appUser), true);
-      
-      setUser(appUser);
-      setIsAuthenticated(true);
+      if ('mfaRequired' in result && result.mfaRequired) {
+        auditLog.log('login_challenge_created', {
+          username: credentials.username,
+          methods: result.availableMethods,
+        });
 
-      // Generate CSRF token
-      const csrf = csrfToken.generate();
-      csrfToken.store(csrf);
-
-      auditLog.log('login_success', { 
-        userId: response.user.id, 
-        role: response.user.role 
-      });
-
-      return { success: true };
-    } catch (error) {
-      // Demo mode: if API is unavailable, use demo credentials
-      if (credentials.username === 'admin' && credentials.password === '123456') {
-        const demoUser: User = {
-          id: '1',
-          username: 'admin',
-          email: 'admin@eqms.com',
-          firstName: 'System',
-          lastName: 'Administrator',
-          role: 'admin',
-          department: 'Quality Assurance',
+        return {
+          success: true,
+          mfaRequired: true,
+          challenge: result,
         };
-        // Token expires in 7 days (604800 seconds) instead of 1 day
-        const demoToken = btoa(JSON.stringify({ 
-          sub: '1', 
-          exp: Math.floor(Date.now() / 1000) + 604800 
-        }));
-        
-        secureStorage.setItem('authToken', demoToken, true);
-        secureStorage.setItem('user', JSON.stringify(demoUser), true);
-        
-        setUser(demoUser);
-        setIsAuthenticated(true);
-
-        auditLog.log('demo_login_success', { userId: demoUser.id });
-        return { success: true };
       }
 
+      const appUser = applyAuthenticatedSession(result);
+
+      auditLog.log('login_success', {
+        userId: appUser.id,
+        role: appUser.role,
+      });
+
+      return { success: true, mfaRequired: false };
+    } catch (error) {
       auditLog.log('login_failed', { 
         username: credentials.username,
         error: String(error) 
       });
       return { success: false, error: error as Error };
     }
+  };
+
+  const verifyMFA: AuthContextType['verifyMFA'] = async ({ mfaToken, otp, method, rememberDevice }) => {
+    try {
+      const response = await authApi.verifyMFA({
+        mfaToken,
+        otp,
+        method,
+        rememberDevice,
+      });
+      const appUser = applyAuthenticatedSession(response);
+
+      auditLog.log('mfa_verify_success', {
+        userId: appUser.id,
+        method,
+        rememberDevice: Boolean(rememberDevice),
+      });
+
+      return { success: true };
+    } catch (error) {
+      auditLog.log('mfa_verify_failed', {
+        mfaToken,
+        method,
+        error: String(error),
+      });
+      return { success: false, error: error as Error };
+    }
+  };
+
+  const login = async (credentials: LoginCredentials) => {
+    const result = await initiateLogin(credentials);
+
+    if (!result.success) {
+      return { success: false, error: result.error };
+    }
+
+    if (result.mfaRequired) {
+      return { success: false, error: new Error('MFA_REQUIRED') };
+    }
+
+    return { success: true };
   };
 
   const logout = async () => {
@@ -169,6 +213,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       // Clear all secure storage
       secureStorage.removeItem('authToken');
+      secureStorage.removeItem('refreshToken');
       secureStorage.removeItem('user');
       csrfToken.store(''); // Clear CSRF
       
@@ -204,6 +249,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     loading,
     isAuthenticated,
+    initiateLogin,
+    verifyMFA,
     login,
     logout,
     updateUser,
