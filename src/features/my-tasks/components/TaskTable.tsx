@@ -111,7 +111,7 @@ export const TaskTable: React.FC<{
                   </th>
                 );
               })}
-              <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+              <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 after:absolute after:inset-y-0 after:left-full after:w-[50vw] after:bg-slate-50 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                 Action
               </th>
             </tr>
@@ -213,7 +213,7 @@ export const TaskTable: React.FC<{
                   <td
                     onClick={(e) => e.stopPropagation()}
                     className={cn(
-                      "sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors",
+                      "sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 after:absolute after:inset-y-0 after:left-full after:w-[50vw] after:bg-inherit shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors",
                       task.status === "Completed" && "completed-row-cell"
                     )}
                   >

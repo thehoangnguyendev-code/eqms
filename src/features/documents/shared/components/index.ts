@@ -5,4 +5,3 @@
  */
 
 export { DocumentFilters } from "./DocumentFilters";
-export { CreateLinkModal } from "./CreateLinkModal";

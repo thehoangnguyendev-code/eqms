@@ -41,6 +41,7 @@ import {
   IconMessageChatbot,
   IconChartHistogram,
   IconBrandAsana,
+  IconLifebuoy,
 } from "@tabler/icons-react";
 import { cn } from "@/components/ui/utils";
 import { PageHeader } from "@/components/ui/page/PageHeader";
@@ -84,8 +85,13 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   IconMessageChatbot,
   IconChartHistogram,
   IconBrandAsana,
+  IconLifebuoy,
   Package,
   Bell,
+};
+
+const resolveIcon = (iconName: string): React.ComponentType<{ className?: string }> => {
+  return ICON_MAP[iconName] ?? Info;
 };
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -131,12 +137,12 @@ interface ManualTab {
 const MANUAL_TABS: ManualTab[] = Object.entries(manualContentData).map(([id, data]: [string, any]) => ({
   id,
   label: data.label,
-  icon: ICON_MAP[data.iconName],
+  icon: resolveIcon(data.iconName),
   section: {
     ...data.section,
     features: data.section.features.map((f: any) => ({
       ...f,
-      icon: ICON_MAP[f.iconName],
+      icon: resolveIcon(f.iconName),
     })),
   },
 }));

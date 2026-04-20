@@ -880,7 +880,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
           className={cn(
             "bg-white border-r border-slate-200 flex flex-col shadow-lg md:shadow-sm sidebar-mobile",
             "fixed top-0 left-0 bottom-0 z-50",
-            "md:sticky md:top-0 md:z-30 md:h-screen",
+            "md:sticky md:top-0 md:z-50 md:h-screen",
 
             // PHẦN CHỈNH SỬA TẠI ĐÂY:
             isCollapsed
@@ -964,6 +964,40 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                 <ChevronLeft className="h-5 w-5" />
               </button>
             )}
+
+            {/* Desktop collapse toggle aligned on right vertical divider */}
+            <div className="hidden md:block absolute inset-y-0 right-0 pointer-events-none">
+              <div className="absolute inset-y-0 right-0 w-px bg-slate-200" aria-hidden="true" />
+              <button
+                type="button"
+                onClick={onToggleSidebar}
+                className={cn(
+                  "absolute top-1/2 right-0 z-10 -translate-y-1/2 translate-x-1/2 pointer-events-auto",
+                  "relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border border-slate-300 bg-white",
+                  "text-slate-600 hover:text-slate-900 hover:border-slate-400 hover:bg-slate-50",
+                  "transition-colors duration-200",
+                )}
+                aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <ChevronRight
+                  className={cn(
+                    "absolute h-4 w-4 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform",
+                    isCollapsed
+                      ? "opacity-100 rotate-0 scale-100"
+                      : "opacity-0 -rotate-90 scale-75",
+                  )}
+                />
+                <ChevronLeft
+                  className={cn(
+                    "absolute h-4 w-4 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform",
+                    isCollapsed
+                      ? "opacity-0 rotate-90 scale-75"
+                      : "opacity-100 rotate-0 scale-100",
+                  )}
+                />
+              </button>
+            </div>
           </div>
 
           {/* Search Bar - Only show when expanded */}

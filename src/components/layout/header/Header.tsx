@@ -8,7 +8,7 @@ import { cn } from '../../ui/utils';
 import { NotificationsDropdown } from './NotificationsDropdown';
 import { AlertModal } from '../../ui/modal/AlertModal';
 import { FullPageLoading } from '../../ui/loading/Loading';
-import { IconArrowBarRight, IconArrowBarToLeft, IconLogout } from '@tabler/icons-react';
+import { IconLogout } from '@tabler/icons-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ROUTES } from '@/app/routes.constants';
 import logoNoBg from '@/assets/images/logo_nobg.png';
@@ -136,7 +136,7 @@ export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSi
         <div className="h-full flex items-center justify-between gap-1.5 md:gap-2 lg:gap-3 px-3 md:px-4 lg:px-6">
 
           {/* LEFT: Sidebar Toggle */}
-          <div className="flex items-center shrink-0">
+          <div className="flex items-center shrink-0 md:hidden">
             <Button
               variant="ghost"
               size="icon-sm"
@@ -145,20 +145,6 @@ export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSi
               title={isMobileMenuOpen ? "Close Menu" : (isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar")}
               aria-label={isMobileMenuOpen ? "Close navigation menu" : (isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar")}
             >
-              {/* Tablet/Desktop: Expand Icon - Show when sidebar is collapsed */}
-              <IconArrowBarRight className={cn(
-                "h-6 w-6 absolute transition-all duration-300 ease-in-out hidden md:block",
-                isSidebarCollapsed
-                  ? "opacity-100 rotate-0 scale-100"
-                  : "opacity-0 rotate-180 scale-90"
-              )} />
-              {/* Tablet/Desktop: Collapse Icon - Show when sidebar is expanded */}
-              <IconArrowBarToLeft className={cn(
-                "h-6 w-6 absolute transition-all duration-300 ease-in-out hidden md:block",
-                isSidebarCollapsed
-                  ? "opacity-0 -rotate-180 scale-90"
-                  : "opacity-100 rotate-0 scale-100"
-              )} />
               {/* Mobile: Menu Icon - Show when mobile menu is closed */}
               <Menu className={cn(
                 "h-6 w-6 absolute transition-all duration-300 ease-in-out md:hidden",
@@ -190,7 +176,7 @@ export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSi
 
             {/* Page Title */}
             <div className={cn(
-              "flex-1 flex items-center min-w-0 transition-all duration-300 ease-out overflow-hidden lg:pl-2",
+              "flex-1 flex items-center min-w-0 transition-all duration-300 ease-out overflow-hidden md:-ml-9 lg:-ml-9",
               showHeaderTitle && headerTitle
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 -translate-y-2 pointer-events-none"

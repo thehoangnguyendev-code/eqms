@@ -24,7 +24,6 @@ import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker
 import { ESignatureModal } from "@/components/ui/esign-modal/ESignatureModal";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { formatDateUS, formatDateTimeParts } from "@/utils/format";
-import { CreateLinkModal } from "@/features/documents/shared/components";
 import { DestructionTypeSelectionModal } from "./components/DestructionTypeSelectionModal";
 import { useToast } from "@/components/ui/toast/Toast";
 import type { ControlledCopy, ControlledCopyStatus, TableColumn } from "./types";
@@ -82,7 +81,6 @@ const DropdownMenu: React.FC<{
   onCancel?: () => void;
   onDistribute?: () => void;
   onReportLostDamaged?: () => void;
-  onCreateLink?: () => void;
   onViewAuditTrail: () => void;
   viewType: ViewType;
 }> = ({
@@ -94,7 +92,6 @@ const DropdownMenu: React.FC<{
   onCancel,
   onDistribute,
   onReportLostDamaged,
-  onCreateLink,
   onViewAuditTrail,
   viewType,
 }) => {
@@ -162,19 +159,6 @@ const DropdownMenu: React.FC<{
               >
                 <IconShare3 className="h-4 w-4 flex-shrink-0" />
                 <span className="font-medium">Distribute</span>
-              </button>
-            )}
-            {onCreateLink && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCreateLink();
-                  onClose();
-                }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-              >
-                <Link2 className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium">Create Shareable Link</span>
               </button>
             )}
             {viewType === "ready" && onCancel && (
@@ -253,8 +237,6 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
   }, []);
 
   // Modal states
-  const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
-  const [selectedCopyForLink, setSelectedCopyForLink] = useState<ControlledCopy | null>(null);
   const [selectedCopyForCancel, setSelectedCopyForCancel] = useState<ControlledCopy | null>(null);
   const [isESignModalOpen, setisESignModalOpen] = useState(false);
   const [isDistributeisESignModalOpen, setisDistributeisESignModalOpen] = useState(false);
@@ -394,12 +376,6 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
   const handleEdit = (copy: ControlledCopy) => {
     console.log("Edit copy:", copy);
     // TODO: Navigate to edit page
-  };
-
-  const handleCreateLink = (copy: ControlledCopy) => {
-    setSelectedCopyForLink(copy);
-    setIsCreateLinkModalOpen(true);
-    close();
   };
 
   const handleCancel = (copy: ControlledCopy) => {
@@ -740,9 +716,6 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
             onEdit={() => {
               if (selectedCopy) handleEdit(selectedCopy);
             }}
-            onCreateLink={() => {
-              if (selectedCopy) handleCreateLink(selectedCopy);
-            }}
             onDistribute={
               selectedCopy && selectedCopy.status === "Ready for Distribution"
                 ? () => handleDistribute(selectedCopy)
@@ -765,18 +738,6 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
           />
         );
       })()}
-
-      {/* Create Shareable Link Modal */}
-      <CreateLinkModal
-        isOpen={isCreateLinkModalOpen && !!selectedCopyForLink}
-        onClose={() => {
-          setIsCreateLinkModalOpen(false);
-          // Suggestion: Clear it after a delay or on animation complete
-        }}
-        documentId={selectedCopyForLink?.documentNumber || ""}
-        documentTitle={selectedCopyForLink?.name || ""}
-      />
-
 
       {/* ESignature Modal - Cancel Distribution */}
       <ESignatureModal

@@ -18,14 +18,12 @@ const MIN_PASSWORD_LENGTH = 6;
 const LOGIN_SIMULATION_DELAY = 3500; // 1.5 seconds
 
 const PARTNER_BRANDS = [
-  "Discord",
-  "Mailchimp",
-  "Grammarly",
-  "Attentive",
-  "HelloSign",
-  "Intercom",
-  "Square",
-  "Dropbox",
+  "Document Control",
+  "Training Management",
+  "Deviations & NCs",
+  "Reports & Analytics",
+  "Audit Trail",
+  "... and more",
 ];
 
 const DEMO_CREDENTIALS = {
@@ -212,18 +210,18 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
   // ========================================================================
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-white sm:bg-slate-200 p-0 sm:p-6 lg:p-8" role="main">
+    <div className="flex min-h-screen min-h-dvh w-full items-center justify-center bg-white p-0 sm:bg-slate-200 sm:p-6 lg:p-8" role="main">
       {isLoading && <FullPageLoading text="Signing in..." />}
 
       <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-none sm:rounded-2xl bg-transparent shadow-none sm:shadow-[0_14px_36px_rgba(15,23,42,0.16)] lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
-        <div className="grid w-full grid-cols-1 min-h-screen sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
+        <div className="grid min-h-screen min-h-dvh w-full grid-cols-1 sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
             className="flex flex-col sm:flex-row items-center justify-center border-0 sm:border border-slate-200/90 bg-white px-6 py-10 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
           >
-            <div className="w-full max-w-[340px] sm:max-w-[420px] flex-1 flex flex-col justify-center">
+            <div className="flex flex-1 w-full max-w-[340px] flex-col justify-center sm:max-w-[420px]">
               <div className="mb-6 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
                 <img
                   src={logoImg}
@@ -238,7 +236,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
               <div className="mb-6 space-y-2 sm:mb-8 sm:space-y-3">
                 <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Welcome Back!</h1>
                 <p className="max-w-sm text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">
-                  Sign in to access your dashboard and continue optimizing your quality process.
+                  Sign in with your account to access and manage your quality processes efficiently.
                 </p>
               </div>
 
@@ -407,7 +405,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
               </div>
 
               <div className="text-center">
-                <p className="text-[11px] sm:text-xs text-slate-500 sm:text-sm">
+                <p className="text-[11px] text-slate-500 sm:text-sm">
                   Access is managed by the Ngoc Thien Pharma Dev Team
                 </p>
               </div>
@@ -445,7 +443,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
                 <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">EQMS Modules</span>
                 <span className="h-px flex-1 bg-teal-200/30" />
               </div>
-              <div className="grid grid-cols-4 gap-x-4 gap-y-4 text-sm font-semibold text-teal-100/90">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-4 text-sm font-medium text-teal-100/90">
                 {PARTNER_BRANDS.map((brand) => (
                   <span key={brand}>{brand}</span>
                 ))}

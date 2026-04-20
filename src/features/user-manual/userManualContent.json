@@ -1433,14 +1433,14 @@
   },
   "help-support": {
     "label": "Help & Support",
-    "iconName": "IconMessageChatbot",
+    "iconName": "IconLifebuoy",
     "section": {
       "id": "help-support",
       "title": "Help & Support",
       "overview": "Get the assistance you need to use the eQMS effectively. Access our support resources, submit help tickets, and find answers to frequently asked questions.",
       "features": [
         {
-          "iconName": "IconMessageChatbot",
+          "iconName": "IconLifebuoy",
           "title": "Direct Support Chat",
           "description": "Chat directly with our support team during business hours for immediate assistance with system issues.",
           "color": "bg-blue-100",

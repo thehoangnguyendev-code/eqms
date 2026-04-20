@@ -39,6 +39,8 @@ import {
   IconUsersGroup,
   IconMailForward,
   IconChartBar,
+  IconLifebuoy,
+  IconMessage,
 } from "@tabler/icons-react";
 import { NavItem } from "@/types";
 import { ROUTES } from "./routes.constants";
@@ -312,7 +314,7 @@ const SYSTEM_MODULES: NavItem[] = [
   },
   {
     id: "audit-trail",
-    label: "Audit Trail System",
+    label: "Audit Trail",
     icon: IconFilter2Search,
     showDividerAfter: true,
     path: ROUTES.AUDIT_TRAIL,
@@ -370,7 +372,7 @@ const SYSTEM_MODULES: NavItem[] = [
   {
     id: "help-support",
     label: "Help & Support",
-    icon: IconMessageChatbot,
+    icon: IconLifebuoy,
     children: [
       {
         id: "user-manual",
@@ -381,7 +383,7 @@ const SYSTEM_MODULES: NavItem[] = [
       {
         id: "contact-support",
         label: "Contact Support",
-        icon: IconMessageReport,
+        icon: IconMessage,
         path: ROUTES.HELP_SUPPORT_CONTACT,
       },
     ],

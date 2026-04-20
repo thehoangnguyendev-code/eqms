@@ -10,7 +10,6 @@ import {
   MoreVertical,
   Download,
   History,
-  Link2,
   SquarePen,
 } from "lucide-react";
 import {
@@ -30,7 +29,6 @@ import { cn } from "@/components/ui/utils";
 import { formatDateUS } from "@/utils/format";
 import { DocumentFilters } from "./../shared/components/DocumentFilters";
 import { DetailDocumentView } from "../document-detail/DetailDocumentView";
-import { CreateLinkModal } from "./../shared/components/CreateLinkModal";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
@@ -85,7 +83,6 @@ interface DropdownMenuProps {
   position: PortalDropdownPosition;
   onViewDocument?: (documentId: string, tab?: string) => void;
   onNavigateTo: (to: string) => void;
-  onCreateLink?: (document: Document) => void;
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
@@ -95,7 +92,6 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   position,
   onViewDocument,
   onNavigateTo,
-  onCreateLink,
 }) => {
 
   // Dynamic menu items based on document status
@@ -159,17 +155,6 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       case "Closed - Cancelled":
         break;
     }
-
-    // Always available: Create Shareable Link
-    items.push({
-      icon: Link2,
-      label: "Create Shareable Link",
-      onClick: () => {
-        onCreateLink?.(document);
-        onClose();
-      },
-      color: "text-slate-500"
-    });
 
     // Always available: Version History & Audit Trail
     items.push({
@@ -331,8 +316,6 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
   const [selectedDocumentTab, setSelectedDocumentTab] = useState<string>("general");
   const [isLoading, setIsLoading] = useState(false);
-  const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
-  const [selectedDocumentForLink, setSelectedDocumentForLink] = useState<Document | null>(null);
   const [isLocalNavigating, setIsLocalNavigating] = useState(false);
 
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
@@ -405,11 +388,6 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
     setCorrelatedDocumentFilter("All");
     setTemplateFilter("All");
     setCurrentPage(1);
-  };
-
-  const handleCreateLink = (document: Document) => {
-    setSelectedDocumentForLink(document);
-    setIsCreateLinkModalOpen(true);
   };
 
   const handleSort = (key: string) => {
@@ -839,7 +817,6 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                             position={position}
                                             onViewDocument={handleViewDocument}
                                             onNavigateTo={navigateTo}
-                                            onCreateLink={handleCreateLink}
                                           />
                                         </td>
                                       );
@@ -999,20 +976,6 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
           </div>
         </>
       )}
-
-      {/* Create Shareable Link Modal */}
-      <CreateLinkModal
-        isOpen={isCreateLinkModalOpen && !!selectedDocumentForLink}
-        onClose={() => {
-          setIsCreateLinkModalOpen(false);
-          // We can't set it to null immediately or the modal will unmount instantly.
-          // However, we need to clear it eventually. 
-          // Suggestion: Clear it on animation complete or keep the modal definition 
-          // with empty data while it's closing.
-        }}
-        documentId={selectedDocumentForLink?.documentId || ""}
-        documentTitle={selectedDocumentForLink?.title || ""}
-      />
     </div>
   );
 };

@@ -24,26 +24,6 @@ export const MOCK_USERS: MockUser[] = [
   { id: '10', name: 'Robert Brown', username: 'rbrown', role: 'Operations Director', department: 'Operations', email: 'r.brown@example.com' },
 ];
 
-// User options for CreateLinkModal (email-based format)
-export const MOCK_USER_OPTIONS = [
-  { value: "user-1", label: "John Smith - john.smith@company.com" },
-  { value: "user-2", label: "Sarah Johnson - sarah.johnson@company.com" },
-  { value: "user-3", label: "Michael Chen - michael.chen@company.com" },
-  { value: "user-4", label: "Emma Williams - emma.williams@company.com" },
-  { value: "user-5", label: "David Brown - david.brown@company.com" },
-  { value: "user-6", label: "Robert Taylor - robert.taylor@company.com" },
-  { value: "user-7", label: "Lisa Anderson - lisa.anderson@company.com" },
-  { value: "user-8", label: "James Wilson - james.wilson@company.com" },
-];
-
-export const MOCK_DEPARTMENTS = [
-  { value: "dept-1", label: "Quality Assurance" },
-  { value: "dept-2", label: "Manufacturing" },
-  { value: "dept-3", label: "Research & Development" },
-  { value: "dept-4", label: "Regulatory Affairs" },
-  { value: "dept-5", label: "Supply Chain" },
-];
-
 // --- Subtab Mock Data ---
 import type {
   ControlledCopy,

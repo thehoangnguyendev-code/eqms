@@ -6,7 +6,8 @@ import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import { isValidEmail } from "@/utils/validation";
 import logoImg from "@/assets/images/logo_nobg.png";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { IconCheck } from "@tabler/icons-react";
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -15,14 +16,12 @@ import { motion, AnimatePresence } from "framer-motion";
 const REQUEST_SIMULATION_DELAY = 2000; // 2 seconds
 
 const PARTNER_BRANDS = [
-  "Discord",
-  "Mailchimp",
-  "Grammarly",
-  "Attentive",
-  "HelloSign",
-  "Intercom",
-  "Square",
-  "Dropbox",
+  "Document Control",
+  "Training Management",
+  "Deviations & NCs",
+  "Reports & Analytics",
+  "Audit Trail",
+  "... and more",
 ];
 
 const ERROR_MESSAGES = {
@@ -173,15 +172,9 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
           onRequestSubmit(formData.email, formData.reason);
         }
 
-        // Auto redirect to login after 5 seconds
-        setTimeout(() => {
-          if (onBackToLogin) {
-            onBackToLogin();
-          }
-        }, 5000);
       }, REQUEST_SIMULATION_DELAY);
     },
-    [formData, onRequestSubmit, onBackToLogin]
+    [formData, onRequestSubmit]
   );
 
   // ========================================================================
@@ -189,16 +182,16 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
   // ========================================================================
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-white sm:bg-slate-200 p-0 sm:p-6 lg:p-8" role="main">
+    <div className="flex min-h-screen min-h-dvh w-full items-center justify-center bg-white p-0 sm:bg-slate-200 sm:p-6 lg:p-8" role="main">
       <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-none sm:rounded-2xl bg-transparent shadow-none sm:shadow-[0_14px_36px_rgba(15,23,42,0.16)] lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
-        <div className="grid w-full grid-cols-1 min-h-screen sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
+        <div className="grid min-h-screen min-h-dvh w-full grid-cols-1 sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
             className="flex flex-col sm:flex-row items-center justify-center border-0 sm:border border-slate-200/90 bg-white px-6 py-10 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
           >
-            <div className="w-full max-w-[340px] sm:max-w-[420px] flex-1 flex flex-col justify-center">
+            <div className="flex flex-1 w-full max-w-[340px] flex-col justify-center sm:max-w-[420px]">
               <div className="mb-6 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
                 <img
                   src={logoImg}
@@ -210,20 +203,10 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                 />
               </div>
 
-              <AnimatePresence mode="wait">
+              <>
                 {isSuccess ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="space-y-6 sm:space-y-6"
-                  >
-                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
-                      <CheckCircle2 className="h-8 w-8 text-emerald-600" aria-hidden="true" />
-                    </div>
-
-                    <div className="space-y-3 sm:space-y-3">
+                  <div className="space-y-6 sm:space-y-5">
+                    <div className="space-y-2 sm:space-y-3">
                       <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Request Sent</h1>
                       <p className="text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">{SUCCESS_MESSAGE}</p>
                     </div>
@@ -237,15 +220,11 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                         Back to Sign In
                       </Button>
 
-                      <p className="text-[11px] text-slate-500 sm:text-xs">Redirecting automatically in 5 seconds...</p>
+                      <p className="text-[11px] text-slate-500 sm:text-xs">Click "Back to Sign In" to return to the login screen.</p>
                     </div>
-                  </motion.div>
+                  </div>
                 ) : (
-                  <motion.form
-                    key="form"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
+                  <form
                     onSubmit={handleSubmit}
                     className="space-y-5 sm:space-y-6"
                   >
@@ -258,7 +237,7 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
 
                     <div className="space-y-2 sm:space-y-2.5">
                       <label htmlFor="email" className="block text-sm font-medium text-slate-800 sm:text-sm">
-                        Email or Username
+                        Email or Username <span className="text-red-500" aria-hidden="true">*</span>
                       </label>
                       <input
                         id="email"
@@ -288,7 +267,7 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
 
                     <div className="space-y-2 sm:space-y-2.5">
                       <label htmlFor="reason" className="block text-sm font-medium text-slate-800 sm:text-sm">
-                        Reason for Request
+                        Reason for Request <span className="text-red-500" aria-hidden="true">*</span>
                       </label>
                       <textarea
                         id="reason"
@@ -339,9 +318,9 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
                       </span>
                       <span>Back to Sign In</span>
                     </button>
-                  </motion.form>
+                  </form>
                 )}
-              </AnimatePresence>
+              </>
             </div>
           </motion.div>
 
@@ -364,10 +343,10 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({
 
             <div className="relative z-10 mt-auto pt-10 xl:pt-16">
               <div className="mb-7 flex items-center gap-5">
-                <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">Trusted by teams</span>
+                <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">EQMS Modules</span>
                 <span className="h-px flex-1 bg-teal-200/30" />
               </div>
-              <div className="grid grid-cols-4 gap-x-4 gap-y-4 text-sm font-semibold text-teal-100/90">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-4 text-sm font-medium text-teal-100/90">
                 {PARTNER_BRANDS.map((brand) => (
                   <span key={brand}>{brand}</span>
                 ))}

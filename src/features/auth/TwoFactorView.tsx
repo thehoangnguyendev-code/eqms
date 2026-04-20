@@ -17,14 +17,12 @@ const VERIFICATION_SIMULATION_DELAY = 2000;
 const RESEND_COOLDOWN = 60; // 60 seconds
 
 const PARTNER_BRANDS = [
-  "Discord",
-  "Mailchimp",
-  "Grammarly",
-  "Attentive",
-  "HelloSign",
-  "Intercom",
-  "Square",
-  "Dropbox",
+  "Document Control",
+  "Training Management",
+  "Deviations & NCs",
+  "Reports & Analytics",
+  "Audit Trail",
+  "... and more",
 ];
 
 // ============================================================================
@@ -183,18 +181,18 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
   // ========================================================================
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-white sm:bg-slate-200 p-0 sm:p-6 lg:p-8" role="main">
+    <div className="flex min-h-screen min-h-dvh w-full items-center justify-center bg-white p-0 sm:bg-slate-200 sm:p-6 lg:p-8" role="main">
       {isLoading && <FullPageLoading text="Verifying code..." />}
       <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-none sm:rounded-2xl bg-transparent shadow-none sm:shadow-[0_14px_36px_rgba(15,23,42,0.16)] lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
-        <div className="grid w-full grid-cols-1 min-h-screen sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
+        <div className="grid min-h-screen min-h-dvh w-full grid-cols-1 sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
             className="flex flex-col sm:flex-row items-center justify-center border-0 sm:border border-slate-200/90 bg-white px-6 py-10 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
           >
-            <div className="flex flex-1 w-full max-w-[340px] flex-col justify-center pt-8 sm:max-w-[420px] sm:pt-0">
-              <div className="mb-4 mt-2 flex items-center gap-3 text-slate-900 sm:mb-10 sm:mt-0 lg:mb-12">
+            <div className="flex flex-1 w-full max-w-[340px] flex-col justify-center sm:max-w-[420px]">
+              <div className="mb-6 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
                 <img
                   src={logoImg}
                   alt="EQMS Logo"
@@ -205,16 +203,17 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                 />
               </div>
 
-              <AnimatePresence mode="wait">
-                {!method ? (
-                  <motion.div
-                    key="selection"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.25 }}
-                    className="space-y-6 sm:space-y-5"
-                  >
+              <div className="min-h-[360px] sm:min-h-[420px]">
+                <AnimatePresence mode="wait" initial={false}>
+                  {!method ? (
+                    <motion.div
+                      key="selection"
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 16 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="space-y-6 sm:space-y-5"
+                    >
                     <div className="space-y-2 sm:space-y-3">
                       <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Verify Your Identity</h1>
                       <p className="text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">
@@ -271,17 +270,17 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                       </span>
                       <span>Back to Sign In</span>
                     </button>
-                  </motion.div>
-                ) : (
-                  <motion.form
-                    key="otp-form"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.25 }}
-                    onSubmit={handleSubmit}
-                    className="flex flex-col justify-start space-y-5 sm:flex-1 sm:justify-center sm:space-y-6"
-                  >
+                    </motion.div>
+                  ) : (
+                    <motion.form
+                      key="otp-form"
+                      initial={{ opacity: 0, x: 16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -16 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      onSubmit={handleSubmit}
+                      className="flex flex-col justify-start space-y-5 sm:justify-center sm:space-y-6"
+                    >
                     <div className="space-y-2 sm:space-y-3">
                       <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Enter Verification Code</h1>
                       <p className="text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">
@@ -297,7 +296,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                       </div>
                     )}
 
-                    <div className="flex justify-between gap-2 sm:gap-3" onPaste={handlePaste}>
+                    <div className="grid grid-cols-6 gap-2 sm:gap-3" onPaste={handlePaste}>
                       {otp.map((digit, index) => (
                         <input
                           key={index}
@@ -356,16 +355,22 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                           setMethod(null);
                           setOtp(new Array(OTP_LENGTH).fill(""));
                         }}
-                        className="flex items-center gap-2 text-xs font-medium text-slate-500 transition-colors hover:text-slate-700 sm:text-sm"
+                        className="group inline-flex items-center text-xs font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:text-slate-700 sm:text-sm"
                         disabled={isLoading}
                       >
-                        <ArrowLeft size={16} />
-                        Change verification method
+                        <span
+                          className="inline-flex w-0 -translate-x-1 items-center overflow-hidden opacity-0 transition-all duration-200 group-hover:mr-2 group-hover:w-4 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:mr-2 group-focus-visible:w-4 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+                          aria-hidden="true"
+                        >
+                          <ArrowLeft size={16} />
+                        </span>
+                        <span>Change verification method</span>
                       </button>
                     </div>
-                  </motion.form>
-                )}
-              </AnimatePresence>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </motion.div>
 
@@ -388,10 +393,10 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
 
             <div className="relative z-10 mt-auto pt-10 xl:pt-16">
               <div className="mb-7 flex items-center gap-5">
-                <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">Trusted by teams</span>
+                <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">EQMS Modules</span>
                 <span className="h-px flex-1 bg-teal-200/30" />
               </div>
-              <div className="grid grid-cols-4 gap-x-4 gap-y-4 text-sm font-semibold text-teal-100/90">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-4 text-sm font-medium text-teal-100/90">
                 {PARTNER_BRANDS.map((brand) => (
                   <span key={brand}>{brand}</span>
                 ))}

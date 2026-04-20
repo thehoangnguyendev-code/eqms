@@ -44,7 +44,7 @@ export type {
 // =============================================================================
 // SHARED COMPONENTS & LAYOUTS
 // =============================================================================
-export { DocumentFilters, CreateLinkModal } from './shared/components';
+export { DocumentFilters } from './shared/components';
 export { DocumentWorkflowLayout, DEFAULT_WORKFLOW_TABS } from './shared/layouts';
 
 // Shared Tabs
