@@ -411,7 +411,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
 
         return (
           <>
-            <div key={item.id} className="w-full relative">
+            <div key={item.id} className="w-full relative group/navitem">
               {!isCollapsed && level > 0 && (
                 <div
                   className="absolute top-0 bottom-0 border-l border-slate-200 w-px z-0"
@@ -436,7 +436,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   "w-full flex items-center group relative overflow-visible z-10 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20",
                   // Mobile: Taller touch target (h-12), Desktop: h-11
                   "h-12 md:h-11",
-                  isCollapsed ? "justify-center px-0" : "justify-start pr-3",
+                  isCollapsed ? "justify-center px-0" : (!hasChildren ? "justify-start pr-9" : "justify-start pr-3"),
                   isActive
                     ? "text-emerald-700"
                     : "text-slate-600 hover:text-slate-900 active:bg-slate-100",
@@ -552,35 +552,38 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   </div>
                 )}
 
-                {/* Star icon for favorites - only for leaf nodes (no children) at any level */}
-                {!hasChildren && !isCollapsed && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setFavoriteIds((prev) =>
-                        prev.includes(item.id)
-                          ? prev.filter((id) => id !== item.id)
-                          : [...prev, item.id],
-                      );
-                    }}
-                    className={cn(
-                      "ml-auto flex items-center justify-center h-6 w-6 rounded-lg hover:text-emerald-600 transition-all duration-200 shrink-0 relative z-10",
-                      favoriteIds.includes(item.id)
-                        ? "opacity-100 text-emerald-600"
-                        : "opacity-100 md:opacity-0 md:group-hover:opacity-100 text-slate-400",
-                    )}
-                    title="Add to favorites"
-                  >
-                    <IconStar
-                      className={cn(
-                        "h-4 w-4 transition-all duration-200",
-                        favoriteIds.includes(item.id) && "fill-emerald-600",
-                      )}
-                    />
-                  </button>
-                )}
               </button>
+
+              {/* Star icon for favorites - absolutely positioned so all levels align on the same column */}
+              {!hasChildren && !isCollapsed && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFavoriteIds((prev) =>
+                      prev.includes(item.id)
+                        ? prev.filter((id) => id !== item.id)
+                        : [...prev, item.id],
+                    );
+                  }}
+                  className={cn(
+                    "absolute right-2 top-1/2 -translate-y-1/2 z-20",
+                    "flex items-center justify-center h-6 w-6 rounded-lg hover:text-emerald-600 transition-all duration-200 shrink-0",
+                    favoriteIds.includes(item.id)
+                      ? "opacity-100 text-emerald-600"
+                      : "opacity-100 md:opacity-0 md:group-hover/navitem:opacity-100 text-slate-400",
+                  )}
+                  title="Add to favorites"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
+                >
+                  <IconStar
+                    className={cn(
+                      "h-4 w-4 transition-all duration-200",
+                      favoriteIds.includes(item.id) && "fill-emerald-600",
+                    )}
+                  />
+                </button>
+              )}
 
               {/* Expanded children (only in expanded sidebar) */}
               <AnimatePresence initial={false}>
