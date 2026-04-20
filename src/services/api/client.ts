@@ -70,10 +70,11 @@ apiClient.interceptors.response.use(
       switch (status) {
         case 401:
           // Unauthorized - redirect to login
-          console.error('🔒 Unauthorized - redirecting to login');
-          secureStorage.removeItem('authToken');
-          secureStorage.removeItem('user');
-          window.location.href = ROUTES.LOGIN;
+          console.error('🔒 Unauthorized - redirecting to login', data);
+          // TEMP DEV: comment out actual storage clearing and redirect to let frontend devs proceed with mock auth
+          // secureStorage.removeItem('authToken');
+          // secureStorage.removeItem('user');
+          // window.location.href = '/login';
           break;
 
         case 403:

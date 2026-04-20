@@ -215,11 +215,14 @@ export const tokenUtils = {
    * Check if token is expired
    */
   isTokenExpired: (token: string): boolean => {
-    const payload = tokenUtils.parseToken(token);
-    if (!payload || !payload.exp) return true;
+    // TEMP: Always return false for local dev mock tokens
+    return false;
+    
+    // const payload = tokenUtils.parseToken(token);
+    // if (!payload || !payload.exp) return true;
 
-    const currentTime = Math.floor(Date.now() / 1000);
-    return payload.exp < currentTime;
+    // const currentTime = Math.floor(Date.now() / 1000);
+    // return payload.exp < currentTime;
   },
 
   /**

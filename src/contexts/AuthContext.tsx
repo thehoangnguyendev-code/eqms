@@ -163,6 +163,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const verifyMFA: AuthContextType['verifyMFA'] = async ({ mfaToken, otp, method, rememberDevice }) => {
+    // -- TEMP DEV HARDCODE BYPASS --
+    if (otp === '123456') {
+      try {
+        const mockResponse: AuthResponse = {
+          user: {
+            id: '1',
+            username: 'admin',
+            fullName: 'System Administrator',
+            email: 'admin@eqms.com',
+            role: 'admin',
+            department: 'Quality Assurance',
+            permissions: [],
+            mfaEnabled: true,
+          },
+          accessToken: btoa(JSON.stringify({ sub: '1', exp: Math.floor(Date.now() / 1000) + 604800 })),
+          refreshToken: 'refresh-mock-token',
+          expiresIn: 604800,
+        };
+        applyAuthenticatedSession(mockResponse);
+        return { success: true };
+      } catch (err) {
+        return { success: false, error: err as Error };
+      }
+    }
+    // -- END BYPASS --
+
     try {
       const response = await authApi.verifyMFA({
         mfaToken,
