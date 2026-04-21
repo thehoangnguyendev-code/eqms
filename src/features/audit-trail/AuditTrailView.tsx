@@ -8,6 +8,8 @@ import {
     FileText,
     Download,
     X,
+    ChevronUp,
+    ChevronDown,
 } from "lucide-react";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
@@ -115,6 +117,10 @@ export const AuditTrailView: React.FC = () => {
     const [userFilter, setUserFilter] = useState("");
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
+        key: "timestamp",
+        direction: "desc",
+    });
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -127,6 +133,14 @@ export const AuditTrailView: React.FC = () => {
     // Export modal state
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [exportingRecord, setExportingRecord] = useState<AuditTrailRecord | null>(null);
+
+    const handleSort = (key: string) => {
+        setSortConfig((prev) => ({
+            key,
+            direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+        }));
+        setCurrentPage(1);
+    };
 
     // Filter data
     const filteredData = useMemo(() => {
@@ -177,6 +191,22 @@ export const AuditTrailView: React.FC = () => {
                 matchesDateFrom &&
                 matchesDateTo
             );
+        }).sort((a, b) => {
+            const key = sortConfig.key as keyof AuditTrailRecord;
+            let valA: any = a[key];
+            let valB: any = b[key];
+
+            if (key === 'timestamp') {
+                valA = new Date(valA).getTime();
+                valB = new Date(valB).getTime();
+            } else if (typeof valA === 'string') {
+                valA = valA.toLowerCase();
+                valB = valB.toLowerCase();
+            }
+
+            if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+            if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+            return 0;
         });
     }, [
         searchQuery,
@@ -185,6 +215,7 @@ export const AuditTrailView: React.FC = () => {
         userFilter,
         dateFrom,
         dateTo,
+        sortConfig,
     ]);
 
     // Pagination
@@ -373,30 +404,33 @@ export const AuditTrailView: React.FC = () => {
                                                 <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                                     No.
                                                 </th>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                                    Timestamp
-                                                </th>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                                    User
-                                                </th>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                                    Module
-                                                </th>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                                    Action
-                                                </th>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                                    Entity
-                                                </th>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                                    Description
-                                                </th>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                                    IP Address
-                                                </th>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                                    Device
-                                                </th>
+                                                {[
+                                                    { id: 'timestamp', label: 'Timestamp' },
+                                                    { id: 'user', label: 'User' },
+                                                    { id: 'module', label: 'Module' },
+                                                    { id: 'action', label: 'Action' },
+                                                    { id: 'entityId', label: 'Entity' },
+                                                    { id: 'description', label: 'Description' },
+                                                    { id: 'ipAddress', label: 'IP Address' },
+                                                    { id: 'device', label: 'Device' },
+                                                ].map((col) => {
+                                                    const isSorted = sortConfig.key === col.id;
+                                                    return (
+                                                        <th 
+                                                            key={col.id}
+                                                            onClick={() => handleSort(col.id)}
+                                                            className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group"
+                                                        >
+                                                            <div className="flex items-center justify-between gap-2">
+                                                                <span>{col.label}</span>
+                                                                <div className="flex flex-col text-slate-400 group-hover:text-slate-500">
+                                                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                                                                </div>
+                                                            </div>
+                                                        </th>
+                                                    );
+                                                })}
 
                                                 <th className="sticky right-0 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider z-[1] whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.05)]">
                                                     Action
