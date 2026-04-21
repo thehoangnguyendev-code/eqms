@@ -336,11 +336,23 @@ const SYSTEM_MODULES: NavItem[] = [
         icon: ShieldCheck,
         path: ROUTES.SETTINGS.ROLES,
       },
+      {
+        id: "config",
+        label: "Configuration",
+        icon: IconDeviceDesktopCog,
+        path: ROUTES.SETTINGS.CONFIGURATION,
+      },
+      {
+        id: "info-sys",
+        label: "System Information",
+        icon: IconAlertSquareRounded,
+        path: ROUTES.SETTINGS.SYSTEM_INFO,
+      },
     ],
   },
   {
     id: "settings",
-    label: "Configure Settings",
+    label: "Application Settings",
     icon: IconSettings2,
     children: [
       {
@@ -355,18 +367,6 @@ const SYSTEM_MODULES: NavItem[] = [
         icon: IconMailForward,
         path: ROUTES.SETTINGS.EMAIL_TEMPLATES,
       },
-      {
-        id: "config",
-        label: "Configuration",
-        icon: IconDeviceDesktopCog,
-        path: ROUTES.SETTINGS.CONFIGURATION,
-      },
-      {
-        id: "info-sys",
-        label: "System Information",
-        icon: IconAlertSquareRounded,
-        path: ROUTES.SETTINGS.SYSTEM_INFO,
-      }
     ],
   },
   {

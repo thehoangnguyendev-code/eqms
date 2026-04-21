@@ -4,6 +4,7 @@ import {
   MapPin,
   Archive,
   Plus,
+  Briefcase,
 } from "lucide-react";
 import { cn } from "@/components/ui/utils";
 import { IconFileCode2 } from '@tabler/icons-react';
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/button/Button";
 import { dictionaries } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import type { DictionaryType, Dictionary } from "./types";
 import { DocumentTypesTab } from "./tabs/DocumentTypesTab";
+import { BusinessUnitsTab } from "./tabs/BusinessUnitsTab";
 import { DepartmentsTab } from "./tabs/DepartmentsTab";
 import { StorageLocationsTab } from "./tabs/StorageLocationsTab";
 import { RetentionPoliciesTab } from "./tabs/RetentionPoliciesTab";
@@ -23,6 +25,11 @@ const DICTIONARIES: Dictionary[] = [
     id: "document-types",
     label: "Document Types",
     icon: IconFileCode2,
+  },
+  {
+    id: "business-units",
+    label: "Business Units",
+    icon: Briefcase,
   },
   {
     id: "departments",
@@ -51,6 +58,8 @@ export const DictionariesView: React.FC = () => {
     switch (selectedDictionary) {
       case "document-types":
         return <DocumentTypesTab ref={tabRef} />;
+      case "business-units":
+        return <BusinessUnitsTab ref={tabRef} />;
       case "departments":
         return <DepartmentsTab ref={tabRef} />;
       case "storage-locations":

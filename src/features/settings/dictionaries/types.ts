@@ -7,6 +7,7 @@ import type { ElementType } from 'react';
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 export type DictionaryType =
+  | "business-units"
   | "document-types"
   | "departments"
   | "storage-locations"
@@ -16,6 +17,17 @@ export interface Dictionary {
   id: DictionaryType;
   label: string;
   icon: ElementType;
+}
+
+// ─── Business Unit ───────────────────────────────────────────────────────────
+export interface BusinessUnitItem {
+  id: string;
+  name: string;
+  abbreviation: string;
+  description?: string;
+  isActive: boolean;
+  createdDate: string;
+  modifiedDate: string;
 }
 
 // ─── Department ──────────────────────────────────────────────────────────────

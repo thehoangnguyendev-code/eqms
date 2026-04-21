@@ -1,9 +1,32 @@
 import type {
+  BusinessUnitItem,
   DepartmentItem,
   DocumentTypeItem,
   RetentionPolicyItem,
   StorageLocationItem,
 } from "./types";
+
+// TODO: Replace with API call: GET /api/settings/dictionaries/business-units
+export const MOCK_BUSINESS_UNITS: BusinessUnitItem[] = [
+  {
+    id: "1",
+    name: "Operation Unit",
+    abbreviation: "OPU",
+    description: "Manages all operational departments including manufacturing, logistics, and technical services",
+    isActive: true,
+    createdDate: "2024-01-15",
+    modifiedDate: "2025-12-01",
+  },
+  {
+    id: "2",
+    name: "Quality Unit",
+    abbreviation: "QU",
+    description: "Oversees quality control, quality assurance, and regulatory affairs",
+    isActive: true,
+    createdDate: "2024-01-15",
+    modifiedDate: "2025-11-20",
+  },
+];
 
 // TODO: Replace with API call: GET /api/settings/dictionaries/departments
 export const MOCK_DEPARTMENTS: DepartmentItem[] = [
