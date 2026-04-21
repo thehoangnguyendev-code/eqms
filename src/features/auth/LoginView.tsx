@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
@@ -23,6 +23,12 @@ const PARTNER_BRANDS = [
   "Reports & Analytics",
   "Audit Trail",
   "... and more",
+];
+
+const TYPEWRITER_PHRASES = [
+  "EQMS centralizes document control, training, deviations, CAPA, and audit trails.",
+  "It strengthens data integrity, traceability, and inspection readiness under EU-GMP.",
+  "Built for regulated manufacturing teams that need compliant, consistent execution.",
 ];
 
 const ERROR_MESSAGES = {
@@ -127,6 +133,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [isCapsLockOn, setIsCapsLockOn] = useState(false);
+  const [typewriterText, setTypewriterText] = useState("");
+  const [typewriterPhraseIndex, setTypewriterPhraseIndex] = useState(0);
+  const [isDeletingText, setIsDeletingText] = useState(false);
+  const [isTypewriterPaused, setIsTypewriterPaused] = useState(false);
 
   // ========================================================================
   // EVENT HANDLERS
@@ -198,6 +208,42 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
     },
     [formData, onLogin]
   );
+
+  useEffect(() => {
+    const currentPhrase = TYPEWRITER_PHRASES[typewriterPhraseIndex];
+
+    if (isTypewriterPaused) {
+      const pauseTimer = window.setTimeout(() => {
+        setIsTypewriterPaused(false);
+        setIsDeletingText(true);
+      }, 1900);
+
+      return () => window.clearTimeout(pauseTimer);
+    }
+
+    const nextLength = isDeletingText
+      ? Math.max(0, typewriterText.length - 1)
+      : Math.min(currentPhrase.length, typewriterText.length + 1);
+
+    const nextText = currentPhrase.slice(0, nextLength);
+    const speed = isDeletingText ? 42 : 72;
+
+    const typeTimer = window.setTimeout(() => {
+      setTypewriterText(nextText);
+
+      if (!isDeletingText && nextText === currentPhrase) {
+        setIsTypewriterPaused(true);
+        return;
+      }
+
+      if (isDeletingText && nextText.length === 0) {
+        setIsDeletingText(false);
+        setTypewriterPhraseIndex((prev) => (prev + 1) % TYPEWRITER_PHRASES.length);
+      }
+    }, speed);
+
+    return () => window.clearTimeout(typeTimer);
+  }, [isDeletingText, isTypewriterPaused, typewriterPhraseIndex, typewriterText]);
 
   // ========================================================================
   // RENDER
@@ -361,7 +407,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
                     checked={formData.rememberMe}
                     onChange={handleRememberMeChange}
                     label="Remember me"
-                    labelClassName="text-xs text-slate-500 sm:text-sm"
+                    labelClassName="text-xs text-slate-600 sm:text-sm"
                     disabled={isLoading}
                   />
                   <button
@@ -414,21 +460,21 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_6%,rgba(146,224,224,0.35),transparent_30%)]" />
 
-            <div className="relative z-10 mt-10 max-w-[460px] space-y-6 xl:mt-24 xl:space-y-8">
+            <div className="relative z-10 mt-10 max-w-[460px] space-y-6 xl:mt-15 xl:space-y-8">
               <h2 className="text-3xl font-medium leading-[1.2] tracking-tight text-teal-50 lg:text-4xl xl:text-5xl">
-                Revolutionize QA with Smarter Automation
+                Electronic Quality Management System
               </h2>
 
               <div className="space-y-5">
-                <p className="max-w-xl text-[30px]/[1.1] font-medium text-teal-100">
-                  SoftQA has completely transformed our testing process. It's reliable, efficient,
-                  and ensures our releases are always top-notch.
+                <p className="min-h-[132px] max-w-xl text-[30px]/[1.1] font-medium text-teal-100" aria-live="polite">
+                  {typewriterText}
+                  <span className="ml-1 inline-block text-teal-50/95 animate-pulse">|</span>
                 </p>
               </div>
 
               <div className="pt-2">
-                <p className="text-base font-semibold text-white">Michael Carter</p>
-                <p className="text-sm text-teal-100/90">Software Engineer at DevCore</p>
+                <p className="text-base font-semibold text-white">Ngoc Thien Pharma Dev Team</p>
+                <p className="text-sm text-teal-100/90">Designed for EU-GMP regulated manufacturing</p>
               </div>
             </div>
 

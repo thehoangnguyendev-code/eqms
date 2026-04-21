@@ -279,7 +279,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                         type="button"
                         onClick={() => setMethod("email")}
                         disabled={!emailMethodEnabled}
-                        className="group flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
+                        className="group flex w-full items-center justify-between rounded-xl border border-slate-300 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
                       >
                         <div className="flex items-center gap-2 sm:gap-3">
                           <span className="text-slate-600">
@@ -297,7 +297,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                         type="button"
                         onClick={() => setMethod("app")}
                         disabled={!appMethodEnabled}
-                        className="group flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
+                        className="group flex w-full items-center justify-between rounded-xl border border-slate-300 bg-white p-2.5 text-left transition-colors hover:border-teal-700/40 hover:bg-teal-50/30 sm:p-4"
                       >
                         <div className="flex items-center gap-2 sm:gap-3">
                           <span className="text-slate-600">
