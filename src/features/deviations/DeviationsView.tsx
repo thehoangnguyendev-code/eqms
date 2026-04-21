@@ -174,7 +174,7 @@ export const DeviationsView: React.FC = () => {
       {isNavigating && <FullPageLoading text="Loading..." />}
       {/* Header: Title + Breadcrumb + Action Button */}
       <PageHeader
-        title="Deviations & Non-Conformances"
+        title="Deviations & NCs"
         breadcrumbItems={deviations()}
         actions={
           <>

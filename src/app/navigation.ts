@@ -163,7 +163,7 @@ const FOUNDATION_MODULES: NavItem[] = [
       },
       {
         id: "training-materials",
-        label: "Training Material",
+        label: "Training Materials",
         path: ROUTES.TRAINING.MATERIALS,
       },
       {
@@ -236,7 +236,7 @@ const FOUNDATION_MODULES: NavItem[] = [
 const QUALITY_MODULES: NavItem[] = [
   {
     id: "deviation-ncs",
-    label: "Deviation & NCs",
+    label: "Deviations & NCs",
     icon: IconAlertTriangle,
     path: ROUTES.DEVIATIONS,
   },

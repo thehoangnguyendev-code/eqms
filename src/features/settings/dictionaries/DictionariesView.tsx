@@ -78,7 +78,7 @@ export const DictionariesView: React.FC = () => {
   return (
     <div className="h-full flex flex-col gap-6">
       <PageHeader
-        title="Dictionaries Management"
+        title="Dictionaries"
         breadcrumbItems={dictionaries(navigate, DICTIONARIES.find(d => d.id === selectedDictionary)?.label)}
         actions={
           <Button

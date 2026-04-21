@@ -748,9 +748,9 @@ const OrgChartView: React.FC<{
     let totalSubtreeWidth = 0;
 
     if (children.length > 0) {
-      const childWidths = children.map(child => getWidth(child));
+      const childWidths = children.map((child: any) => getWidth(child));
       let currentX = 0;
-      childWidths.forEach(w => {
+      childWidths.forEach((w: number) => {
         childrenCenters.push(currentX + w / 2);
         currentX += w + GAP_X;
       });
@@ -900,19 +900,7 @@ export const MyTeamView: React.FC = () => {
     { id: 'org', label: 'Org Chart', icon: IconSitemap },
   ];
 
-  const headerActions = (
-    <div className="flex items-center gap-4">
-      <div className="w-48">
-        <TabNav
-          tabs={TABS}
-          activeTab={activeTab}
-          onChange={setActiveTab}
-          variant="pill"
-          layoutId="teamViewStyle"
-        />
-      </div>
-    </div>
-  );
+
 
   if (isLoading) {
     return <SectionLoading text="Organizing your team..." minHeight="60vh" />;
@@ -924,11 +912,21 @@ export const MyTeamView: React.FC = () => {
       <PageHeader
         title="My Team"
         breadcrumbItems={breadcrumbItems}
-        actions={headerActions}
       />
 
       {/* Department Hero Card */}
       <DepartmentHero />
+
+      {/* View Switcher */}
+      <div className="flex items-center justify-between">
+        <TabNav
+          tabs={TABS}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          variant="pill"
+          className="w-fit"
+        />
+      </div>
 
       <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
         {activeTab === 'grid' ? (

@@ -54,7 +54,7 @@ export const PreferencesView: React.FC = () => {
         <div className="space-y-6 w-full flex-1 flex flex-col">
             {/* Header */}
             <PageHeader
-                title="User Preferences"
+                title="Preferences"
                 breadcrumbItems={breadcrumbs.preferences(navigate)}
                 actions={
                     <>

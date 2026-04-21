@@ -64,7 +64,7 @@ export const dictionaries = (
 ): BreadcrumbItem[] => {
   const base: BreadcrumbItem[] = [
     dashboard(_navigate),
-    { label: "Configure Settings" },
+    { label: "Application Settings" },
   ];
   if (activeTabLabel) {
     base.push({ label: "Dictionaries" });
@@ -77,25 +77,25 @@ export const dictionaries = (
 
 export const configuration = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
-  { label: "Configure Settings" },
-  { label: "System Configuration", isActive: true },
+  { label: "System Administration" },
+  { label: "Configuration", isActive: true },
 ];
 
 export const systemInformation = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
-  { label: "Configure Settings" },
+  { label: "System Administration" },
   { label: "System Information", isActive: true },
 ];
 
 export const emailTemplates = (navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(navigate),
-  { label: "Configure Settings" },
+  { label: "Application Settings" },
   { label: "Email Templates", isActive: true },
 ];
 
 export const emailTemplateCreate = (_navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(_navigate),
-  { label: "Configure Settings" },
+  { label: "Application Settings" },
   { label: "Email Templates" },
   { label: "Create Template", isActive: true },
 ];
@@ -105,7 +105,7 @@ export const emailTemplateEdit = (
   templateName?: string
 ): BreadcrumbItem[] => [
   dashboard(_navigate),
-  { label: "Configure Settings" },
+  { label: "Application Settings" },
   { label: "Email Templates" },
   { label: templateName || "Edit Template", isActive: true },
 ];
