@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, DollarSign, Reply, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, DollarSign, Reply, RefreshCw, ArrowLeft, Settings, Pin } from 'lucide-react';
 import { TabNav, type TabItem } from '../../ui/tabs/TabNav';
 import { Button } from '../../ui/button/Button';
 import { cn } from '../../ui/utils';
@@ -15,6 +15,7 @@ interface NotificationsDropdownProps {
   isOpen: boolean;
   onClose: () => void;
   onToggle: () => void;
+  onTogglePinnedDesktop?: () => void;
 }
 
 // Hook to detect mobile screen
@@ -458,7 +459,9 @@ const DesktopDropdown: React.FC<{
   onClose: () => void;
   buttonRef: React.RefObject<HTMLDivElement>;
   onViewAll: () => void;
-}> = ({ isOpen, onClose, buttonRef, onViewAll }) => {
+  onOpenSettings: () => void;
+  onTogglePinned: () => void;
+}> = ({ isOpen, onClose, buttonRef, onViewAll, onOpenSettings, onTogglePinned }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState('all');
   const [isLoading, setIsLoading] = useState(false);
@@ -542,18 +545,36 @@ const DesktopDropdown: React.FC<{
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-2">
           <h3 className="text-base font-bold text-slate-900 tracking-tight">Notifications</h3>
-          <button
-            type="button"
-            className={cn(
-              "p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-emerald-600 transition-all duration-500",
-              isLoading && "animate-spin text-emerald-600"
-            )}
-            onClick={handleRefresh}
-            disabled={isLoading}
-            title="Refresh"
-          >
-            <RefreshCw className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              className={cn(
+                "p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-emerald-600 transition-all duration-500",
+                isLoading && "animate-spin text-emerald-600"
+              )}
+              onClick={handleRefresh}
+              disabled={isLoading}
+              title="Refresh"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              className="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-emerald-600 transition-colors"
+              onClick={onOpenSettings}
+              title="Notification settings"
+            >
+              <Settings className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              className="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-emerald-600 transition-colors"
+              onClick={onTogglePinned}
+              title="Pin notifications"
+            >
+              <Pin className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -626,13 +647,169 @@ const DesktopDropdown: React.FC<{
   );
 };
 
-export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ isOpen, onClose, onToggle }) => {
+const DesktopNotificationsPanelContent: React.FC<{
+  onOpenSettings: () => void;
+  onTogglePinned: () => void;
+}> = ({ onOpenSettings, onTogglePinned }) => {
+  const [activeTab, setActiveTab] = useState('all');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+  };
+
+  const counts = {
+    all: NOTIFICATIONS.length,
+    me: NOTIFICATIONS.filter(n => n.type !== 'system' as any).length,
+    system: NOTIFICATIONS.filter(n => n.type === 'system' as any).length,
+  };
+
+  const tabs: TabItem[] = [
+    { id: 'all', label: 'All', count: counts.all },
+    { id: 'me', label: 'For Me', count: counts.me },
+    { id: 'system', label: 'System', count: counts.system },
+  ];
+
+  const filteredNotifications = NOTIFICATIONS.filter(n => {
+    if (activeTab === 'all') return true;
+    if (activeTab === 'me') return (n.type as any) !== 'system';
+    if (activeTab === 'system') return (n.type as any) === 'system';
+    return true;
+  });
+
+  return (
+    <>
+      <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3">
+        <div>
+          <div className="mb-1 h-1 w-10 rounded-full bg-emerald-400" />
+          <h3 className="text-base font-bold text-slate-900 tracking-tight">Notifications</h3>
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            className={cn(
+              "rounded-full p-2 text-slate-400 transition-all duration-500 hover:bg-slate-100 hover:text-emerald-600",
+              isLoading && "animate-spin text-emerald-600"
+            )}
+            onClick={handleRefresh}
+            title="Refresh"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-emerald-600"
+            onClick={onOpenSettings}
+            title="Notification settings"
+          >
+            <Settings className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            className="rounded-full p-2 text-emerald-600 transition-colors hover:bg-emerald-50"
+            onClick={onTogglePinned}
+            title="Unpin notifications"
+          >
+            <Pin className="h-4 w-4 fill-current" />
+          </button>
+        </div>
+      </div>
+
+      <div className="border-b border-slate-100 px-4 py-3">
+        <TabNav
+          tabs={tabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          variant="pill"
+          layoutId="pinnedNotificationTabIndicator"
+          className="w-full bg-slate-100/80"
+        />
+      </div>
+
+      <div className="flex-1 overflow-y-auto bg-white scrollbar-thin scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300">
+        {isLoading ? (
+          Array.from({ length: 5 }).map((_, i) => <NotificationSkeleton key={i} isLast={i === 4} />)
+        ) : filteredNotifications.length === 0 ? (
+          <div className="flex h-full min-h-[360px] flex-col items-center justify-center px-6 text-center">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border-4 border-cyan-400/60 text-cyan-600">
+              <Bell className="h-8 w-8" />
+            </div>
+            <p className="text-lg font-semibold text-slate-900">You have no notifications</p>
+            <p className="mt-1 text-sm text-slate-500">New alerts will appear here when something needs your attention.</p>
+          </div>
+        ) : (
+          filteredNotifications.map((notification, index) => (
+            <NotificationItem
+              key={notification.id}
+              notification={notification}
+              isLast={index === filteredNotifications.length - 1}
+              onClose={() => undefined}
+            />
+          ))
+        )}
+      </div>
+
+      <div className="flex items-center justify-between border-t border-slate-100 bg-white px-5 py-3.5 shrink-0">
+        <button
+          type="button"
+          className="text-[13px] font-semibold text-slate-900 transition-colors hover:text-emerald-600 underline underline-offset-4 decoration-slate-300 hover:decoration-emerald-500"
+          onClick={() => setIsConfirmOpen(true)}
+        >
+          Mark All as Read
+        </button>
+        <span className="text-xs font-medium text-slate-400">Desktop pinned view</span>
+      </div>
+
+      <AlertModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={() => setIsConfirmOpen(false)}
+        title="Mark All as Read"
+        description="Are you sure you want to mark all notifications as read? This cannot be undone."
+        type="confirm"
+        confirmText="Yes, Mark All"
+      />
+    </>
+  );
+};
+
+export const PinnedNotificationsPanel: React.FC<{
+  onTogglePinned: () => void;
+}> = ({ onTogglePinned }) => {
+  const navigate = useNavigate();
+
+  const handleOpenSettings = () => {
+    navigate(`${ROUTES.PREFERENCES}?tab=notifications`);
+  };
+
+  return (
+    <aside className="hidden lg:flex h-full w-[380px] shrink-0 border-l border-slate-200 bg-white shadow-[-12px_0_32px_-24px_rgba(15,23,42,0.35)]">
+      <div className="flex h-full w-full flex-col bg-white">
+        <DesktopNotificationsPanelContent
+          onOpenSettings={handleOpenSettings}
+          onTogglePinned={onTogglePinned}
+        />
+      </div>
+    </aside>
+  );
+};
+
+export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ isOpen, onClose, onToggle, onTogglePinnedDesktop }) => {
   const notificationRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
   const handleViewAllNotifications = () => {
     navigate(ROUTES.NOTIFICATIONS);
+  };
+
+  const handleOpenSettings = () => {
+    onClose();
+    navigate(`${ROUTES.PREFERENCES}?tab=notifications`);
   };
 
   return (
@@ -672,6 +849,11 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ is
               onClose={onClose}
               buttonRef={notificationRef as React.RefObject<HTMLDivElement>}
               onViewAll={handleViewAllNotifications}
+              onOpenSettings={handleOpenSettings}
+              onTogglePinned={() => {
+                onClose();
+                onTogglePinnedDesktop?.();
+              }}
             />
           )}
         </AnimatePresence>

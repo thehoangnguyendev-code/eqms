@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Palette, Globe, BellRing, ShieldCheck } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button/Button';
 import { TabNav, TabItem } from '@/components/ui/tabs/TabNav';
 import { PageHeader } from '@/components/ui/page/PageHeader';
@@ -15,9 +15,20 @@ import { PreferenceTabId } from "./types";
 
 export const PreferencesView: React.FC = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<PreferenceTabId>('appearance');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const getTabFromSearchParams = (): PreferenceTabId => {
+        const tab = searchParams.get('tab');
+        return tab === 'appearance' || tab === 'localization' || tab === 'notifications' || tab === 'security'
+            ? tab
+            : 'appearance';
+    };
+    const [activeTab, setActiveTab] = useState<PreferenceTabId>(getTabFromSearchParams);
     const { showToast } = useToast();
     const [isSaving, setIsSaving] = useState(false);
+
+    useEffect(() => {
+        setActiveTab(getTabFromSearchParams());
+    }, [searchParams]);
 
     const TABS: TabItem[] = [
         { id: 'appearance', label: 'Appearance', icon: Palette },
@@ -83,7 +94,11 @@ export const PreferencesView: React.FC = () => {
                 <TabNav
                     tabs={TABS}
                     activeTab={activeTab}
-                    onChange={(id) => setActiveTab(id as PreferenceTabId)}
+                    onChange={(id) => {
+                        const nextTab = id as PreferenceTabId;
+                        setActiveTab(nextTab);
+                        setSearchParams(nextTab === 'appearance' ? {} : { tab: nextTab }, { replace: true });
+                    }}
                 />
 
                 {/* Content Area */}

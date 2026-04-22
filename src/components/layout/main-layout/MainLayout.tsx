@@ -3,6 +3,7 @@ import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/app/routes.constants';
 import { Sidebar } from '@/components/layout/sidebar/Sidebar';
 import { Header } from '@/components/layout/header/Header';
+import { PinnedNotificationsPanel } from '@/components/layout/header/NotificationsDropdown';
 import { Footer } from '@/components/layout/footer/Footer';
 import { NetworkStatusMonitor } from '@/components/layout/NetworkStatusMonitor';
 import { ScrollToTop } from '@/components/ui/scroll-to-top/ScrollToTop';
@@ -20,6 +21,26 @@ export const MainLayout: React.FC = () => {
   // Page title in header (shown when scrolled past page h1)
   const [headerTitle, setHeaderTitle] = useState('');
   const [showHeaderTitle, setShowHeaderTitle] = useState(false);
+  const [isNotificationsPinnedDesktop, setIsNotificationsPinnedDesktop] = useState(false);
+  const [isDesktopViewport, setIsDesktopViewport] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : false,
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktopViewport(window.innerWidth >= 1024);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktopViewport && isNotificationsPinnedDesktop) {
+      setIsNotificationsPinnedDesktop(false);
+    }
+  }, [isDesktopViewport, isNotificationsPinnedDesktop]);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -151,6 +172,8 @@ export const MainLayout: React.FC = () => {
           onLogout={handleLogout}
           headerTitle={headerTitle}
           showHeaderTitle={showHeaderTitle}
+          isNotificationsPinnedDesktop={isNotificationsPinnedDesktop && isDesktopViewport}
+          onToggleNotificationsPinnedDesktop={() => setIsNotificationsPinnedDesktop((prev) => !prev)}
         />
 
         {/* Scrollable Content Area - ONLY this div scrolls */}
@@ -179,6 +202,10 @@ export const MainLayout: React.FC = () => {
         {/* Footer - Pinned at bottom via flex shrink-0 */}
         <Footer />
       </div>
+
+      {isDesktopViewport && isNotificationsPinnedDesktop && (
+        <PinnedNotificationsPanel onTogglePinned={() => setIsNotificationsPinnedDesktop(false)} />
+      )}
 
       {/* Scroll To Top - Global */}
       <ScrollToTop

@@ -21,9 +21,11 @@ interface HeaderProps {
   onLogout?: () => void;
   headerTitle?: string;
   showHeaderTitle?: boolean;
+  isNotificationsPinnedDesktop?: boolean;
+  onToggleNotificationsPinnedDesktop?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSidebarCollapsed, isMobileMenuOpen, onNavigateToProfile, onLogout, headerTitle, showHeaderTitle }) => {
+export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSidebarCollapsed, isMobileMenuOpen, onNavigateToProfile, onLogout, headerTitle, showHeaderTitle, isNotificationsPinnedDesktop = false, onToggleNotificationsPinnedDesktop }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -191,14 +193,20 @@ export const Header: React.FC<HeaderProps> = React.memo(({ onToggleSidebar, isSi
           <div className="flex items-center gap-1.5 md:gap-2 lg:gap-3 shrink-0">
 
             {/* Notifications */}
-            <NotificationsDropdown
-              isOpen={isNotificationsOpen}
-              onClose={handleCloseNotifications}
-              onToggle={handleToggleNotifications}
-            />
+            {!isNotificationsPinnedDesktop && (
+              <NotificationsDropdown
+                isOpen={isNotificationsOpen}
+                onClose={handleCloseNotifications}
+                onToggle={handleToggleNotifications}
+                onTogglePinnedDesktop={() => {
+                  handleCloseNotifications();
+                  onToggleNotificationsPinnedDesktop?.();
+                }}
+              />
+            )}
 
             {/* Divider - Hidden on mobile */}
-            <div className="hidden md:block w-px h-6 bg-slate-200"></div>
+            {!isNotificationsPinnedDesktop && <div className="hidden md:block w-px h-6 bg-slate-200"></div>}
 
             {/* User Profile Dropdown */}
             <div className="relative">
