@@ -3,6 +3,7 @@ import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/app/routes.constants';
 import { Sidebar } from '@/components/layout/sidebar/Sidebar';
 import { Header } from '@/components/layout/header/Header';
+import { AnimatePresence } from 'framer-motion';
 import { PinnedNotificationsPanel } from '@/components/layout/header/NotificationsDropdown';
 import { Footer } from '@/components/layout/footer/Footer';
 import { NetworkStatusMonitor } from '@/components/layout/NetworkStatusMonitor';
@@ -203,9 +204,11 @@ export const MainLayout: React.FC = () => {
         <Footer />
       </div>
 
-      {isDesktopViewport && isNotificationsPinnedDesktop && (
-        <PinnedNotificationsPanel onTogglePinned={() => setIsNotificationsPinnedDesktop(false)} />
-      )}
+      <AnimatePresence>
+        {isDesktopViewport && isNotificationsPinnedDesktop && (
+          <PinnedNotificationsPanel onTogglePinned={() => setIsNotificationsPinnedDesktop(false)} />
+        )}
+      </AnimatePresence>
 
       {/* Scroll To Top - Global */}
       <ScrollToTop

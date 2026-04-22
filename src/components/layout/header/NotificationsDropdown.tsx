@@ -2,12 +2,15 @@ import React, { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, DollarSign, Reply, RefreshCw, ArrowLeft, Settings, Pin } from 'lucide-react';
+import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, Reply, RefreshCw, Settings, Pin } from 'lucide-react';
 import { TabNav, type TabItem } from '../../ui/tabs/TabNav';
 import { Button } from '../../ui/button/Button';
 import { cn } from '../../ui/utils';
 import { ROUTES } from '@/app/routes.constants';
+import { MOCK_NOTIFICATIONS } from '@/features/notifications/mockData';
+import type { Notification, NotificationType } from '@/features/notifications/types';
 import { AlertModal } from '../../ui/modal/AlertModal';
+import { FullPageLoading } from '../../ui/loading/Loading';
 import logoNoBg from '@/assets/images/logo_nobg.png';
 import { IconChevronLeft } from '@tabler/icons-react';
 
@@ -32,228 +35,115 @@ const useIsMobile = () => {
   return isMobile;
 };
 
-// Mock notifications data
-const NOTIFICATIONS = [
-  {
-    id: '1',
-    status: 'unread',
-    type: 'review-request' as const,
+type DropdownNotification = {
+  id: string;
+  status: Notification['status'];
+  type: NotificationType;
+  avatar: typeof Bell;
+  avatarBg: string;
+  avatarColor: string;
+  badge: typeof Bell;
+  badgeBg: string;
+  title: React.ReactNode;
+  time: string;
+  actionUrl?: string;
+};
+
+const formatTimeAgo = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  return `${day}/${month}`;
+};
+
+const TYPE_UI_MAP: Record<NotificationType, Omit<DropdownNotification, 'id' | 'status' | 'type' | 'title' | 'time' | 'actionUrl'>> = {
+  'review-request': {
     avatar: User,
     avatarBg: 'bg-blue-100',
     avatarColor: 'text-blue-600',
     badge: MessageCircle,
     badgeBg: 'bg-blue-500',
-    title: (
-      <>
-        <span className="font-semibold">John Smith</span> requested your review on{" "}
-        <span className="font-medium text-emerald-600">SOP-QA-015</span>
-      </>
-    ),
-    time: '2m ago',
-    onClick: () => console.log("Navigate to document review")
   },
-  {
-    id: '2',
-    status: 'unread',
-    type: 'approval' as const,
+  approval: {
     avatar: User,
     avatarBg: 'bg-emerald-100',
     avatarColor: 'text-emerald-600',
     badge: CheckCircle,
     badgeBg: 'bg-emerald-500',
-    title: (
-      <>
-        <span className="font-semibold">Sarah Johnson</span> approved{" "}
-        <span className="font-medium text-emerald-600">DEV-2023-089</span>
-      </>
-    ),
-    time: '15m ago',
-    onClick: () => console.log("Navigate to approved document")
   },
-  {
-    id: '3',
-    status: 'read',
-    type: 'capa-assignment' as const,
+  'capa-assignment': {
     avatar: AlertTriangle,
     avatarBg: 'bg-amber-100',
     avatarColor: 'text-amber-600',
     badge: UserPlus,
     badgeBg: 'bg-amber-500',
-    title: (
-      <>
-        You were assigned to{" "}
-        <span className="font-medium text-amber-600">CAPA-2023-045</span>
-      </>
-    ),
-    time: '1h ago',
-    onClick: () => console.log("Navigate to CAPA")
   },
-  {
-    id: '4',
-    status: 'read',
-    type: 'training-completion' as const,
+  'training-completion': {
     avatar: User,
     avatarBg: 'bg-purple-100',
     avatarColor: 'text-purple-600',
     badge: ThumbsUp,
     badgeBg: 'bg-purple-500',
-    title: (
-      <>
-        <span className="font-semibold">Mike Wilson</span> completed training on{" "}
-        <span className="font-medium">GMP Basics</span>
-      </>
-    ),
-    time: '2h ago',
-    onClick: () => console.log("Navigate to training")
   },
-  {
-    id: '5',
-    status: 'unread',
-    type: 'document-update' as const,
+  'document-update': {
     avatar: FileText,
     avatarBg: 'bg-cyan-100',
     avatarColor: 'text-cyan-600',
-    badge: DollarSign,
+    badge: CheckCircle,
     badgeBg: 'bg-cyan-500',
-    title: (
-      <>
-        <span className="font-semibold">Quality Team</span> updated{" "}
-        <span className="font-medium text-cyan-600">SOP-QA-001</span>
-      </>
-    ),
-    time: '3h ago',
-    onClick: () => console.log("Navigate to document")
   },
-  {
-    id: '6',
-    status: 'read',
-    type: 'comment-reply' as const,
+  'comment-reply': {
     avatar: User,
     avatarBg: 'bg-slate-100',
     avatarColor: 'text-slate-600',
     badge: Reply,
     badgeBg: 'bg-slate-500',
-    title: (
-      <>
-        <span className="font-semibold">Emma Davis</span> replied to your comment on{" "}
-        <span className="font-medium">Document Review Process</span>
-      </>
-    ),
-    time: '5h ago',
-    onClick: () => console.log("Navigate to comment")
   },
-  {
-    id: '7',
-    status: 'read',
-    type: 'review-request' as const,
-    avatar: User,
-    avatarBg: 'bg-rose-100',
-    avatarColor: 'text-rose-600',
-    badge: MessageCircle,
-    badgeBg: 'bg-rose-500',
-    title: (
-      <>
-        <span className="font-semibold">Lisa Chen</span> requested your review on{" "}
-        <span className="font-medium text-rose-600">CAPA-2023-078</span>
-      </>
-    ),
-    time: '6h ago',
-    onClick: () => console.log("Navigate to CAPA review")
-  },
-  {
-    id: '8',
-    status: 'read',
-    type: 'document-update' as const,
-    avatar: FileText,
-    avatarBg: 'bg-indigo-100',
-    avatarColor: 'text-indigo-600',
-    badge: CheckCircle,
-    badgeBg: 'bg-indigo-500',
-    title: (
-      <>
-        <span className="font-semibold">Regulatory Team</span> published{" "}
-        <span className="font-medium text-indigo-600">SOP-REG-003</span>
-      </>
-    ),
-    time: '8h ago',
-    onClick: () => console.log("Navigate to document")
-  },
-  {
-    id: '9',
-    status: 'read',
-    type: 'training-completion' as const,
-    avatar: User,
-    avatarBg: 'bg-teal-100',
-    avatarColor: 'text-teal-600',
-    badge: ThumbsUp,
-    badgeBg: 'bg-teal-500',
-    title: (
-      <>
-        <span className="font-semibold">David Brown</span> completed training on{" "}
-        <span className="font-medium">Deviation Handling</span>
-      </>
-    ),
-    time: '10h ago',
-    onClick: () => console.log("Navigate to training")
-  },
-  {
-    id: '10',
-    status: 'read',
-    type: 'approval' as const,
-    avatar: User,
-    avatarBg: 'bg-orange-100',
-    avatarColor: 'text-orange-600',
-    badge: CheckCircle,
-    badgeBg: 'bg-orange-500',
-    title: (
-      <>
-        <span className="font-semibold">Maria Garcia</span> approved{" "}
-        <span className="font-medium text-orange-600">CHG-2023-156</span>
-      </>
-    ),
-    time: '12h ago',
-    onClick: () => console.log("Navigate to change control")
-  },
-  {
-    id: '11',
-    status: 'read',
-    type: 'capa-assignment' as const,
+  'deviation-assignment': {
     avatar: AlertTriangle,
     avatarBg: 'bg-red-100',
     avatarColor: 'text-red-600',
     badge: UserPlus,
     badgeBg: 'bg-red-500',
-    title: (
-      <>
-        Urgent: You were assigned to{" "}
-        <span className="font-medium text-red-600">DEV-2023-234</span>
-      </>
-    ),
-    time: '1d ago',
-    onClick: () => console.log("Navigate to deviation")
   },
-  {
-    id: '12',
-    status: 'read',
-    type: 'document-update' as const,
+  'change-control': {
     avatar: FileText,
-    avatarBg: 'bg-sky-100',
-    avatarColor: 'text-sky-600',
-    badge: DollarSign,
-    badgeBg: 'bg-sky-500',
-    title: (
-      <>
-        <span className="font-semibold">Production Team</span> updated{" "}
-        <span className="font-medium text-sky-600">BP-PROD-045</span>
-      </>
-    ),
-    time: '1d ago',
-    onClick: () => console.log("Navigate to batch record")
-  }
-];
+    avatarBg: 'bg-indigo-100',
+    avatarColor: 'text-indigo-600',
+    badge: CheckCircle,
+    badgeBg: 'bg-indigo-500',
+  },
+  system: {
+    avatar: Bell,
+    avatarBg: 'bg-slate-100',
+    avatarColor: 'text-slate-600',
+    badge: Bell,
+    badgeBg: 'bg-slate-500',
+  },
+};
+
+const NOTIFICATIONS: DropdownNotification[] = MOCK_NOTIFICATIONS.map((item) => ({
+  id: item.id,
+  status: item.status,
+  type: item.type,
+  ...TYPE_UI_MAP[item.type],
+  title: <span className="font-medium">{item.description}</span>,
+  time: formatTimeAgo(item.createdAt),
+  actionUrl: item.actionUrl,
+}));
 
 const NotificationItem: React.FC<{
-  notification: typeof NOTIFICATIONS[0];
+  notification: DropdownNotification;
   isLast: boolean;
   onClose: () => void;
 }> = ({ notification, isLast, onClose }) => {
@@ -265,7 +155,6 @@ const NotificationItem: React.FC<{
       <button
         type="button"
         onClick={() => {
-          notification.onClick();
           onClose();
         }}
         className={cn(
@@ -735,11 +624,13 @@ const DesktopNotificationsPanelContent: React.FC<{
           Array.from({ length: 5 }).map((_, i) => <NotificationSkeleton key={i} isLast={i === 4} />)
         ) : filteredNotifications.length === 0 ? (
           <div className="flex h-full min-h-[360px] flex-col items-center justify-center px-6 text-center">
-            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border-4 border-cyan-400/60 text-cyan-600">
-              <Bell className="h-8 w-8" />
+            <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+              <Bell className="h-5 w-5 text-slate-300" />
             </div>
-            <p className="text-lg font-semibold text-slate-900">You have no notifications</p>
-            <p className="mt-1 text-sm text-slate-500">New alerts will appear here when something needs your attention.</p>
+            <p className="text-sm font-medium text-slate-500 mb-1">You have no notifications</p>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              New alerts will appear here when something needs your attention.
+            </p>
           </div>
         ) : (
           filteredNotifications.map((notification, index) => (
@@ -753,7 +644,7 @@ const DesktopNotificationsPanelContent: React.FC<{
         )}
       </div>
 
-      <div className="flex items-center justify-between border-t border-slate-100 bg-white px-5 py-3.5 shrink-0">
+      <div className="flex items-center justify-between border-t border-slate-100 bg-white px-5 py-2.5 shrink-0">
         <button
           type="button"
           className="text-[13px] font-semibold text-slate-900 transition-colors hover:text-emerald-600 underline underline-offset-4 decoration-slate-300 hover:decoration-emerald-500"
@@ -761,7 +652,6 @@ const DesktopNotificationsPanelContent: React.FC<{
         >
           Mark All as Read
         </button>
-        <span className="text-xs font-medium text-slate-400">Desktop pinned view</span>
       </div>
 
       <AlertModal
@@ -781,20 +671,34 @@ export const PinnedNotificationsPanel: React.FC<{
   onTogglePinned: () => void;
 }> = ({ onTogglePinned }) => {
   const navigate = useNavigate();
+  const [isNavigatingSettings, setIsNavigatingSettings] = useState(false);
 
   const handleOpenSettings = () => {
-    navigate(`${ROUTES.PREFERENCES}?tab=notifications`);
+    setIsNavigatingSettings(true);
+    setTimeout(() => {
+      navigate(`${ROUTES.SETTINGS.CONFIGURATION}?tab=notification`);
+      setTimeout(() => {
+        setIsNavigatingSettings(false);
+      }, 800);
+    }, 250);
   };
 
   return (
-    <aside className="hidden lg:flex h-full w-[380px] shrink-0 border-l border-slate-200 bg-white shadow-[-12px_0_32px_-24px_rgba(15,23,42,0.35)]">
-      <div className="flex h-full w-full flex-col bg-white">
+    <motion.aside
+      className="hidden lg:flex h-full shrink-0 border-l border-slate-200 bg-white shadow-[-12px_0_32px_-24px_rgba(15,23,42,0.35)] overflow-hidden"
+      initial={{ width: 0 }}
+      animate={{ width: 380 }}
+      exit={{ width: 0 }}
+      transition={{ type: 'spring', bounce: 0, duration: 0.35 }}
+    >
+      <div className="flex h-full w-[380px] shrink-0 flex-col bg-white">
         <DesktopNotificationsPanelContent
           onOpenSettings={handleOpenSettings}
           onTogglePinned={onTogglePinned}
         />
       </div>
-    </aside>
+      {isNavigatingSettings && <FullPageLoading text="Loading..." />}
+    </motion.aside>
   );
 };
 
@@ -802,14 +706,21 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ is
   const notificationRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const [isNavigatingSettings, setIsNavigatingSettings] = useState(false);
 
   const handleViewAllNotifications = () => {
     navigate(ROUTES.NOTIFICATIONS);
   };
 
   const handleOpenSettings = () => {
+    setIsNavigatingSettings(true);
     onClose();
-    navigate(`${ROUTES.PREFERENCES}?tab=notifications`);
+    setTimeout(() => {
+      navigate(`${ROUTES.SETTINGS.CONFIGURATION}?tab=notification`);
+      setTimeout(() => {
+        setIsNavigatingSettings(false);
+      }, 800);
+    }, 250);
   };
 
   return (
@@ -858,6 +769,8 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({ is
           )}
         </AnimatePresence>
       )}
+
+      {isNavigatingSettings && <FullPageLoading text="Loading..." />}
     </>
   );
 };

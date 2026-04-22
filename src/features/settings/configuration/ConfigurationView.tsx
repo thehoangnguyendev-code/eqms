@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Save, RotateCcw, Settings, Shield, FileText, Bell, Plug, Download, Upload } from 'lucide-react';
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { configuration } from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -50,12 +51,33 @@ const TABS = [
 ];
 
 export const ConfigurationView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabId>('general');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const getTabFromSearch = (search: string): TabId => {
+    const tab = new URLSearchParams(search).get('tab');
+    if (tab === 'general' || tab === 'security' || tab === 'document' || tab === 'notification' || tab === 'integration') {
+      return tab;
+    }
+    return 'general';
+  };
+
+  const [activeTab, setActiveTab] = useState<TabId>(() => getTabFromSearch(location.search));
   const [config, setConfig] = useState<SystemConfig>(MOCK_SYSTEM_CONFIG);
   const [isDirty, setIsDirty] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setActiveTab(getTabFromSearch(location.search));
+  }, [location.search]);
+
+  const handleTabClick = (tabId: TabId) => {
+    const params = new URLSearchParams(location.search);
+    params.set('tab', tabId);
+    navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
+  };
 
   const handleConfigChange = <K extends keyof SystemConfig>(section: K, value: SystemConfig[K]) => {
     setConfig((prev) => ({
@@ -219,7 +241,7 @@ export const ConfigurationView: React.FC = () => {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabClick(tab.id)}
                   className={cn(
                     "flex items-center gap-2 px-3 sm:px-4 md:px-6 py-2.5 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors border-r border-slate-200 last:border-r-0",
                     isActive
