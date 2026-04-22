@@ -145,7 +145,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         };
       }
 
-      const appUser = applyAuthenticatedSession(result);
+      const appUser = applyAuthenticatedSession(result as AuthResponse);
 
       auditLog.log('login_success', {
         userId: appUser.id,
