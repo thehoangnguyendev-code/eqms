@@ -1,12 +1,8 @@
 import React, {
   useState,
   useMemo,
-  useRef,
-  createRef,
-  RefObject,
 } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ROUTES } from '@/app/routes.constants';
 import {
@@ -18,9 +14,6 @@ import {
   History,
   FilePlusCorner,
   FileStack,
-  X,
-  ArrowDownAZ,
-  ArrowDownZA,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { StatusBadge, StatusType } from "@/components/ui/badge";
@@ -383,9 +376,6 @@ export const RevisionsOwnedByMeView: React.FC = () => {
     switch (action) {
       case "view":
         navigateTo(ROUTES.DOCUMENTS.REVISIONS.DETAIL(id));
-        break;
-      case "download":
-        // TODO: Implement download functionality
         break;
       case "audit":
         navigateTo(`${ROUTES.DOCUMENTS.REVISIONS.DETAIL(id)}?tab=audit`);
@@ -858,16 +848,6 @@ export const RevisionsOwnedByMeView: React.FC = () => {
                     </button>
                   </>
                 )}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMenuAction("download", openId);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                >
-                  <Download className="h-4 w-4 flex-shrink-0" />
-                  <span className="font-medium">Download</span>
-                </button>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();

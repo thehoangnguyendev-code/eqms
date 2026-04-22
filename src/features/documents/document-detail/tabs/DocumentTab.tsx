@@ -8,6 +8,7 @@ import { renderAsync } from "docx-preview";
 import { ZoomIn, ZoomOut, RotateCcw, FileText, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import "./docx-preview.css";
+import { IconFileText } from "@tabler/icons-react";
 
 interface DocumentTabProps {
     documentFile?: File | null;
@@ -266,9 +267,8 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
     return (
         <div className="w-full border rounded-xl" style={{ height: "calc(100vh - 180px)", minHeight: "600px" }}>
             <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                <FileText className="h-12 w-12 mb-3 text-slate-300" />
-                <p className="text-sm">No document to preview</p>
-                <p className="text-xs mt-1">Supported: PDF, DOCX, Images (JPG, PNG)</p>
+                <IconFileText className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-2 md:mb-3 text-slate-300" />
+                <p className="text-xs md:text-sm">No document to preview</p>
             </div>
         </div>
     );

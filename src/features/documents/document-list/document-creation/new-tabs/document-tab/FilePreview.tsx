@@ -18,7 +18,7 @@ interface FilePreviewProps {
 }
 
 export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
-    const defaultLayoutPluginInstance = defaultLayoutPlugin();
+    const defaultLayoutPluginInstance = React.useMemo(() => defaultLayoutPlugin(), []);
 
     const [fileUrl, setFileUrl] = React.useState<string | null>(null);
     const docxContainerRef = React.useRef<HTMLDivElement>(null);

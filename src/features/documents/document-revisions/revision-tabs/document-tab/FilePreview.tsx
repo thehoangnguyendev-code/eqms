@@ -199,7 +199,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
  {!error && previewType ==="pdf" && previewUrl && (
  <div className="h-full">
  <Worker workerUrl={config.pdf.workerUrl}>
- <Viewer fileUrl={previewUrl} defaultScale={SpecialZoomLevel.ActualSize} />
+ <Viewer key={previewUrl} fileUrl={previewUrl} defaultScale={SpecialZoomLevel.ActualSize} />
  </Worker>
  </div>
  )}

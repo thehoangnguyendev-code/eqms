@@ -52,80 +52,72 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
   onSelectFile = () => {},
 }) => {
   const docxContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [zoomLevel, setZoomLevel] = useState<number>(80);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [pdfObjectUrl, setPdfObjectUrl] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
+  // Detect file type
+  const getFileType = (): 'pdf' | 'docx' | 'image' | 'unknown' => {
+    if (!selectedFile) return 'unknown';
+    const name = selectedFile.name.toLowerCase();
+    const type = selectedFile.type.toLowerCase();
+    if (name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/) || type.startsWith('image/')) return 'image';
+    if (name.endsWith('.pdf') || type === 'application/pdf') return 'pdf';
+    if (name.endsWith('.docx') || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') return 'docx';
+    return 'unknown';
+  };
+
+  const fileType = getFileType();
+  const isDocx = fileType === 'docx';
+  const isPdf = fileType === 'pdf';
+  const isImage = fileType === 'image';
+
+  useEffect(() => {
+    if (mode === "view" && isDocx && selectedFile && docxContainerRef.current) {
+      docxContainerRef.current.innerHTML = "";
+      renderAsync(selectedFile, docxContainerRef.current, undefined, {
+        breakPages: true,
+        inWrapper: true,
+        ignoreWidth: false,
+        ignoreHeight: false,
+        renderHeaders: true,
+        renderFooters: true,
+      }).catch((error) => {
+        console.error("Error rendering docx:", error);
+      });
+    }
+  }, [selectedFile, isDocx, mode]);
+
+  useEffect(() => {
+    if (mode === "view" && isImage && selectedFile) {
+      const url = URL.createObjectURL(selectedFile);
+      setImagePreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setImagePreviewUrl(null);
+    }
+  }, [selectedFile, isImage, mode]);
+
+  // PDF blob URL — created once per file, stable across re-renders (prevents white-screen on toolbar interaction)
+  useEffect(() => {
+    if (mode === "view" && isPdf && selectedFile) {
+      const url = URL.createObjectURL(selectedFile);
+      setPdfObjectUrl(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setPdfObjectUrl(null);
+    }
+  }, [selectedFile, isPdf, mode]);
+
+  const handleZoomIn = () => setZoomLevel((prev) => Math.min(prev + 10, 200));
+  const handleZoomOut = () => setZoomLevel((prev) => Math.max(prev - 10, 20));
+  const handleResetZoom = () => setZoomLevel(80);
 
   // VIEW MODE - Read-only document viewer (PDF, DOCX & Images)
   if (mode === "view") {
-    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-
-    // Detect file type
-    const getFileType = (): 'pdf' | 'docx' | 'image' | 'unknown' => {
-      if (!selectedFile) return 'unknown';
-      
-      const name = selectedFile.name.toLowerCase();
-      const type = selectedFile.type.toLowerCase();
-      
-      // Check for images
-      if (name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/) || type.startsWith('image/')) {
-        return 'image';
-      }
-      
-      // Check for PDF
-      if (name.endsWith('.pdf') || type === 'application/pdf') {
-        return 'pdf';
-      }
-      
-      // Check for DOCX
-      if (name.endsWith('.docx') || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        return 'docx';
-      }
-      
-      return 'unknown';
-    };
-
-    const fileType = getFileType();
-    const isDocx = fileType === 'docx';
-    const isPdf = fileType === 'pdf';
-    const isImage = fileType === 'image';
-
-    useEffect(() => {
-      if (isDocx && selectedFile && docxContainerRef.current) {
-        docxContainerRef.current.innerHTML = "";
-        renderAsync(selectedFile, docxContainerRef.current, undefined, {
-          breakPages: true,
-          inWrapper: true,
-          ignoreWidth: false,
-          ignoreHeight: false,
-          renderHeaders: true,
-          renderFooters: true,
-        }).catch((error) => {
-          console.error("Error rendering docx:", error);
-        });
-      }
-    }, [selectedFile, isDocx]);
-
-    // Create image preview URL
-    useEffect(() => {
-      if (isImage && selectedFile) {
-        const url = URL.createObjectURL(selectedFile);
-        setImagePreviewUrl(url);
-        return () => URL.revokeObjectURL(url);
-      }
-    }, [selectedFile, isImage]);
-
-    const handleZoomIn = () => {
-      setZoomLevel((prev) => Math.min(prev + 10, 200));
-    };
-
-    const handleZoomOut = () => {
-      setZoomLevel((prev) => Math.max(prev - 10, 20));
-    };
-
-    const handleResetZoom = () => {
-      setZoomLevel(80);
-    };
-
     // Image viewer
     if (isImage && imagePreviewUrl) {
       return (
@@ -266,11 +258,10 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
     }
 
     // PDF viewer
-    if (isPdf && selectedFile) {
-      const pdfUrl = URL.createObjectURL(selectedFile);
+    if (isPdf && pdfObjectUrl) {
       return (
         <div
-          className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col"
+          className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col"
           style={{ height: "calc(100vh - 180px)", minHeight: "600px" }}
         >
           <div className="flex items-center justify-between px-3 md:px-4 py-2.5 md:py-3 bg-slate-50 border-b border-slate-200">
@@ -281,10 +272,10 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
               </span>
             </div>
           </div>
-          <div className="flex-1">
+          <div className="flex-1 overflow-hidden">
             <Worker workerUrl={config.pdf.workerUrl}>
               <Viewer
-                fileUrl={pdfUrl}
+                fileUrl={pdfObjectUrl}
                 plugins={[defaultLayoutPluginInstance]}
                 defaultScale={SpecialZoomLevel.PageWidth}
               />
@@ -303,15 +294,12 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
         <div className="text-center text-slate-400">
           <FileText className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-2 md:mb-3 text-slate-300" />
           <p className="text-xs md:text-sm">No document to preview</p>
-          <p className="text-[10px] md:text-xs mt-0.5 md:mt-1">Supported: PDF, DOCX, Images (JPG, PNG)</p>
         </div>
       </div>
     );
   }
 
   // EDIT MODE - Upload functionality
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();

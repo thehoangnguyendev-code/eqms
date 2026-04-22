@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Checkbox } from "@/components/ui/checkbox/Checkbox";
@@ -7,7 +6,9 @@ import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { IconMailOpened, IconQrcode, IconRefresh } from "@tabler/icons-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { AUTH_UI } from "./auth-ui";
+import { AuthBackLink, AuthInfoPanel, AuthLayout } from "./components";
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -15,15 +16,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 60; // 60 seconds
-
-const PARTNER_BRANDS = [
-  "Document Control",
-  "Training Management",
-  "Deviations & NCs",
-  "Reports & Analytics",
-  "Audit Trail",
-  "... and more",
-];
 
 // ============================================================================
 // TYPES
@@ -65,6 +57,11 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
   const [rememberDevice, setRememberDevice] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_COOLDOWN);
   const [canResend, setCanResend] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+
+  const swapTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : { duration: 0.2, ease: "easeOut" as const };
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -234,40 +231,34 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
   // ========================================================================
 
   return (
-    <div className="flex min-h-screen min-h-dvh w-full items-center justify-center bg-white p-0 sm:bg-slate-200 sm:p-6 lg:p-8" role="main">
+    <>
       {isLoading && <FullPageLoading text="Verifying code..." />}
-      <div className="mx-auto w-full max-w-[1160px] overflow-hidden rounded-none sm:rounded-2xl bg-transparent shadow-none sm:shadow-[0_14px_36px_rgba(15,23,42,0.16)] lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]">
-        <div className="grid min-h-screen min-h-dvh w-full grid-cols-1 sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]">
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row items-center justify-center border-0 sm:border border-slate-200/90 bg-white px-6 py-10 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20"
-          >
-            <div className="flex flex-1 w-full max-w-[340px] flex-col justify-center sm:max-w-[420px]">
-              <div className="mb-6 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
-                <img
-                  src={logoImg}
-                  alt="EQMS Logo"
-                  className="h-8 w-auto object-contain sm:h-9"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-              </div>
+      <AuthLayout
+        left={
+          <div className={AUTH_UI.formColumn}>
+            <div className="mb-6 flex items-center gap-3 text-slate-900 sm:mb-10 lg:mb-12">
+              <img
+                src={logoImg}
+                alt="EQMS Logo"
+                className="h-8 w-auto object-contain sm:h-9"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            </div>
 
-              <div className="min-h-[360px] sm:min-h-[420px]">
-                <AnimatePresence mode="wait" initial={false}>
-                  {!method ? (
-                    <motion.div
-                      key="selection"
-                      initial={{ opacity: 0, x: -16 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 16 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="space-y-6 sm:space-y-5"
-                    >
-                    <div className="space-y-2 sm:space-y-3">
+            <div className="min-h-[360px] sm:min-h-[420px]">
+              <AnimatePresence mode="wait" initial={false}>
+                {!method ? (
+                  <motion.div
+                    key="selection"
+                    initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
+                    transition={swapTransition}
+                    className="space-y-6 sm:space-y-5"
+                  >
+                    <div className={AUTH_UI.headingBlock}>
                       <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Verify Your Identity</h1>
                       <p className="text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">
                         Select a verification method for account <span className="font-semibold text-slate-700">{username}</span>.
@@ -312,41 +303,33 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                       </button>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={onBackToLogin}
-                      className="group inline-flex items-center text-xs font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:text-slate-700 sm:text-sm"
-                    >
-                      <span
-                        className="inline-flex w-0 -translate-x-1 items-center overflow-hidden opacity-0 transition-all duration-200 group-hover:mr-2 group-hover:w-4 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:mr-2 group-focus-visible:w-4 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
-                        aria-hidden="true"
-                      >
-                        <ArrowLeft size={16} />
-                      </span>
-                      <span>Back to Sign In</span>
-                    </button>
-                    </motion.div>
-                  ) : (
-                    <motion.form
-                      key="otp-form"
-                      initial={{ opacity: 0, x: 16 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -16 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      onSubmit={handleSubmit}
-                      className="flex flex-col justify-start space-y-5 sm:justify-center sm:space-y-6"
-                    >
-                    <div className="space-y-2 sm:space-y-3">
+                    <AuthBackLink onClick={onBackToLogin} label="Back to Sign In" />
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="otp-form"
+                    initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
+                    transition={swapTransition}
+                    onSubmit={handleSubmit}
+                    className={`${AUTH_UI.formStack} flex flex-col justify-start sm:justify-center`}
+                  >
+                    <div className={AUTH_UI.headingBlock}>
                       <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Enter Verification Code</h1>
                       <p className="text-sm leading-6 text-slate-500 sm:text-sm sm:leading-7">
-                        {method === "email"
-                          ? <>Enter the 6-digit code sent to <span className="font-semibold text-slate-700">{email}</span>.</>
-                          : <>Enter the 6-digit code from your authenticator app.</>}
+                        {method === "email" ? (
+                          <>
+                            Enter the 6-digit code sent to <span className="font-semibold text-slate-700">{email}</span>.
+                          </>
+                        ) : (
+                          <>Enter the 6-digit code from your authenticator app.</>
+                        )}
                       </p>
                     </div>
 
                     {error && (
-                      <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">
+                      <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700" role="alert" aria-live="assertive">
                         {error}
                       </div>
                     )}
@@ -365,6 +348,8 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                           value={digit}
                           onChange={(e) => handleOtpChange(index, e.target.value)}
                           onKeyDown={(e) => handleKeyDown(index, e)}
+                          disabled={isLoading}
+                          aria-label={`Verification code digit ${index + 1}`}
                           className={cn(
                             "h-12 w-full rounded-[10px] border text-center text-xl font-semibold outline-none transition-all sm:h-14 sm:text-xl",
                             "focus:ring-2 focus:ring-teal-800/20",
@@ -378,7 +363,7 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
 
                     <Button
                       type="submit"
-                      className="h-12 w-full rounded-[10px] bg-teal-900 text-sm font-medium text-white transition-colors hover:bg-teal-950 sm:h-12 sm:text-base mt-2"
+                      className={AUTH_UI.submitButton}
                       disabled={isLoading || otp.join("").length < OTP_LENGTH}
                     >
                       Submit
@@ -413,63 +398,35 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                         </button>
                       )}
 
-                      <button
-                        type="button"
+                      <AuthBackLink
                         onClick={() => {
                           setMethod(null);
                           setOtp(new Array(OTP_LENGTH).fill(""));
                           setError("");
                         }}
-                        className="group inline-flex items-center text-xs font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:text-slate-700 sm:text-sm"
+                        label="Change verification method"
                         disabled={isLoading}
-                      >
-                        <span
-                          className="inline-flex w-0 -translate-x-1 items-center overflow-hidden opacity-0 transition-all duration-200 group-hover:mr-2 group-hover:w-4 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:mr-2 group-focus-visible:w-4 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
-                          aria-hidden="true"
-                        >
-                          <ArrowLeft size={16} />
-                        </span>
-                        <span>Change verification method</span>
-                      </button>
+                      />
                     </div>
-                    </motion.form>
-                  )}
-                </AnimatePresence>
-              </div>
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
-          </motion.div>
-
-          <motion.aside
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
-            className="relative hidden overflow-hidden bg-[#053f46] px-8 py-10 text-white lg:flex lg:flex-col xl:px-12 xl:py-14"
-          >
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_6%,rgba(146,224,224,0.35),transparent_30%)]" />
-
-            <div className="relative z-10 mt-10 max-w-[460px] space-y-6 xl:mt-24 xl:space-y-8">
-              <h2 className="text-3xl font-medium leading-[1.2] tracking-tight text-teal-50 lg:text-4xl xl:text-5xl">
-                Multi-Factor Security for Regulated Quality Systems
-              </h2>
+          </div>
+        }
+        right={
+          <AuthInfoPanel
+            title="Multi-Factor Security for Regulated Quality Systems"
+            body={
               <p className="text-base leading-8 text-teal-100/90">
                 Every sign-in step is verified and traceable to protect critical GMP records, audit trails, and operational workflows.
               </p>
-            </div>
-
-            <div className="relative z-10 mt-auto pt-10 xl:pt-16">
-              <div className="mb-7 flex items-center gap-5">
-                <span className="text-xs uppercase tracking-[0.14em] text-teal-200/80">EQMS Modules</span>
-                <span className="h-px flex-1 bg-teal-200/30" />
-              </div>
-              <div className="grid grid-cols-3 gap-x-4 gap-y-4 text-sm font-medium text-teal-100/90">
-                {PARTNER_BRANDS.map((brand) => (
-                  <span key={brand}>{brand}</span>
-                ))}
-              </div>
-            </div>
-          </motion.aside>
-        </div>
-      </div>
-    </div>
+            }
+            footerTitle="Ngoc Thien Pharma Dev Team"
+            footerSubtitle="Designed for EU-GMP regulated manufacturing"
+          />
+        }
+      />
+    </>
   );
 };

@@ -37,6 +37,8 @@ export interface SmartDropdownProps {
   minWidth?: number;
   /** Close on backdrop click (default: true) */
   closeOnBackdrop?: boolean;
+  /** ARIA role for dropdown container */
+  role?: 'menu' | 'listbox';
 }
 
 export const SmartDropdown: React.FC<SmartDropdownProps> = ({
@@ -48,6 +50,7 @@ export const SmartDropdown: React.FC<SmartDropdownProps> = ({
   estimatedHeight = 300,
   minWidth = 180,
   closeOnBackdrop = true,
+  role = 'menu',
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { position } = useDropdownPosition({
@@ -105,6 +108,8 @@ export const SmartDropdown: React.FC<SmartDropdownProps> = ({
       {/* Dropdown */}
       <div
         ref={dropdownRef}
+        role={role}
+        aria-orientation="vertical"
         style={{
           position: 'fixed',
           top: position.top,
@@ -158,6 +163,9 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
 }) => {
   return (
     <button
+      type="button"
+      role="menuitem"
+      aria-disabled={disabled}
       onClick={(e) => {
         e.stopPropagation();
         if (!disabled && onClick) {
@@ -185,5 +193,5 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
  * Dropdown Divider
  */
 export const DropdownDivider: React.FC = () => {
-  return <div className="my-1 h-px bg-slate-200" />;
+  return <div className="my-1 h-px bg-slate-200" role="separator" />;
 };

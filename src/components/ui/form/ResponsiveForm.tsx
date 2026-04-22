@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { cn } from '../utils';
 
@@ -20,6 +20,7 @@ import { cn } from '../utils';
 export interface FormFieldProps {
   label: string;
   children: React.ReactNode;
+  htmlFor?: string;
   error?: string;
   required?: boolean;
   className?: string;
@@ -30,12 +31,38 @@ export interface FormFieldProps {
 export const FormField: React.FC<FormFieldProps> = ({
   label,
   children,
+  htmlFor,
   error,
   required,
   className,
   layout = 'vertical',
   hint,
 }) => {
+  const generatedId = useId();
+  const controlId = htmlFor ?? generatedId;
+  const hintId = hint && !error ? `${controlId}-hint` : undefined;
+  const errorId = error ? `${controlId}-error` : undefined;
+
+  let hasBoundControl = false;
+  const enhancedChildren = React.Children.map(children, (child) => {
+    if (!React.isValidElement(child) || hasBoundControl) {
+      return child;
+    }
+
+    hasBoundControl = true;
+
+    const childProps = (child.props ?? {}) as Record<string, unknown>;
+    const existingDescribedBy =
+      typeof childProps['aria-describedby'] === 'string' ? childProps['aria-describedby'] : undefined;
+    const describedBy = [existingDescribedBy, hintId, errorId].filter(Boolean).join(' ') || undefined;
+
+    return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, {
+      id: (childProps.id as string | undefined) ?? controlId,
+      'aria-describedby': describedBy,
+      ...(error ? { 'aria-invalid': true } : {}),
+    });
+  });
+
   return (
     <div
       className={cn(
@@ -45,6 +72,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       )}
     >
       <label
+        htmlFor={controlId}
         className={cn(
           'block text-slate-700 font-medium mb-2',
           // Responsive font size
@@ -58,12 +86,12 @@ export const FormField: React.FC<FormFieldProps> = ({
       </label>
 
       <div className={cn('flex-1', layout === 'horizontal' && 'md:w-2/3')}>
-        {children}
+        {enhancedChildren}
         {hint && !error && (
-          <p className="mt-1.5 text-xs md:text-sm text-slate-500">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-xs md:text-sm text-slate-500">{hint}</p>
         )}
         {error && (
-          <p className="mt-1.5 text-xs md:text-sm text-red-600 flex items-center gap-1">
+          <p id={errorId} className="mt-1.5 text-xs md:text-sm text-red-600 flex items-center gap-1">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" /> {error}
           </p>
         )}

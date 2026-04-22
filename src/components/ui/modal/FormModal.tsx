@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -45,6 +45,75 @@ export const FormModal: React.FC<FormModalProps> = ({
   size = 'xl',
   className,
 }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const titleId = useId();
+  const descriptionId = useId();
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (e.key !== 'Tab' || !modalRef.current) {
+        return;
+      }
+
+      const focusableEls = modalRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+
+      if (focusableEls.length === 0) {
+        return;
+      }
+
+      const first = focusableEls[0];
+      const last = focusableEls[focusableEls.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+        return;
+      }
+
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    previousFocusRef.current = document.activeElement as HTMLElement;
+
+    requestAnimationFrame(() => {
+      if (!modalRef.current) {
+        return;
+      }
+
+      const firstFocusable = modalRef.current.querySelector<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])'
+      );
+      firstFocusable?.focus();
+    });
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocusRef.current?.focus();
+    };
+  }, [isOpen, handleKeyDown]);
+
   const portalContent = createPortal(
     <AnimatePresence mode="wait">
       {isOpen && (
@@ -71,7 +140,12 @@ export const FormModal: React.FC<FormModalProps> = ({
 
           {/* Modal Content */}
           <motion.div
+            ref={modalRef}
             key="form-modal-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? titleId : undefined}
+            aria-describedby={description ? descriptionId : undefined}
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
@@ -93,7 +167,7 @@ export const FormModal: React.FC<FormModalProps> = ({
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   {title && (
-                    <h3 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900 leading-6 truncate">{title}</h3>
+                    <h3 id={titleId} className="text-sm md:text-base lg:text-lg font-semibold text-slate-900 leading-6 truncate">{title}</h3>
                   )}
                 </div>
                 <button
@@ -106,7 +180,7 @@ export const FormModal: React.FC<FormModalProps> = ({
                 </button>
               </div>
               {description && (
-                <div className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">{description}</div>
+                <div id={descriptionId} className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">{description}</div>
               )}
             </div>
             

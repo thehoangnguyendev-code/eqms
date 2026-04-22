@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
-import { X, CheckCircle2, AlertTriangle, Info, XCircle } from "lucide-react";
+import { X, Info, XCircle } from "lucide-react";
 import { cn } from "../utils";
 import { IconAlertTriangle, IconRosetteDiscountCheck } from "@tabler/icons-react";
 

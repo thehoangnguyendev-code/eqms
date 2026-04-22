@@ -339,15 +339,15 @@ export const DocumentWorkflowLayout: React.FC<DocumentWorkflowLayoutProps> = ({
                 </div>
             </div>
 
-            {/* After Tab Content (e.g. Original Document panel) */}
-            {afterTabContent}
-
             {/* Footer Actions */}
             {footerActions && (
                 <div className="flex items-center gap-2 md:gap-3">
                     {footerActions}
                 </div>
             )}
+
+            {/* After Tab Content (e.g. Original Document panel) */}
+            {afterTabContent}
         </div>
     );
 };

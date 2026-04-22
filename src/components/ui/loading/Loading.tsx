@@ -59,15 +59,27 @@ export const FullPageLoading: React.FC<Omit<LoadingProps, 'fullPage'>> = (props)
   <Loading {...props} fullPage text={props.text || 'Loading...'} />
 );
 
-export const ButtonLoading: React.FC<{ text?: string; light?: boolean }> = ({
+const buttonLoadingSizeMap = {
+  xs: { spinner: 16, text: 'text-xs' },
+  sm: { spinner: 18, text: 'text-sm' },
+  default: { spinner: 20, text: 'text-sm' },
+  lg: { spinner: 24, text: 'text-base' },
+} as const;
+
+export const ButtonLoading: React.FC<{ text?: string; light?: boolean; size?: keyof typeof buttonLoadingSizeMap }> = ({
   text = 'Loading...',
-  light = false
-}) => (
-  <div className="flex items-center justify-center gap-2">
-    <DashLoading color={light ? '#ffffff' : '#059669'} size={32} />
-    <span>{text}</span>
-  </div>
-);
+  light = false,
+  size = 'default',
+}) => {
+  const config = buttonLoadingSizeMap[size];
+
+  return (
+    <div className="flex items-center justify-center gap-2">
+      <DashLoading color={light ? '#ffffff' : '#059669'} size={config.spinner} />
+      <span className={config.text}>{text}</span>
+    </div>
+  );
+};
 
 export const SectionLoading: React.FC<{
   text?: string;

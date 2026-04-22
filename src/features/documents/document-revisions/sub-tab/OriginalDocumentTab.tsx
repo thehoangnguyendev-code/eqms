@@ -51,25 +51,12 @@ const formatDateTimeFull = (dateStr: string): string => {
 
 export const OriginalDocumentTab: React.FC<OriginalDocumentTabProps> = ({ document }) => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
   const [isNavigating, setIsNavigating] = useState(false);
 
   const documents = useMemo(() => {
     if (!document) return [];
     return [document];
   }, [document]);
-
-  const filteredDocuments = useMemo(() => {
-    if (!searchQuery.trim()) return documents;
-    const q = searchQuery.toLowerCase();
-    return documents.filter(
-      (doc) =>
-        doc.documentNumber.toLowerCase().includes(q) ||
-        doc.documentName.toLowerCase().includes(q) ||
-        doc.openedBy.toLowerCase().includes(q) ||
-        doc.author.toLowerCase().includes(q)
-    );
-  }, [documents, searchQuery]);
 
   const handleDocumentClick = (documentNumber: string) => {
     setIsNavigating(true);
@@ -81,20 +68,6 @@ export const OriginalDocumentTab: React.FC<OriginalDocumentTabProps> = ({ docume
   return (
     <div className="space-y-4">
       {isNavigating && <FullPageLoading text="Loading..." />}
-
-      {/* Search Bar */}
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search by document number, name, author..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-10 pr-10 border border-slate-200 rounded-lg text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-          />
-        </div>
-      </div>
 
       {/* Table */}
       <div className="border rounded-xl bg-white shadow-sm overflow-hidden">
@@ -129,8 +102,8 @@ export const OriginalDocumentTab: React.FC<OriginalDocumentTabProps> = ({ docume
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white">
-              {filteredDocuments.length > 0 ? (
-                filteredDocuments.map((doc, index) => (
+              {documents.length > 0 ? (
+                documents.map((doc, index) => (
                   <tr
                     key={doc.documentNumber}
                     className="hover:bg-slate-50 transition-colors"
@@ -174,9 +147,7 @@ export const OriginalDocumentTab: React.FC<OriginalDocumentTabProps> = ({ docume
                         <Search className="h-5 w-5 text-slate-300" />
                       </div>
                       <p className="text-sm font-medium text-slate-500">
-                        {searchQuery
-                          ? "No records matching your search"
-                          : "No records to display"}
+                        No records to display
                       </p>
                     </div>
                   </td>
