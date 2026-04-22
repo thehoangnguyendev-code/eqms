@@ -1,49 +1,29 @@
-import React, {
-  useState,
-  useMemo,
-} from "react";
+import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import { ROUTES } from '@/app/routes.constants';
 import {
-  ChevronRight,
-  ChevronUp,
-  ChevronDown,
-  MoreVertical,
   Download,
   History,
   FilePlusCorner,
   FileStack,
+  MoreVertical,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
-import { StatusBadge, StatusType } from "@/components/ui/badge";
-import { TablePagination } from "@/components/ui/table/TablePagination";
-import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { DocumentFilters } from "@/features/documents/shared/components";
-import { cn } from "@/components/ui/utils";
 import {
   IconInfoCircle,
 } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { revisionsOwnedByMe } from "@/components/ui/breadcrumb/breadcrumbs.config";
-import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
-import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { useNavigateWithLoading, usePortalDropdown } from "@/hooks";
 import { useDocumentFilter, useTableSort } from "@/features/documents/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 import { MOCK_REVISIONS } from "./mockData";
-import type { RelatedDocument, CorrelatedDocument, Revision } from "./types";
+import type { Revision } from "./types";
 import { mapStatusToStatusType } from "@/utils/status";
-
-// --- Types ---
-interface TableColumn {
-  id: string;
-  label: string;
-  visible: boolean;
-  order: number;
-  locked?: boolean;
-}
-
+import { RevisionTableView } from "@/features/documents/shared/components";
 // Current logged-in user (simulated)
 const CURRENT_USER = {
   id: "user-001",
@@ -51,28 +31,6 @@ const CURRENT_USER = {
   email: "sarah.johnson@company.com",
   department: "Quality Assurance",
 };
-
-// Default columns configuration
-const DEFAULT_COLUMNS: TableColumn[] = [
-  { id: "no", label: "No.", visible: true, order: 0, locked: true },
-  { id: "documentNumber", label: "Document Number", visible: true, order: 1 },
-  { id: "revisionNumber", label: "Revision Number", visible: true, order: 2 },
-  { id: "created", label: "Created", visible: true, order: 3 },
-  { id: "openedBy", label: "Opened By", visible: true, order: 4 },
-  { id: "revisionName", label: "Revision Name", visible: true, order: 5 },
-  { id: "state", label: "State", visible: true, order: 6 },
-  { id: "documentName", label: "Document Name", visible: true, order: 7 },
-  { id: "type", label: "Document Type", visible: true, order: 8 },
-  { id: "relatedDocuments", label: "Related Document", visible: true, order: 9 },
-  { id: "correlatedDocuments", label: "Correlated Document", visible: true, order: 10 },
-  { id: "template", label: "Template", visible: true, order: 11 },
-  { id: "businessUnit", label: "Business Unit", visible: true, order: 12 },
-  { id: "department", label: "Department", visible: true, order: 13 },
-  { id: "author", label: "Author", visible: true, order: 14 },
-  { id: "effectiveDate", label: "Effective Date", visible: true, order: 15 },
-  { id: "validUntil", label: "Valid Until", visible: true, order: 16 },
-  { id: "action", label: "Action", visible: true, order: 17, locked: true },
-];
 
 // --- Main Component ---
 export const RevisionsOwnedByMeView: React.FC = () => {
@@ -84,10 +42,7 @@ export const RevisionsOwnedByMeView: React.FC = () => {
   const [typeFilter, setTypeFilter] = useState<DocumentType | "All">("All");
   const [businessUnitFilter, setBusinessUnitFilter] = useState("All");
   const [departmentFilter, setDepartmentFilter] = useState("All");
-
-  // Author filter is set to current user and will be readonly
   const [authorFilter, setAuthorFilter] = useState(CURRENT_USER.name);
-
   const [createdFromDate, setCreatedFromDate] = useState("");
   const [createdToDate, setCreatedToDate] = useState("");
   const [effectiveFromDate, setEffectiveFromDate] = useState("");
@@ -97,20 +52,16 @@ export const RevisionsOwnedByMeView: React.FC = () => {
   const [relatedDocumentFilter, setRelatedDocumentFilter] = useState("All");
   const [correlatedDocumentFilter, setCorrelatedDocumentFilter] = useState("All");
   const [templateFilter, setTemplateFilter] = useState("All");
-  const [columns, setColumns] = useState<TableColumn[]>([...DEFAULT_COLUMNS]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [isTableLoading, setIsTableLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
     key: "revisionName",
     direction: "asc",
   });
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
-  const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
-  // Filter data using reusable hook
+  // Filter data
   const filteredData = useDocumentFilter(MOCK_REVISIONS, {
     searchFields: ['documentNumber', 'revisionName', 'author', 'documentName'],
     searchQuery,
@@ -132,35 +83,11 @@ export const RevisionsOwnedByMeView: React.FC = () => {
     },
   });
 
-  // Sort data using reusable hook
+  // Sort data
   const filteredRevisions = useTableSort(filteredData, {
     sortConfig,
     dateFields: ['created', 'effectiveDate', 'validUntil'],
   });
-
-  // Handle loading state on filter changes
-  React.useEffect(() => {
-    setIsTableLoading(true);
-    const timer = setTimeout(() => setIsTableLoading(false), 300);
-    return () => clearTimeout(timer);
-  }, [
-    searchQuery,
-    statusFilter,
-    typeFilter,
-    businessUnitFilter,
-    departmentFilter,
-    authorFilter,
-    createdFromDate,
-    createdToDate,
-    effectiveFromDate,
-    effectiveToDate,
-    validFromDate,
-    validToDate,
-    relatedDocumentFilter,
-    correlatedDocumentFilter,
-    templateFilter,
-    sortConfig,
-  ]);
 
   const handleSort = (key: string) => {
     setSortConfig((prev) => ({
@@ -170,31 +97,12 @@ export const RevisionsOwnedByMeView: React.FC = () => {
     setCurrentPage(1);
   };
 
-  // Pagination
-  const totalPages = Math.ceil(filteredRevisions.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedRevisions = useMemo(() => {
-    return filteredRevisions.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredRevisions, startIndex, itemsPerPage]);
-
-  // Visible columns
-  const visibleColumns = useMemo(
-    () => columns.filter((col) => col.visible).sort((a, b) => a.order - b.order),
-    [columns]
-  );
-
-  // Handlers
-  const handleViewRevision = (id: string) => {
-    navigateTo(ROUTES.DOCUMENTS.REVISIONS.DETAIL(id));
-  };
-
   const handleClearFilters = () => {
     setSearchQuery("");
     setStatusFilter("All");
     setTypeFilter("All");
     setBusinessUnitFilter("All");
     setDepartmentFilter("All");
-    // Ensure author filter doesn't reset to "All", keeps Current User
     setAuthorFilter(CURRENT_USER.name);
     setCreatedFromDate("");
     setCreatedToDate("");
@@ -244,7 +152,6 @@ export const RevisionsOwnedByMeView: React.FC = () => {
 
   const handleMenuAction = (action: string, id: string) => {
     close();
-
     switch (action) {
       case "view":
         navigateTo(ROUTES.DOCUMENTS.REVISIONS.DETAIL(id));
@@ -259,14 +166,14 @@ export const RevisionsOwnedByMeView: React.FC = () => {
 
   // Render column cell
   const renderCell = (
-    column: TableColumn,
+    column: { id: string; label: string; visible: boolean; order: number; locked?: boolean },
     revision: Revision,
     index: number,
   ) => {
     if (column.id === "businessUnit") return revision.businessUnit;
     switch (column.id) {
       case "no":
-        return startIndex + index + 1;
+        return (currentPage - 1) * itemsPerPage + index + 1;
       case "documentNumber":
         return (
           <span className="font-medium text-emerald-600">
@@ -282,11 +189,7 @@ export const RevisionsOwnedByMeView: React.FC = () => {
       case "revisionName":
         return <span className="font-medium text-slate-900">{revision.revisionName}</span>;
       case "state":
-        return (
-          <span className="inline-flex items-center gap-1.5">
-            <StatusBadge status={mapStatusToStatusType(revision.state) as StatusType} />
-          </span>
-        );
+        return revision.state;
       case "documentName":
         return <span className="text-slate-600">{revision.documentName}</span>;
       case "type":
@@ -353,389 +256,130 @@ export const RevisionsOwnedByMeView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <DocumentFilters
-                    showCard={false}
-                    searchQuery={searchQuery}
-                    onSearchChange={(value) => {
-                      setSearchQuery(value);
-                      setCurrentPage(1);
-                    }}
-                    statusFilter={statusFilter}
-                    onStatusChange={(value) => {
-                      setStatusFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    typeFilter={typeFilter}
-                    onTypeChange={(value) => {
-                      setTypeFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    businessUnitFilter={businessUnitFilter}
-                    onBusinessUnitChange={(value) => {
-                      setBusinessUnitFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    departmentFilter={departmentFilter}
-                    onDepartmentChange={(value) => {
-                      setDepartmentFilter(value);
-                      setCurrentPage(1);
-                    }}
-
-                    // Pass author props & disable it
-                    authorFilter={authorFilter}
-                    onAuthorChange={() => { }} // Disabled -> No-op
-                    authorFilterDisabled={true}
-
-                    createdFromDate={createdFromDate}
-                    onCreatedFromDateChange={(dateStr) => {
-                      setCreatedFromDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    createdToDate={createdToDate}
-                    onCreatedToDateChange={(dateStr) => {
-                      setCreatedToDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    effectiveFromDate={effectiveFromDate}
-                    onEffectiveFromDateChange={(dateStr) => {
-                      setEffectiveFromDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    effectiveToDate={effectiveToDate}
-                    onEffectiveToDateChange={(dateStr) => {
-                      setEffectiveToDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    validFromDate={validFromDate}
-                    onValidFromDateChange={(dateStr) => {
-                      setValidFromDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    validToDate={validToDate}
-                    onValidToDateChange={(dateStr) => {
-                      setValidToDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    showTypeFilter={true}
-                    showDepartmentFilter={true}
-                    relatedDocumentFilter={relatedDocumentFilter}
-                    onRelatedDocumentFilterChange={(value) => {
-                      setRelatedDocumentFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    correlatedDocumentFilter={correlatedDocumentFilter}
-                    onCorrelatedDocumentFilterChange={(value) => {
-                      setCorrelatedDocumentFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    templateFilter={templateFilter}
-                    onTemplateFilterChange={(value) => {
-                      setTemplateFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    onClearFilters={handleClearFilters}
+              showCard={false}
+              searchQuery={searchQuery}
+              onSearchChange={(value) => {
+                setSearchQuery(value);
+                setCurrentPage(1);
+              }}
+              statusFilter={statusFilter}
+              onStatusChange={(value) => {
+                setStatusFilter(value);
+                setCurrentPage(1);
+              }}
+              typeFilter={typeFilter}
+              onTypeChange={(value) => {
+                setTypeFilter(value);
+                setCurrentPage(1);
+              }}
+              businessUnitFilter={businessUnitFilter}
+              onBusinessUnitChange={(value) => {
+                setBusinessUnitFilter(value);
+                setCurrentPage(1);
+              }}
+              departmentFilter={departmentFilter}
+              onDepartmentChange={(value) => {
+                setDepartmentFilter(value);
+                setCurrentPage(1);
+              }}
+              authorFilter={authorFilter}
+              onAuthorChange={() => { }} // Disabled -> No-op
+              authorFilterDisabled={true}
+              createdFromDate={createdFromDate}
+              onCreatedFromDateChange={(dateStr) => {
+                setCreatedFromDate(dateStr);
+                setCurrentPage(1);
+              }}
+              createdToDate={createdToDate}
+              onCreatedToDateChange={(dateStr) => {
+                setCreatedToDate(dateStr);
+                setCurrentPage(1);
+              }}
+              effectiveFromDate={effectiveFromDate}
+              onEffectiveFromDateChange={(dateStr) => {
+                setEffectiveFromDate(dateStr);
+                setCurrentPage(1);
+              }}
+              effectiveToDate={effectiveToDate}
+              onEffectiveToDateChange={(dateStr) => {
+                setEffectiveToDate(dateStr);
+                setCurrentPage(1);
+              }}
+              validFromDate={validFromDate}
+              onValidFromDateChange={(dateStr) => {
+                setValidFromDate(dateStr);
+                setCurrentPage(1);
+              }}
+              validToDate={validToDate}
+              onValidToDateChange={(dateStr) => {
+                setValidToDate(dateStr);
+                setCurrentPage(1);
+              }}
+              showTypeFilter={true}
+              showDepartmentFilter={true}
+              relatedDocumentFilter={relatedDocumentFilter}
+              onRelatedDocumentFilterChange={(value) => {
+                setRelatedDocumentFilter(value);
+                setCurrentPage(1);
+              }}
+              correlatedDocumentFilter={correlatedDocumentFilter}
+              onCorrelatedDocumentFilterChange={(value) => {
+                setCorrelatedDocumentFilter(value);
+                setCurrentPage(1);
+              }}
+              templateFilter={templateFilter}
+              onTemplateFilterChange={(value) => {
+                setTemplateFilter(value);
+                setCurrentPage(1);
+              }}
+              onClearFilters={handleClearFilters}
             />
           </div>
         </div>
 
         {/* Table Section */}
-        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
-          {isTableLoading && (
-            <div className="absolute inset-0 z-20 bg-white/40 backdrop-blur-[4px] flex items-center justify-center transition-all duration-300">
-              <SectionLoading text="Searching..." minHeight="150px" />
-            </div>
-          )}
-
-          <div className={cn(
-            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
-            isTableLoading && "blur-[2px] opacity-80"
-          )}>
-            {paginatedRevisions.length > 0 ? (
-              <>
-                {/* Table with Horizontal Scroll */}
-                <div
-                  ref={scrollerRef}
-                  className={cn(
-                    "flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400",
-                    isDragging ? "cursor-grabbing select-none" : "cursor-grab"
-                  )}
-                  {...dragEvents}
-                >
-                  <table className="w-full min-w-max border-separate border-spacing-0 text-left">
-                    <thead>
-                      <tr>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>
-                        {visibleColumns.map((column) => {
-                          const isSorted = sortConfig.key === column.id;
-                          const canSort = column.id !== 'action' && column.id !== 'no' && column.id !== 'relatedDocuments' && column.id !== 'correlatedDocuments' && column.id !== 'template';
-
-                          return (
-                            <th
-                              key={column.id}
-                              onClick={canSort ? () => handleSort(column.id) : undefined}
-                              className={cn(
-                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
-                                canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
-                                column.id === "action"
-                                  ? "right-0 z-30 text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
-                                  : "text-left",
-                              )}
-                            >
-                              <div className="flex items-center justify-between gap-2 w-full">
-                                <span className="truncate">{column.label}</span>
-                                {canSort && (
-                                  <div className="flex flex-col text-slate-400 flex-shrink-0 group-hover:text-slate-500">
-                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
-                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
-                                  </div>
-                                )}
-                              </div>
-                            </th>
-                          );
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white">
-                      {paginatedRevisions.map((revision, index) => {
-                        const isExpanded = expandedRowId === revision.id;
-                        const hasDocs = revision.hasRelatedDocuments || revision.hasCorrelatedDocuments;
-                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
-
-                        return (
-                          <React.Fragment key={revision.id}>
-                            <tr
-                              className="hover:bg-slate-50/80 transition-colors group"
-                            >
-                              <td className="py-2.5 px-2 md:py-3 md:px-3 border-b border-slate-200 whitespace-nowrap" onClick={(e) => {
-                                e.stopPropagation();
-                                if (hasDocs) setExpandedRowId(isExpanded ? null : revision.id);
-                              }}>
-                                {hasDocs && (
-                                  <button className="flex items-center justify-center h-5 w-5 md:h-6 md:w-6 rounded-lg hover:bg-slate-200 transition-colors">
-                                    <ChevronRight className={cn("h-3.5 w-3.5 md:h-4 md:w-4 text-slate-500 transition-transform duration-200", isExpanded && "rotate-90")} />
-                                  </button>
-                                )}
-                              </td>
-                              {visibleColumns.map((column) =>
-                                column.id === "action" ? (
-                                  <td
-                                    key={column.id}
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
-                                  >
-                                    <button
-                                      ref={getRef(revision.id)}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggle(revision.id, e);
-                                      }}
-                                      className="inline-flex items-center justify-center h-7 w-7 md:h-8 md:w-8 rounded-lg hover:bg-slate-100 transition-colors"
-                                    >
-                                      <MoreVertical className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                                    </button>
-                                  </td>
-                                ) : (
-                                  <td
-                                    key={column.id}
-                                    className={cn(
-                                      tdClass,
-                                      column.id === "documentNumber" && "cursor-pointer"
-                                    )}
-                                    onClick={column.id === "documentNumber" ? () => handleViewRevision(revision.id) : undefined}
-                                  >
-                                    {renderCell(column, revision, index)}
-                                  </td>
-                                ),
-                              )}
-                            </tr>
-                            <AnimatePresence initial={false}>
-                              {isExpanded && hasDocs && (
-                                <tr className="bg-slate-50/50">
-                                  <td colSpan={visibleColumns.length} className="p-0 border-b border-slate-200">
-                                    <motion.div
-                                      initial={{ height: 0, opacity: 0 }}
-                                      animate={{ height: "auto", opacity: 1 }}
-                                      exit={{ height: 0, opacity: 0 }}
-                                      transition={{ duration: 0.2 }}
-                                      className="overflow-hidden"
-                                    >
-                                      <div className="px-4 py-3">
-                                        <div className="ml-9 flex flex-wrap gap-6">
-                                          {revision.relatedDocuments && revision.relatedDocuments.length > 0 && (
-                                            <div>
-                                              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                                                Related Documents ({revision.relatedDocuments.length})
-                                              </p>
-                                              <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
-                                                <table className="text-xs table-auto">
-                                                  <thead>
-                                                    <tr className="bg-slate-100 border-b border-slate-200">
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody className="divide-y divide-slate-100 bg-white">
-                                                    {revision.relatedDocuments.map((doc: RelatedDocument) => (
-                                                      <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
-                                                        <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{doc.documentNumber}</td>
-                                                        <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{doc.documentName}</td>
-                                                        <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{doc.revisionNumber}</td>
-                                                        <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{doc.type}</td>
-                                                        <td className="py-1.5 px-2.5 whitespace-nowrap">
-                                                          <StatusBadge status={mapStatusToStatusType(doc.state) as StatusType} size="sm" />
-                                                        </td>
-                                                      </tr>
-                                                    ))}
-                                                  </tbody>
-                                                </table>
-                                              </div>
-                                            </div>
-                                          )}
-                                          {revision.correlatedDocuments && revision.correlatedDocuments.length > 0 && (
-                                            <div>
-                                              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                                                Correlated Documents ({revision.correlatedDocuments.length})
-                                              </p>
-                                              <div className="rounded-lg border border-slate-200 overflow-hidden inline-block">
-                                                <table className="text-xs table-auto">
-                                                  <thead>
-                                                    <tr className="bg-slate-100 border-b border-slate-200">
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Number</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Document Name</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Revision</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Type</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">State</th>
-                                                      <th className="py-1.5 px-2.5 text-left font-semibold text-slate-600 whitespace-nowrap">Correlation Type</th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody className="divide-y divide-slate-100 bg-white">
-                                                    {revision.correlatedDocuments.map((doc: CorrelatedDocument) => (
-                                                      <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
-                                                        <td className="py-1.5 px-2.5 font-medium text-emerald-600 whitespace-nowrap">{doc.documentNumber}</td>
-                                                        <td className="py-1.5 px-2.5 text-slate-700 whitespace-nowrap">{doc.documentName}</td>
-                                                        <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{doc.revisionNumber}</td>
-                                                        <td className="py-1.5 px-2.5 text-slate-600 whitespace-nowrap">{doc.type}</td>
-                                                        <td className="py-1.5 px-2.5 whitespace-nowrap">
-                                                          <StatusBadge status={mapStatusToStatusType(doc.state) as StatusType} size="sm" />
-                                                        </td>
-                                                        <td className="py-1.5 px-2.5 text-slate-500 whitespace-nowrap">{doc.correlationType ?? "—"}</td>
-                                                      </tr>
-                                                    ))}
-                                                  </tbody>
-                                                </table>
-                                              </div>
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </motion.div>
-                                  </td>
-                                  <td className="p-0 border-b border-slate-200 sticky right-0 z-10 bg-white before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
-                                  </td>
-                                </tr>
-                              )}
-                            </AnimatePresence>
-                          </React.Fragment>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Pagination Footer */}
-                <TablePagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  totalItems={filteredRevisions.length}
-                  itemsPerPage={itemsPerPage}
-                  onPageChange={setCurrentPage}
-                  onItemsPerPageChange={setItemsPerPage}
-                />
-              </>
-            ) : (
-              <TableEmptyState
-                title="No Revisions Found"
-                description="We couldn't find any revision records matching your filters. Try adjusting your search criteria or clear filters."
-                actionLabel="Clear Filters"
-                onAction={handleClearFilters}
-              />
-            )}
-          </div>
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col">
+          <RevisionTableView
+            data={filteredRevisions}
+            sortConfig={sortConfig}
+            onSort={handleSort}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={setItemsPerPage}
+            getMenuActions={(revision: Revision) => {
+              const actions = [];
+              actions.push({ icon: <IconInfoCircle className="h-4 w-4" />, label: "View Details", action: "view" });
+              if (revision.state === "Effective") {
+                actions.push({ icon: <FilePlusCorner className="h-4 w-4" />, label: "Upgrade Revision", action: "upgrade" });
+                actions.push({ icon: <FileStack className="h-4 w-4" />, label: "Request Controlled Copy", action: "print" });
+              }
+              actions.push({ icon: <History className="h-4 w-4" />, label: "View Audit Trail", action: "audit" });
+              return actions;
+            }}
+            onMenuAction={(action: string, revision: Revision) => {
+              switch (action) {
+                case "view":
+                  handleMenuAction("view", revision.id);
+                  break;
+                case "upgrade":
+                  handleNewRevision(revision);
+                  break;
+                case "print":
+                  handlePrintControlledCopy(revision);
+                  break;
+                case "audit":
+                  handleMenuAction("audit", revision.id);
+                  break;
+              }
+            }}
+            renderCell={renderCell}
+            onRowClick={(revision: Revision) => {
+              navigateTo(ROUTES.DOCUMENTS.REVISIONS.DETAIL(revision.id));
+            }}
+          />
         </div>
       </div>
-
-      {/* Dropdown Menu */}
-      {openId && (() => {
-        const currentRevision = MOCK_REVISIONS.find(r => r.id === openId);
-        const isEffective = currentRevision?.state === "Effective";
-
-        return createPortal(
-          <>
-            <div
-              className="fixed inset-0 z-40 animate-in fade-in duration-150"
-              onClick={(e) => {
-                e.stopPropagation();
-                close();
-              }}
-              aria-hidden="true"
-            />
-            <div
-              className="absolute z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-              style={position.style}
-            >
-              <div className="py-1">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMenuAction("view", openId);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                >
-                  <IconInfoCircle className="h-4 w-4 flex-shrink-0" />
-                  <span className="font-medium">View Details</span>
-                </button>
-                {isEffective && currentRevision && (
-                  <>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNewRevision(currentRevision);
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                    >
-                      <FilePlusCorner className="h-4 w-4 flex-shrink-0" />
-                      <span className="font-medium">Upgrade Revision</span>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePrintControlledCopy(currentRevision);
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                    >
-                      <FileStack className="h-4 w-4 flex-shrink-0" />
-                      <span className="font-medium">Request Controlled Copy</span>
-                    </button>
-                  </>
-                )}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMenuAction("audit", openId);
-                  }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors"
-                >
-                  <History className="h-4 w-4 flex-shrink-0" />
-                  <span className="font-medium">View Audit Trail</span>
-                </button>
-              </div>
-            </div>
-          </>,
-          document.body,
-        );
-      })()}
     </div>
   );
 };

@@ -66,7 +66,7 @@ export const PreferencesView: React.FC = () => {
                             Reset to Default
                         </Button>
                         <Button
-                        variant="outline-emerald"
+                            variant="outline-emerald"
                             size="sm"
                             onClick={handleSave}
                             className="min-w-[120px]"

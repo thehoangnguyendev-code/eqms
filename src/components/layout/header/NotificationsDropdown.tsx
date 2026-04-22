@@ -446,7 +446,7 @@ const MobileNotificationsScreen: React.FC<{
             ))
           )}
         </div>
-</motion.div>
+      </motion.div>
     </div>,
     document.body
   );

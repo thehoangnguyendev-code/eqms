@@ -83,7 +83,8 @@ export function useDocumentFilter<T extends Record<string, any>>(
 
       // Status filter
       if (filters.status && filters.status !== 'All') {
-        if (item.status !== filters.status) return false;
+          const itemStatus = item.status ?? item.state;
+          if (itemStatus !== filters.status) return false;
       }
 
       // Type filter
