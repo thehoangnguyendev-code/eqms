@@ -1,9 +1,9 @@
-import type { DocumentType, DocumentStatus } from "@/features/documents/types";
+import type { DocumentType, DocumentStatus, ReviewFlowType, ReviewStatus } from "@/features/documents/types";
 import type { OriginalDocumentInfo } from "@/features/documents/document-revisions/subtabs";
 
+export type { ReviewFlowType, ReviewStatus };
+
 // --- Types ---
-export type ReviewFlowType = "sequential" | "parallel";
-export type ReviewStatus = "pending" | "approved" | "rejected" | "completed";
 
 export interface Reviewer {
   id: string;

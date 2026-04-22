@@ -31,6 +31,7 @@ import { PageHeader } from "@/components/ui/page/PageHeader";
 import { pendingDocuments } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
+import { useDocumentFilter, useTableSort } from "@/features/documents/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 import type { RelatedDocument, CorrelatedDocument } from "@/features/documents/document-revisions/views/types";
@@ -528,163 +529,46 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
     }
   }, [viewType]);
 
-  // Filter revisions - only show revisions assigned to current user
-  const filteredRevisions = useMemo(() => {
-    const filtered = config.revisions.filter((rev) => {
-      // First check if current user is assigned as reviewer/approver
-      const isAssignedToCurrentUser =
-        viewType === "review"
-          ? rev.reviewers?.some(
+  // First filter for revisions assigned to current user
+  const assignedRevisions = useMemo(() => {
+    return config.revisions.filter((rev) => {
+      return viewType === "review"
+        ? rev.reviewers?.some(
             (r) => r.userId === CURRENT_USER.id && r.status === "Pending",
           )
-          : rev.approvers?.some(
+        : rev.approvers?.some(
             (a) => a.userId === CURRENT_USER.id && a.status === "Pending",
           );
-
-      if (!isAssignedToCurrentUser) return false;
-
-      const matchesSearch =
-        rev.documentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        rev.revisionName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        rev.documentNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        rev.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        rev.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        rev.openedBy.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesStatus = rev.state === config.statusFilter;
-      const matchesType = typeFilter === "All" || rev.type === typeFilter;
-      const matchesBusinessUnit = businessUnitFilter === "All" || rev.businessUnit === businessUnitFilter;
-      const matchesDepartment =
-        departmentFilter === "All" || rev.department === departmentFilter;
-
-      // Date filtering
-      let matchesCreatedFrom = true;
-      let matchesCreatedTo = true;
-      if (createdFromDate) {
-        const parts = createdFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-          matchesCreatedFrom = new Date(rev.created) >= from;
-        }
-      }
-      if (createdToDate) {
-        const parts = createdToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-          matchesCreatedTo = new Date(rev.created) <= to;
-        }
-      }
-
-      let matchesEffectiveFrom = true;
-      let matchesEffectiveTo = true;
-      if (effectiveFromDate) {
-        const parts = effectiveFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-          matchesEffectiveFrom = new Date(rev.effectiveDate) >= from;
-        }
-      }
-      if (effectiveToDate) {
-        const parts = effectiveToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-          matchesEffectiveTo = new Date(rev.effectiveDate) <= to;
-        }
-      }
-
-      let matchesValidFrom = true;
-      let matchesValidTo = true;
-      if (validFromDate) {
-        const parts = validFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-          matchesValidFrom = new Date(rev.validUntil) >= from;
-        }
-      }
-      if (validToDate) {
-        const parts = validToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-          matchesValidTo = new Date(rev.validUntil) <= to;
-        }
-      }
-
-      const matchesRelatedDocument =
-        relatedDocumentFilter === "All" ||
-        (relatedDocumentFilter === "yes" ? !!rev.hasRelatedDocuments : !rev.hasRelatedDocuments);
-
-      const matchesCorrelatedDocument =
-        correlatedDocumentFilter === "All" ||
-        (correlatedDocumentFilter === "yes" ? !!rev.hasCorrelatedDocuments : !rev.hasCorrelatedDocuments);
-
-      const matchesTemplate =
-        templateFilter === "All" ||
-        (templateFilter === "yes" ? !!rev.isTemplate : !rev.isTemplate);
-
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesType &&
-        matchesDepartment &&
-        matchesCreatedFrom &&
-        matchesCreatedTo &&
-        matchesEffectiveFrom &&
-        matchesEffectiveTo &&
-        matchesValidFrom &&
-        matchesValidTo &&
-        matchesRelatedDocument &&
-        matchesCorrelatedDocument &&
-        matchesTemplate &&
-        matchesBusinessUnit
-      );
     });
+  }, [config.revisions, viewType]);
 
-    const parseDate = (dStr: string) => {
-      if (!dStr) return 0;
-      const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-      if (parts) {
-        return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
-      }
-      return new Date(dStr).getTime();
-    };
-
-    // Apply sorting
-    return [...filtered].sort((a, b) => {
-      const key = sortConfig.key as keyof Revision;
-      let valA: any = a[key] || "";
-      let valB: any = b[key] || "";
-
-      if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
-        valA = parseDate(valA);
-        valB = parseDate(valB);
-      } else if (typeof valA === 'string') {
-        valA = valA.toLowerCase();
-        valB = valB.toLowerCase();
-      }
-
-      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
-      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    });
-  }, [
+  // Apply user filters using reusable hook
+  const filteredData = useDocumentFilter(assignedRevisions, {
+    searchFields: ['documentName', 'revisionName', 'documentNumber', 'author', 'department', 'openedBy'] as (keyof Revision)[],
     searchQuery,
-    config.statusFilter,
-    config.revisions,
-    typeFilter,
-    departmentFilter,
-    viewType,
-    createdFromDate,
-    createdToDate,
-    effectiveFromDate,
-    effectiveToDate,
-    validFromDate,
-    validToDate,
-    relatedDocumentFilter,
-    correlatedDocumentFilter,
-    templateFilter,
+    filters: {
+      status: config.statusFilter, // Fixed status based on viewType
+      type: typeFilter,
+      businessUnit: businessUnitFilter,
+      department: departmentFilter,
+      author: "All", // Not filtering by author in this view
+      createdFromDate,
+      createdToDate,
+      effectiveFromDate,
+      effectiveToDate,
+      validFromDate,
+      validToDate,
+      relatedDocument: relatedDocumentFilter,
+      correlatedDocument: correlatedDocumentFilter,
+      template: templateFilter,
+    },
+  });
+
+  // Sort data using reusable hook
+  const filteredRevisions = useTableSort(filteredData, {
     sortConfig,
-    businessUnitFilter,
-  ]);
+    dateFields: ['created', 'effectiveDate', 'validUntil'],
+  });
 
   const handleSort = (key: string) => {
     setSortConfig((prev) => ({

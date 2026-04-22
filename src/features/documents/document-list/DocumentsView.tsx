@@ -30,6 +30,7 @@ import { formatDateUS } from "@/utils/format";
 import { DocumentFilters } from "./../shared/components/DocumentFilters";
 import { DetailDocumentView } from "../document-detail/DetailDocumentView";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll, PortalDropdownPosition } from "@/hooks";
+import { useDocumentFilter, useTableSort } from "@/features/documents/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 
@@ -413,133 +414,46 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
     relatedDocumentFilter, correlatedDocumentFilter, templateFilter, config
   ]);
 
-  // Filter documents based on viewType and filters
-  const filteredDocuments = useMemo(() => {
-    // First apply viewType-specific filtering
+  // Apply view-specific filtering first
+  const viewFilteredDocs = useMemo(() => {
     let docs = config.filterDocuments(MOCK_DOCUMENTS);
-
-    // Filter by allowed statuses for the current view
     if (config.allowedStatuses) {
       docs = docs.filter(doc => config.allowedStatuses!.includes(doc.status));
     }
+    return docs;
+  }, [config]);
 
-    // Then apply user filters
-    return docs.filter((doc) => {
-      const matchesSearch =
-        doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.documentId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.openedBy.toLowerCase().includes(searchQuery.toLowerCase());
+  // Apply user filters using reusable hook
+  const filteredData = useDocumentFilter(viewFilteredDocs, {
+    searchFields: ['title', 'documentId', 'author', 'department', 'openedBy'] as (keyof Document)[],
+    searchQuery,
+    filters: {
+      status: statusFilter,
+      type: typeFilter,
+      businessUnit: businessUnitFilter,
+      department: departmentFilter,
+      author: authorFilter,
+      createdFromDate,
+      createdToDate,
+      effectiveFromDate,
+      effectiveToDate,
+      validFromDate,
+      validToDate,
+      relatedDocument: relatedDocumentFilter,
+      correlatedDocument: correlatedDocumentFilter,
+      template: templateFilter,
+    },
+    customFilterFn: (doc) => {
+      // Add version filter as custom logic
+      return !versionFilter || doc.version.toLowerCase().includes(versionFilter.toLowerCase());
+    },
+  });
 
-      const matchesStatus = statusFilter === "All" || doc.status === statusFilter;
-      const matchesType = typeFilter === "All" || doc.type === typeFilter;
-      const matchesBusinessUnit = businessUnitFilter === "All" || doc.businessUnit === businessUnitFilter;
-      const matchesDepartment = departmentFilter === "All" || doc.department === departmentFilter;
-      const matchesAuthor = authorFilter === "All" || doc.author === authorFilter;
-      const matchesVersion = !versionFilter || doc.version.toLowerCase().includes(versionFilter.toLowerCase());
-
-      const docCreatedDate = new Date(doc.created);
-      let matchesCreatedFrom = true;
-      let matchesCreatedTo = true;
-      if (createdFromDate) {
-        const parts = createdFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-          matchesCreatedFrom = docCreatedDate >= from;
-        }
-      }
-      if (createdToDate) {
-        const parts = createdToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-          matchesCreatedTo = docCreatedDate <= to;
-        }
-      }
-
-      const docEffectiveDate = new Date(doc.effectiveDate);
-      let matchesEffectiveFrom = true;
-      let matchesEffectiveTo = true;
-      if (effectiveFromDate) {
-        const parts = effectiveFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-          matchesEffectiveFrom = docEffectiveDate >= from;
-        }
-      }
-      if (effectiveToDate) {
-        const parts = effectiveToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-          matchesEffectiveTo = docEffectiveDate <= to;
-        }
-      }
-
-      const docValidUntilDate = new Date(doc.validUntil);
-      let matchesValidFrom = true;
-      let matchesValidTo = true;
-      if (validFromDate) {
-        const parts = validFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-          matchesValidFrom = docValidUntilDate >= from;
-        }
-      }
-      if (validToDate) {
-        const parts = validToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-          matchesValidTo = docValidUntilDate <= to;
-        }
-      }
-
-      const matchesRelatedDocument =
-        relatedDocumentFilter === "All" ||
-        (relatedDocumentFilter === "yes" ? !!doc.hasRelatedDocuments : !doc.hasRelatedDocuments);
-
-      const matchesCorrelatedDocument =
-        correlatedDocumentFilter === "All" ||
-        (correlatedDocumentFilter === "yes" ? !!doc.hasCorrelatedDocuments : !doc.hasCorrelatedDocuments);
-
-      const matchesTemplate =
-        templateFilter === "All" ||
-        (templateFilter === "yes" ? !!doc.isTemplate : !doc.isTemplate);
-
-      return matchesSearch && matchesStatus && matchesType && matchesBusinessUnit && matchesDepartment && matchesAuthor && matchesVersion &&
-        matchesCreatedFrom && matchesCreatedTo && matchesEffectiveFrom && matchesEffectiveTo &&
-        matchesValidFrom && matchesValidTo && matchesRelatedDocument && matchesCorrelatedDocument && matchesTemplate;
-    }).sort((a, b) => {
-      const key = sortConfig.key as keyof Document;
-
-      const parseDate = (dStr: string) => {
-        if (!dStr) return 0;
-        const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (parts) {
-          return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
-        }
-        return new Date(dStr).getTime();
-      };
-
-      // Handle special cases or default values
-      let valA: any = a[key];
-      let valB: any = b[key];
-
-      // Convert to comparison-friendly format
-      if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
-        valA = parseDate(valA);
-        valB = parseDate(valB);
-      } else if (typeof valA === 'string') {
-        valA = valA.toLowerCase();
-        valB = valB.toLowerCase();
-      }
-
-      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
-      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    });
-  }, [searchQuery, statusFilter, typeFilter, departmentFilter, authorFilter, versionFilter,
-    createdFromDate, createdToDate, effectiveFromDate, effectiveToDate, validFromDate, validToDate,
-    relatedDocumentFilter, correlatedDocumentFilter, templateFilter, config, sortConfig, businessUnitFilter]);
+  // Sort data using reusable hook
+  const filteredDocuments = useTableSort(filteredData, {
+    sortConfig,
+    dateFields: ['created', 'effectiveDate', 'validUntil'],
+  });
 
   const visibleColumns = useMemo(() => {
     return columns.filter(col => col.visible).sort((a, b) => a.order - b.order);

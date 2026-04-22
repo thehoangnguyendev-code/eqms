@@ -3,3 +3,6 @@
  * 
  * Shared custom hooks used across the documents feature.
  */
+
+export { useDocumentFilter, type FilterConfig } from './useDocumentFilter';
+export { useTableSort, type SortConfig } from './useTableSort';

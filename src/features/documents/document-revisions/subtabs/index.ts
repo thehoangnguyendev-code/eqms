@@ -1,2 +1,2 @@
-export { OriginalDocumentTab } from "../sub-tab";
-export type { OriginalDocumentInfo } from "../sub-tab";
+export { OriginalDocumentTab } from "./OriginalDocumentTab";
+export type { OriginalDocumentInfo } from "./OriginalDocumentTab";

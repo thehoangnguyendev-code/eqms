@@ -24,6 +24,7 @@ import { PageHeader } from "@/components/ui/page/PageHeader";
 import { revisionList } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { SectionLoading, FullPageLoading } from "@/components/ui/loading/Loading";
 import { usePortalDropdown, useNavigateWithLoading, useTableDragScroll } from "@/hooks";
+import { useDocumentFilter, useTableSort } from "@/features/documents/hooks";
 
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 import { MOCK_REVISIONS } from "./mockData";
@@ -94,161 +95,33 @@ export const RevisionListView: React.FC = () => {
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
   const { scrollerRef, isDragging, dragEvents } = useTableDragScroll();
 
-  // Filtered data
-  const filteredRevisions = useMemo(() => {
-    const filtered = MOCK_REVISIONS.filter((revision) => {
-      const matchesSearch =
-        searchQuery === "" ||
-        revision.documentNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        revision.revisionName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        revision.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        revision.documentName.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesStatus = statusFilter === "All" || revision.state === statusFilter;
-      const matchesType = typeFilter === "All" || revision.type === typeFilter;
-      const matchesBusinessUnit = businessUnitFilter === "All" || revision.businessUnit === businessUnitFilter;
-      const matchesDepartment = departmentFilter === "All" || revision.department === departmentFilter;
-      const matchesAuthor = authorFilter === "All" || revision.author === authorFilter;
-
-      const matchesCreatedDate = (() => {
-        if (!createdFromDate && !createdToDate) return true;
-        const revisionDate = new Date(revision.created);
-        let matchesFrom = true;
-        let matchesTo = true;
-        if (createdFromDate) {
-          const parts = createdFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-          if (parts) {
-            const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-            matchesFrom = revisionDate >= from;
-          }
-        }
-        if (createdToDate) {
-          const parts = createdToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-          if (parts) {
-            const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-            matchesTo = revisionDate <= to;
-          }
-        }
-        return matchesFrom && matchesTo;
-      })();
-
-      const matchesEffectiveDate = (() => {
-        if (!effectiveFromDate && !effectiveToDate) return true;
-        const revisionDate = new Date(revision.effectiveDate);
-        let matchesFrom = true;
-        let matchesTo = true;
-        if (effectiveFromDate) {
-          const parts = effectiveFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-          if (parts) {
-            const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-            matchesFrom = revisionDate >= from;
-          }
-        }
-        if (effectiveToDate) {
-          const parts = effectiveToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-          if (parts) {
-            const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-            matchesTo = revisionDate <= to;
-          }
-        }
-        return matchesFrom && matchesTo;
-      })();
-
-      const matchesValidDate = (() => {
-        if (!validFromDate && !validToDate) return true;
-        const revisionDate = new Date(revision.validUntil);
-        let matchesFrom = true;
-        let matchesTo = true;
-        if (validFromDate) {
-          const parts = validFromDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-          if (parts) {
-            const from = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 0, 0, 0);
-            matchesFrom = revisionDate >= from;
-          }
-        }
-        if (validToDate) {
-          const parts = validToDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-          if (parts) {
-            const to = new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]), 23, 59, 59);
-            matchesTo = revisionDate <= to;
-          }
-        }
-        return matchesFrom && matchesTo;
-      })();
-
-      const matchesRelatedDocument =
-        relatedDocumentFilter === "All" ||
-        (relatedDocumentFilter === "yes" ? !!revision.hasRelatedDocuments : !revision.hasRelatedDocuments);
-
-      const matchesCorrelatedDocument =
-        correlatedDocumentFilter === "All" ||
-        (correlatedDocumentFilter === "yes" ? !!revision.hasCorrelatedDocuments : !revision.hasCorrelatedDocuments);
-
-      const matchesTemplate =
-        templateFilter === "All" ||
-        (templateFilter === "yes" ? !!revision.isTemplate : !revision.isTemplate);
-
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesType &&
-        matchesBusinessUnit &&
-        matchesDepartment &&
-        matchesAuthor &&
-        matchesCreatedDate &&
-        matchesEffectiveDate &&
-        matchesValidDate &&
-        matchesRelatedDocument &&
-        matchesCorrelatedDocument &&
-        matchesTemplate
-      );
-    });
-
-    const parseDate = (dStr: string) => {
-      if (!dStr) return 0;
-      const parts = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-      if (parts) {
-        return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1])).getTime();
-      }
-      return new Date(dStr).getTime();
-    };
-
-    // Apply sorting
-    return [...filtered].sort((a, b) => {
-      const key = sortConfig.key as keyof Revision;
-      let valA: any = a[key] || "";
-      let valB: any = b[key] || "";
-
-      if (key === 'created' || key === 'effectiveDate' || key === 'validUntil') {
-        valA = parseDate(valA);
-        valB = parseDate(valB);
-      } else if (typeof valA === 'string') {
-        valA = valA.toLowerCase();
-        valB = valB.toLowerCase();
-      }
-
-      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
-      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    });
-  }, [
+  // Filter data using reusable hook
+  const filteredData = useDocumentFilter(MOCK_REVISIONS, {
+    searchFields: ['documentNumber', 'revisionName', 'author', 'documentName'],
     searchQuery,
-    statusFilter,
-    typeFilter,
-    businessUnitFilter,
-    departmentFilter,
-    authorFilter,
-    createdFromDate,
-    createdToDate,
-    effectiveFromDate,
-    effectiveToDate,
-    validFromDate,
-    validToDate,
-    relatedDocumentFilter,
-    correlatedDocumentFilter,
-    templateFilter,
+    filters: {
+      status: statusFilter,
+      type: typeFilter,
+      businessUnit: businessUnitFilter,
+      department: departmentFilter,
+      author: authorFilter,
+      createdFromDate,
+      createdToDate,
+      effectiveFromDate,
+      effectiveToDate,
+      validFromDate,
+      validToDate,
+      relatedDocument: relatedDocumentFilter,
+      correlatedDocument: correlatedDocumentFilter,
+      template: templateFilter,
+    },
+  });
+
+  // Sort data using reusable hook
+  const filteredRevisions = useTableSort(filteredData, {
     sortConfig,
-  ]);
+    dateFields: ['created', 'effectiveDate', 'validUntil'],
+  });
 
   const handleSort = (key: string) => {
     setSortConfig((prev) => ({

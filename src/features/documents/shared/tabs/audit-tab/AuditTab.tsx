@@ -8,6 +8,7 @@ import {
     Monitor,
 } from "lucide-react";
 import { cn } from "@/components/ui/utils";
+import { parseDMYStart, parseDMYEnd } from "@/lib/date";
 import { Select, SelectOption } from "@/components/ui/select/Select";
 import { Button } from "@/components/ui/button/Button";
 import { FormModal } from "@/components/ui/modal/FormModal";
@@ -164,26 +165,12 @@ export const AuditTab: React.FC = () => {
         let matchesDateTo = true;
 
         if (dateFrom) {
-            const dateTimeParts = dateFrom.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
-            const dateParts = dateFrom.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-            if (dateTimeParts) {
-                const from = new Date(parseInt(dateTimeParts[3]), parseInt(dateTimeParts[2]) - 1, parseInt(dateTimeParts[1]), parseInt(dateTimeParts[4]), parseInt(dateTimeParts[5]), parseInt(dateTimeParts[6]));
-                matchesDateFrom = entryDate >= from;
-            } else if (dateParts) {
-                const from = new Date(parseInt(dateParts[3]), parseInt(dateParts[2]) - 1, parseInt(dateParts[1]));
-                matchesDateFrom = entryDate >= from;
-            }
+            const from = parseDMYStart(dateFrom);
+            if (from) matchesDateFrom = entryDate >= from;
         }
         if (dateTo) {
-            const dateTimeParts = dateTo.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
-            const dateParts = dateTo.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-            if (dateTimeParts) {
-                const to = new Date(parseInt(dateTimeParts[3]), parseInt(dateTimeParts[2]) - 1, parseInt(dateTimeParts[1]), parseInt(dateTimeParts[4]), parseInt(dateTimeParts[5]), parseInt(dateTimeParts[6]));
-                matchesDateTo = entryDate <= to;
-            } else if (dateParts) {
-                const to = new Date(parseInt(dateParts[3]), parseInt(dateParts[2]) - 1, parseInt(dateParts[1]), 23, 59, 59);
-                matchesDateTo = entryDate <= to;
-            }
+            const to = parseDMYEnd(dateTo);
+            if (to) matchesDateTo = entryDate <= to;
         }
 
         return matchesAction && matchesSearch && matchesUser && matchesDepartment &&

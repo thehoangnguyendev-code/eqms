@@ -23,9 +23,8 @@ import {
   TrainingInformationTab,
 } from "@/features/documents/document-revisions/revision-tabs";
 
-import type { DocumentStatus } from "@/features/documents/types";
+import type { DocumentStatus, ReviewStatus } from "@/features/documents/types";
 import {
-  type ReviewStatus,
   MOCK_ORIGINAL_DOCUMENT,
   MOCK_REVISION,
 } from "./mockData";
