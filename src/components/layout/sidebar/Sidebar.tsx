@@ -983,7 +983,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                 onClick={onToggleSidebar}
                 className={cn(
                   "absolute top-1/2 right-0 z-10 -translate-y-1/2 translate-x-1/2 pointer-events-auto",
-                  "relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-slate-300 bg-white",
+                  "relative flex h-6 w-6 items-center justify-center overflow-hidden rounded-full border border-slate-300 bg-white",
                   "text-slate-600 hover:text-slate-900 hover:border-slate-400 hover:bg-slate-50",
                   "transition-colors duration-200",
                 )}
