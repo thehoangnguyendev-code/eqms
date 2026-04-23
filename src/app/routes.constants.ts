@@ -15,9 +15,6 @@ export const ROUTES = {
   // My Tasks
   MY_TASKS: '/my-tasks',
 
-  // My Team
-  MY_TEAM: '/my-team',
-
   // Notifications
   NOTIFICATIONS: '/notifications',
 

@@ -36,7 +36,6 @@ import {
   IconAdjustmentsHorizontal,
   IconMessageChatbot,
   IconAlertSquareRounded,
-  IconUsersGroup,
   IconMailForward,
   IconChartBar,
   IconLifebuoy,
@@ -67,12 +66,6 @@ const CORE_NAV: NavItem[] = [
     label: "My Tasks",
     icon: IconBrandAsana,
     path: ROUTES.MY_TASKS,
-  },
-  {
-    id: "my-team",
-    label: "My Team",
-    icon: IconUsersGroup,
-    path: ROUTES.MY_TEAM,
     showDividerAfter: true,
   }
 ];

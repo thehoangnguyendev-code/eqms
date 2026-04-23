@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, Reply, RefreshCw, Settings, Pin } from 'lucide-react';
+import { Bell, User, CheckCheck, FileText, AlertTriangle, MessageCircle, UserPlus, CheckCircle, ThumbsUp, Reply, Settings, Pin } from 'lucide-react';
 import { TabNav, type TabItem } from '../../ui/tabs/TabNav';
 import { Button } from '../../ui/button/Button';
 import { cn } from '../../ui/utils';
@@ -353,15 +353,7 @@ const DesktopDropdown: React.FC<{
 }> = ({ isOpen, onClose, buttonRef, onViewAll, onOpenSettings, onTogglePinned }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState('all');
-  const [isLoading, setIsLoading] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-  const handleRefresh = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-  };
 
   const handleMarkAllRead = () => {
     setIsConfirmOpen(true);
@@ -437,18 +429,6 @@ const DesktopDropdown: React.FC<{
           <div className="flex items-center gap-1">
             <button
               type="button"
-              className={cn(
-                "p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-emerald-600 transition-all duration-500",
-                isLoading && "animate-spin text-emerald-600"
-              )}
-              onClick={handleRefresh}
-              disabled={isLoading}
-              title="Refresh"
-            >
-              <RefreshCw className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
               className="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-emerald-600 transition-colors"
               onClick={onOpenSettings}
               title="Notification settings"
@@ -480,9 +460,7 @@ const DesktopDropdown: React.FC<{
 
         {/* Notifications List */}
         <div className="max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300 bg-white min-h-[300px]">
-          {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => <NotificationSkeleton key={i} isLast={i === 3} />)
-          ) : filteredNotifications.length === 0 ? (
+          {filteredNotifications.length === 0 ? (
             <div className="py-20 text-center">
               <p className="text-sm text-slate-400">No notifications here</p>
             </div>
@@ -541,15 +519,7 @@ const DesktopNotificationsPanelContent: React.FC<{
   onTogglePinned: () => void;
 }> = ({ onOpenSettings, onTogglePinned }) => {
   const [activeTab, setActiveTab] = useState('all');
-  const [isLoading, setIsLoading] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-  const handleRefresh = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-  };
 
   const counts = {
     all: NOTIFICATIONS.length,
@@ -580,17 +550,6 @@ const DesktopNotificationsPanelContent: React.FC<{
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className={cn(
-              "rounded-full p-2 text-slate-400 transition-all duration-500 hover:bg-slate-100 hover:text-emerald-600",
-              isLoading && "animate-spin text-emerald-600"
-            )}
-            onClick={handleRefresh}
-            title="Refresh"
-          >
-            <RefreshCw className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
             className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-emerald-600"
             onClick={onOpenSettings}
             title="Notification settings"
@@ -619,10 +578,8 @@ const DesktopNotificationsPanelContent: React.FC<{
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-white scrollbar-thin scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300">
-        {isLoading ? (
-          Array.from({ length: 5 }).map((_, i) => <NotificationSkeleton key={i} isLast={i === 4} />)
-        ) : filteredNotifications.length === 0 ? (
+      <div className="flex-1 overflow-y-auto bg-white scrollbar-thin scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300 scroll-smooth overscroll-contain">
+        {filteredNotifications.length === 0 ? (
           <div className="flex h-full min-h-[360px] flex-col items-center justify-center px-6 text-center">
             <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center mb-3">
               <Bell className="h-5 w-5 text-slate-300" />

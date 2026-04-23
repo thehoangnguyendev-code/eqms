@@ -29,7 +29,6 @@ import { qualityRoutes } from './routes/QualityRoutes';
 // ==================== CORE VIEWS ====================
 const DashboardView = lazy(() => import('@/features/dashboard').then(m => ({ default: m.DashboardView })));
 const MyTasksView = lazy(() => import('@/features/my-tasks').then(m => ({ default: m.MyTasksView })));
-const MyTeamView = lazy(() => import('@/features/my-team/MyTeamView').then(m => ({ default: m.MyTeamView })));
 const NotificationsView = lazy(() => import('@/features/notifications').then(m => ({ default: m.NotificationsView })));
 
 // ==================== MAIN ROUTES ====================
@@ -222,7 +221,6 @@ export const AppRoutes: React.FC = () => {
         {/* ===== CORE ===== */}
         <Route path="dashboard" element={<Suspense fallback={<LoadingFallback />}><DashboardView /></Suspense>} />
         <Route path="my-tasks" element={<Suspense fallback={<LoadingFallback />}><MyTasksView /></Suspense>} />
-        <Route path="my-team" element={<Suspense fallback={<LoadingFallback />}><MyTeamView /></Suspense>} />
         <Route path="notifications" element={<Suspense fallback={<LoadingFallback />}><NotificationsView /></Suspense>} />
 
         {/* ===== DOMAIN MODULES ===== */}

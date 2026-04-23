@@ -19,7 +19,6 @@ import type { Task } from "../types";
 import {
   getModuleIcon,
   isOverdue,
-  getPriorityColor,
 } from "../utils";
 
 // Hook to detect mobile screen

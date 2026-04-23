@@ -6,3 +6,4 @@
 
 export { TaskTable } from './TaskTable';
 export { TaskDetailDrawer } from './TaskDetailDrawer';
+export { TaskBoard } from './TaskBoard';

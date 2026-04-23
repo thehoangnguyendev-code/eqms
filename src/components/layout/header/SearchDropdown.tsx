@@ -139,10 +139,7 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({ className, onClo
         {/* Input Wrapper */}
         <div className="relative group">
           <div className="absolute inset-y-0 left-0 pl-3 md:pl-3.5 flex items-center pointer-events-none">
-            <Search className={cn(
-              "h-4 w-4 sm:h-4.5 sm:w-4.5 transition-colors duration-200",
-              isSearchFocused ? "text-emerald-600" : "text-slate-400"
-            )} />
+            <Search className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-slate-400" />
           </div>
           <input
             ref={searchInputRef}
@@ -178,7 +175,7 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({ className, onClo
               <div className="p-2">
                 {filteredNavItems.length > 0 ? (
                   <>
-                    <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <div className="px-3 py-2 text-sm font-medium text-slate-500">
                       Features & Pages
                     </div>
                     {filteredNavItems.map((navItem) => {

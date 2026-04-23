@@ -7,7 +7,6 @@ import {
   Bell,
   CheckCheck,
   Trash2,
-  User,
   FileText,
   AlertTriangle,
   MessageCircle,
@@ -18,7 +17,6 @@ import {
   Settings,
   MoreVertical,
   Eye,
-  ExternalLink,
   Download,
   X,
   ChevronUp,
@@ -31,7 +29,6 @@ import { Select } from "@/components/ui/select/Select";
 import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
-import { FilterCard } from "@/components/ui/card/FilterCard";
 import { cn } from "@/components/ui/utils";
 import { StatusBadge } from "@/components/ui/badge";
 import { SectionLoading } from "@/components/ui/loading/Loading";
@@ -41,7 +38,6 @@ import type {
   NotificationPriority,
   NotificationFilterTab,
 } from "./types";
-import { IconInfoCircle } from "@tabler/icons-react";
 import { MOCK_NOTIFICATIONS } from "./mockData";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { TabNav, type TabItem } from "@/components/ui/tabs/TabNav";

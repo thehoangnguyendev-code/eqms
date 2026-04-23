@@ -1,24 +1,18 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Search,
-  X,
-  ArrowDownAZ,
-  ArrowDownZA,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
+import { LayoutGrid, List, Search, X } from "lucide-react";
+import { motion } from "framer-motion";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { myTasks } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker";
-import { TablePagination } from "@/components/ui/table/TablePagination";
-import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
+import { TabNav, type TabItem } from "@/components/ui/tabs/TabNav";
 import { SectionLoading } from "@/components/ui/loading/Loading";
 import type { Task } from "./types";
 import { MOCK_TASKS } from "./mockData";
-import { TaskTable, TaskDetailDrawer } from "./components";
+import { TaskBoard, TaskDetailDrawer, TaskTable } from "./components";
+import { IconAdjustmentsHorizontal, IconLayoutKanban, IconListDetails } from "@tabler/icons-react";
 
 function parseDueDate(ddmmyyyy: string): number {
   const parts = ddmmyyyy.split("/");
@@ -78,9 +72,16 @@ const REPORTER_OPTIONS = [
   { label: "EM Lead", value: "EM Lead" },
 ];
 
+const VIEW_TABS: TabItem[] = [
+  { id: "board", label: "Board", icon: IconLayoutKanban },
+  { id: "list", label: "List", icon: IconListDetails },
+];
+
 export const MyTasksView: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [activeView, setActiveView] = useState<"board" | "list">("board");
+  const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(false);
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
@@ -92,13 +93,6 @@ export const MyTasksView: React.FC = () => {
   const [toDateFilter, setToDateFilter] = useState("");
   const [assigneeFilter, setAssigneeFilter] = useState("All Assignees");
   const [reporterFilter, setReporterFilter] = useState("All Reporters");
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
-    key: "dueDate",
-    direction: "desc",
-  });
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleClearFilters = useCallback(() => {
     setSearchQuery("");
@@ -111,18 +105,9 @@ export const MyTasksView: React.FC = () => {
     setReporterFilter("All Reporters");
   }, []);
 
-  const handleSort = (key: string) => {
-    setSortConfig((prev) => ({
-      key,
-      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
-    }));
-    setCurrentPage(1);
-  };
-
   useEffect(() => {
     setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    setCurrentPage(1);
+    const timer = setTimeout(() => setIsLoading(false), 300);
     return () => clearTimeout(timer);
   }, [
     searchQuery,
@@ -172,23 +157,7 @@ export const MyTasksView: React.FC = () => {
       data = data.filter((t) => parseDueDate(t.dueDate) <= toTime);
     }
 
-    data.sort((a, b) => {
-      const key = sortConfig.key as keyof Task;
-      let valA: any = a[key] || "";
-      let valB: any = b[key] || "";
-
-      if (key === "dueDate") {
-        valA = parseDueDate(valA);
-        valB = parseDueDate(valB);
-      } else if (typeof valA === "string") {
-        valA = valA.toLowerCase();
-        valB = valB.toLowerCase();
-      }
-
-      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
-      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    });
+    data.sort((a, b) => parseDueDate(a.dueDate) - parseDueDate(b.dueDate));
 
     return data;
   }, [
@@ -200,15 +169,7 @@ export const MyTasksView: React.FC = () => {
     toDateFilter,
     assigneeFilter,
     reporterFilter,
-    sortConfig,
   ]);
-
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredData.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredData, currentPage, itemsPerPage]);
 
   return (
     <div className="flex flex-col h-full gap-4 md:gap-6">
@@ -217,48 +178,84 @@ export const MyTasksView: React.FC = () => {
         breadcrumbItems={myTasks(navigate)}
       />
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col flex-1 min-h-0">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
         <div className="p-4 md:p-5 flex flex-col">
-          <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                    <div className="w-full">
-                      <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
-                        Search
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                          <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="Search tasks..."
-                          value={searchQuery}
-                          onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setCurrentPage(1);
-                          }}
-                          className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                        />
-                        {searchQuery && (
-                          <button
-                            type="button"
-                            onClick={() => setSearchQuery("")}
-                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
+          <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5 space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[180px_minmax(260px,1fr)_320px_112px] gap-3 items-end">
+              <div className="w-full md:col-span-2 lg:col-span-1 lg:w-auto">
+                <TabNav
+                  tabs={VIEW_TABS}
+                  activeTab={activeView}
+                  onChange={(tabId) => setActiveView(tabId as "board" | "list")}
+                  variant="pill"
+                  layoutId="myTasksViewTab"
+                  className="w-full lg:w-[180px]"
+                />
+              </div>
 
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">Search</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search tasks..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="w-full">
+                <DateRangePicker
+                  label="Due Date Range"
+                  startDate={fromDateFilter}
+                  endDate={toDateFilter}
+                  onStartDateChange={(val) => setFromDateFilter(val)}
+                  onEndDateChange={(val) => setToDateFilter(val)}
+                  placeholder="Select date range"
+                />
+              </div>
+
+              <div className="w-full md:col-span-2 lg:col-span-1 lg:w-[112px]">
+                <Button
+                  type="button"
+                  variant={isAdvancedFiltersOpen ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsAdvancedFiltersOpen((prev) => !prev)}
+                  className="h-9 w-full px-3 gap-2 whitespace-nowrap justify-center active:scale-100"
+                >
+                  <IconAdjustmentsHorizontal className="h-4 w-4" />
+                  Filter
+                </Button>
+              </div>
+            </div>
+
+            <motion.div
+              initial={false}
+              animate={isAdvancedFiltersOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden"
+              style={{ willChange: "height" }}
+            >
+                  <div className="pt-1 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div className="w-full">
                       <Select
                         label="Module"
                         value={moduleFilter}
-                        onChange={(val) => {
-                          setModuleFilter(val as string);
-                          setCurrentPage(1);
-                        }}
+                        onChange={(val) => setModuleFilter(val as string)}
                         options={MODULE_OPTIONS}
                       />
                     </div>
@@ -267,10 +264,7 @@ export const MyTasksView: React.FC = () => {
                       <Select
                         label="Priority"
                         value={priorityFilter}
-                        onChange={(val) => {
-                          setPriorityFilter(val as string);
-                          setCurrentPage(1);
-                        }}
+                        onChange={(val) => setPriorityFilter(val as string)}
                         options={PRIORITY_OPTIONS}
                       />
                     </div>
@@ -279,10 +273,7 @@ export const MyTasksView: React.FC = () => {
                       <Select
                         label="Status"
                         value={statusFilter}
-                        onChange={(val) => {
-                          setStatusFilter(val as string);
-                          setCurrentPage(1);
-                        }}
+                        onChange={(val) => setStatusFilter(val as string)}
                         options={STATUS_OPTIONS}
                       />
                     </div>
@@ -291,10 +282,7 @@ export const MyTasksView: React.FC = () => {
                       <Select
                         label="Assignee"
                         value={assigneeFilter}
-                        onChange={(val) => {
-                          setAssigneeFilter(val as string);
-                          setCurrentPage(1);
-                        }}
+                        onChange={(val) => setAssigneeFilter(val as string)}
                         options={ASSIGNEE_OPTIONS}
                       />
                     </div>
@@ -303,28 +291,8 @@ export const MyTasksView: React.FC = () => {
                       <Select
                         label="Reporter"
                         value={reporterFilter}
-                        onChange={(val) => {
-                          setReporterFilter(val as string);
-                          setCurrentPage(1);
-                        }}
+                        onChange={(val) => setReporterFilter(val as string)}
                         options={REPORTER_OPTIONS}
-                      />
-                    </div>
-
-                    <div className="w-full">
-                      <DateRangePicker
-                        label="Due Date Range"
-                        startDate={fromDateFilter}
-                        endDate={toDateFilter}
-                        onStartDateChange={(val) => {
-                          setFromDateFilter(val);
-                          setCurrentPage(1);
-                        }}
-                        onEndDateChange={(val) => {
-                          setToDateFilter(val);
-                          setCurrentPage(1);
-                        }}
-                        placeholder="Select date range"
                       />
                     </div>
 
@@ -338,42 +306,26 @@ export const MyTasksView: React.FC = () => {
                         Clear Filters
                       </Button>
                     </div>
-            </div>
+                  </div>
+            </motion.div>
           </div>
         </div>
 
-        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative min-h-0">
+        <div className="px-4 md:px-5 pb-4 md:pb-5">
           {isLoading ? (
-            <SectionLoading text="Loading tasks..." minHeight="400px" />
+            <SectionLoading text="Loading tasks..." minHeight="300px" />
           ) : (
-            <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300 min-h-0">
-              {paginatedData.length > 0 ? (
-                <>
-                  <TaskTable
-                    tasks={paginatedData}
-                    onTaskClick={setSelectedTask}
-                    startIndex={(currentPage - 1) * itemsPerPage + 1}
-                    sortConfig={sortConfig}
-                    onSort={handleSort}
-                  />
-                  <TablePagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    totalItems={totalItems}
-                    itemsPerPage={itemsPerPage}
-                    onPageChange={setCurrentPage}
-                    onItemsPerPageChange={setItemsPerPage}
-                  />
-                </>
-              ) : (
-                <TableEmptyState
-                  title="No Tasks Found"
-                  description="We couldn’t find any tasks matching your filters. Try adjusting your search criteria or clear filters."
-                  actionLabel="Clear Filters"
-                  onAction={handleClearFilters}
+            activeView === "board" ? (
+              <TaskBoard tasks={filteredData} onTaskClick={setSelectedTask} />
+            ) : (
+              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
+                <TaskTable
+                  tasks={filteredData}
+                  onTaskClick={setSelectedTask}
+                  startIndex={1}
                 />
-              )}
-            </div>
+              </div>
+            )
           )}
         </div>
       </div>

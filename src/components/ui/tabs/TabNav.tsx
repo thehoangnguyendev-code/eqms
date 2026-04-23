@@ -83,7 +83,7 @@ export const TabNav: React.FC<TabNavProps> = ({
                 "text-sm font-medium rounded-lg transition-all duration-200",
                 "flex-1",
                 isActive
-                  ? "text-slate-900"
+                  ? "text-emerald-600"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-200/50"
               )}
             >
@@ -96,7 +96,7 @@ export const TabNav: React.FC<TabNavProps> = ({
               )}
               <span className="relative z-10 flex items-center gap-1.5">
                 {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
-                <span className="font-base">{tab.label}</span>
+                <span className="text-sm">{tab.label}</span>
                 {tab.count !== undefined && (
                   <span
                     className={cn(
