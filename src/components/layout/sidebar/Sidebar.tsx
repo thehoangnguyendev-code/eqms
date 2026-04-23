@@ -1126,7 +1126,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
           {/* Sidebar Footer */}
           <div
             className={cn(
-              "shrink-0 border-t border-slate-100 bg-white/95",
+              "hidden shrink-0 border-t border-slate-100 bg-white/95 md:block",
               isCollapsed ? "px-2 py-3" : "px-3 py-3",
             )}
           >
