@@ -9,13 +9,13 @@ export const AUTH_PARTNER_BRANDS = [
 
 export const AUTH_UI = {
   pageWrapper:
-    "flex min-h-screen min-h-dvh w-full items-center justify-center bg-white p-0 sm:bg-slate-200 sm:p-6 lg:p-8",
+    "flex min-h-screen min-h-dvh w-full items-center justify-center bg-white p-0 lg:bg-slate-200 lg:p-8",
   cardWrapper:
-    "mx-auto w-full max-w-[1160px] overflow-hidden rounded-none bg-transparent shadow-none sm:rounded-2xl sm:shadow-[0_14px_36px_rgba(15,23,42,0.16)] lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]",
+    "mx-auto w-full max-w-[1160px] overflow-hidden rounded-none bg-transparent shadow-none lg:rounded-2xl lg:shadow-[0_24px_48px_rgba(15,23,42,0.18)]",
   gridWrapper:
     "grid min-h-screen min-h-dvh w-full grid-cols-1 sm:min-h-[600px] lg:min-h-[640px] lg:grid-cols-2 xl:min-h-[720px]",
   leftPanel:
-    "flex flex-col items-center justify-center border-0 border-slate-200/90 bg-white px-6 py-10 sm:flex-row sm:border sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-20",
+    "flex flex-col items-center justify-center border-0 border-slate-200/90 bg-white px-6 py-10 sm:flex-row sm:px-10 sm:py-10 lg:border lg:px-16 lg:py-12 xl:px-20",
   formColumn:
     "flex w-full max-w-[360px] flex-1 flex-col justify-center sm:max-w-[440px]",
   headingBlock: "space-y-2 sm:space-y-3",

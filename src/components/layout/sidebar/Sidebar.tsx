@@ -15,6 +15,7 @@ import { cn } from "@/components/ui/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { SearchDropdown } from "../header/SearchDropdown";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
+import { Badge } from "@/components/ui/badge/Badge";
 import logoFull from "@/assets/images/logo_nobg.png";
 import logoCollapsed from "@/assets/images/LOGO.png";
 import "./Sidebar.module.css";
@@ -1120,6 +1121,28 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
               }}
               aria-hidden="true"
             />
+          </div>
+
+          {/* Sidebar Footer */}
+          <div
+            className={cn(
+              "shrink-0 border-t border-slate-100 bg-white/95",
+              isCollapsed ? "px-2 py-3" : "px-3 py-3",
+            )}
+          >
+            {isCollapsed ? (
+              <div className="flex items-center justify-center py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                <Badge color="emerald" size="sm" className="tracking-[0.08em]">1.0</Badge>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-slate-700">EU-GMP Compliance</p>
+                  <p className="text-[11px] text-slate-500">Ngoc Thien Pharma Dev Team</p>
+                </div>
+                <Badge color="emerald" size="sm" className="ml-2 tracking-[0.08em]">1.0</Badge>
+              </div>
+            )}
           </div>
         </aside>
 
