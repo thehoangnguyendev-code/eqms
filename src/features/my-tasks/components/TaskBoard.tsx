@@ -168,8 +168,8 @@ const BoardColumn: React.FC<{
   tasks: Task[];
   onTaskClick: (t: Task) => void;
 }> = ({ col, tasks, onTaskClick }) => (
-  <div className={cn("flex flex-col w-full min-w-[280px] flex-1 basis-0 rounded-2xl border border-slate-200 overflow-hidden", col.panelBg)}>
-    <div className={cn("px-3.5 py-2.5 flex items-center justify-between", col.headerBg)}>
+  <div className={cn("flex flex-col w-full min-w-[280px] flex-1 basis-0 rounded-xl border border-slate-200 overflow-hidden", col.panelBg)}>
+    <div className={cn("px-3.5 py-2.5 flex items-center justify-between border-b", col.headerBg)}>
       <div className="flex items-center gap-1.5 min-w-0">
         <div className={cn("w-2 h-2 rounded-full", col.dotColor)} />
         <span className={cn("text-[14px] font-semibold", col.headerText)}>{col.label}</span>

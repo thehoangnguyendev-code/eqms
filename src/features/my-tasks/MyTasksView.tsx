@@ -311,7 +311,7 @@ export const MyTasksView: React.FC = () => {
           </div>
         </div>
 
-        <div className="px-4 md:px-5 pb-4 md:pb-5">
+        <div className="px-4 md:px-5 pb-4">
           {isLoading ? (
             <SectionLoading text="Loading tasks..." minHeight="300px" />
           ) : (
