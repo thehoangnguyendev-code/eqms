@@ -6,7 +6,7 @@ import { Button } from '../button/Button';
 
 /**
  * DateTimePicker component with calendar interface
- * 
+ *
  * @example
  * ```tsx
  * <DateTimePicker
@@ -19,7 +19,7 @@ import { Button } from '../button/Button';
 export interface DateTimePickerProps {
   /** Label displayed above picker */
   label?: React.ReactNode;
-  /** Current date value (ISO string) */
+  /** Current date value (dd/MM/yyyy format; also accepts ISO strings) */
   value: string;
   /** Callback when date changes */
   onChange: (value: string) => void;
@@ -28,6 +28,27 @@ export interface DateTimePickerProps {
   /** Disabled state */
   disabled?: boolean;
 }
+
+// Pure helper — no component dependencies, stable across renders
+function parseDate(dateStr: string): Date | null {
+  if (!dateStr) return null;
+  const ddmmyyyyMatch = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (ddmmyyyyMatch) {
+    const [, day, month, year] = ddmmyyyyMatch;
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    return isNaN(date.getTime()) ? null : date;
+  }
+  const date = new Date(dateStr);
+  return isNaN(date.getTime()) ? null : date;
+}
+
+const MONTH_NAMES = [
+  'January','February','March','April','May','June',
+  'July','August','September','October','November','December',
+];
+const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAY_NAMES  = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+const DAY_FULL   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 export const DateTimePicker: React.FC<DateTimePickerProps> = ({
   label,
@@ -39,277 +60,313 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
   const pickerId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'calendar' | 'month' | 'year'>('calendar');
-  
-  // Helper function to parse date string (supports both dd/MM/yyyy and ISO formats)
-  const parseDate = (dateStr: string): Date | null => {
-    if (!dateStr) return null;
-    
-    // Try dd/MM/yyyy format first
-    const ddmmyyyyMatch = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if (ddmmyyyyMatch) {
-      const [, day, month, year] = ddmmyyyyMatch;
-      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      return isNaN(date.getTime()) ? null : date;
-    }
-    
-    // Try ISO format or other standard formats
-    const date = new Date(dateStr);
-    return isNaN(date.getTime()) ? null : date;
-  };
 
-  // Initialize state from value or defaults
-  const [selectedDate, setSelectedDate] = useState<Date | null>(() => 
+  const [selectedDate, setSelectedDate] = useState<Date | null>(() =>
     value ? parseDate(value) : null
   );
-  
-  const [viewDate, setViewDate] = useState<Date>(() => 
+  const [viewDate, setViewDate] = useState<Date>(() =>
     value ? parseDate(value) || new Date() : new Date()
   );
 
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
+  // Roving tabIndex: which day number has tabIndex=0 in the grid
+  const [focusedDay, setFocusedDay] = useState<number>(1);
+  // Set to true by arrow-key handler so the next effect imperatively focuses the button
+  const shouldFocusDayRef = useRef(false);
+
+  const triggerRef  = useRef<HTMLButtonElement>(null);
+  const popoverRef  = useRef<HTMLDivElement>(null);
+  const gridRef     = useRef<HTMLDivElement>(null);
   const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties>({ opacity: 0 });
 
-  // Listen for custom event to close other dropdowns
-  useEffect(() => {
-    const handleCloseOtherDropdowns = (event: CustomEvent<{ openId: string }>) => {
-      if (event.detail.openId !== pickerId && isOpen) {
-        setIsOpen(false);
-      }
-    };
+  // Live region text for screen reader month/year announcements
+  const [liveAnnouncement, setLiveAnnouncement] = useState('');
 
-    window.addEventListener('select-dropdown-open' as any, handleCloseOtherDropdowns);
-    return () => {
-      window.removeEventListener('select-dropdown-open' as any, handleCloseOtherDropdowns);
+  // Refs so the "on open" effect can read current state without stale closure issues
+  const selectedDateRef = useRef(selectedDate);
+  selectedDateRef.current = selectedDate;
+  const viewDateRef = useRef(viewDate);
+  viewDateRef.current = viewDate;
+
+  // ── Close sibling dropdowns ──────────────────────────────────────────────────
+  useEffect(() => {
+    const handleCloseOthers = (event: CustomEvent<{ openId: string }>) => {
+      if (event.detail.openId !== pickerId && isOpen) setIsOpen(false);
     };
+    window.addEventListener('select-dropdown-open' as any, handleCloseOthers);
+    return () => window.removeEventListener('select-dropdown-open' as any, handleCloseOthers);
   }, [pickerId, isOpen]);
 
-  // Handle positioning
+  // ── Popover positioning (no rAF — useLayoutEffect runs before paint) ─────────
   useLayoutEffect(() => {
-    if (isOpen && triggerRef.current) {
-      const updatePosition = () => {
-        if (!triggerRef.current) return;
-        
-        const triggerRect = triggerRef.current.getBoundingClientRect();
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        
-        const popoverWidth = 280;
-        const realHeight = popoverRef.current?.offsetHeight || 370;
-        
-        let left = triggerRect.left;
-        let style: React.CSSProperties = {
-          position: 'fixed',
-          zIndex: 9999,
-          opacity: 1,
-        };
-        
-        // Horizontal adjustment
-        if (left + popoverWidth > screenWidth - 20) {
-          left = screenWidth - popoverWidth - 20;
-        }
-        if (left < 20) left = 20;
-        style.left = left;
-        
-        // Vertical adjustment
-        const spaceBelow = screenHeight - triggerRect.bottom - 8;
-        const spaceAbove = triggerRect.top - 8;
-        
-        // Flip up if space below is insufficient and space above is better
-        if (spaceBelow < realHeight && spaceAbove > spaceBelow) {
-          style.bottom = screenHeight - triggerRect.top + 8;
-          style.top = 'auto';
-        } else {
-          style.top = triggerRect.bottom + 8;
-          style.bottom = 'auto';
-        }
-
-        setPopoverStyle(style);
-      };
-
-      // Initial update
-      updatePosition();
-      // Update when popover ref is ready (e.g. after first render in this layout effect)
-      requestAnimationFrame(updatePosition);
-
-      window.addEventListener('resize', updatePosition);
-      window.addEventListener('scroll', updatePosition, true);
-
-      return () => {
-        window.removeEventListener('resize', updatePosition);
-        window.removeEventListener('scroll', updatePosition, true);
-      };
-    }
+    if (!isOpen || !triggerRef.current) return;
+    const updatePosition = () => {
+      if (!triggerRef.current) return;
+      const rect = triggerRef.current.getBoundingClientRect();
+      const { innerWidth: sw, innerHeight: sh } = window;
+      const popoverWidth  = 280;
+      const popoverHeight = popoverRef.current?.offsetHeight || 370;
+      let left = rect.left;
+      if (left + popoverWidth > sw - 20) left = sw - popoverWidth - 20;
+      if (left < 20) left = 20;
+      const spaceBelow = sh - rect.bottom - 8;
+      const spaceAbove = rect.top - 8;
+      const style: React.CSSProperties = { position: 'fixed', zIndex: 9999, opacity: 1, left };
+      if (spaceBelow < popoverHeight && spaceAbove > spaceBelow) {
+        style.bottom = sh - rect.top + 8;
+        style.top = 'auto';
+      } else {
+        style.top = rect.bottom + 8;
+        style.bottom = 'auto';
+      }
+      setPopoverStyle(style);
+    };
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
   }, [isOpen, viewMode, viewDate]);
 
-  // Handle click outside
+  // ── Focus management: move focus INTO dialog when it opens ───────────────────
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        popoverRef.current && 
-        !popoverRef.current.contains(event.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-        triggerRef.current?.focus();
-      }
-    };
-
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
+      // setTimeout so positioning has been applied before focus (avoids scroll jump)
+      const id = setTimeout(() => popoverRef.current?.focus(), 0);
+      return () => clearTimeout(id);
     }
+  }, [isOpen]);
+
+  // ── Click-outside + Escape ───────────────────────────────────────────────────
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        popoverRef.current && !popoverRef.current.contains(e.target as Node) &&
+        triggerRef.current && !triggerRef.current.contains(e.target as Node)
+      ) setIsOpen(false);
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setIsOpen(false); triggerRef.current?.focus(); }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen]);
 
-  // Sync with external value changes
+  // ── Sync external value ──────────────────────────────────────────────────────
   useEffect(() => {
     if (value) {
       const d = parseDate(value);
-      if (d) {
-        setSelectedDate(d);
-        setViewDate(d);
-      }
+      if (d) { setSelectedDate(d); setViewDate(d); }
     } else {
       setSelectedDate(null);
     }
   }, [value]);
 
-  // Reset view mode when opening
+  // ── Reset state on open ──────────────────────────────────────────────────────
   useEffect(() => {
     if (isOpen) {
       setViewMode('calendar');
+      const sd = selectedDateRef.current;
+      const vd = viewDateRef.current;
+      const sameMY = sd &&
+        sd.getMonth() === vd.getMonth() &&
+        sd.getFullYear() === vd.getFullYear();
+      setFocusedDay(sameMY ? sd!.getDate() : 1);
     }
   }, [isOpen]);
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
-    const newDate = new Date(viewDate);
-    newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1));
-    setViewDate(newDate);
+  // ── Screen reader: announce month/year on calendar navigation ────────────────
+  useEffect(() => {
+    if (isOpen && viewMode === 'calendar') {
+      setLiveAnnouncement(`${MONTH_NAMES[viewDate.getMonth()]} ${viewDate.getFullYear()}`);
+    }
+  }, [viewDate, isOpen, viewMode]);
+
+  // ── Imperatively focus a day button after arrow-key navigation ───────────────
+  useEffect(() => {
+    if (!shouldFocusDayRef.current) return;
+    shouldFocusDayRef.current = false;
+    const btn = gridRef.current?.querySelector<HTMLButtonElement>(`[data-day="${focusedDay}"]`);
+    btn?.focus();
+  }, [focusedDay, viewDate]);
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+  const closeAndReturn = () => { setIsOpen(false); triggerRef.current?.focus(); };
+
+  const navigateMonth = (dir: 'prev' | 'next') => {
+    setViewDate(d => { const nd = new Date(d); nd.setMonth(nd.getMonth() + (dir === 'next' ? 1 : -1)); return nd; });
+    setFocusedDay(1);
+  };
+
+  const navigateYearRange = (dir: 'prev' | 'next') => {
+    setViewDate(d => { const nd = new Date(d); nd.setFullYear(nd.getFullYear() + (dir === 'next' ? 12 : -12)); return nd; });
   };
 
   const handleDateClick = (day: number) => {
-    const newDate = new Date(viewDate);
-    newDate.setDate(day);
-    setSelectedDate(newDate);
+    const nd = new Date(viewDate); nd.setDate(day);
+    setSelectedDate(nd);
+    setFocusedDay(day);
   };
 
   const handleMonthSelect = (monthIndex: number) => {
-    const newDate = new Date(viewDate);
-    newDate.setMonth(monthIndex);
-    setViewDate(newDate);
+    setViewDate(d => { const nd = new Date(d); nd.setMonth(monthIndex); return nd; });
     setViewMode('calendar');
   };
 
   const handleYearSelect = (year: number) => {
-    const newDate = new Date(viewDate);
-    newDate.setFullYear(year);
-    setViewDate(newDate);
+    setViewDate(d => { const nd = new Date(d); nd.setFullYear(year); return nd; });
     setViewMode('calendar');
   };
 
   const handleApply = () => {
     if (selectedDate) {
-      const day = String(selectedDate.getDate()).padStart(2, '0');
+      const day   = String(selectedDate.getDate()).padStart(2, '0');
       const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-      const year = selectedDate.getFullYear();
-      
-      // Return dd/MM/yyyy format
+      const year  = selectedDate.getFullYear();
       onChange(`${day}/${month}/${year}`);
     }
-    setIsOpen(false);
+    closeAndReturn();
   };
 
-  const handleClear = () => {
-    onChange('');
-    setSelectedDate(null);
-    setIsOpen(false);
+  const handleClear = () => { onChange(''); setSelectedDate(null); closeAndReturn(); };
+
+  // ── Keyboard navigation within the day grid ──────────────────────────────────
+  const handleGridKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    let newDay = focusedDay;
+    let newViewDate: Date | null = null;
+
+    switch (e.key) {
+      case 'ArrowRight':
+        e.preventDefault();
+        newDay = Math.min(focusedDay + 1, daysInMonth);
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        newDay = Math.max(focusedDay - 1, 1);
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        newDay = Math.min(focusedDay + 7, daysInMonth);
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        newDay = Math.max(focusedDay - 7, 1);
+        break;
+      case 'Home':
+        e.preventDefault();
+        newDay = 1;
+        break;
+      case 'End':
+        e.preventDefault();
+        newDay = daysInMonth;
+        break;
+      case 'PageUp':
+        e.preventDefault();
+        newViewDate = new Date(year, month - 1, 1);
+        newDay = Math.min(focusedDay, new Date(year, month, 0).getDate());
+        break;
+      case 'PageDown':
+        e.preventDefault();
+        newViewDate = new Date(year, month + 1, 1);
+        newDay = Math.min(focusedDay, new Date(year, month + 2, 0).getDate());
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        handleDateClick(focusedDay);
+        return;
+      default:
+        return;
+    }
+    shouldFocusDayRef.current = true;
+    if (newViewDate) setViewDate(newViewDate);
+    setFocusedDay(newDay);
   };
 
-  const renderMonthView = () => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return (
-      <div className="p-3">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <button 
-            onClick={() => setViewMode('calendar')} 
-            className="p-1 hover:bg-slate-100 rounded-full text-slate-500"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <span className="font-semibold text-slate-900 text-sm">Select Month</span>
-          <div className="w-6"></div>
-        </div>
-        <div className="grid grid-cols-3 gap-1.5">
-          {months.map((m, idx) => (
-            <button
-              key={m}
-              onClick={() => handleMonthSelect(idx)}
-              className={cn(
-                "h-8 rounded-lg text-xs font-medium hover:bg-slate-100 transition-colors",
-                viewDate.getMonth() === idx ? "bg-emerald-50 text-emerald-600" : "text-slate-700"
-              )}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
+  // ── Sub-views ────────────────────────────────────────────────────────────────
+  const renderMonthView = () => (
+    <div className="p-3">
+      <div className="flex items-center justify-between mb-2 px-1">
+        <button
+          type="button"
+          onClick={() => setViewMode('calendar')}
+          aria-label="Back to calendar"
+          className="p-1.5 hover:bg-slate-100 rounded-full text-slate-500 min-w-[36px] min-h-[36px] flex items-center justify-center"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <span className="font-semibold text-slate-900 text-sm" id={`${pickerId}-month-heading`}>
+          Select Month
+        </span>
+        <div className="w-9" />
       </div>
-    );
-  };
+      <div className="grid grid-cols-3 gap-1.5" role="group" aria-labelledby={`${pickerId}-month-heading`}>
+        {MONTH_ABBR.map((m, idx) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => handleMonthSelect(idx)}
+            aria-label={MONTH_NAMES[idx]}
+            aria-pressed={viewDate.getMonth() === idx}
+            className={cn(
+              "h-10 rounded-lg text-xs font-medium hover:bg-slate-100 transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
+              viewDate.getMonth() === idx ? "bg-emerald-50 text-emerald-600" : "text-slate-700"
+            )}
+          >
+            {m}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 
   const renderYearView = () => {
     const currentYear = viewDate.getFullYear();
-    const startYear = Math.floor(currentYear / 12) * 12;
-    const years = [];
-    for (let i = 0; i < 12; i++) {
-      years.push(startYear + i);
-    }
-
+    const startYear   = Math.floor(currentYear / 12) * 12;
+    const years       = Array.from({ length: 12 }, (_, i) => startYear + i);
     return (
       <div className="p-3">
         <div className="flex items-center justify-between mb-2 px-1">
-          <button 
-            onClick={() => {
-              const d = new Date(viewDate);
-              d.setFullYear(d.getFullYear() - 12);
-              setViewDate(d);
-            }} 
-            className="p-1 hover:bg-slate-100 rounded-full text-slate-500"
+          <button
+            type="button"
+            onClick={() => navigateYearRange('prev')}
+            aria-label="Previous 12 years"
+            className="p-1.5 hover:bg-slate-100 rounded-full text-slate-500 min-w-[36px] min-h-[36px] flex items-center justify-center"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <span className="font-semibold text-slate-900 text-sm">
-            {startYear} - {startYear + 11}
+          <span className="font-semibold text-slate-900 text-sm" id={`${pickerId}-year-heading`}>
+            {startYear} – {startYear + 11}
           </span>
-          <button 
-            onClick={() => {
-              const d = new Date(viewDate);
-              d.setFullYear(d.getFullYear() + 12);
-              setViewDate(d);
-            }} 
-            className="p-1 hover:bg-slate-100 rounded-full text-slate-500"
+          <button
+            type="button"
+            onClick={() => navigateYearRange('next')}
+            aria-label="Next 12 years"
+            className="p-1.5 hover:bg-slate-100 rounded-full text-slate-500 min-w-[36px] min-h-[36px] flex items-center justify-center"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
-        <div className="grid grid-cols-3 gap-1.5">
+        <div className="grid grid-cols-3 gap-1.5" role="group" aria-labelledby={`${pickerId}-year-heading`}>
           {years.map((y) => (
             <button
               key={y}
+              type="button"
               onClick={() => handleYearSelect(y)}
+              aria-pressed={viewDate.getFullYear() === y}
               className={cn(
-                "h-8 rounded-lg text-xs font-medium hover:bg-slate-100 transition-colors",
+                "h-10 rounded-lg text-xs font-medium hover:bg-slate-100 transition-colors",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
                 viewDate.getFullYear() === y ? "bg-emerald-50 text-emerald-600" : "text-slate-700"
               )}
             >
@@ -323,44 +380,49 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
 
   const renderCalendar = () => {
     if (viewMode === 'month') return renderMonthView();
-    if (viewMode === 'year') return renderYearView();
+    if (viewMode === 'year')  return renderYearView();
 
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
-    
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
+    const year         = viewDate.getFullYear();
+    const month        = viewDate.getMonth();
+    const today        = new Date();
+    const daysInMonth  = new Date(year, month + 1, 0).getDate();
+    const startDayOfWeek = new Date(year, month, 1).getDay();
 
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                        'July', 'August', 'September', 'October', 'November', 'December'];
-    const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-
-    const days = [];
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(<div key={`empty-${i}`} className="h-8 w-8" />);
+    const cells: React.ReactNode[] = [];
+    for (let i = 0; i < startDayOfWeek; i++) {
+      cells.push(<div key={`e${i}`} aria-hidden="true" />);
     }
-
     for (let day = 1; day <= daysInMonth; day++) {
-      const isSelected = selectedDate && 
-        selectedDate.getDate() === day && 
-        selectedDate.getMonth() === month && 
-        selectedDate.getFullYear() === year;
+      const isSelected = !!(
+        selectedDate &&
+        selectedDate.getDate() === day &&
+        selectedDate.getMonth() === month &&
+        selectedDate.getFullYear() === year
+      );
+      const isToday =
+        today.getDate() === day &&
+        today.getMonth() === month &&
+        today.getFullYear() === year;
+      const isFocusTarget = focusedDay === day;
+      const fullLabel = new Intl.DateTimeFormat('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric',
+      }).format(new Date(year, month, day));
 
-      const isToday = new Date().getDate() === day && 
-        new Date().getMonth() === month && 
-        new Date().getFullYear() === year;
-
-      days.push(
+      cells.push(
         <button
           key={day}
           type="button"
+          data-day={day}
           onClick={() => handleDateClick(day)}
+          tabIndex={isFocusTarget ? 0 : -1}
+          aria-selected={isSelected}
+          aria-label={fullLabel}
+          aria-current={isToday ? 'date' : undefined}
           className={cn(
-            "h-8 w-8 rounded-full text-xs flex items-center justify-center transition-colors",
-            isSelected 
-              ? 'bg-emerald-600 text-white font-semibold shadow-sm hover:bg-emerald-700' 
+            "h-9 w-9 rounded-full text-xs flex items-center justify-center transition-colors",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1",
+            isSelected
+              ? 'bg-emerald-600 text-white font-semibold shadow-sm hover:bg-emerald-700'
               : isToday
                 ? 'text-emerald-600 font-bold bg-emerald-50 hover:bg-emerald-100'
                 : 'text-slate-700 hover:bg-slate-100'
@@ -377,47 +439,65 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
           <button
             type="button"
             onClick={() => navigateMonth('prev')}
-            className="p-1.5 hover:bg-slate-100 rounded-full text-slate-500 transition-colors min-w-[30px] min-h-[30px] flex items-center justify-center"
             aria-label="Previous month"
+            className="p-1.5 hover:bg-slate-100 rounded-full text-slate-500 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
-          
+
           <div className="flex items-center gap-1">
-            <button 
+            <button
+              type="button"
               onClick={() => setViewMode('month')}
+              aria-label={`Select month, currently ${MONTH_NAMES[month]}`}
               className="font-semibold text-slate-900 text-sm hover:bg-slate-100 px-1.5 py-0.5 rounded transition-colors"
             >
-              {monthNames[month]}
+              {MONTH_NAMES[month]}
             </button>
-            <button 
+            <button
+              type="button"
               onClick={() => setViewMode('year')}
+              aria-label={`Select year, currently ${year}`}
               className="font-semibold text-slate-900 text-sm hover:bg-slate-100 px-1.5 py-0.5 rounded transition-colors"
             >
               {year}
             </button>
           </div>
-          
+
           <button
             type="button"
             onClick={() => navigateMonth('next')}
-            className="p-1.5 hover:bg-slate-100 rounded-full text-slate-500 transition-colors min-w-[30px] min-h-[30px] flex items-center justify-center"
             aria-label="Next month"
+            className="p-1.5 hover:bg-slate-100 rounded-full text-slate-500 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="grid grid-cols-7 gap-0 mb-1">
-          {dayNames.map((day, idx) => (
-            <div key={idx} className="h-6 flex items-center justify-center text-xs font-medium text-slate-400">
-              {day}
+        {/* Day-of-week headers */}
+        <div className="grid grid-cols-7 mb-1">
+          {DAY_NAMES.map((d, i) => (
+            <div
+              key={i}
+              role="columnheader"
+              aria-label={DAY_FULL[i]}
+              className="h-6 flex items-center justify-center text-xs font-medium text-slate-400"
+            >
+              {d}
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-y-0.5">
-          {days}
+        {/* Day grid — roving tabIndex + arrow-key navigation */}
+        <div
+          ref={gridRef}
+          role="grid"
+          aria-label={`${MONTH_NAMES[month]} ${year}`}
+          aria-multiselectable="false"
+          className="grid grid-cols-7 gap-y-0.5"
+          onKeyDown={handleGridKeyDown}
+        >
+          {cells}
         </div>
       </div>
     );
@@ -427,21 +507,25 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
     if (!value) return placeholder;
     const d = parseDate(value);
     if (!d) return placeholder;
-    
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    
-    return `${day}/${month}/${year}`;
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
   };
 
   return (
     <div className="relative w-full">
+      {/* Visually hidden live region — announces month/year changes to screen readers */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {liveAnnouncement}
+      </div>
+
       {label && (
-        <label htmlFor={`${pickerId}-trigger`} className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
+        <label
+          htmlFor={`${pickerId}-trigger`}
+          className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block"
+        >
           {label}
         </label>
       )}
+
       <button
         ref={triggerRef}
         id={`${pickerId}-trigger`}
@@ -453,7 +537,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
           if (!isOpen) {
             window.dispatchEvent(new CustomEvent('select-dropdown-open', { detail: { openId: pickerId } }));
           }
-          setIsOpen(!isOpen);
+          setIsOpen(prev => !prev);
         }}
         disabled={disabled}
         className={cn(
@@ -466,52 +550,50 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
               : 'border-slate-200 hover:border-slate-300 focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500'
         )}
       >
-        <div className="flex items-center gap-2 truncate">
-          <CalendarIcon className={cn(
-            "h-4 w-4 shrink-0",
-            value ? "text-slate-900" : "text-slate-400"
-          )} />
+        <div className="flex items-center gap-2 min-w-0 truncate">
+          <CalendarIcon className={cn("h-4 w-4 shrink-0", value ? "text-slate-900" : "text-slate-400")} />
           <span className={cn("truncate", !value && "text-slate-400")}>
             {formatDisplayValue()}
           </span>
         </div>
         <ChevronDown className={cn(
-          'h-4 w-4 text-slate-400 transition-transform duration-200 shrink-0', 
+          'h-4 w-4 text-slate-400 shrink-0 motion-safe:transition-transform motion-safe:duration-200',
           isOpen && 'rotate-180'
         )} />
       </button>
 
       {isOpen && createPortal(
-        <div 
+        <div
           ref={popoverRef}
           role="dialog"
           aria-modal="true"
           aria-label="Choose date"
+          tabIndex={-1}
           style={popoverStyle}
-          className="bg-white rounded-lg shadow-xl border border-slate-200 overflow-hidden flex flex-col w-[280px]"
+          className="bg-white rounded-lg shadow-xl border border-slate-200 overflow-hidden flex flex-col w-[280px] max-w-[calc(100vw-2rem)] focus:outline-none"
         >
           {renderCalendar()}
-          
+
           <div className="border-t border-slate-200 p-2 px-3 bg-slate-50/50">
             <div className="flex items-center justify-between gap-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={handleClear}
                 className="text-slate-500 hover:text-slate-700 hover:bg-slate-100"
               >
                 Clear
               </Button>
               <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setIsOpen(false)}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={closeAndReturn}
                 >
                   Cancel
                 </Button>
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   onClick={handleApply}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white"
                   disabled={!selectedDate}

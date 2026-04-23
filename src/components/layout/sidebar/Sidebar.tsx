@@ -24,10 +24,10 @@ import { IconStar } from "@tabler/icons-react";
 // Constants
 const BASE_PADDING = 12;
 const LEVEL_PADDING = 16;
-const MENU_WIDTH = 320;
+const MENU_WIDTH = 280;
 const MENU_GAP = 8;
-const SAFE_PADDING = 16;
-const MAX_MENU_HEIGHT = 600;
+const SAFE_PADDING = 8;
+const MAX_MENU_HEIGHT = 400;
 
 // Filter nav items by user role (recursive)
 const filterNavByRole = (items: NavItem[], userRole?: string): NavItem[] => {
@@ -217,9 +217,9 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
       const viewportHeight = window.innerHeight;
 
       // Menu dimensions
-      const menuWidth = 280;
-      const menuMaxHeight = 400; // Max height estimate
-      const safeMargin = 8;
+      const menuWidth = MENU_WIDTH;
+      const menuMaxHeight = MAX_MENU_HEIGHT;
+      const safeMargin = SAFE_PADDING;
 
       // Check available space around the button
       const spaceBelow = viewportHeight - rect.bottom;
@@ -322,14 +322,6 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
       [isCollapsed, calculateMenuPosition],
     );
 
-    // Memoized toggle handler
-    const toggleExpand = useCallback((id: string, event: React.MouseEvent) => {
-      event.stopPropagation();
-      setExpandedItems((prev) =>
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-      );
-    }, []);
-
     // Memoized item click handler
     const handleItemClick = useCallback(
       (item: NavItem) => {
@@ -403,6 +395,8 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         const isExpanded = expandedItems.includes(item.id);
         const isActive = activeId === item.id;
         const Icon = item.icon;
+        const submenuId = `sidebar-submenu-${item.id}`;
+        const isFavorite = favoriteIds.includes(item.id);
 
         const paddingLeft = isCollapsed
           ? 0
@@ -433,6 +427,8 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   level === 0 && handleTooltipShow(item.label, e)
                 }
                 onMouseLeave={handleTooltipHide}
+                aria-expanded={hasChildren ? isExpanded : undefined}
+                aria-controls={hasChildren && !isCollapsed ? submenuId : undefined}
                 className={cn(
                   "w-full flex items-center group relative overflow-visible z-10 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20",
                   // Mobile: Taller touch target (h-12), Desktop: h-11
@@ -456,7 +452,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                       "absolute inset-0 z-0",
                       level === 0 ? "bg-emerald-50 rounded-lg" : "bg-emerald-50/50",
                     )}
-                    transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                    transition={{ type: "tween", duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                   />
                 )}
 
@@ -465,7 +461,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   <motion.div
                     layoutId="activeNavBorder"
                     className="absolute left-0 top-0 bottom-0 w-0.5 bg-emerald-600 rounded-r-full z-10"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.35 }}
+                    transition={{ type: "tween", duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                   />
                 )}
 
@@ -534,10 +530,10 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                 {/* Chevron or Star icon */}
                 {hasChildren && !isCollapsed && (
                   <div
-                    onClick={(e) => toggleExpand(item.id, e)}
                     className={cn(
-                      "ml-auto rounded-lg flex items-center justify-center h-6 w-6 relative z-10",
+                      "ml-auto rounded-lg flex items-center justify-center h-6 w-6 relative z-10 pointer-events-none",
                     )}
+                    aria-hidden="true"
                   >
                     <ChevronRight
                       className={cn(
@@ -570,17 +566,19 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                   className={cn(
                     "absolute right-2 top-1/2 -translate-y-1/2 z-20",
                     "flex items-center justify-center h-6 w-6 rounded-lg hover:text-emerald-600 transition-all duration-200 shrink-0",
-                    favoriteIds.includes(item.id)
+                    isFavorite
                       ? "opacity-100 text-emerald-600"
-                      : "opacity-100 md:opacity-0 md:group-hover/navitem:opacity-100 text-slate-400",
+                      : "opacity-100 text-slate-400",
                   )}
-                  title="Add to favorites"
+                  aria-label={isFavorite ? `Remove ${item.label} from favorites` : `Add ${item.label} to favorites`}
+                  aria-pressed={isFavorite}
+                  title={isFavorite ? "Remove from favorites" : "Add to favorites"}
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   <IconStar
                     className={cn(
                       "h-4 w-4 transition-all duration-200",
-                      favoriteIds.includes(item.id) && "fill-emerald-600",
+                      isFavorite && "fill-emerald-600",
                     )}
                   />
                 </button>
@@ -590,6 +588,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
               <AnimatePresence initial={false}>
                 {hasChildren && !isCollapsed && isExpanded && (
                   <motion.div
+                    id={submenuId}
                     key={`submenu-${item.id}`}
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
@@ -623,7 +622,6 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         expandedItems,
         activeId,
         isCollapsed,
-        toggleExpand,
         handleItemClick,
         handleMenuItemClick,
         handleTooltipShow,
@@ -637,6 +635,19 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
         setFavoriteIds,
       ],
     );
+
+    // Close collapsed flyout with Escape for keyboard users
+    useEffect(() => {
+      if (!hoverMenu.isOpen) return;
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          setHoverMenu((prev) => ({ ...prev, isOpen: false }));
+        }
+      };
+      document.addEventListener("keydown", onKeyDown);
+      return () => document.removeEventListener("keydown", onKeyDown);
+    }, [hoverMenu.isOpen]);
 
     // Tooltip portal component
     const TooltipPortal = () => {
@@ -897,14 +908,9 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
               : "-translate-x-full md:translate-x-0",
           )}
           style={{
-            // Mobile: Custom easing for smooth slide
             transition:
-              window.innerWidth < 768
-                ? "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)"
-                : isCollapsed
-                  ? "width 250ms cubic-bezier(0.4, 0, 0.2, 1)"
-                  : "width 350ms cubic-bezier(0.4, 0, 0.2, 1)",
-            willChange: window.innerWidth < 768 ? "transform" : "width",
+              "transform 300ms cubic-bezier(0.4, 0, 0.2, 1), width 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+            willChange: "transform, width",
             // Safe area for notch/Dynamic Island (top) and landscape edges
             // Bottom is NOT set here - handled by nav container padding for proper scroll
             paddingTop: "env(safe-area-inset-top, 0px)",
@@ -977,7 +983,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                 onClick={onToggleSidebar}
                 className={cn(
                   "absolute top-1/2 right-0 z-10 -translate-y-1/2 translate-x-1/2 pointer-events-auto",
-                  "relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border border-slate-300 bg-white",
+                  "relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-slate-300 bg-white",
                   "text-slate-600 hover:text-slate-900 hover:border-slate-400 hover:bg-slate-50",
                   "transition-colors duration-200",
                 )}
@@ -1014,8 +1020,12 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
           {/* Tabs: All / Favourite - Only show when expanded */}
           {!isCollapsed && (
             <div className="px-3 py-3 border-b border-slate-100 shrink-0">
-              <div className="flex items-center gap-2 bg-slate-100 rounded-lg p-1 relative overflow-hidden">
+              <div role="tablist" aria-label="Sidebar navigation mode" className="flex items-center gap-2 bg-slate-100 rounded-lg p-1 relative overflow-hidden">
                 <button
+                  id="sidebar-tab-all"
+                  role="tab"
+                  aria-selected={activeTab === "all"}
+                  aria-controls="sidebar-tabpanel-all"
                   type="button"
                   onClick={() => setActiveTab("all")}
                   className={cn(
@@ -1027,12 +1037,16 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                     <motion.div
                       layoutId="activeTabIndicator"
                       className="absolute inset-0 bg-white rounded-lg shadow-sm pointer-events-none"
-                      transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                      transition={{ type: "tween", duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                     />
                   )}
                   <span className="relative z-20">All Items</span>
                 </button>
                 <button
+                  id="sidebar-tab-favourite"
+                  role="tab"
+                  aria-selected={activeTab === "favourite"}
+                  aria-controls="sidebar-tabpanel-favourite"
                   type="button"
                   onClick={() => setActiveTab("favourite")}
                   className={cn(
@@ -1046,7 +1060,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
                     <motion.div
                       layoutId="activeTabIndicator"
                       className="absolute inset-0 bg-white rounded-lg shadow-sm pointer-events-none"
-                      transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
+                      transition={{ type: "tween", duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                     />
                   )}
                   <div className="relative z-20 flex items-center justify-center gap-1.5">
@@ -1080,6 +1094,9 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
             }}
           >
             <nav
+              id={activeTab === "all" ? "sidebar-tabpanel-all" : "sidebar-tabpanel-favourite"}
+              role="tabpanel"
+              aria-labelledby={activeTab === "all" ? "sidebar-tab-all" : "sidebar-tab-favourite"}
               className={cn(
                 // Mobile: Larger spacing between items
                 "space-y-1 md:space-y-0.5",

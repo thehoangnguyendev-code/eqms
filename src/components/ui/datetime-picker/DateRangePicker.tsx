@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect, useId, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useId, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../utils';
@@ -22,6 +22,8 @@ export interface DateRangePickerProps {
   /** Whether to include time selection */
   includeTime?: boolean;
 }
+
+type PresetKey = 'today' | 'yesterday' | 'week' | 'month' | 'quarter';
 
 // Helper to parse dd/MM/yyyy HH:mm:ss or dd/MM/yyyy or ISO strings
 const parseDate = (dateStr: string): Date | null => {
@@ -90,6 +92,11 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   includeTime = false,
 }) => {
   const pickerId = useId();
+  const dialogId = `${pickerId}-dialog`;
+  const dialogTitleId = `${pickerId}-dialog-title`;
+  const startFieldId = `${pickerId}-start-field`;
+  const endFieldId = `${pickerId}-end-field`;
+
   const [isOpen, setIsOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'calendar' | 'month' | 'year'>('calendar');
   const [activeField, setActiveField] = useState<'start' | 'end'>('start');
@@ -101,6 +108,8 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   // Time states
   const [startTime, setStartTime] = useState({ h: '00', m: '00', s: '00' });
   const [endTime, setEndTime] = useState({ h: '23', m: '59', s: '59' });
+  const [focusedDay, setFocusedDay] = useState<number | null>(null);
+  const [liveMessage, setLiveMessage] = useState('');
 
   // Update time states when local dates change
   useEffect(() => {
@@ -125,7 +134,15 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties>({ opacity: 0 });
+
+  const closePopover = useCallback((returnFocus: boolean = true) => {
+    setIsOpen(false);
+    if (returnFocus) {
+      requestAnimationFrame(() => triggerRef.current?.focus());
+    }
+  }, []);
 
   // Close other dropdowns
   useEffect(() => {
@@ -145,7 +162,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
         const sw = window.innerWidth;
         const sh = window.innerHeight;
         const isMobile = sw < 1024;
-        const pw = isMobile ? (includeTime ? 320 : 300) : (includeTime ? 460 : 440);
+        const pw = isMobile ? Math.min(sw - 32, includeTime ? 360 : 340) : (includeTime ? 520 : 480);
         const ph = popoverRef.current?.offsetHeight || (includeTime ? 560 : 460);
 
         let left = rect.left;
@@ -167,7 +184,6 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
         setPopoverStyle(style);
       };
       update();
-      requestAnimationFrame(update);
       window.addEventListener('resize', update);
       window.addEventListener('scroll', update, true);
       return () => {
@@ -177,7 +193,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
     }
   }, [isOpen, viewMode, viewDate, includeTime]);
 
-  // Click outside
+  // Click outside + Esc
   useEffect(() => {
     if (!isOpen) return;
     const handleClick = (e: MouseEvent) => {
@@ -185,17 +201,55 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
         popoverRef.current && !popoverRef.current.contains(e.target as Node) &&
         triggerRef.current && !triggerRef.current.contains(e.target as Node)
       ) {
-        setIsOpen(false);
+        closePopover(false);
       }
     };
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setIsOpen(false); triggerRef.current?.focus(); }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closePopover();
+      }
     };
     document.addEventListener('mousedown', handleClick);
     document.addEventListener('keydown', handleKey);
     return () => {
       document.removeEventListener('mousedown', handleClick);
       document.removeEventListener('keydown', handleKey);
+    };
+  }, [isOpen, closePopover]);
+
+  // Focus management + focus trap
+  useEffect(() => {
+    if (!isOpen) return;
+    previousFocusRef.current = document.activeElement as HTMLElement;
+
+    requestAnimationFrame(() => {
+      popoverRef.current?.focus();
+    });
+
+    const trapFocus = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !popoverRef.current) return;
+      const focusableEls = popoverRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableEls.length === 0) return;
+      const first = focusableEls[0];
+      const last = focusableEls[focusableEls.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', trapFocus);
+    return () => {
+      document.removeEventListener('keydown', trapFocus);
+      previousFocusRef.current?.focus();
     };
   }, [isOpen]);
 
@@ -227,6 +281,22 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   useEffect(() => {
     if (isOpen) setViewMode('calendar');
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const currentMonth = viewDate.getMonth();
+    const currentYear = viewDate.getFullYear();
+    const base = activeField === 'start' ? localStart : localEnd;
+    if (base && base.getMonth() === currentMonth && base.getFullYear() === currentYear) {
+      setFocusedDay(base.getDate());
+      return;
+    }
+    setFocusedDay(1);
+  }, [isOpen, viewDate, activeField, localStart, localEnd]);
+
+  useEffect(() => {
+    setLiveMessage(`${monthNames[viewDate.getMonth()]} ${viewDate.getFullYear()}`);
+  }, [viewDate]);
 
   const navigateMonth = (dir: 'prev' | 'next') => {
     const d = new Date(viewDate);
@@ -270,7 +340,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
     setViewMode('calendar');
   };
 
-  const applyPreset = (preset: 'today' | 'yesterday' | 'week' | 'month' | 'quarter') => {
+  const applyPreset = (preset: PresetKey) => {
     const now = new Date();
     let start = new Date(now);
     let end = new Date(now);
@@ -334,7 +404,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
     } else {
       onEndDateChange('');
     }
-    setIsOpen(false);
+    closePopover();
   };
 
   const handleReset = () => {
@@ -345,6 +415,41 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
     setActiveField('start');
     onStartDateChange('');
     onEndDateChange('');
+  };
+
+  const focusDay = (day: number) => {
+    setFocusedDay(day);
+    requestAnimationFrame(() => {
+      const btn = popoverRef.current?.querySelector<HTMLButtonElement>(`button[data-day="${day}"]`);
+      btn?.focus();
+    });
+  };
+
+  const handleGridKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (viewMode !== 'calendar') return;
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const currentDay = focusedDay ?? 1;
+    let nextDay = currentDay;
+
+    if (e.key === 'ArrowRight') nextDay = Math.min(daysInMonth, currentDay + 1);
+    if (e.key === 'ArrowLeft') nextDay = Math.max(1, currentDay - 1);
+    if (e.key === 'ArrowDown') nextDay = Math.min(daysInMonth, currentDay + 7);
+    if (e.key === 'ArrowUp') nextDay = Math.max(1, currentDay - 7);
+    if (e.key === 'Home') nextDay = 1;
+    if (e.key === 'End') nextDay = daysInMonth;
+
+    if (nextDay !== currentDay) {
+      e.preventDefault();
+      focusDay(nextDay);
+      return;
+    }
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleDateClick(currentDay);
+    }
   };
 
   // Display value for trigger
@@ -366,7 +471,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
     return (
       <div className="p-3">
         <div className="flex items-center justify-between mb-2 px-1">
-          <button onClick={() => setViewMode('calendar')} className="p-1 hover:bg-slate-100 rounded-full text-slate-500">
+          <button type="button" onClick={() => setViewMode('calendar')} className="min-w-[36px] min-h-[36px] p-1.5 hover:bg-slate-100 rounded-full text-slate-500" aria-label="Back to calendar view">
             <ChevronLeft className="h-4 w-4" />
           </button>
           <span className="font-semibold text-slate-900 text-sm">Select Month</span>
@@ -378,7 +483,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
               key={m}
               onClick={() => handleMonthSelect(idx)}
               className={cn(
-                "h-8 rounded-lg text-xs font-medium hover:bg-slate-100 transition-colors",
+                "h-9 rounded-lg text-xs font-medium hover:bg-slate-100 transition-colors",
                 viewDate.getMonth() === idx ? "bg-emerald-50 text-emerald-600" : "text-slate-700"
               )}
             >
@@ -397,11 +502,11 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
     return (
       <div className="p-3">
         <div className="flex items-center justify-between mb-2 px-1">
-          <button onClick={() => { const d = new Date(viewDate); d.setFullYear(d.getFullYear() - 12); setViewDate(d); }} className="p-1 hover:bg-slate-100 rounded-full text-slate-500">
+          <button type="button" onClick={() => { const d = new Date(viewDate); d.setFullYear(d.getFullYear() - 12); setViewDate(d); }} className="min-w-[36px] min-h-[36px] p-1.5 hover:bg-slate-100 rounded-full text-slate-500" aria-label="Previous year range">
             <ChevronLeft className="h-4 w-4" />
           </button>
           <span className="font-semibold text-slate-900 text-sm">{startYear} - {startYear + 11}</span>
-          <button onClick={() => { const d = new Date(viewDate); d.setFullYear(d.getFullYear() + 12); setViewDate(d); }} className="p-1 hover:bg-slate-100 rounded-full text-slate-500">
+          <button type="button" onClick={() => { const d = new Date(viewDate); d.setFullYear(d.getFullYear() + 12); setViewDate(d); }} className="min-w-[36px] min-h-[36px] p-1.5 hover:bg-slate-100 rounded-full text-slate-500" aria-label="Next year range">
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
@@ -411,7 +516,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
               key={y}
               onClick={() => handleYearSelect(y)}
               className={cn(
-                "h-8 rounded-lg text-xs font-medium hover:bg-slate-100 transition-colors",
+                "h-9 rounded-lg text-xs font-medium hover:bg-slate-100 transition-colors",
                 viewDate.getFullYear() === y ? "bg-emerald-50 text-emerald-600" : "text-slate-700"
               )}
             >
@@ -441,8 +546,8 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     for (let day = 1; day <= daysInMonth; day++) {
       const current = new Date(year, month, day);
-      const isStart = localStart && isSameDay(current, localStart);
-      const isEnd = localEnd && isSameDay(current, localEnd);
+      const isStart = !!localStart && isSameDay(current, localStart);
+      const isEnd = !!localEnd && isSameDay(current, localEnd);
       const isSelected = isStart || isEnd;
       const inRange = isInRange(current, localStart, localEnd);
       const isToday = isSameDay(current, today);
@@ -465,8 +570,13 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <button
             type="button"
             onClick={() => handleDateClick(day)}
+            data-day={day}
+            tabIndex={focusedDay === day ? 0 : -1}
+            aria-selected={isSelected}
+            aria-current={isToday ? 'date' : undefined}
+            aria-label={`${day} ${monthNames[month]} ${year}`}
             className={cn(
-              "h-8 w-8 rounded-full text-xs flex items-center justify-center transition-colors relative z-10",
+              "h-9 w-9 rounded-full text-xs flex items-center justify-center transition-colors relative z-10",
               isSelected
                 ? 'bg-emerald-600 text-white font-semibold shadow-sm hover:bg-emerald-700'
                 : isToday
@@ -487,21 +597,25 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <button
             type="button"
             onClick={() => navigateMonth('prev')}
-            className="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+            className="min-w-[36px] min-h-[36px] p-1.5 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
             aria-label="Previous month"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
           <div className="flex items-center gap-1">
             <button
+              type="button"
               onClick={() => setViewMode('month')}
               className="font-semibold text-slate-900 text-sm hover:bg-slate-100 px-1.5 py-0.5 rounded transition-colors"
+              aria-label="Select month"
             >
               {monthNames[month]}
             </button>
             <button
+              type="button"
               onClick={() => setViewMode('year')}
               className="font-semibold text-slate-900 text-sm hover:bg-slate-100 px-1.5 py-0.5 rounded transition-colors"
+              aria-label="Select year"
             >
               {year}
             </button>
@@ -509,7 +623,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <button
             type="button"
             onClick={() => navigateMonth('next')}
-            className="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+            className="min-w-[36px] min-h-[36px] p-1.5 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
             aria-label="Next month"
           >
             <ChevronRight className="h-4 w-4" />
@@ -526,7 +640,13 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
         </div>
 
         {/* Days grid */}
-        <div className="grid grid-cols-7 gap-y-0.5">
+        <div
+          role="grid"
+          aria-label="Calendar days"
+          aria-multiselectable="false"
+          onKeyDown={handleGridKeyDown}
+          className="grid grid-cols-7 gap-y-0.5"
+        >
           {days}
         </div>
       </div>
@@ -553,7 +673,9 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           type="text"
           value={time.h}
           onChange={(e) => handleTimeChange('h', e.target.value)}
-          className="w-8 h-7 text-center text-xs border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          aria-label={`${type === 'start' ? 'Start' : 'End'} hour`}
+          inputMode="numeric"
+          className="w-10 h-9 text-center text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
           maxLength={2}
         />
         <span className="text-slate-400">:</span>
@@ -561,7 +683,9 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           type="text"
           value={time.m}
           onChange={(e) => handleTimeChange('m', e.target.value)}
-          className="w-8 h-7 text-center text-xs border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          aria-label={`${type === 'start' ? 'Start' : 'End'} minute`}
+          inputMode="numeric"
+          className="w-10 h-9 text-center text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
           maxLength={2}
         />
         <span className="text-slate-400">:</span>
@@ -569,7 +693,9 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           type="text"
           value={time.s}
           onChange={(e) => handleTimeChange('s', e.target.value)}
-          className="w-8 h-7 text-center text-xs border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          aria-label={`${type === 'start' ? 'Start' : 'End'} second`}
+          inputMode="numeric"
+          className="w-10 h-9 text-center text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
           maxLength={2}
         />
       </div>
@@ -589,7 +715,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <button
             key={p.key}
             type="button"
-            onClick={() => applyPreset(p.key as any)}
+            onClick={() => applyPreset(p.key as PresetKey)}
             className="text-left px-2 py-1.5 lg:py-2 text-xs lg:text-sm text-slate-600 border border-slate-200 lg:border-transparent hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 rounded-lg transition-all font-medium truncate"
           >
             {p.label}
@@ -640,16 +766,20 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
       {isOpen && createPortal(
         <div
+          id={dialogId}
           ref={popoverRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Choose date range"
+          aria-labelledby={dialogTitleId}
+          tabIndex={-1}
           style={popoverStyle}
           className={cn(
-            "bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden flex flex-col lg:flex-row",
-            includeTime ? "w-[320px] lg:w-[460px]" : "w-[300px] lg:w-[440px]"
+            "bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden flex flex-col lg:flex-row max-w-[calc(100vw-2rem)]",
+            includeTime ? "w-[min(360px,calc(100vw-2rem))] lg:w-[520px]" : "w-[min(340px,calc(100vw-2rem))] lg:w-[480px]"
           )}
         >
+          <div className="sr-only" id={dialogTitleId}>Choose date range</div>
+          <div className="sr-only" aria-live="polite" aria-atomic="true">{liveMessage}</div>
           <div className="flex-1 flex flex-col">
             {/* Start / Due date inputs */}
             <div className="px-4 pt-4 pb-2">
@@ -657,12 +787,14 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
                 {/* Start */}
                 <div className={cn("flex items-center justify-between gap-4", !includeTime && "flex-1")}>
                   <div className="flex-1 min-w-0">
-                    <label className="text-xs font-medium text-slate-500 mb-1 block">Start Date</label>
+                    <label htmlFor={startFieldId} className="text-xs font-medium text-slate-500 mb-1 block">Start Date</label>
                     <button
+                      id={startFieldId}
                       type="button"
                       onClick={() => setActiveField('start')}
+                      aria-pressed={activeField === 'start'}
                       className={cn(
-                        "flex items-center gap-1.5 w-full px-2.5 py-1.5 h-8 rounded-lg text-sm border transition-colors",
+                        "flex items-center gap-1.5 w-full px-2.5 py-1.5 h-9 rounded-lg text-sm border transition-colors",
                         activeField === 'start'
                           ? "border-emerald-400 ring-1 ring-emerald-200"
                           : "border-slate-200 hover:border-slate-300"
@@ -684,12 +816,14 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
                 {/* Due/End */}
                 <div className={cn("flex items-center justify-between gap-4", !includeTime && "flex-1")}>
                   <div className="flex-1 min-w-0">
-                    <label className="text-xs font-medium text-slate-500 mb-1 block">End Date</label>
+                    <label htmlFor={endFieldId} className="text-xs font-medium text-slate-500 mb-1 block">End Date</label>
                     <button
+                      id={endFieldId}
                       type="button"
                       onClick={() => setActiveField('end')}
+                      aria-pressed={activeField === 'end'}
                       className={cn(
-                        "flex items-center gap-1.5 w-full px-2.5 py-1.5 h-8 rounded-lg text-sm border transition-colors",
+                        "flex items-center gap-1.5 w-full px-2.5 py-1.5 h-9 rounded-lg text-sm border transition-colors",
                         activeField === 'end'
                           ? "border-emerald-400 ring-1 ring-emerald-200"
                           : "border-slate-200 hover:border-slate-300"
@@ -730,7 +864,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => closePopover()}
                     className="h-8 text-xs px-3"
                   >
                     Cancel
