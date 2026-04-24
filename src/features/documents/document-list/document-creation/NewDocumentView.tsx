@@ -872,24 +872,23 @@ export const NewDocumentView: React.FC = () => {
         }}
         onConfirm={handleCancelConfirm}
         title="Cancel Document Creation"
-        description={
-          <div className="text-xs bg-amber-50 border border-amber-200 rounded-lg p-3">
-            <p className="text-amber-800">
-              {" "}
-              <span className="font-semibold">Note:</span> The document will be
-              moved to <strong>Closed - Cancelled</strong> status.
-            </p>
-          </div>
-        }
         confirmText="Yes, Cancel"
         cancelText="No, Continue"
         confirmDisabled={!cancelActivitySummary.trim()}
         showCancel={true}
         size="lg"
       >
-        <div className="space-y-2">
-          <label
-            htmlFor="activity-summary"
+        <div className="space-y-4">
+          <div className="text-xs bg-amber-50 border border-amber-200 rounded-lg p-3">
+            <p className="text-amber-800">
+              <span className="font-semibold">Note:</span> The document will be
+              moved to <strong>Closed - Cancelled</strong> status.
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <label
+              htmlFor="activity-summary"
             className="text-xs sm:text-sm font-medium text-slate-700 block"
           >
             Activity Summary <span className="text-red-500">*</span>
@@ -907,6 +906,7 @@ export const NewDocumentView: React.FC = () => {
               Activity Summary is required to cancel the document.
             </p>
           )}
+          </div>
         </div>
       </FormModal>
 

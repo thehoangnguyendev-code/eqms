@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
 import {
@@ -28,6 +29,7 @@ import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { cn } from "@/components/ui/utils";
+import { Badge } from "@/components/ui/badge/Badge";
 import { TrainingMethod } from "../../../types";
 import { complianceTrackingRepository } from "../../repository";
 
@@ -128,29 +130,31 @@ const ImagePreviewModal: React.FC<{
   onClose: () => void;
 }> = ({ isOpen, imageUrl, onClose }) => {
   if (!isOpen || !imageUrl) return null;
-  return (
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 animate-in fade-in duration-200"
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="relative max-w-[90vw] max-h-[90vh]"
+        className="relative max-w-[95vw] max-h-[95vh] flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute -top-10 right-0 h-8 w-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors"
+          className="absolute -top-12 right-0 md:-right-12 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-110 active:scale-95"
           aria-label="Close preview"
         >
-          <X className="h-5 w-5" />
+          <X className="h-6 w-6" />
         </button>
         <img
           src={imageUrl}
           alt="Evidence preview"
-          className="max-w-full max-h-[85vh] rounded-lg object-contain shadow-2xl"
+          className="max-w-full max-h-[90vh] rounded-lg object-contain shadow-2xl ring-1 ring-white/10"
         />
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -790,7 +794,7 @@ export const ResultEntryView: React.FC = () => {
                             <span className="font-medium text-emerald-600 hover:underline">{row.userId}</span>
                           </td>
                           <td className={tdClass}>
-                            <span className="font-bold text-slate-900">{row.name}</span>
+                            <span className="font-medium text-slate-900">{row.name}</span>
                           </td>
                           <td className={cn(tdClass, "text-slate-600 hidden lg:table-cell")}>
                             {row.email}
@@ -871,15 +875,9 @@ export const ResultEntryView: React.FC = () => {
                             {status === "none" ? (
                               <span className="text-xs text-slate-400">—</span>
                             ) : status === "pass" ? (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <CheckCircle2 className="h-3.5 w-3.5" />
-                                PASS
-                              </span>
+                              <Badge color="emerald" size="sm">Pass</Badge>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
-                                <XCircle className="h-3.5 w-3.5" />
-                                FAIL
-                              </span>
+                              <Badge color="red" size="sm">Fail</Badge>
                             )}
                           </td>
                           <td className={tdClass}>

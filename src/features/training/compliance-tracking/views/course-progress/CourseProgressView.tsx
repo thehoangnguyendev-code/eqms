@@ -39,6 +39,7 @@ import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { ESignatureModal } from "@/components/ui/esign-modal";
 import { cn } from "@/components/ui/utils";
+import { Badge } from "@/components/ui/badge/Badge";
 import { formatDateUS } from "@/utils/format";
 import { getStatusColorClass } from "@/utils/status";
 import type { EnrollmentStatus, ResultStatus, EmployeeProgress, CourseProgressInfo } from "../../../types";
@@ -696,14 +697,17 @@ export const CourseProgressView: React.FC = () => {
                             {emp.businessUnit}
                           </td>
                           <td className={cn(tdClass, "text-center")}>
-                            <span
-                              className={cn(
-                                "inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border",
-                                getStatusColorClass(emp.enrollmentStatus)
-                              )}
+                            <Badge 
+                              color={
+                                emp.enrollmentStatus === "Completed" ? "emerald" : 
+                                emp.enrollmentStatus === "In-Progress" ? "blue" : 
+                                emp.enrollmentStatus === "Overdue" ? "red" : 
+                                "slate"
+                              }
+                              size="sm"
                             >
                               {emp.enrollmentStatus}
-                            </span>
+                            </Badge>
                           </td>
                           <td className={cn(tdClass, "text-center")}>
                             {emp.score !== null ? (
@@ -722,20 +726,12 @@ export const CourseProgressView: React.FC = () => {
                             )}
                           </td>
                           <td className={cn(tdClass, "text-center")}>
-                            <span
-                              className={cn(
-                                "inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border",
-                                getStatusColorClass(emp.resultStatus)
-                              )}
+                            <Badge
+                              color={emp.resultStatus === "Pass" ? "emerald" : emp.resultStatus === "Fail" ? "red" : "slate"}
+                              size="sm"
                             >
-                              {emp.resultStatus === "Pass" && (
-                                <CheckCircle2 className="h-3 w-3" />
-                              )}
-                              {emp.resultStatus === "Fail" && (
-                                <XCircle className="h-3 w-3" />
-                              )}
                               {emp.resultStatus}
-                            </span>
+                            </Badge>
                           </td>
                           <td className={cn(tdClass, "text-center text-slate-700 hidden lg:table-cell")}>
                             {emp.attempts > 0 ? emp.attempts : "—"}

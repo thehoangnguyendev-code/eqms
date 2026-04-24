@@ -55,9 +55,25 @@ export const RevisionsOwnedByMeView: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
-    key: "revisionName",
+    key: 'id',
     direction: "asc",
   });
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
+  const [isTableLoading, setIsTableLoading] = useState(false);
+
+  // Default columns configuration
+  const columns = [
+    { id: "no", label: "No.", visible: true, order: 0, locked: true },
+    { id: "documentNumber", label: "Document Number", visible: true, order: 1 },
+    { id: "revisionNumber", label: "Revision Number", visible: true, order: 2 },
+    { id: "created", label: "Created", visible: true, order: 3 },
+    { id: "openedBy", label: "Opened By", visible: true, order: 4 },
+    { id: "revisionName", label: "Revision Name", visible: true, order: 5 },
+    { id: "state", label: "State", visible: true, order: 6 },
+    { id: "documentName", label: "Document Name", visible: true, order: 7 },
+    { id: "type", label: "Document Type", visible: true, order: 8 },
+    { id: "action", label: "Action", visible: true, order: 17, locked: true },
+  ];
 
   const { openId, position, getRef, toggle, close } = usePortalDropdown();
 
@@ -96,6 +112,13 @@ export const RevisionsOwnedByMeView: React.FC = () => {
     }));
     setCurrentPage(1);
   };
+
+  // Handle loading state on filter changes
+  React.useEffect(() => {
+    setIsTableLoading(true);
+    const timer = setTimeout(() => setIsTableLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, statusFilter, typeFilter, businessUnitFilter, departmentFilter, sortConfig]);
 
   const handleClearFilters = () => {
     setSearchQuery("");
@@ -340,13 +363,16 @@ export const RevisionsOwnedByMeView: React.FC = () => {
         {/* Table Section */}
         <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col">
           <RevisionTableView
-            data={filteredRevisions}
+            revisions={filteredRevisions}
+            columns={columns}
+            expandedRowId={expandedRowId}
             sortConfig={sortConfig}
-            onSort={handleSort}
             currentPage={currentPage}
-            onPageChange={setCurrentPage}
             itemsPerPage={itemsPerPage}
-            onItemsPerPageChange={setItemsPerPage}
+            isTableLoading={isTableLoading}
+            onExpandRow={setExpandedRowId}
+            onSort={handleSort}
+            onPageChange={setCurrentPage}
             getMenuActions={(revision: Revision) => {
               const actions = [];
               actions.push({ icon: <IconInfoCircle className="h-4 w-4" />, label: "View Details", action: "view" });
@@ -357,26 +383,9 @@ export const RevisionsOwnedByMeView: React.FC = () => {
               actions.push({ icon: <History className="h-4 w-4" />, label: "View Audit Trail", action: "audit" });
               return actions;
             }}
-            onMenuAction={(action: string, revision: Revision) => {
-              switch (action) {
-                case "view":
-                  handleMenuAction("view", revision.id);
-                  break;
-                case "upgrade":
-                  handleNewRevision(revision);
-                  break;
-                case "print":
-                  handlePrintControlledCopy(revision);
-                  break;
-                case "audit":
-                  handleMenuAction("audit", revision.id);
-                  break;
-              }
-            }}
+            onMenuAction={handleMenuAction}
             renderCell={renderCell}
-            onRowClick={(revision: Revision) => {
-              navigateTo(ROUTES.DOCUMENTS.REVISIONS.DETAIL(revision.id));
-            }}
+            onViewItem={(id) => navigateTo(ROUTES.DOCUMENTS.REVISIONS.DETAIL(id))}
           />
         </div>
       </div>

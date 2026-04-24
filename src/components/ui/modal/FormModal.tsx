@@ -89,30 +89,36 @@ export const FormModal: React.FC<FormModalProps> = ({
     [onClose]
   );
 
+  // Manage Keyboard Events
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
+    if (!isOpen) return;
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, handleKeyDown]);
+
+  // Manage Initial Focus and Restore Focus
+  useEffect(() => {
+    if (!isOpen) return;
 
     previousFocusRef.current = document.activeElement as HTMLElement;
 
-    requestAnimationFrame(() => {
-      if (!modalRef.current) {
-        return;
-      }
-
+    const focusTimeout = setTimeout(() => {
+      if (!modalRef.current) return;
+      
       const firstFocusable = modalRef.current.querySelector<HTMLElement>(
         'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])'
       );
       firstFocusable?.focus();
-    });
+    }, 100); // Small delay to ensure animation has started
 
-    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      previousFocusRef.current?.focus();
+      clearTimeout(focusTimeout);
+      // Restore focus safely
+      if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+        previousFocusRef.current.focus();
+      }
     };
-  }, [isOpen, handleKeyDown]);
+  }, [isOpen]);
 
   const portalContent = createPortal(
     <AnimatePresence mode="wait">
