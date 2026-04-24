@@ -5,6 +5,7 @@ import { IconPlus } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { trainingMatrix } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
+import { Badge } from "@/components/ui/badge/Badge";
 import { SectionLoading } from "@/components/ui/loading";
 import { cn } from "@/components/ui/utils";
 import { useNavigateWithLoading } from "@/hooks";
@@ -123,22 +124,21 @@ export const TrainingMatrixView: React.FC = () => {
     return { hasNewEmp, newEmpMissingCount };
   }, [filteredEmployees, sops, getCell]);
 
-  const legendItems = useMemo(() => (
-    (Object.entries(CELL_CONFIG) as [CellStatus, (typeof CELL_CONFIG)[CellStatus]][]).map(
+  const legendItems = useMemo(() => {
+    const statusColorMap: Record<CellStatus, "slate" | "red" | "amber" | "emerald"> = {
+      NotRequired: "slate",
+      Required: "red",
+      InProgress: "amber",
+      Qualified: "emerald",
+    };
+    return (Object.entries(CELL_CONFIG) as [CellStatus, (typeof CELL_CONFIG)[CellStatus]][]).map(
       ([status, cfg]) => (
-        <span
-          key={status}
-          className={cn(
-            "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border",
-            cfg.bg,
-            cfg.border
-          )}
-        >
-          <span>{cfg.label}</span>
-        </span>
+        <Badge key={status} color={statusColorMap[status]} size="xs" showDot>
+          {cfg.label}
+        </Badge>
       )
-    )
-  ), []);
+    );
+  }, []);
 
   // ── Handlers ───────────────────────────────────────────────────────
   const handleCellClick = useCallback(
@@ -204,7 +204,7 @@ export const TrainingMatrixView: React.FC = () => {
               size="sm"
               className="whitespace-nowrap gap-2"
             >
-              <Download className="h-4 w-4" />
+              <Download className="h-4 w-4" aria-hidden="true" />
               Export
             </Button>
             <Button
@@ -212,16 +212,15 @@ export const TrainingMatrixView: React.FC = () => {
               size="sm"
               className="whitespace-nowrap gap-2"
             >
-              <IconPlus className="h-4 w-4" />
+              <IconPlus className="h-4 w-4" aria-hidden="true" />
               Assign Training
             </Button>
           </>
         }
       />
 
-      {/* New Employee Hero Banner */}
       {heroBannerStats && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between mb-5 shadow-sm">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between shadow-sm">
           <div className="flex items-start sm:items-center gap-4">
             <div>
               <h3 className="text-sm font-bold text-red-800">

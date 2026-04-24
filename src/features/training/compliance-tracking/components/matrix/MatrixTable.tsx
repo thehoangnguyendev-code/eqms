@@ -77,15 +77,16 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
           ref={scrollContainerRef as any}
           className={cn(
             "overflow-x-auto overflow-y-auto max-h-[400px] sm:max-h-[500px] md:max-h-[580px] relative transition-all duration-300",
-            "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full",
+            "scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100",
             isDragging ? "cursor-grabbing select-none" : "cursor-grab"
           )}
           {...dragEvents}
         >
           {/* Scroll hint for mobile */}
           {showScrollHint && (
-            <div className="absolute bottom-2 right-2 z-20 md:hidden bg-slate-800/80 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded-full pointer-events-none animate-pulse">
-              Swipe to scroll →
+            <div className="absolute bottom-2 right-2 z-20 md:hidden bg-slate-800/80 backdrop-blur-sm text-white text-[10px] px-2.5 py-1 rounded-full pointer-events-none animate-pulse flex items-center gap-1">
+              Swipe to scroll
+              <ChevronRight className="h-3 w-3" aria-hidden="true" />
             </div>
           )}
 
@@ -106,13 +107,13 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
 
       {/* Summary bar - responsive */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-t border-slate-200/60 bg-white backdrop-blur-sm">
-        <span className="text-[11px] sm:text-xs text-slate-500 flex items-center gap-1.5">
+        <span className="text-[11px] sm:text-xs text-slate-500 flex items-center gap-1.5" style={{ fontVariantNumeric: "tabular-nums" }}>
           <span className="font-semibold text-slate-700">{employees.length}</span> employees ×{" "}
           <span className="font-semibold text-slate-700">{MOCK_SOPS.length}</span> Courses
         </span>
         {filters.gapAnalysis && (
           <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold border bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-200 shadow-sm">
-            <AlertTriangle className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <AlertTriangle className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
             Gap Analysis
           </span>
         )}
@@ -123,7 +124,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
             onClick={onClearFilters}
             className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-full text-[11px] sm:text-xs"
           >
-            <FilterX className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
+            <FilterX className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" aria-hidden="true" />
             Clear
           </Button>
         )}
@@ -203,7 +204,7 @@ const MatrixBody: React.FC<MatrixBodyProps> = React.memo(({
           <td colSpan={MOCK_SOPS.length + 2} className="py-16 sm:py-20 text-center">
             <div className="flex flex-col items-center gap-2 sm:gap-3">
               <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-slate-100 flex items-center justify-center shadow-inner">
-                <Search className="h-6 w-6 sm:h-7 sm:w-7 text-slate-400" />
+                <Search className="h-6 w-6 sm:h-7 sm:w-7 text-slate-400" aria-hidden="true" />
               </div>
               <p className="text-sm font-semibold text-slate-800">No matching employees</p>
               <p className="text-[11px] sm:text-xs text-slate-500 max-w-[200px] sm:max-w-[240px] mx-auto">

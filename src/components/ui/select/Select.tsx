@@ -67,7 +67,7 @@ export const Select: React.FC<SelectProps> = ({
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
   const [asyncOptions, setAsyncOptions] = useState<SelectOption[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -82,18 +82,18 @@ export const Select: React.FC<SelectProps> = ({
 
   const filteredOptions = enableSearch && !onSearch
     ? displayOptions.filter((opt) =>
-        opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : displayOptions;
 
   // Filter groups based on search
   const filteredGroups = groups && enableSearch && !onSearch
     ? groups.map(g => ({
-        ...g,
-        options: g.options.filter(opt => 
-          opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      })).filter(g => g.options.length > 0)
+      ...g,
+      options: g.options.filter(opt =>
+        opt.label.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    })).filter(g => g.options.length > 0)
     : groups;
 
   const selectedOption = displayOptions.find((opt) => opt.value === value);
@@ -142,15 +142,15 @@ export const Select: React.FC<SelectProps> = ({
       const viewportHeight = window.innerHeight;
       const spaceBelow = viewportHeight - rect.bottom;
       const spaceAbove = rect.top;
-      
+
       // Estimate dropdown height
       const searchHeight = enableSearch ? 56 : 0;
       const maxHeight = maxVisibleRows * rowHeight + searchHeight + 8;
       const estimatedDropdownHeight = maxHeight;
-      
+
       // Determine if dropdown should open above or below
       const shouldShowAbove = spaceBelow < estimatedDropdownHeight && spaceAbove > spaceBelow;
-      
+
       setPosition({
         top: shouldShowAbove ? rect.top - 4 : rect.bottom + 4,
         left: rect.left,
@@ -187,7 +187,7 @@ export const Select: React.FC<SelectProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setFocusedIndex(prev => 
+        setFocusedIndex(prev =>
           prev < filteredOptions.length - 1 ? prev + 1 : prev
         );
         break;
@@ -333,8 +333,8 @@ export const Select: React.FC<SelectProps> = ({
           disabled
             ? "bg-slate-50 text-slate-500 cursor-default border-slate-200"
             : isOpen
-            ? "border-emerald-500 ring-1 ring-emerald-500"
-            : "border-slate-200 hover:border-slate-300 focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500",
+              ? "border-emerald-500 ring-1 ring-emerald-500"
+              : "border-slate-200 hover:border-slate-300 focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500",
           triggerClassName
         )}
       >
@@ -386,7 +386,7 @@ export const Select: React.FC<SelectProps> = ({
           )}
 
           {/* Options */}
-          <div 
+          <div
             className="overflow-y-auto overscroll-contain custom-scrollbar"
             style={{ maxHeight: maxVisibleRows * rowHeight }}
             onKeyDown={handleKeyDown}

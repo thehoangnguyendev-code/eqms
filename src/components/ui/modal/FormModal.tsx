@@ -104,7 +104,7 @@ export const FormModal: React.FC<FormModalProps> = ({
 
     const focusTimeout = setTimeout(() => {
       if (!modalRef.current) return;
-      
+
       const firstFocusable = modalRef.current.querySelector<HTMLElement>(
         'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])'
       );
@@ -189,7 +189,7 @@ export const FormModal: React.FC<FormModalProps> = ({
                 <div id={descriptionId} className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">{description}</div>
               )}
             </div>
-            
+
             <div className="px-4 sm:px-6 py-4 sm:py-5 bg-white overflow-y-auto flex-1 min-h-0">
               {children}
             </div>

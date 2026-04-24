@@ -55,10 +55,10 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const showToast = useCallback((toast: Omit<Toast, "id"> & { id?: string }) => {
     const id = toast.id || Math.random().toString(36).slice(2, 10);
-    
+
     setToasts((prev) => {
       const newToasts = [...prev, { ...toast, id }];
-      
+
       // Remove oldest toasts if exceeding MAX_TOASTS
       if (newToasts.length > MAX_TOASTS) {
         const toastsToRemove = newToasts.slice(0, newToasts.length - MAX_TOASTS);
@@ -70,10 +70,10 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         });
         return newToasts.slice(-MAX_TOASTS);
       }
-      
+
       return newToasts;
     });
-    
+
     const duration = toast.duration ?? 3500;
     timers.current[id] = setTimeout(() => removeToast(id), duration);
   }, [removeToast]);
@@ -88,7 +88,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <ToastContext.Provider value={{ showToast }}>
       {children}
       {/* Toast Container */}
-      <div 
+      <div
         className="fixed z-[9999] flex flex-col gap-3 items-end max-w-xs md:max-w-sm lg:max-w-md w-full"
         style={{
           top: 'max(1rem, env(safe-area-inset-top, 1rem))',
@@ -100,7 +100,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         {toasts.map((toast) => {
           const Icon = ICONS[toast.type];
           const duration = toast.duration ?? 3500;
-          
+
           return (
             <div
               key={toast.id}
@@ -124,7 +124,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              
+
               {/* Progress Bar */}
               <div className="h-1 bg-white/30 relative overflow-hidden">
                 <div
@@ -145,7 +145,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           );
         })}
       </div>
-      
+
       {/* Add keyframe animation for progress bar */}
       <style>{`
         @keyframes shrink {
