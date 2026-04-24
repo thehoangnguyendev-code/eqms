@@ -387,7 +387,7 @@ export const Select: React.FC<SelectProps> = ({
 
           {/* Options */}
           <div 
-            className="overflow-y-auto overscroll-contain"
+            className="overflow-y-auto overscroll-contain custom-scrollbar"
             style={{ maxHeight: maxVisibleRows * rowHeight }}
             onKeyDown={handleKeyDown}
           >

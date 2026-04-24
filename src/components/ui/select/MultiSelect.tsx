@@ -422,7 +422,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
 
           {/* Options */}
           <div
-            className="overflow-y-auto overscroll-contain"
+            className="overflow-y-auto overscroll-contain custom-scrollbar"
             style={{ maxHeight: maxVisibleRows * rowHeight }}
             onKeyDown={handleKeyDown}
           >
@@ -528,7 +528,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
               </span>
             </div>
             {/* Tags list */}
-            <div className="flex flex-col gap-0.5 p-2 max-h-[180px] overflow-y-auto">
+            <div className="flex flex-col gap-0.5 p-2 max-h-[180px] overflow-y-auto custom-scrollbar">
               {remainingOptions.map(opt => (
                 <div key={opt.value} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
