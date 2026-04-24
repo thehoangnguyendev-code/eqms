@@ -853,13 +853,14 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
             {/* Footer */}
             <div className="border-t border-slate-200 px-4 py-3 bg-slate-50/50">
               <div className="flex items-center justify-between">
-                <button
-                  type="button"
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={handleReset}
-                  className="text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors"
+                  className="text-slate-500 hover:text-slate-700 hover:bg-slate-100"
                 >
                   Reset range
-                </button>
+                </Button>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
