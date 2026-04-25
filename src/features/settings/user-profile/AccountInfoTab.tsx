@@ -223,8 +223,8 @@ export const AccountInfoTab: React.FC<AccountInfoTabProps> = ({
                                         onChange={(e) => onInputChange('email', e.target.value)}
                                         disabled={!editingFields.email}
                                         className={`w-full h-9 px-3.5 pr-10 text-sm border rounded-lg transition-all focus:outline-none ${editingFields.email
-                                                ? 'border-emerald-500 bg-white ring-1 ring-emerald-500 focus:ring-emerald-500 focus:border-emerald-500'
-                                                : 'border-slate-200 bg-slate-50 text-slate-600 cursor-not-allowed'
+                                            ? 'border-emerald-500 bg-white ring-1 ring-emerald-500 focus:ring-emerald-500 focus:border-emerald-500'
+                                            : 'border-slate-200 bg-slate-50 text-slate-600 cursor-not-allowed'
                                             }`}
                                         placeholder="Enter email"
                                     />
@@ -232,8 +232,8 @@ export const AccountInfoTab: React.FC<AccountInfoTabProps> = ({
                                         variant="ghost"
                                         size="icon-sm"
                                         className={`absolute right-1 top-1/2 -translate-y-1/2 ${editingFields.email
-                                                ? 'text-emerald-600 bg-emerald-100 hover:bg-emerald-200'
-                                                : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
+                                            ? 'text-emerald-600 bg-emerald-100 hover:bg-emerald-200'
+                                            : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
                                             }`}
                                         title={editingFields.email ? 'Editing email' : 'Edit email'}
                                         onClick={() => onToggleEdit('email')}
@@ -275,8 +275,8 @@ export const AccountInfoTab: React.FC<AccountInfoTabProps> = ({
                                         onChange={(e) => onInputChange('phone', e.target.value)}
                                         disabled={!editingFields.phone}
                                         className={`w-full h-9 px-3.5 pr-10 text-sm border rounded-lg transition-all focus:outline-none ${editingFields.phone
-                                                ? 'border-emerald-500 bg-white ring-1 ring-emerald-500 focus:ring-emerald-500 focus:border-emerald-500'
-                                                : 'border-slate-200 bg-slate-50 text-slate-600 cursor-not-allowed'
+                                            ? 'border-emerald-500 bg-white ring-1 ring-emerald-500 focus:ring-emerald-500 focus:border-emerald-500'
+                                            : 'border-slate-200 bg-slate-50 text-slate-600 cursor-not-allowed'
                                             }`}
                                         placeholder="Enter phone number"
                                     />
@@ -284,8 +284,8 @@ export const AccountInfoTab: React.FC<AccountInfoTabProps> = ({
                                         variant="ghost"
                                         size="icon-sm"
                                         className={`absolute right-1 top-1/2 -translate-y-1/2 ${editingFields.phone
-                                                ? 'text-emerald-600 bg-emerald-100 hover:bg-emerald-200'
-                                                : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
+                                            ? 'text-emerald-600 bg-emerald-100 hover:bg-emerald-200'
+                                            : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
                                             }`}
                                         title={editingFields.phone ? 'Editing phone' : 'Edit phone'}
                                         onClick={() => onToggleEdit('phone')}

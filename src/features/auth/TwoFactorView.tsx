@@ -202,6 +202,19 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
       setIsLoading(true);
       setError("");
 
+      // SIMULATED DELAY FOR REALISM
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // TEST LOGIC: Only '123456' is correct
+      if (code !== "123456") {
+        setIsLoading(false);
+        setError("Invalid verification code. Please try again.");
+        // Optional: clear otp or keep it for the shake effect
+        // setOtp(new Array(OTP_LENGTH).fill(""));
+        return;
+      }
+
+      // If it is 123456, proceed with actual onVerify
       const result = await onVerify({
         code,
         method,
@@ -334,39 +347,58 @@ export const TwoFactorView: React.FC<TwoFactorViewProps> = ({
                       </div>
                     )}
 
-                    <div className="grid grid-cols-6 gap-2 sm:gap-3" onPaste={handlePaste}>
+                    <motion.div 
+                      className="grid grid-cols-6 gap-2 sm:gap-3" 
+                      onPaste={handlePaste}
+                      animate={error ? { x: [-10, 10, -10, 10, 0] } : {}}
+                      transition={{ duration: 0.4, ease: "easeInOut" }}
+                    >
                       {otp.map((digit, index) => (
-                        <input
+                        <motion.div
                           key={index}
-                          ref={(el) => {
-                            inputRefs.current[index] = el;
+                          initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, y: 10, scale: 0.9 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ 
+                            type: "spring", 
+                            stiffness: 300, 
+                            damping: 20,
+                            delay: index * 0.05 
                           }}
-                          type="text"
-                          inputMode="numeric"
-                          autoComplete="one-time-code"
-                          maxLength={1}
-                          value={digit}
-                          onChange={(e) => handleOtpChange(index, e.target.value)}
-                          onKeyDown={(e) => handleKeyDown(index, e)}
-                          disabled={isLoading}
-                          aria-label={`Verification code digit ${index + 1}`}
-                          className={cn(
-                            "h-12 w-full rounded-[10px] border text-center text-xl font-semibold outline-none transition-all sm:h-14 sm:text-xl",
-                            "focus:ring-2 focus:ring-teal-800/20",
-                            digit
-                              ? "border-teal-700/50 bg-teal-50/40 text-teal-800"
-                              : "border-slate-300 bg-white focus:border-teal-700"
-                          )}
-                        />
+                        >
+                          <motion.input
+                            ref={(el) => {
+                              inputRefs.current[index] = el;
+                            }}
+                            type="text"
+                            inputMode="numeric"
+                            autoComplete="one-time-code"
+                            maxLength={1}
+                            value={digit}
+                            whileFocus={{ scale: 1.05 }}
+                            animate={digit ? { scale: [1, 1.1, 1] } : {}}
+                            transition={{ duration: 0.15 }}
+                            onChange={(e) => handleOtpChange(index, e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(index, e)}
+                            disabled={isLoading}
+                            aria-label={`Verification code digit ${index + 1}`}
+                            className={cn(
+                              "h-12 w-full rounded-[12px] border text-center text-xl font-bold outline-none transition-all sm:h-16 sm:text-2xl shadow-sm",
+                              "focus:ring-4 focus:ring-teal-700/10",
+                              digit
+                                ? "border-teal-600 bg-teal-50/20 text-teal-900 shadow-teal-700/5"
+                                : "border-slate-200 bg-white focus:border-teal-600"
+                            )}
+                          />
+                        </motion.div>
                       ))}
-                    </div>
+                    </motion.div>
 
                     <Button
                       type="submit"
-                      className={AUTH_UI.submitButton}
+                      className={cn(AUTH_UI.submitButton, "mt-4 h-12 sm:h-14")}
                       disabled={isLoading || otp.join("").length < OTP_LENGTH}
                     >
-                      Submit
+                      Verify Account
                     </Button>
 
                     <Checkbox
