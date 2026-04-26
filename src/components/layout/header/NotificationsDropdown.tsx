@@ -542,7 +542,13 @@ const DesktopNotificationsPanelContent: React.FC<{
 
   return (
     <>
-      <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3">
+      <div 
+        className="flex items-center justify-between border-b border-slate-200 px-5"
+        style={{
+          minHeight: 'calc(3.5rem + env(safe-area-inset-top, 0px))',
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+        }}
+      >
         <div>
           <div className="mb-1 h-1 w-10 rounded-full bg-emerald-400" />
           <h3 className="text-base font-bold text-slate-900 tracking-tight">Notifications</h3>

@@ -147,6 +147,15 @@ export const ArchivedDocumentsView: React.FC = () => {
         });
     };
 
+    const handleClearFilters = () => {
+        setSearchQuery("");
+        setLastApproverFilter("all");
+        setRetentionFilter("all");
+        setStartDate("");
+        setEndDate("");
+        setCurrentPage(1);
+    };
+
     return (
         <div className="h-full flex flex-col space-y-6">
             {isNavigating && <FullPageLoading text="Loading..." />}
@@ -184,6 +193,7 @@ export const ArchivedDocumentsView: React.FC = () => {
                     onStartDateChange={(val) => { setStartDate(val); setCurrentPage(1); }}
                     endDate={endDate}
                     onEndDateChange={(val) => { setEndDate(val); setCurrentPage(1); }}
+                    onClearFilters={handleClearFilters}
                 />
 
                 {/* Table Section */}
@@ -317,6 +327,7 @@ export const ArchivedDocumentsView: React.FC = () => {
                                     icon={<Archive className="h-5 w-5 sm:h-7 sm:w-7 md:h-8 md:w-8 text-slate-300" />}
                                     title="No Archived Documents Found"
                                     description="Try adjusting your filters or clear your search criteria."
+                                    onAction={handleClearFilters}
                                 />
                             )}
                         </div>

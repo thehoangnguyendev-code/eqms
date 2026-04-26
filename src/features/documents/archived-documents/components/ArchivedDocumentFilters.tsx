@@ -16,6 +16,7 @@ interface ArchivedDocumentFiltersProps {
     onStartDateChange: (value: string) => void;
     endDate: string;
     onEndDateChange: (value: string) => void;
+    onClearFilters?: () => void;
 }
 
 export const ArchivedDocumentFilters: React.FC<ArchivedDocumentFiltersProps> = ({
@@ -29,6 +30,7 @@ export const ArchivedDocumentFilters: React.FC<ArchivedDocumentFiltersProps> = (
     onStartDateChange,
     endDate,
     onEndDateChange,
+    onClearFilters,
 }) => {
     const approverOptions = [
         { label: 'All Approvers', value: 'all' },
@@ -43,6 +45,8 @@ export const ArchivedDocumentFilters: React.FC<ArchivedDocumentFiltersProps> = (
         { label: 'Expiring Soon (≤30 days)', value: 'expiring-soon' },
         { label: 'Expired - Needs Destruction', value: 'expired' },
     ];
+
+    const hasActiveFilters = searchQuery || lastApproverFilter !== 'all' || retentionFilter !== 'all' || startDate || endDate;
 
     return (
         <div className="p-4 md:p-5 border-b border-slate-50">
@@ -87,13 +91,23 @@ export const ArchivedDocumentFilters: React.FC<ArchivedDocumentFiltersProps> = (
                 </div>
 
                 {/* Retention Status Filter */}
-                <div>
+                <div className="relative">
                     <Select
                         label="Retention Status"
                         value={retentionFilter}
                         onChange={onRetentionFilterChange}
                         options={retentionOptions}
                     />
+                    
+                    {hasActiveFilters && onClearFilters && (
+                        <button
+                            onClick={onClearFilters}
+                            className="absolute -top-1 right-0 text-[10px] md:text-xs font-semibold text-red-500 hover:text-red-700 transition-colors flex items-center gap-1 group"
+                        >
+                            <Clock className="h-3 w-3 group-hover:animate-spin-once" />
+                            Clear Filter
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

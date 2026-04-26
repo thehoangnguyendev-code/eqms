@@ -93,8 +93,8 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
             )}
             <span>Gap Analysis</span>
           </button>
-          <Button variant="outline" size="sm" onClick={clearAll} className="h-9">
-            Clear all
+          <Button variant="outline" size="sm" onClick={clearAll} className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap">
+            Clear Filters
           </Button>
         </div>
       </div>

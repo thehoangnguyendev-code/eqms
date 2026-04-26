@@ -117,17 +117,6 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
             Gap Analysis
           </span>
         )}
-        {hasActiveFilters && !filters.gapAnalysis && (
-          <Button
-            variant="ghost"
-            size="xs"
-            onClick={onClearFilters}
-            className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-full text-[11px] sm:text-xs"
-          >
-            <FilterX className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" aria-hidden="true" />
-            Clear
-          </Button>
-        )}
       </div>
     </div>
   );

@@ -977,7 +977,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
 
             {/* Desktop collapse toggle aligned on right vertical divider */}
             <div className="hidden md:block absolute inset-y-0 right-0 pointer-events-none">
-              <div className="absolute inset-y-0 right-0 w-px bg-slate-200" aria-hidden="true" />
+              <div className="absolute inset-y-0 right-0 bg-slate-200" aria-hidden="true" />
               <button
                 type="button"
                 onClick={onToggleSidebar}
