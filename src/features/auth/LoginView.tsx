@@ -2,13 +2,13 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
-import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { cn } from "@/components/ui/utils";
 import { resetViewportZoom, blurActiveInput } from "@/utils/viewport";
 import logoImg from "@/assets/images/logo_nobg.png";
 import { IconArrowBigUpFilled } from "@tabler/icons-react";
 import { AUTH_UI } from "./auth-ui";
 import { AuthField, AuthInfoPanel, AuthLayout } from "./components";
+import { AlertModal } from "@/components/ui/modal/AlertModal";
 
 
 // ============================================================================
@@ -37,8 +37,7 @@ const ERROR_MESSAGES = {
 interface LoginViewProps {
   onLogin?: (
     username: string,
-    password: string,
-    rememberMe: boolean
+    password: string
   ) => Promise<{ success: boolean; error?: string }>;
   onForgotPassword?: () => void;
 }
@@ -46,7 +45,6 @@ interface LoginViewProps {
 interface FormData {
   username: string;
   password: string;
-  rememberMe: boolean;
 }
 
 interface FormErrors {
@@ -115,7 +113,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
   const [formData, setFormData] = useState<FormData>({
     username: "",
     password: "",
-    rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({
@@ -124,6 +121,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
   });
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [isLocked, setIsLocked] = useState(false);
   const [isCapsLockOn, setIsCapsLockOn] = useState(false);
   const [typewriterText, setTypewriterText] = useState("");
   const [typewriterPhraseIndex, setTypewriterPhraseIndex] = useState(0);
@@ -142,10 +141,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
     },
     []
   );
-
-  const handleRememberMeChange = useCallback((checked: boolean) => {
-    setFormData((prev) => ({ ...prev, rememberMe: checked }));
-  }, []);
 
   const handleTogglePassword = useCallback(() => {
     setShowPassword((prev) => !prev);
@@ -186,19 +181,32 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
         return;
       }
 
-      const result = await onLogin(formData.username, formData.password, formData.rememberMe);
+      if (isLocked) {
+        setIsLoading(false);
+        return;
+      }
+
+      const result = await onLogin(formData.username, formData.password);
       setIsLoading(false);
 
       if (result.success) {
+        setFailedAttempts(0);
         // Login stage completed (direct auth or moved to 2FA), normalize viewport before navigation.
         blurActiveInput();
         resetViewportZoom();
         return;
       }
 
-      setLoginError(result.error || ERROR_MESSAGES.INVALID_CREDENTIALS);
+      const newFailedAttempts = failedAttempts + 1;
+      setFailedAttempts(newFailedAttempts);
+
+      if (newFailedAttempts >= 5) {
+        setIsLocked(true);
+      } else {
+        setLoginError(result.error || ERROR_MESSAGES.INVALID_CREDENTIALS);
+      }
     },
-    [formData, onLogin]
+    [formData, onLogin, failedAttempts, isLocked]
   );
 
   useEffect(() => {
@@ -243,6 +251,15 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
 
   return (
     <>
+      <AlertModal
+        isOpen={isLocked}
+        onClose={() => setIsLocked(false)}
+        type="error"
+        title="Account Locked"
+        description="Your account has been locked due to multiple failed attempts. Please contact Administrator or use the Reset Password feature."
+        confirmText="Close"
+      />
+
       {isLoading && <FullPageLoading text="Signing in..." />}
       <AuthLayout
         left={
@@ -272,13 +289,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className={AUTH_UI.formStack} noValidate>
+            <form onSubmit={handleSubmit} className={AUTH_UI.formStack} noValidate autoComplete="off">
               <AuthField htmlFor="username" label="Email or Username" error={errors.username}>
                 <input
                   id="username"
                   name="username"
                   type="text"
-                  autoComplete="username"
+                  autoComplete="off"
                   value={formData.username}
                   onChange={(e) => handleInputChange("username", e.target.value)}
                   className={cn(
@@ -299,7 +316,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
+                    autoComplete="new-password"
                     value={formData.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
                     className={cn(
@@ -339,15 +356,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onForgotPassword 
                 </div>
               </AuthField>
 
-              <div className="flex items-center justify-between pt-0.5 sm:pt-1">
-                <Checkbox
-                  id="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleRememberMeChange}
-                  label="Remember me"
-                  labelClassName="text-xs text-slate-600 sm:text-sm"
-                  disabled={isLoading}
-                />
+              <div className="flex items-center justify-end pt-0.5 sm:pt-1">
                 <button
                   type="button"
                   onClick={handleForgotPasswordClick}

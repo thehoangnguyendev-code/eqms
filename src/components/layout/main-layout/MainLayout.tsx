@@ -11,6 +11,7 @@ import { ScrollToTop } from '@/components/ui/scroll-to-top/ScrollToTop';
 import { useResponsiveSidebar } from './useResponsiveSidebar';
 import { useNavigation } from './useNavigation';
 import { resetViewportZoom, isIOSSafari } from '@/utils/viewport';
+import { SessionTimeoutModal } from '@/features/auth/components';
 
 export const MainLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -135,6 +136,9 @@ export const MainLayout: React.FC = () => {
     >
       {/* Network Status Monitor - Global */}
       <NetworkStatusMonitor />
+
+      {/* Global Timeout Monitor */}
+      <SessionTimeoutModal />
 
       {/* Sidebar - Off-canvas on mobile, sticky on desktop */}
       <Sidebar

@@ -16,7 +16,7 @@ import type { LoginChallengeResponse } from '@/services/api/auth';
 import { ROUTES } from './routes.constants';
 
 // Features - Auth (eager load for login page)
-import { LoginView, ForgotPasswordView, TwoFactorView } from '@/features/auth';
+import { LoginView, ForgotPasswordView, TwoFactorView, ForcePasswordChangeView, MfaSetupView } from '@/features/auth';
 import { UnderConstruction } from './UnderConstruction';
 
 // Loading & Domain Routes
@@ -92,8 +92,7 @@ export const AppRoutes: React.FC = () => {
 
   const handleLogin = async (
     username: string,
-    password: string,
-    rememberMe: boolean
+    password: string
   ): Promise<{ success: boolean; error?: string }> => {
     const result = await initiateLogin({ username, password });
 
@@ -214,6 +213,34 @@ export const AppRoutes: React.FC = () => {
         }
       />
       <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordView onBackToLogin={handleBackToLogin} onRequestSubmit={handlePasswordResetRequest} />} />
+      <Route
+        path={ROUTES.FORCE_PASSWORD_CHANGE}
+        element={
+          <ForcePasswordChangeView
+            username="Hoang Nguyen"
+            onBackToLogin={handleBackToLogin}
+            onSubmit={async (data) => {
+              console.log('Password change submitted:', data);
+              await new Promise((r) => setTimeout(r, 1000));
+              navigate(ROUTES.MFA_SETUP);
+              return { success: true };
+            }}
+          />
+        }
+      />
+      <Route
+        path={ROUTES.MFA_SETUP}
+        element={
+          <MfaSetupView
+            email="thehoangnguyen@pharma.com"
+            onBack={() => navigate(ROUTES.FORCE_PASSWORD_CHANGE)}
+            onComplete={() => {
+              console.log('MFA Setup complete');
+              navigate(ROUTES.DASHBOARD);
+            }}
+          />
+        }
+      />
 
       {/* ==================== PROTECTED ROUTES (WITH LAYOUT) ==================== */}
       <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
