@@ -138,7 +138,7 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
                                 value={instruction}
                                 readOnly
                                 rows={4}
-                                className="!text-sm"
+                                className="text-sm"
                             />
                         </div>
                     </div>
@@ -226,7 +226,7 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
                         value={instruction}
                         onChange={(e) => setInstruction?.(e.target.value)}
                         rows={4}
-                        className="!text-sm"
+                        className="text-sm"
                         placeholder="e.g., Focus on Chapter 3 – Cleaning Validation Procedures. Pay special attention to Appendix B for equipment handling."
                     />
                     <p className="text-xs text-slate-500">Provide notes to help employees focus on specific sections or key points in the training materials.</p>

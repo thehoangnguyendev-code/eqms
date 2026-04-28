@@ -219,7 +219,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                 value={title}
                                 onChange={(e) => setTitle?.(e.target.value)}
                                 placeholder="e.g., GMP Basic Training"
-                                className="text-xs md:text-sm"
+                                className="text-sm"
                             />
                         )}
                     </div>
@@ -324,7 +324,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                 onChange={(e) => !readOnly && setInstructor?.(e.target.value)}
                                 placeholder="Enter external instructor name..."
                                 readOnly={readOnly}
-                                className="text-xs md:text-sm"
+                                className="text-sm"
                             />
                         )}
                     </div>
@@ -362,7 +362,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                 min={1}
                                 value={duration}
                                 onChange={(e) => setDuration?.(parseInt(e.target.value) || 1)}
-                                className="text-xs md:text-sm"
+                                className="text-sm"
                             />
                         )}
                     </div>
@@ -403,7 +403,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                         value={meetingLink}
                                         onChange={(e) => setMeetingLink(e.target.value)}
                                         placeholder="e.g., Training Room A"
-                                        className="text-xs md:text-sm"
+                                        className="text-sm"
                                     />
                                 )}
                             </div>
@@ -453,7 +453,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                                         platform === "Microsoft Teams" ? "https://teams.microsoft.com/..." :
                                                             "Enter meeting link..."
                                             }
-                                            className="text-xs md:text-sm"
+                                            className="text-sm"
                                         />
                                     )}
                                 </div>
@@ -476,7 +476,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                 min={1}
                                 value={capacity}
                                 onChange={(e) => setCapacity?.(parseInt(e.target.value) || 1)}
-                                className="text-xs md:text-sm"
+                                className="text-sm"
                             />
                         )}
                     </div>
@@ -495,7 +495,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => !readOnly && setLinkedDocumentId?.(e.target.value)}
                                 placeholder="Document ID, e.g. SOP.0045.02"
                                 readOnly={readOnly}
-                                className="text-xs md:text-sm"
+                                className="text-sm"
                             />
                             <Input
                                 type="text"
@@ -503,7 +503,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => !readOnly && setLinkedDocumentTitle?.(e.target.value)}
                                 placeholder="Document title"
                                 readOnly={readOnly}
-                                className="text-xs md:text-sm"
+                                className="text-sm"
                             />
                         </div>
                         {!readOnly && (
@@ -535,7 +535,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                                 !readOnly && setRecurrence?.({ ...safeRecurrence, intervalMonths: parseInt(e.target.value) || 12 })
                                             }
                                             readOnly={readOnly}
-                                            className="text-xs md:text-sm text-center"
+                                            className="text-sm text-center"
                                         />
                                     </div>
                                     <label className="text-sm text-slate-700">months</label>
@@ -553,7 +553,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
                                                 !readOnly && setRecurrence?.({ ...safeRecurrence, warningPeriodDays: parseInt(e.target.value) || 30 })
                                             }
                                             readOnly={readOnly}
-                                            className="text-xs md:text-sm text-center"
+                                            className="text-sm text-center"
                                         />
                                     </div>
                                     <label className="text-sm text-slate-700">days</label>

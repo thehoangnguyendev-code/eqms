@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/components/ui/utils';
 
 export interface FormSectionProps {
@@ -12,15 +11,13 @@ export interface FormSectionProps {
   className?: string;
   /** Extra content rendered on the right side of the header (e.g. badge, counter) */
   headerRight?: React.ReactNode;
-  /** If true, the entry animation (fade/slide) will be disabled */
-  disableAnimation?: boolean;
 }
 
 /**
  * FormSection — standardized card section used across all detail/form views.
  *
  * Features:
- * - Fade-in animation on mount
+ * - Standardized emerald styling
  * - Optional icon with emerald styling
  * - Optional description subtitle
  * - Optional headerRight slot for badges, counters, etc.
@@ -32,16 +29,12 @@ export const FormSection: React.FC<FormSectionProps> = ({
   children,
   className,
   headerRight,
-  disableAnimation = false,
 }) => {
   return (
-    <motion.div
-      initial={disableAnimation ? false : { opacity: 0, y: 10 }}
-      animate={disableAnimation ? false : { opacity: 1, y: 0 }}
-      transition={disableAnimation ? undefined : { duration: 0.3, ease: "easeOut" }}
-      className={cn("bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden", className)}
+    <div
+      className={cn("bg-white rounded-xl border border-slate-200 overflow-hidden", className)}
     >
-      <div className="flex items-center justify-between gap-2.5 px-5 py-4 border-b border-slate-200 bg-gradient-to-r from-white to-slate-50/50">
+      <div className="flex items-center justify-between gap-2.5 px-5 py-4 border-b border-slate-200 bg-white">
         <div className="flex items-center gap-2.5">
           {icon && (
             <span className="text-emerald-600 flex-shrink-0">
@@ -58,6 +51,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
         {headerRight && <div className="flex-shrink-0">{headerRight}</div>}
       </div>
       <div className="p-5">{children}</div>
-    </motion.div>
+    </div>
   );
 };
+

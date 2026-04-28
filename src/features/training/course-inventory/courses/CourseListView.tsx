@@ -29,7 +29,8 @@ import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { cn } from "@/components/ui/utils";
 import { formatDate } from "@/utils/format";
-import { getStatusColorClass, getTrainingMethodConfig } from "@/utils/status";
+import { StatusBadge, Badge } from "@/components/ui/badge/Badge";
+import { getStatusColorClass, getTrainingMethodConfig, mapStatusToStatusType } from "@/utils/status";
 import {
   TrainingRecord,
   TrainingFilters,
@@ -478,33 +479,36 @@ export const CourseListView: React.FC = () => {
                             {training.trainingMethod && (() => {
                               const cfg = getTrainingMethodConfig(training.trainingMethod);
                               return (
-                                <span className={cn(
-                                  "inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border",
-                                  cfg.className
-                                )}>
+                                <Badge 
+                                  color={cfg.className.includes('purple') ? 'purple' : cfg.className.includes('amber') ? 'amber' : 'slate'}
+                                  size="sm"
+                                  className="font-medium"
+                                >
                                   {cfg.label}
-                                </span>
+                                </Badge>
                               );
                             })()}
                           </td>
                           <td className={tdClass}>
-                            <span className={cn(
-                              "inline-flex items-center gap-1.5 px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border",
-                              getStatusColorClass(training.status)
-                            )}>
-                              {training.status}
-                            </span>
+                            <StatusBadge 
+                              status={mapStatusToStatusType(training.status) as any} 
+                              size="sm"
+                            />
                           </td>
                           <td className={tdClass}>
                             {training.instructor}
                           </td>
                           <td className={tdClass}>
                             {training.recurrence?.enabled ? (
-                              <span className="inline-flex items-center gap-1.5 text-emerald-600 font-medium">
-                                <IconChecks className="h-4 w-4" />
-                                Every {training.recurrence.intervalMonths}m
-                                <span className="text-[10px] text-slate-400 font-normal ml-1">(WP: {training.recurrence.warningPeriodDays}d)</span>
-                              </span>
+                              <div className="flex flex-col gap-0.5">
+                                <span className="inline-flex items-center gap-1.5 text-emerald-600 font-medium">
+                                  <IconChecks className="h-4 w-4" />
+                                  Every {training.recurrence.intervalMonths}m
+                                </span>
+                                <span className="text-xs text-slate-400 font-normal ml-5">
+                                  (WP: {training.recurrence.warningPeriodDays}d)
+                                </span>
+                              </div>
                             ) : (
                               <span className="text-slate-400 italic">Disabled</span>
                             )}

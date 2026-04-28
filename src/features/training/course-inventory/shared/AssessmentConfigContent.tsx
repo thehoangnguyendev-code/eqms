@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from "react";
 import { Upload, Trash2, FileText, Lock, Download } from "lucide-react";
 import { Select } from "@/components/ui/select/Select";
 import { Input } from "@/components/ui/form/ResponsiveForm";
+import { Badge } from "@/components/ui/badge/Badge";
 import { cn } from "@/components/ui/utils";
 
 import { getFileIconSrc, defaultFileIcon } from "@/utils/fileIcons";
@@ -97,10 +98,9 @@ const FileUploadZone: React.FC<{
             <div className="flex items-center gap-2">
                 <label className="text-xs sm:text-sm font-medium text-slate-700">{label}</label>
                 {isRestricted && (
-                    <span className="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full border border-amber-100">
-                        <Lock className="h-3 w-3" />
+                    <Badge color="amber" size="xs" pill icon={<Lock className="h-3 w-3" />}>
                         Admin/Reviewer only
-                    </span>
+                    </Badge>
                 )}
             </div>
             <p className="text-xs text-slate-500">{description}</p>
@@ -277,10 +277,9 @@ export const AssessmentConfigContent: React.FC<AssessmentConfigContentProps> = (
                             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                 Answer Key
                             </span>
-                            <span className="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full border border-amber-100">
-                                <Lock className="h-3 w-3" />
+                            <Badge color="amber" size="xs" pill icon={<Lock className="h-3 w-3" />}>
                                 Restricted
-                            </span>
+                            </Badge>
                         </div>
                         {answerKeyName ? (
                             <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
@@ -340,7 +339,7 @@ export const AssessmentConfigContent: React.FC<AssessmentConfigContentProps> = (
                                     value={passingScore}
                                     disabled
                                     onChange={() => {}}
-                                    className="text-xs md:text-sm"
+                                    className="text-sm"
                                 />
                                 <p className="text-xs text-slate-500">
                                     {passingGradeType === "score_10"
@@ -366,7 +365,7 @@ export const AssessmentConfigContent: React.FC<AssessmentConfigContentProps> = (
                                 value={maxAttempts}
                                 disabled
                                 onChange={() => {}}
-                                className="text-xs md:text-sm"
+                                className="text-sm"
                             />
                             <p className="text-xs text-slate-500">Maximum number of retake attempts allowed.</p>
                         </div>
@@ -436,7 +435,7 @@ export const AssessmentConfigContent: React.FC<AssessmentConfigContentProps> = (
                                 max={getPassingScoreMax()}
                                 step={passingGradeType === "score_10" ? 0.5 : 1}
                                 value={passingScore}
-                                className="text-xs md:text-sm"
+                                className="text-sm"
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                     const val = parseFloat(e.target.value);
                                     if (!isNaN(val)) {
@@ -468,7 +467,7 @@ export const AssessmentConfigContent: React.FC<AssessmentConfigContentProps> = (
                             min={1}
                             max={10}
                             value={maxAttempts}
-                            className="text-xs md:text-sm"
+                            className="text-sm"
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMaxAttempts?.(parseInt(e.target.value) || 1)}
                         />
                         <p className="text-xs text-slate-500">Maximum number of retake attempts allowed.</p>

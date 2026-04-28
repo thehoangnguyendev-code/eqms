@@ -134,7 +134,6 @@ export const ExportTrainingRecordsView: React.FC = () => {
       <FormSection
         title="Export Configuration"
         icon={<Settings className="h-4 w-4" />}
-        disableAnimation
       >
         <div className="space-y-6">
           {/* Row 1: Report Type & Department */}
