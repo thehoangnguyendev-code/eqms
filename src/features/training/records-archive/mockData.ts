@@ -39,16 +39,6 @@ export const MOCK_EMPLOYEE_TRAINING_FILES: EmployeeTrainingFile[] = [
         status: "Pending",
       }
     ],
-    authorizations: [
-      {
-        id: "auth-1",
-        taskTitle: "Authorized to Approve Batch Release",
-        authorizedDate: "2026-01-15",
-        expiryDate: "2027-01-15",
-        status: "Active",
-        signedBy: "Site QA Director"
-      }
-    ],
     completedCourses: [
       {
         id: "cc-1-1",

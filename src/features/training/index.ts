@@ -39,7 +39,7 @@ export { MyTrainingView } from './my-training';
 // Records & Archive
 export {
   EmployeeTrainingFilesView,
-  ExportRecordsView,
+  ExportTrainingRecordsView,
   EmployeeDossierView,
 } from './records-archive';
 

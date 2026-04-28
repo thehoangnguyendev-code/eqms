@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   X,
@@ -173,28 +173,42 @@ const HistoryNode: React.FC<HistoryNodeProps> = ({
 
 // ─── Main Drawer ──────────────────────────────────────────────────────────────
 export interface LearningHistoryDrawerProps {
-  employee: EmployeeTrainingFile;
+  isOpen?: boolean;
+  employee: EmployeeTrainingFile | null;
   onClose: () => void;
   onViewCertificate: (course: CompletedCourseRecord) => void;
 }
 
 export const LearningHistoryDrawer: React.FC<LearningHistoryDrawerProps> = ({
+  isOpen,
   employee,
   onClose,
   onViewCertificate
 }) => {
   const [isClosing, setIsClosing] = useState(false);
   const isMobile = useIsMobile();
-  const history = employee.completedCourses ?? [];
+
+  const history = employee?.completedCourses ?? [];
 
   // Sort by date (descending)
-  const sorted = [...history].sort((a, b) =>
+  const sorted = useMemo(() => [...history].sort((a, b) =>
     new Date(b.completionDate).getTime() - new Date(a.completionDate).getTime()
-  );
+  ), [history]);
 
-  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(
-    new Set(sorted[0]?.id ? [sorted[0].id] : [])
-  );
+  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
+
+  // Update expandedNodes when sorted changes and drawer opens
+  useEffect(() => {
+    if (isOpen && employee && sorted.length > 0 && expandedNodes.size === 0) {
+      setExpandedNodes(new Set([sorted[0].id]));
+    }
+  }, [isOpen, employee, sorted]);
+
+  // Dragging / Bottom Sheet State
+  const [drawerHeight, setDrawerHeight] = useState(88); // vh
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Early return logic moved below hooks
 
   const isAllExpanded = expandedNodes.size === sorted.length && sorted.length > 0;
 
@@ -218,9 +232,6 @@ export const LearningHistoryDrawer: React.FC<LearningHistoryDrawerProps> = ({
     });
   };
 
-  // Dragging / Bottom Sheet State
-  const [drawerHeight, setDrawerHeight] = useState(88); // vh
-  const [isDragging, setIsDragging] = useState(false);
   const dragStartY = React.useRef(0);
   const dragStartHeight = React.useRef(88);
 
@@ -290,6 +301,8 @@ export const LearningHistoryDrawer: React.FC<LearningHistoryDrawerProps> = ({
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  if (!isOpen || !employee) return null;
 
   return createPortal(
     <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center md:justify-end">

@@ -12,6 +12,8 @@ export interface FormSectionProps {
   className?: string;
   /** Extra content rendered on the right side of the header (e.g. badge, counter) */
   headerRight?: React.ReactNode;
+  /** If true, the entry animation (fade/slide) will be disabled */
+  disableAnimation?: boolean;
 }
 
 /**
@@ -30,12 +32,13 @@ export const FormSection: React.FC<FormSectionProps> = ({
   children,
   className,
   headerRight,
+  disableAnimation = false,
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      initial={disableAnimation ? false : { opacity: 0, y: 10 }}
+      animate={disableAnimation ? false : { opacity: 1, y: 0 }}
+      transition={disableAnimation ? undefined : { duration: 0.3, ease: "easeOut" }}
       className={cn("bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden", className)}
     >
       <div className="flex items-center justify-between gap-2.5 px-5 py-4 border-b border-slate-200 bg-gradient-to-r from-white to-slate-50/50">

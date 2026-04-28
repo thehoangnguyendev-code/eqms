@@ -13,7 +13,7 @@ import {
 import { FormSection } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/components/ui/utils";
-import type { EmployeeTrainingFile } from "../../types";
+import type { EmployeeTrainingFile } from "@/features/training/types";
 
 interface DossierOverviewTabProps {
   employee: EmployeeTrainingFile;

@@ -16,15 +16,6 @@ export interface OJTRecord {
   esignReason?: string;
 }
 
-export interface TaskAuthorization {
-  id: string;
-  taskTitle: string;
-  authorizedDate: string;
-  expiryDate?: string;
-  status: 'Active' | 'Expired' | 'Suspended';
-  signedBy: string;
-}
-
 // ─── Employee Training File ───────────────────────────────────────────────────
 export interface EmployeeTrainingFile {
   id: string;
@@ -43,7 +34,6 @@ export interface EmployeeTrainingFile {
   nextDeadline?: string; // Added to prioritise overdue/obsolete
   averageScore: number;
   ojtRecords?: OJTRecord[];
-  authorizations?: TaskAuthorization[];
   isNewHire?: boolean; // For hero banner logic
   employeeType: 'Internal' | 'Contractor'; // Added for EU-GMP
   qualificationStatus?: 'Qualified' | 'In Training' | 'At Risk'; // Added for EU-GMP

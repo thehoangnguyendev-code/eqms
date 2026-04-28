@@ -1,16 +1,16 @@
 import React from "react";
-import { 
-  BookOpen, 
-  FileText, 
-  Calendar, 
-  History, 
-  CheckCircle2, 
-  UserCircle, 
-  ShieldCheck 
+import {
+  BookOpen,
+  FileText,
+  Calendar,
+  History,
+  CheckCircle2,
+  UserCircle,
+  ShieldCheck
 } from "lucide-react";
 import { Badge, StatusBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button/Button";
-import type { EmployeeTrainingFile } from "../../types";
+import type { EmployeeTrainingFile } from "@/features/training/types";
 
 interface DossierSOPsTabProps {
   employee: EmployeeTrainingFile;
@@ -21,7 +21,7 @@ export const DossierSOPsTab: React.FC<DossierSOPsTabProps> = ({ employee }) => {
     <div className="p-6 md:p-8 space-y-6 animate-in fade-in duration-300">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-slate-900 tracking-tight flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-emerald-600" />
             Mandatory SOP Training Records
           </h3>
@@ -39,7 +39,7 @@ export const DossierSOPsTab: React.FC<DossierSOPsTabProps> = ({ employee }) => {
                   <FileText className="h-4 w-4" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-900 truncate leading-tight group-hover:text-slate-900">
+                  <p className="text-xs md:text-sm font-medium text-slate-900 whitespace-nowrap truncate leading-tight group-hover:text-slate-900">
                     SOP-QA-00{i}: Implementation of Environmental Monitoring Program
                   </p>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2 text-[10px] text-slate-500 font-medium">

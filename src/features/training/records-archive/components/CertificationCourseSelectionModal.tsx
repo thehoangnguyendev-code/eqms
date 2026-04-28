@@ -88,8 +88,8 @@ export const CertificationCourseSelectionModal: React.FC<CertificationCourseSele
                 {/* Course Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900 truncate">{course.courseCode}</span>
-                    <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">{course.version}</span>
+                    <span className="text-xs md:text-sm font-medium text-slate-900 whitespace-nowrap">{course.courseCode}</span>
+                    <span className="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] md:text-xs text-slate-500 mt-0.5">{course.version}</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5 font-medium truncate">
                     <span>{course.courseTitle}</span>
@@ -103,14 +103,14 @@ export const CertificationCourseSelectionModal: React.FC<CertificationCourseSele
                   {course.status === "Pass" ? (
                     course.pendingSignaturesCount === 0 ? (
                       isSelected ? (
-                        <div className="flex items-center gap-1 text-emerald-600 font-bold text-[10px] uppercase tracking-wider">
+                        <div className="flex items-center gap-1 text-emerald-600 font-bold text-[10px] tracking-wider">
                           Selected
                         </div>
                       ) : (
                         <Badge color="emerald" size="xs">Eligible</Badge>
                       )
                     ) : (
-                      <div className="flex items-center gap-1 text-amber-600 font-bold text-[10px] uppercase">
+                      <div className="flex items-center gap-1 text-amber-600 font-bold text-[10px]">
                         <AlertCircle className="h-3 w-3" />
                         {course.pendingSignaturesCount} sign pending
                       </div>

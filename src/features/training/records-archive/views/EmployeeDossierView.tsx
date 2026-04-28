@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   MapPin,
   Briefcase,
-  ShieldCheck,
   Award,
   UserCircle,
   FileText,
@@ -11,21 +10,17 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { Button } from "@/components/ui/button/Button";
-import { Card } from "@/components/ui/card";
 import { Badge, StatusBadge } from "@/components/ui/badge";
 import { ESignatureModal } from "@/components/ui/esign-modal/ESignatureModal";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { FormSection } from "@/components/ui/form";
 import { TabNav, TabItem } from "@/components/ui/tabs/TabNav";
-import { MOCK_EMPLOYEE_TRAINING_FILES } from "./mockData";
+import { MOCK_EMPLOYEE_TRAINING_FILES } from "../mockData";
 import { employeeDossier } from "@/components/ui/breadcrumb/breadcrumbs.config";
-import { DossierOverviewTab } from "./tabs/DossierOverviewTab";
-import { DossierSOPsTab } from "./tabs/DossierSOPsTab";
-import { DossierOJTTab } from "./tabs/DossierOJTTab";
-import { DossierAuthTab } from "./tabs/DossierAuthTab";
-
-// Tab types
-type TabType = "overview" | "sops" | "ojt" | "auth";
+import { DossierOverviewTab } from "../components/dossier-tabs/DossierOverviewTab";
+import { DossierSOPsTab } from "../components/dossier-tabs/DossierSOPsTab";
+import { DossierOJTTab } from "../components/dossier-tabs/DossierOJTTab";
+import type { EmployeeTrainingFile } from "@/features/training/types";
 
 export const EmployeeDossierView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -67,7 +62,6 @@ export const EmployeeDossierView: React.FC = () => {
     { id: "overview", label: "General Overview", icon: UserCircle },
     { id: "sops", label: "SOP Training", icon: FileText, count: 5 },
     { id: "ojt", label: "OJT Verification", icon: Pickaxe, count: employee.ojtRecords?.length },
-    { id: "auth", label: "Authorizations", icon: ShieldCheck, count: employee.authorizations?.length },
   ];
 
   const handleVerifyOJT = (ojt: any) => {
@@ -89,8 +83,6 @@ export const EmployeeDossierView: React.FC = () => {
         return <DossierSOPsTab employee={employee} />;
       case "ojt":
         return <DossierOJTTab employee={employee} onVerifyOJT={handleVerifyOJT} />;
-      case "auth":
-        return <DossierAuthTab employee={employee} />;
       default:
         return null;
     }

@@ -1,3 +1,3 @@
-export { EmployeeTrainingFilesView } from './EmployeeTrainingFilesView';
-export { ExportRecordsView } from './ExportRecordsView';
-export { EmployeeDossierView } from './EmployeeDossierView';
+export { EmployeeTrainingFilesView } from './views/EmployeeTrainingFilesView';
+export { ExportTrainingRecordsView } from './views/ExportTrainingRecordsView';
+export { EmployeeDossierView } from './views/EmployeeDossierView';

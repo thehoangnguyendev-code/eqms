@@ -14,7 +14,7 @@ const CURRENT_TRAINER_ID = "trainer-001";
 interface PendingSignaturesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  employee: EmployeeTrainingFile;
+  employee: EmployeeTrainingFile | null;
   pendingRecords: PendingSignatureRecord[];
   onSigned: (recordId: string) => void;
 }
@@ -123,6 +123,8 @@ export const PendingSignaturesModal: React.FC<PendingSignaturesModalProps> = ({
     toggle: toggleRowDropdown,
     close: closeRowDropdown,
   } = usePortalDropdown();
+
+  if (!isOpen || !employee) return null;
 
   const handleRemind = (id: string) => setRemindedIds((prev) => new Set(prev).add(id));
   const handleRemindAll = () => setRemindedIds(new Set(pendingRecords.map((r) => r.id)));

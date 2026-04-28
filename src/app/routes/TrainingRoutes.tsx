@@ -17,9 +17,9 @@ const TrainingMatrixView = lazy(() => import('@/features/training').then(m => ({
 const CourseStatusView = lazy(() => import('@/features/training').then(m => ({ default: m.CourseStatusView })));
 const AssignTrainingView = lazy(() => import('@/features/training').then(m => ({ default: m.AssignTrainingView })));
 const AssignmentRulesView = lazy(() => import('@/features/training').then(m => ({ default: m.AssignmentRulesView })));
-const EmployeeTrainingFilesView = lazy(() => import('@/features/training/records-archive/EmployeeTrainingFilesView').then(m => ({ default: m.EmployeeTrainingFilesView })));
-const EmployeeDossierView = lazy(() => import('@/features/training/records-archive/EmployeeDossierView').then(m => ({ default: m.EmployeeDossierView })));
-const ExportRecordsView = lazy(() => import('@/features/training/records-archive/ExportRecordsView').then(m => ({ default: m.ExportRecordsView })));
+const EmployeeTrainingFilesView = lazy(() => import('@/features/training').then(m => ({ default: m.EmployeeTrainingFilesView })));
+const EmployeeDossierView = lazy(() => import('@/features/training').then(m => ({ default: m.EmployeeDossierView })));
+const ExportRecordsView = lazy(() => import('@/features/training').then(m => ({ default: m.ExportTrainingRecordsView })));
 const CreateCourseView = lazy(() => import('@/features/training').then(m => ({ default: m.CreateCourseView })));
 const PendingReviewView = lazy(() => import('@/features/training/course-inventory/courses/pending-review/PendingReviewView').then(m => ({ default: m.PendingReviewView })));
 const PendingApprovalView = lazy(() => import('@/features/training/course-inventory/courses/pending-approval/PendingApprovalView').then(m => ({ default: m.PendingApprovalView })));

@@ -1,18 +1,18 @@
 import React from "react";
-import { 
-  Pickaxe, 
-  Plus, 
-  Verified, 
-  Clock, 
-  UserCircle, 
-  Calendar, 
-  FileSignature, 
-  Check 
+import {
+  Pickaxe,
+  Plus,
+  Verified,
+  Clock,
+  UserCircle,
+  Calendar,
+  FileSignature,
+  Check
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/components/ui/utils";
-import type { EmployeeTrainingFile } from "../../types";
+import type { EmployeeTrainingFile } from "@/features/training/types";
 
 interface DossierOJTTabProps {
   employee: EmployeeTrainingFile;
@@ -24,7 +24,7 @@ export const DossierOJTTab: React.FC<DossierOJTTabProps> = ({ employee, onVerify
     <div className="p-6 md:p-8 space-y-6 animate-in fade-in duration-300">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-slate-900 tracking-tight flex items-center gap-2">
             <Pickaxe className="h-4 w-4 text-emerald-600" />
             Practical Competence (OJT)
           </h3>
@@ -47,7 +47,7 @@ export const DossierOJTTab: React.FC<DossierOJTTabProps> = ({ employee, onVerify
                   {record.status === 'Completed' ? <Verified className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-900 truncate leading-tight group-hover:text-slate-900">
+                  <p className="text-xs md:text-sm font-medium text-slate-900 whitespace-nowrap truncate leading-tight group-hover:text-slate-900">
                     {record.taskName}
                   </p>
                   <div className="flex items-center gap-3 mt-1.5 text-[10px] text-slate-500 font-medium whitespace-nowrap">

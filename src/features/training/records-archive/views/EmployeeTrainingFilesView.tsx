@@ -1,207 +1,43 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   Users,
-  Award,
   Download,
-  CheckCircle2,
-  XCircle,
-  MoreVertical,
   ChevronUp,
   ChevronDown,
   X,
   History,
-  FileSignature,
-  FileText,
-  Mail,
-  Archive,
-  Fingerprint,
-  GraduationCap,
-  TrendingUp,
   AlertCircle,
   AlertTriangle,
   ArrowRight,
   Zap,
-  Info,
-  ShieldCheck
+  ShieldCheck,
+  MoreVertical
 } from "lucide-react";
-import { IconInfoCircle, IconFileDownload, IconHistory, IconMatrix } from "@tabler/icons-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { employeeTrainingFiles } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
-import { FullPageLoading, SectionLoading } from "@/components/ui/loading/Loading";
+import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { cn } from "@/components/ui/utils";
-import { Badge } from "@/components/ui/badge/Badge"; // Added
+import { Badge } from "@/components/ui/badge/Badge";
 import {
   useNavigateWithLoading,
   useTableFilter,
   useTableDragScroll,
   usePortalDropdown,
-  PortalDropdownPosition
 } from "@/hooks";
 import { ROUTES } from "@/app/routes.constants";
-import { MOCK_EMPLOYEE_TRAINING_FILES, MOCK_PENDING_SIGNATURES } from "./mockData";
-import { PendingSignaturesModal } from "./components/PendingSignaturesModal";
-import { CertificationCourseSelectionModal } from "./components/CertificationCourseSelectionModal";
-import { CertificatePreviewModal } from "./components/CertificatePreviewModal";
-import { LearningHistoryDrawer } from "./components/LearningHistoryDrawer";
-import type { EmployeeTrainingFile, EmployeeFilters, PendingSignatureRecord, CompletedCourseRecord } from "../types";
-
-// ── Dropdown Menu for Employee Records ────────────────────────────
-interface EmployeeDropdownMenuProps {
-  employee: EmployeeTrainingFile;
-  isOpen: boolean;
-  onClose: () => void;
-  position: PortalDropdownPosition;
-  onNavigate: (path: string) => void;
-  onOpenPendingSignatures: (employee: EmployeeTrainingFile) => void;
-  onGenerateCertification: (employee: EmployeeTrainingFile) => void;
-  onOpenHistory: (employee: EmployeeTrainingFile) => void;
-  pendingSignaturesCount: number;
-}
-
-const EmployeeDropdownMenu: React.FC<EmployeeDropdownMenuProps> = ({
-  employee,
-  isOpen,
-  onClose,
-  position,
-  onNavigate,
-  onOpenPendingSignatures,
-  onGenerateCertification,
-  onOpenHistory,
-  pendingSignaturesCount,
-}) => {
-  if (!isOpen) return null;
-
-  const menuItems = [
-    {
-      icon: IconMatrix,
-      label: "Go to Matrix for Gaps",
-      onClick: () => {
-        onNavigate(`${ROUTES.TRAINING.TRAINING_MATRIX}?search=${encodeURIComponent(employee.employeeName)}`);
-        onClose();
-      },
-      color: "text-slate-500"
-    },
-    ...(employee.coursesObsolete > 0 ? [{
-      icon: AlertTriangle,
-      label: "View Obsolete Details",
-      onClick: () => {
-        console.log("View obsolete details for:", employee.id);
-        onClose();
-      },
-      color: "text-slate-500"
-    }] : []),
-    {
-      icon: FileSignature,
-      label: "Pending Signatures",
-      badge: pendingSignaturesCount > 0 ? pendingSignaturesCount : null,
-      onClick: () => {
-        onOpenPendingSignatures(employee);
-        onClose();
-      },
-      color: "text-slate-500"
-    },
-    {
-      icon: Award,
-      label: "Generate Certification",
-      onClick: () => {
-        onGenerateCertification(employee);
-        onClose();
-      },
-      color: "text-slate-500"
-    },
-    {
-      icon: IconInfoCircle,
-      label: "View Dossier",
-      onClick: () => {
-        onNavigate(ROUTES.TRAINING.EMPLOYEE_DOSSIER(employee.id));
-        onClose();
-      },
-      color: "text-slate-500"
-    },
-    {
-      icon: IconHistory,
-      label: "Version History",
-      onClick: () => {
-        onOpenHistory(employee);
-        onClose();
-      },
-      color: "text-slate-500 font-bold"
-    },
-    {
-      icon: IconFileDownload,
-      label: "Export Training Dossier",
-      onClick: () => {
-        console.log("Export dossier for:", employee.id);
-        onClose();
-      },
-      color: "text-slate-500"
-    },
-    {
-      icon: Mail,
-      label: "Send Reminder",
-      onClick: () => {
-        console.log("Send reminder to:", employee.id);
-        onClose();
-      },
-      color: "text-slate-500"
-    },
-    {
-      icon: Archive,
-      label: "Archive Record",
-      onClick: () => {
-        console.log("Archive:", employee.id);
-        onClose();
-      },
-      color: "text-slate-500 hover:text-red-600 hover:bg-red-50"
-    },
-  ];
-
-  return createPortal(
-    <>
-      <div
-        className="fixed inset-0 z-40 animate-in fade-in duration-150"
-        onClick={(e) => { e.stopPropagation(); onClose(); }}
-      />
-      <div
-        className="absolute z-50 min-w-[220px] py-1 rounded-lg border border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
-        style={position.style}
-      >
-        <div className="py-1">
-          {menuItems.map((item, i) => {
-            const mi = item as any;
-            const Icon = mi.icon;
-            return (
-              <button
-                key={i}
-                onClick={(e) => { e.stopPropagation(); mi.onClick(); }}
-                className={cn(
-                  "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors hover:bg-slate-50 active:bg-slate-100",
-                  mi.color
-                )}
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className="font-medium flex-1 text-left">{mi.label}</span>
-                {mi.badge != null && (
-                  <span className="ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
-                    {mi.badge}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </>,
-    document.body
-  );
-};
+import { MOCK_EMPLOYEE_TRAINING_FILES, MOCK_PENDING_SIGNATURES } from "../mockData";
+import { PendingSignaturesModal } from "../components/PendingSignaturesModal";
+import { CertificationCourseSelectionModal } from "../components/CertificationCourseSelectionModal";
+import { CertificatePreviewModal } from "../components/CertificatePreviewModal";
+import { LearningHistoryDrawer } from "../components/LearningHistoryDrawer";
+import { EmployeeDropdownMenu } from "../components/EmployeeDropdownMenu";
+import type { EmployeeTrainingFile, EmployeeFilters, PendingSignatureRecord, CompletedCourseRecord } from "@/features/training/types";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const EmployeeTrainingFilesView: React.FC = () => {
   const { navigateTo, isNavigating } = useNavigateWithLoading();
@@ -223,6 +59,14 @@ export const EmployeeTrainingFilesView: React.FC = () => {
     complianceStatus: "All",
   });
   const [isTableLoading, setIsTableLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, []);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({
     key: "employeeId",
     direction: "asc",
@@ -622,8 +466,8 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                           </td>
                           <td className={cn(tdClass)}>
                             <div className="flex flex-col">
-                              <span className="font-semibold text-slate-900 leading-tight">{emp.employeeName}</span>
-                              <span className="text-[10px] md:text-xs text-slate-500 mt-0.5">{emp.jobPosition}</span>
+                              <span className="text-xs md:text-sm font-medium text-slate-900 whitespace-nowrap">{emp.employeeName}</span>
+                              <span className="text-[10px] md:text-xs text-slate-500 mt-0.5 whitespace-nowrap">{emp.jobPosition}</span>
                             </div>
                           </td>
                           <td className={tdClass}>
@@ -683,7 +527,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                               </div>
                             </div>
                           </td>
-                          <td className={cn(tdClass, "text-center font-bold text-slate-700")}>{emp.averageScore === 0 ? "-" : `${emp.averageScore}%`}</td>
+                          <td className={cn(tdClass, "text-center text-xs md:text-sm font-semibold text-slate-900")}>{emp.averageScore === 0 ? "-" : `${emp.averageScore}%`}</td>
                           <td className={tdClass}>
                             <div className="flex flex-col">
                               <span className={cn(
@@ -785,7 +629,6 @@ export const EmployeeTrainingFilesView: React.FC = () => {
 
       {/* Handle Case where selection modal is closed and we open preview directly or from state */}
       {!certSelectionEmployee && certCourseTarget && (() => {
-        // Find the employee again if needed, or we can use a dedicated state for the 'employee in preview'
         const emp = MOCK_EMPLOYEE_TRAINING_FILES.find(e => e.employeeId === certCourseTarget.traineeId);
         return emp ? (
           <CertificatePreviewModal
@@ -800,22 +643,24 @@ export const EmployeeTrainingFilesView: React.FC = () => {
       <PendingSignaturesModal
         isOpen={!!pendingSigEmployee}
         onClose={() => setPendingSigEmployee(null)}
-        employee={pendingSigEmployee || MOCK_EMPLOYEE_TRAINING_FILES[0]}
+        employee={pendingSigEmployee}
         pendingRecords={pendingSigEmployee ? (pendingSignatures[pendingSigEmployee.id] ?? []) : []}
-        onSigned={(recordId) => pendingSigEmployee && handleSignedRecord(pendingSigEmployee.id, recordId)}
+        onSigned={(recordId) => {
+          if (pendingSigEmployee) handleSignedRecord(pendingSigEmployee.id, recordId);
+        }}
       />
 
-      {historyEmployee && (
-        <LearningHistoryDrawer
-          employee={historyEmployee}
-          onClose={() => setHistoryEmployee(null)}
-          onViewCertificate={(course) => {
-            setCertCourseTarget(course);
-          }}
-        />
-      )}
+      <LearningHistoryDrawer
+        isOpen={!!historyEmployee}
+        onClose={() => setHistoryEmployee(null)}
+        employee={historyEmployee}
+        onViewCertificate={(course) => setCertCourseTarget(course)}
+      />
 
-      {isNavigating && <FullPageLoading text="Opening dossier..." />}
+      {/* ─── Loading Overlays ─────────────────────────────────── */}
+      {(isNavigating || initialLoading) && (
+        <FullPageLoading text={initialLoading ? "Fetching Training Archive..." : "Loading..."} />
+      )}
     </div>
   );
 };
