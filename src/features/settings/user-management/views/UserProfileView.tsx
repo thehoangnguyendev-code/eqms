@@ -134,7 +134,7 @@ export const UserProfileView: React.FC = () => {
           </div>
         )}
         <div className="flex flex-col sm:flex-row">
-          <div className="flex items-center gap-4 p-6 sm:border-r border-b sm:border-b-0 border-emerald-100/70 sm:min-w-[320px] sm:max-w-[44%] bg-gradient-to-b from-emerald-50/50 to-transparent">
+          <div className="flex items-center gap-4 p-4 md:p-5 sm:border-r border-b sm:border-b-0 border-emerald-100/70 sm:min-w-[320px] sm:max-w-[44%] bg-gradient-to-b from-emerald-50/50 to-transparent">
             <div className="h-16 w-16 rounded-full bg-emerald-600 shadow-md flex items-center justify-center flex-shrink-0">
               <span className="text-xl font-bold text-white">{initials}</span>
             </div>
@@ -177,7 +177,7 @@ export const UserProfileView: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="flex-1 p-6 grid grid-cols-2 gap-x-8 gap-y-5 content-center">
+          <div className="flex-1 p-4 md:p-5 grid grid-cols-2 gap-x-8 gap-y-5 content-center">
             <div>
               <p className="text-xs font-medium text-slate-400 mb-0.5">Employee Code</p>
               <p className="text-sm font-bold text-slate-800">{user.employeeCode}</p>
@@ -204,7 +204,7 @@ export const UserProfileView: React.FC = () => {
           activeTab={activeTab}
           onChange={(id) => setActiveTab(id as MainTab)}
         />
-        <div className="p-5 animate-in fade-in duration-200">
+        <div className="p-4 md:p-5 animate-in fade-in duration-200">
           {activeTab === "personal" && (
             <PersonalTab
               user={user}

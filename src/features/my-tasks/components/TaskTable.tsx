@@ -73,7 +73,7 @@ export const TaskTable: React.FC<{
         <table className="w-full min-w-max border-separate border-spacing-0 text-left">
           <thead>
             <tr>
-              <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16 text-center">
+              <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16 text-center">
                 No.
               </th>
               {[
@@ -95,7 +95,7 @@ export const TaskTable: React.FC<{
                     key={col.id}
                     onClick={canSort ? () => onSort(col.id) : undefined}
                     className={cn(
-                      "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                      "sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
                       canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group"
                     )}
                   >
@@ -111,7 +111,7 @@ export const TaskTable: React.FC<{
                   </th>
                 );
               })}
-              <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+              <th className="sticky top-0 right-0 z-30 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                 Action
               </th>
             </tr>
@@ -120,7 +120,7 @@ export const TaskTable: React.FC<{
             {tasks.map((task, idx) => {
               const remainingDays = calculateDaysLeft(task.dueDate);
               const progressPercentage = task.progress || 0;
-              const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+              const tdClass = "py-3 px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
               return (
                 <tr
@@ -213,7 +213,7 @@ export const TaskTable: React.FC<{
                   <td
                     onClick={(e) => e.stopPropagation()}
                     className={cn(
-                      "sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors",
+                      "sticky right-0 z-10 bg-white border-b border-slate-200 py-3 px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors",
                       task.status === "Completed" && "completed-row-cell"
                     )}
                   >

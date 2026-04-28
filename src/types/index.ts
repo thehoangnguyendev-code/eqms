@@ -5,6 +5,8 @@
 
 // ============ App Types ============
 export * from './app';
+export * from './roles';
+import { UserRole } from './roles';
 
 // ============ Document Types ============
 import type { DocumentStatus } from '@/features/documents/types';
@@ -81,10 +83,10 @@ export interface User {
   role: UserRole;
   department?: string;
   avatar?: string;
+  permissions?: string[];
   createdAt?: string;
 }
 
-export type UserRole = 'admin' | 'manager' | 'user' | 'viewer';
 
 export interface LoginCredentials {
   username: string;

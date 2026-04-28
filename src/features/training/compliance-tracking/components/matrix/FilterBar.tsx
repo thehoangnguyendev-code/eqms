@@ -38,7 +38,7 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
     });
 
   return (
-    <div className="p-4 lg:p-5 space-y-4 bg-slate-50/30 border-b border-slate-100">
+    <div className="p-4 md:p-5 space-y-4 bg-slate-50/30 border-b border-slate-100">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-end">
         <div className="w-full">
           <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">

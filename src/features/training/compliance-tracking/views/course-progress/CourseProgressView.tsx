@@ -334,7 +334,7 @@ export const CourseProgressView: React.FC = () => {
       />
 
       {/* Course Info Card */}
-      <div className="bg-white p-4 lg:p-6 rounded-xl border border-slate-200 shadow-sm overflow-hidden relative">
+      <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm overflow-hidden relative">
         <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 -mr-16 -mt-16 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10">

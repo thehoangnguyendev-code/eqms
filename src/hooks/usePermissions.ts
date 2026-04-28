@@ -4,7 +4,8 @@
  */
 
 import { useMemo } from 'react';
-import { useAuth } from '@/contexts/AuthContext'; // Assuming AuthContext provides user role/perms
+import { useAuth } from '@/contexts/AuthContext';
+import { UserRole } from '@/types';
 
 export type Action = 'create' | 'read' | 'update' | 'delete' | 'approve' | 'reject' | 'export' | 'admin';
 export type Module = 
@@ -24,7 +25,7 @@ export function usePermissions() {
    * Example: hasPermission('deviations:approve')
    */
   const hasPermission = (permission: string): boolean => {
-    if (user?.role === 'SuperAdmin') return true;
+    if ((user?.role as UserRole) === 'SuperAdmin') return true;
     return permissions.includes(permission);
   };
 
@@ -34,7 +35,7 @@ export function usePermissions() {
    */
   const can = (action: Action, module: Module): boolean => {
     // Admin bypass
-    if (user?.role === 'SuperAdmin') return true;
+    if ((user?.role as UserRole) === 'SuperAdmin') return true;
 
     // Standard permission naming convention: "module:action"
     const permissionKey = `${module}:${action}`;
@@ -42,11 +43,11 @@ export function usePermissions() {
     // Core Logic
     switch (action) {
       case 'admin':
-        return user?.role === 'Admin' || user?.role === 'SuperAdmin';
+        return (user?.role as UserRole) === 'Admin' || (user?.role as UserRole) === 'SuperAdmin';
       case 'approve':
       case 'reject':
         // Only specific roles can approve in most GMP systems
-        return (user?.role === 'QA' || user?.role === 'Manager') && hasPermission(permissionKey);
+        return ((user?.role as UserRole) === 'QA' || (user?.role as UserRole) === 'Manager') && hasPermission(permissionKey);
       default:
         return hasPermission(permissionKey);
     }
@@ -58,7 +59,7 @@ export function usePermissions() {
     permissions,
     hasPermission,
     can,
-    isAdmin: user?.role === 'Admin' || user?.role === 'SuperAdmin',
-    isQA: user?.role === 'QA',
+    isAdmin: (user?.role as UserRole) === 'Admin' || (user?.role as UserRole) === 'SuperAdmin',
+    isQA: (user?.role as UserRole) === 'QA',
   };
 }

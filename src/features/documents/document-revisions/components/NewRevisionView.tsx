@@ -7,8 +7,6 @@ import {
   AlertTriangle,
   Check,
   Info,
-  Paperclip,
-  ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
@@ -181,9 +179,6 @@ export const NewRevisionView: React.FC = () => {
         {/* Table Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <span className="text-emerald-600">
-              <Paperclip className="h-4 w-4" />
-            </span>
             <div>
               <h2 className="text-sm font-semibold text-slate-800">
                 Related Documents ({MOCK_LINKED_DOCUMENTS.length})
@@ -276,7 +271,7 @@ export const NewRevisionView: React.FC = () => {
                     </td>
                     <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm">
                       {isUpgrade ? (
-                        <span className="font-semibold text-blue-600">
+                        <span className="font-semibold text-emerald-600">
                           {doc.nextVersion}
                         </span>
                       ) : (
@@ -344,20 +339,20 @@ export const NewRevisionView: React.FC = () => {
         <div className="p-5">
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-xs lg:text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Total Related Documents:</span>
+              <span className="text-slate-500 font-medium text-[10px] sm:text-xs">Total Related Documents:</span>
               <span className="font-bold text-slate-900">
                 {MOCK_LINKED_DOCUMENTS.length}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">To be Upgraded:</span>
-              <span className="font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+              <span className="text-slate-500 font-medium text-[10px] sm:text-xs">To be Upgraded:</span>
+              <span className="font-medium text-emerald-700">
                 {upgradeCount}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Keep Current:</span>
-              <span className="font-medium text-slate-700 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200">
+              <span className="text-slate-500 font-medium text-[10px] sm:text-xs">Keep Current:</span>
+              <span className="font-medium text-slate-700">
                 {MOCK_LINKED_DOCUMENTS.length - upgradeCount}
               </span>
             </div>
@@ -366,52 +361,50 @@ export const NewRevisionView: React.FC = () => {
       </div>
 
       {/* Reason for Change */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-          <span className="text-emerald-600">
-            <ClipboardList className="h-4 w-4" />
-          </span>
-          <h3 className="text-sm font-semibold text-slate-800">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5">
+        <div className="mb-4">
+          <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
             Reason for Change <span className="text-red-500">*</span>
-          </h3>
+          </label>
         </div>
-        <div className="p-5 space-y-4">
-          <div>
-            <p className="text-xs text-slate-500 mb-3 leading-relaxed">
-              Provide a detailed explanation for creating this revision and the
-              impact on related documents.
-            </p>
-            <textarea
-              value={reasonForChange}
-              onChange={(e) => {
-                setReasonForChange(e.target.value);
-                setShowError(false);
-              }}
-              placeholder="e.g., Updated testing procedures to comply with new regulatory requirements. Forms FORM.0001.01 and FORM.0002.01 require updates to reflect new data fields..."
-              className={cn(
-                "w-full px-3 lg:px-4 py-2 lg:py-3 border rounded-lg text-xs lg:text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all placeholder:text-slate-400",
-                showError && !reasonForChange.trim()
-                  ? "border-red-300 bg-red-50 focus:ring-red-500/20"
-                  : "border-slate-200 bg-white focus:ring-emerald-500/20",
-              )}
-              rows={5}
-              maxLength={2000}
-            />
-            {showError && !reasonForChange.trim() && (
-              <p className="text-[11px] font-medium text-red-600 mt-2 flex items-center gap-1.5">
-                <AlertCircle className="h-3.5 w-3.5" />
-                Reason for change is required before submitting
-              </p>
-            )}
-          </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <p className="text-xs font-medium text-slate-400">
-                {reasonForChange.length} / 2000 characters
-              </p>
-            </div>
+        <textarea
+          value={reasonForChange}
+          onChange={(e) => {
+            setReasonForChange(e.target.value);
+            setShowError(false);
+          }}
+          placeholder="e.g., Updated testing procedures to comply with new regulatory requirements. Modified sections 3.2 and 4.5 to reflect current best practices..."
+          className={cn(
+            "w-full px-4 py-3 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all",
+            showError && !reasonForChange.trim()
+              ? "border-red-300 bg-red-50"
+              : "border-slate-200 bg-white",
+          )}
+          rows={6}
+          maxLength={2000}
+        />
+
+        {showError && !reasonForChange.trim() && (
+          <div className="flex items-center gap-1.5 text-red-600 mt-2">
+            <AlertCircle className="h-3 w-3" />
+            <span className="text-[10px] font-bold">
+              Reason for change is required
+            </span>
           </div>
+        )}
+
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+          <p
+            className={cn(
+              "text-xs",
+              !reasonForChange.trim()
+                ? "text-amber-600 font-medium"
+                : "text-slate-500",
+            )}
+          >
+            {reasonForChange.length} / 2000 characters
+          </p>
         </div>
       </div>
 
@@ -446,7 +439,7 @@ export const NewRevisionView: React.FC = () => {
         description={
           <div className="space-y-3">
             <p>Are you sure you want to cancel the current Impact Analysis?</p>
-            <div className="text-xs bg-amber-50 border border-amber-200 rounded-lg p-3 space-y-1">
+            <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 md:p-5 space-y-1">
               <p className="text-amber-800">
                 <AlertTriangle className="h-3.5 w-3.5 text-amber-600 inline shrink-0" />{" "}
                 <span className="font-semibold">Warning:</span> All unsaved

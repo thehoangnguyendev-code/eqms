@@ -102,7 +102,7 @@ export const PreferencesView: React.FC = () => {
                 />
 
                 {/* Content Area */}
-                <div className="p-4 sm:p-6 md:p-8 flex-1 overflow-y-auto">
+                <div className="p-4 md:p-5 flex-1 overflow-y-auto">
                     {renderTabContent()}
                 </div>
             </div>

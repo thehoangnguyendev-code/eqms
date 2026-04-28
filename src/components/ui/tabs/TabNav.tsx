@@ -83,7 +83,7 @@ export const TabNav: React.FC<TabNavProps> = ({
                 "text-sm font-medium rounded-lg transition-all duration-200",
                 "flex-1",
                 isActive
-                  ? "text-emerald-600"
+                  ? "text-emerald-700"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-200/50"
               )}
             >
@@ -145,7 +145,7 @@ export const TabNav: React.FC<TabNavProps> = ({
                 <span
                   className={cn(
                     "inline-flex items-center justify-center min-w-[18px] h-[18px] px-1",
-                    "text-[10px] font-semibold rounded-full",
+                    "text-[10px] font-bold rounded-full",
                     isActive
                       ? "bg-emerald-100 text-emerald-700"
                       : "bg-slate-100 text-slate-500"

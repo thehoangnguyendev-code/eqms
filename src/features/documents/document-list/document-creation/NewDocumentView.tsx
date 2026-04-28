@@ -521,7 +521,7 @@ export const NewDocumentView: React.FC = () => {
         <TabNav tabs={tabs} activeTab={activeTab} onChange={(id) => setActiveTab(id as TabType)} />
 
         {/* Tab Content */}
-        <div className="p-3 sm:p-4 md:p-6">
+        <div className="p-4 md:p-5">
           {activeTab === "general" && (
             <GeneralTab
               formData={formData}
@@ -785,7 +785,7 @@ export const NewDocumentView: React.FC = () => {
           </div>
 
           {/* Subtab Content */}
-          <div className="p-4 md:p-6">
+          <div className="p-4 md:p-5">
             {activeSubtab === "revisions" && (
               <DocumentRevisionsTab
                 revisions={revisions}

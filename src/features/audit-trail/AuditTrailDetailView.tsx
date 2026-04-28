@@ -292,13 +292,13 @@ export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({
                 <table className="w-full min-w-[620px]">
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
-                      <th className="py-2.5 px-3 md:py-3 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-1/4">
+                      <th className="py-3 px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-1/4">
                         Field
                       </th>
-                      <th className="py-2.5 px-3 md:py-3 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-1/3">
+                      <th className="py-3 px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-1/3">
                         Old Value
                       </th>
-                      <th className="py-2.5 px-3 md:py-3 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                      <th className="py-3 px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                         <span className="flex items-center gap-1.5">
                           <ArrowRight className="h-3 w-3 text-emerald-500" aria-hidden="true" />
                           New Value
@@ -312,10 +312,10 @@ export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({
                         key={`${change.field}-${index}`}
                         className="hover:bg-slate-50/80 transition-colors"
                       >
-                        <td className="py-2.5 px-3 md:py-3 md:px-4 text-xs md:text-sm font-semibold text-slate-800 whitespace-nowrap">
+                        <td className="py-3 px-4 text-xs md:text-sm font-semibold text-slate-800 whitespace-nowrap">
                           {change.field}
                         </td>
-                        <td className="py-2.5 px-3 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap">
+                        <td className="py-3 px-4 text-xs md:text-sm whitespace-nowrap">
                           {change.oldValue ? (
                             <span className="text-slate-500 line-through decoration-slate-300">
                               {change.oldValue}
@@ -326,7 +326,7 @@ export const AuditTrailDetailView: React.FC<AuditTrailDetailViewProps> = ({
                             </span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3 md:py-3 md:px-4 text-xs md:text-sm whitespace-nowrap">
+                        <td className="py-3 px-4 text-xs md:text-sm whitespace-nowrap">
                           {change.newValue ? (
                             <span className="text-emerald-700 font-medium bg-emerald-50 px-2 py-0.5 rounded">
                               {change.newValue}

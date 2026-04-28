@@ -106,7 +106,7 @@ export const Radio: React.FC<RadioProps> = ({
             </div>
           )}
           {description && (
-            <p className="text-xs text-slate-600">
+            <p className="text-[10px] sm:text-xs text-slate-600">
               {description}
             </p>
           )}
@@ -172,7 +172,7 @@ export const Radio: React.FC<RadioProps> = ({
           )}
           {description && (
             <p className={cn(
-              'text-sm text-slate-500 mt-0.5'
+              'text-xs sm:text-sm text-slate-500 mt-0.5'
             )}>
               {description}
             </p>

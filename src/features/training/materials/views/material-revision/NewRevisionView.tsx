@@ -594,7 +594,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
             <p className="text-xs text-slate-500 -mt-2 mb-4">Keep the existing file or upload a new one for this revision.</p>
               {/* Upload mode tabs */}
               <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg mb-4">
-                {(["file", "link"] as UploadMode[]).map((mode) => (
+                {(["file", "link"] as MaterialUploadMode[]).map((mode) => (
                   <button
                     key={mode}
                     onClick={() => { setUploadMode(mode); setNewFile(null); setKeepExistingFile(true); }}

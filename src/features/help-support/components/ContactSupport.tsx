@@ -21,11 +21,11 @@ const CardSection: React.FC<{
     className?: string;
 }> = ({ title, icon, children, className }) => (
     <div className={cn("bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden h-full", className)}>
-        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+        <div className="flex items-center gap-2.5 px-4 md:px-5 py-4 border-b border-slate-100">
             <span className="text-emerald-600">{icon}</span>
             <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
         </div>
-        <div className="p-6">{children}</div>
+        <div className="p-4 md:p-5">{children}</div>
     </div>
 );
 

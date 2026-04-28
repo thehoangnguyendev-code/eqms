@@ -175,26 +175,26 @@ const TipBadge: React.FC<{ type: TipItem["type"] }> = ({ type }) => {
 // ─── Section Content (shared between Tab and Split views) ─────────────────────
 
 const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
-  <div className="p-5 space-y-5 animate-in fade-in duration-200">
+  <div className="p-4 md:p-5 space-y-4 md:space-y-5 animate-in fade-in duration-200">
     {/* Overview */}
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
+      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
         <span className="text-emerald-600"><BookOpen className="h-4 w-4" /></span>
         <h3 className="text-sm font-semibold text-slate-900">Overview</h3>
       </div>
-      <div className="p-5">
+      <div className="p-4 md:p-5">
         <p className="text-sm text-slate-700 leading-relaxed">{section.overview}</p>
       </div>
     </div>
 
     {/* Key Features */}
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
+      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
         <span className="text-emerald-600"><Star className="h-4 w-4" /></span>
         <h3 className="text-sm font-semibold text-slate-900">Key Features</h3>
       </div>
-      <div className="p-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="p-4 md:p-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {section.features.map((feature, idx) => {
             const FeatureIcon = feature.icon;
             return (
@@ -218,11 +218,11 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
 
     {/* Step-by-step Guide */}
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
+      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
         <span className="text-emerald-600"><ListChecks className="h-4 w-4" /></span>
         <h3 className="text-sm font-semibold text-slate-900">Step-by-Step Guide</h3>
       </div>
-      <div className="p-5">
+      <div className="p-4 md:p-5">
         <div className="space-y-3">
           {section.steps.map((step) => (
             <div key={step.step} className="flex gap-4">
@@ -250,11 +250,11 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
     {/* Tips & Notes */}
     {section.tips.length > 0 && (
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-slate-100">
+        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
           <span className="text-emerald-600"><Lightbulb className="h-4 w-4" /></span>
           <h3 className="text-sm font-semibold text-slate-900">Tips & Notes</h3>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="p-4 md:p-5 space-y-3">
           {section.tips.map((tip, idx) => (
             <div
               key={idx}
@@ -417,7 +417,7 @@ export const UserManualView: React.FC = () => {
         {/* Right — Content (col-10 on desktop, full width on mobile) */}
         <div className="lg:col-span-9 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col lg:max-h-[calc(100vh-220px)]">
           {/* Module title bar — desktop only (mobile has sticky version above) */}
-          <div className="hidden lg:flex items-center gap-3 px-5 py-3 border-b border-slate-100 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-3 px-5 py-4 border-b border-slate-100 flex-shrink-0">
             {(() => {
               const tab = MANUAL_TABS.find((t) => t.id === activeTab)!;
               const Icon = tab.icon;

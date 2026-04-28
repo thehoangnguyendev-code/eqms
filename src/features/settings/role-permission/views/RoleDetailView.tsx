@@ -503,7 +503,7 @@ export const RoleDetailView: React.FC = () => {
                   {/* Group Header */}
                   <div
                     onClick={() => toggleGroup(group.id)}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between px-4 md:px-6 py-1 cursor-pointer hover:bg-slate-50 transition-colors select-none group/header gap-3"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between px-4 md:px-5 py-1 cursor-pointer hover:bg-slate-50 transition-colors select-none group/header gap-3"
                   >
                     <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
                       <ModuleIcon className={cn(
@@ -550,7 +550,7 @@ export const RoleDetailView: React.FC = () => {
                         return (
                           <div
                             key={permission.id}
-                            className="flex items-start sm:items-center justify-between px-4 md:px-6 py-3 pl-[1rem] md:pl-[1.5rem] hover:bg-slate-50 transition-colors border-t border-slate-100 first:border-0 group/item gap-2"
+                            className="flex items-start sm:items-center justify-between px-4 md:px-5 py-3 pl-[1rem] md:pl-[1.5rem] hover:bg-slate-50 transition-colors border-t border-slate-100 first:border-0 group/item gap-2"
                           >
                             <div className="flex items-start sm:items-center gap-2 md:gap-3 flex-1 pr-3 md:pr-6 min-w-0">
                               <span className="text-xs text-slate-400 font-medium min-w-[1.5rem] shrink-0 pt-0.5 sm:pt-0">

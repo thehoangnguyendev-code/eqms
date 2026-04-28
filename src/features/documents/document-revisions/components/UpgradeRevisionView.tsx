@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { ROUTES } from '@/app/routes.constants';
-import { 
-    FileText, 
+import {
+    FileText,
     AlertCircle,
     CheckCircle,
     Check,
@@ -32,7 +32,7 @@ interface SourceDocument {
 const fetchSourceDocument = async (id: string): Promise<SourceDocument> => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     // Mock data - replace with actual API call
     return {
         id,
@@ -55,18 +55,18 @@ export const UpgradeRevisionView: React.FC = () => {
     const sourceDocId = searchParams.get("sourceDocId");
     // Preserve the origin so Cancel returns to the correct list
     const fromPath: string = (location.state as { from?: string })?.from ?? ROUTES.DOCUMENTS.REVISIONS.ALL;
-    
+
     // Loading state
     const [isLoadingDocument, setIsLoadingDocument] = useState(true);
     const [sourceDocument, setSourceDocument] = useState<SourceDocument | null>(null);
-    
+
     // Form state
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [revisionNumber, setRevisionNumber] = useState("");
     const [effectiveDate, setEffectiveDate] = useState("");
     const [reasonForChange, setReasonForChange] = useState("");
     const [additionalNotes, setAdditionalNotes] = useState("");
-    
+
     // UI state
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [showSaveModal, setShowSaveModal] = useState(false);
@@ -89,17 +89,17 @@ export const UpgradeRevisionView: React.FC = () => {
                 setIsLoadingDocument(true);
                 const doc = await fetchSourceDocument(sourceDocId);
                 setSourceDocument(doc);
-                
+
                 // Auto-populate form
                 const currentVersion = parseFloat(doc.version);
                 const newVersion = (currentVersion + 1).toFixed(1);
                 setRevisionNumber(newVersion);
-                
+
                 // Set default effective date to 30 days from now
                 const defaultDate = new Date();
                 defaultDate.setDate(defaultDate.getDate() + 30);
                 setEffectiveDate(defaultDate.toISOString().split('T')[0]);
-                
+
             } catch (error) {
                 console.error("Error loading source document:", error);
             } finally {
@@ -149,12 +149,12 @@ export const UpgradeRevisionView: React.FC = () => {
     const handleSaveDraft = async () => {
         setIsSaving(true);
         setShowSaveModal(false);
-        
+
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
-            
+
             // TODO: Implement actual save API call
-            
+
             navigate(ROUTES.DOCUMENTS.REVISIONS.ALL);
         } catch (error) {
             console.error("Error saving draft:", error);
@@ -167,15 +167,15 @@ export const UpgradeRevisionView: React.FC = () => {
             setShowError(true);
             return;
         }
-        
+
         setIsSubmitting(true);
         setShowSubmitModal(false);
-        
+
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             // TODO: Implement actual submit API call
-            
+
             navigate(ROUTES.DOCUMENTS.REVISIONS.ALL);
         } catch (error) {
             console.error("Error submitting revision:", error);
@@ -205,7 +205,7 @@ export const UpgradeRevisionView: React.FC = () => {
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 lg:gap-4">
                     <div className="flex-1 min-w-0">
                         <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-                            {sourceDocument 
+                            {sourceDocument
                                 ? `Upgrade Revision [${sourceDocument.documentId}]`
                                 : 'Upgrade Revision'
                             }
@@ -213,10 +213,10 @@ export const UpgradeRevisionView: React.FC = () => {
                         <Breadcrumb items={standaloneRevision(navigate)} />
                     </div>
                     <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-                        <Button 
-                            size="sm" 
-                            variant="outline-emerald" 
-                            onClick={() => setShowCancelModal(true)} 
+                        <Button
+                            size="sm"
+                            variant="outline-emerald"
+                            onClick={() => setShowCancelModal(true)}
                             className="whitespace-nowrap flex items-center gap-2"
                         >
                             Cancel
@@ -251,7 +251,7 @@ export const UpgradeRevisionView: React.FC = () => {
 
             {/* Source Document Info */}
             {sourceDocument && (
-                <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm p-6">
+                <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm p-4 md:p-5">
                     <div className="flex items-start gap-4">
                         <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
                             <FileText className="h-6 w-6 text-emerald-600" />
@@ -297,16 +297,13 @@ export const UpgradeRevisionView: React.FC = () => {
             </div>
 
             {/* Reason for Change */}
-            <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-6">
+            <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 md:p-5">
                 <div className="mb-4">
                     <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
                         Reason for Change <span className="text-red-500">*</span>
                     </label>
-                    <p className="text-sm text-slate-500">
-                        Provide a detailed explanation for creating this revision.
-                    </p>
                 </div>
-                
+
                 <textarea
                     value={reasonForChange}
                     onChange={(e) => {
@@ -323,26 +320,20 @@ export const UpgradeRevisionView: React.FC = () => {
                     rows={5}
                     maxLength={2000}
                 />
-                
+
                 {showError && !reasonForChange.trim() && (
                     <p className="text-sm text-red-600 mt-2 flex items-center gap-1">
                         <AlertCircle className="h-4 w-4" />
                         Reason for change is required
                     </p>
                 )}
-                
+
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
                     <p className={cn(
                         "text-xs",
                         !reasonForChange.trim() ? "text-amber-600 font-medium" : "text-slate-500"
                     )}>
                         {reasonForChange.length} / 2000 characters
-                    </p>
-                    <p className={cn(
-                        "text-xs",
-                        !reasonForChange.trim() ? "text-amber-600 font-medium" : "text-emerald-600"
-                    )}>
-                        {reasonForChange.trim() ? <><Check className="h-3.5 w-3.5 inline shrink-0" /> Required field filled</> : "Reason is required"}
                     </p>
                 </div>
             </div>

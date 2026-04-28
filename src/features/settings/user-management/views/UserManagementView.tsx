@@ -302,7 +302,7 @@ export const UserManagementView: React.FC = () => {
           )}
 
           <div className={cn(
-            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
+            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300",
             isTableLoading && "blur-[2px] opacity-80"
           )}>
             {currentUsers.length > 0 ? (
@@ -326,7 +326,7 @@ export const UserManagementView: React.FC = () => {
                               key={col.id}
                               onClick={canSort ? () => handleSort(col.id) : undefined}
                               className={cn(
-                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                "sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
                                 canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group"
                               )}
                             >
@@ -342,14 +342,14 @@ export const UserManagementView: React.FC = () => {
                             </th>
                           );
                         })}
-                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                           Action
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white">
                       {currentUsers.map((user, index) => {
-                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                        const tdClass = "py-3 px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
                         return (
                           <tr
@@ -429,7 +429,7 @@ export const UserManagementView: React.FC = () => {
                             ))}
                             <td
                               onClick={(e) => e.stopPropagation()}
-                              className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                              className="sticky right-0 z-10 bg-white border-b border-slate-200 py-3 px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
                             >
                               <button
                                 ref={getRef(user.id)}

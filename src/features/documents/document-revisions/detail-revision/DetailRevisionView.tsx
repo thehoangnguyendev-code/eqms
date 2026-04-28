@@ -202,7 +202,7 @@ export const DetailRevisionView: React.FC<DetailRevisionViewProps> = ({
         <TabNav tabs={tabs} activeTab={activeTab} onChange={(id) => setActiveTab(id as TabType)} />
 
         {/* Tab Content */}
-        <div className="p-3 sm:p-4 md:p-6">
+        <div className="p-4 md:p-5">
           {activeTab === "general" && (
             <GeneralInformationTab document={document} />
           )}
@@ -246,7 +246,7 @@ export const DetailRevisionView: React.FC<DetailRevisionViewProps> = ({
       {/* Sub-tab: Original Document */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <TabNav tabs={[{ id: "originalDocument", label: "Original Document" }]} activeTab="originalDocument" onChange={() => { }} />
-        <div className="p-3 sm:p-4 md:p-6">
+        <div className="p-4 md:p-5">
           <OriginalDocumentTab document={MOCK_ORIGINAL_DOCUMENT} />
         </div>
       </div>

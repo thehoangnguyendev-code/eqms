@@ -1,7 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 
-/** User roles matching the auth system */
-type UserRole = 'admin' | 'manager' | 'user' | 'viewer';
+import { UserRole } from './roles';
 
 export interface NavItem {
   id: string;

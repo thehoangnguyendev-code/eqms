@@ -230,7 +230,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onBack }) => {
                 </div>
 
                 {/* Content */}
-                <div className="p-6 md:p-8">
+                <div className="p-4 md:p-5">
                     {activeTab === 'account' && (
                         <AccountInfoTab
                             formData={formData}
@@ -256,7 +256,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onBack }) => {
                     )}
                 </div>
                 {/* Action Buttons Footer */}
-                <div className="flex flex-row items-center justify-end gap-2 md:gap-3 px-4 sm:px-6 md:px-8 py-3 sm:py-4 bg-slate-50 border-t border-slate-200">
+                <div className="flex flex-row items-center justify-end gap-2 md:gap-3 px-5 py-4 bg-slate-50 border-t border-slate-200">
                     <Button
                         size='sm'
                         variant="outline-emerald"

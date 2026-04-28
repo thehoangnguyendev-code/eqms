@@ -327,85 +327,85 @@ export const RevisionListView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <DocumentFilters
-                    showCard={false}
-                    searchQuery={searchQuery}
-                    onSearchChange={(value) => {
-                      setSearchQuery(value);
-                      setCurrentPage(1);
-                    }}
-                    statusFilter={statusFilter}
-                    onStatusChange={(value) => {
-                      setStatusFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    typeFilter={typeFilter}
-                    onTypeChange={(value) => {
-                      setTypeFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    businessUnitFilter={businessUnitFilter}
-                    onBusinessUnitChange={(value) => {
-                      setBusinessUnitFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    departmentFilter={departmentFilter}
-                    onDepartmentChange={(value) => {
-                      setDepartmentFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    authorFilter={authorFilter}
-                    onAuthorChange={(value) => {
-                      setAuthorFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    createdFromDate={createdFromDate}
-                    onCreatedFromDateChange={(dateStr) => {
-                      setCreatedFromDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    createdToDate={createdToDate}
-                    onCreatedToDateChange={(dateStr) => {
-                      setCreatedToDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    effectiveFromDate={effectiveFromDate}
-                    onEffectiveFromDateChange={(dateStr) => {
-                      setEffectiveFromDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    effectiveToDate={effectiveToDate}
-                    onEffectiveToDateChange={(dateStr) => {
-                      setEffectiveToDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    validFromDate={validFromDate}
-                    onValidFromDateChange={(dateStr) => {
-                      setValidFromDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    validToDate={validToDate}
-                    onValidToDateChange={(dateStr) => {
-                      setValidToDate(dateStr);
-                      setCurrentPage(1);
-                    }}
-                    showTypeFilter={true}
-                    showDepartmentFilter={true}
-                    relatedDocumentFilter={relatedDocumentFilter}
-                    onRelatedDocumentFilterChange={(value) => {
-                      setRelatedDocumentFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    correlatedDocumentFilter={correlatedDocumentFilter}
-                    onCorrelatedDocumentFilterChange={(value) => {
-                      setCorrelatedDocumentFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    templateFilter={templateFilter}
-                    onTemplateFilterChange={(value) => {
-                      setTemplateFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    onClearFilters={handleClearFilters}
+              showCard={false}
+              searchQuery={searchQuery}
+              onSearchChange={(value) => {
+                setSearchQuery(value);
+                setCurrentPage(1);
+              }}
+              statusFilter={statusFilter}
+              onStatusChange={(value) => {
+                setStatusFilter(value);
+                setCurrentPage(1);
+              }}
+              typeFilter={typeFilter}
+              onTypeChange={(value) => {
+                setTypeFilter(value);
+                setCurrentPage(1);
+              }}
+              businessUnitFilter={businessUnitFilter}
+              onBusinessUnitChange={(value) => {
+                setBusinessUnitFilter(value);
+                setCurrentPage(1);
+              }}
+              departmentFilter={departmentFilter}
+              onDepartmentChange={(value) => {
+                setDepartmentFilter(value);
+                setCurrentPage(1);
+              }}
+              authorFilter={authorFilter}
+              onAuthorChange={(value) => {
+                setAuthorFilter(value);
+                setCurrentPage(1);
+              }}
+              createdFromDate={createdFromDate}
+              onCreatedFromDateChange={(dateStr) => {
+                setCreatedFromDate(dateStr);
+                setCurrentPage(1);
+              }}
+              createdToDate={createdToDate}
+              onCreatedToDateChange={(dateStr) => {
+                setCreatedToDate(dateStr);
+                setCurrentPage(1);
+              }}
+              effectiveFromDate={effectiveFromDate}
+              onEffectiveFromDateChange={(dateStr) => {
+                setEffectiveFromDate(dateStr);
+                setCurrentPage(1);
+              }}
+              effectiveToDate={effectiveToDate}
+              onEffectiveToDateChange={(dateStr) => {
+                setEffectiveToDate(dateStr);
+                setCurrentPage(1);
+              }}
+              validFromDate={validFromDate}
+              onValidFromDateChange={(dateStr) => {
+                setValidFromDate(dateStr);
+                setCurrentPage(1);
+              }}
+              validToDate={validToDate}
+              onValidToDateChange={(dateStr) => {
+                setValidToDate(dateStr);
+                setCurrentPage(1);
+              }}
+              showTypeFilter={true}
+              showDepartmentFilter={true}
+              relatedDocumentFilter={relatedDocumentFilter}
+              onRelatedDocumentFilterChange={(value) => {
+                setRelatedDocumentFilter(value);
+                setCurrentPage(1);
+              }}
+              correlatedDocumentFilter={correlatedDocumentFilter}
+              onCorrelatedDocumentFilterChange={(value) => {
+                setCorrelatedDocumentFilter(value);
+                setCurrentPage(1);
+              }}
+              templateFilter={templateFilter}
+              onTemplateFilterChange={(value) => {
+                setTemplateFilter(value);
+                setCurrentPage(1);
+              }}
+              onClearFilters={handleClearFilters}
             />
           </div>
         </div>

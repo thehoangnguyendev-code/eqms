@@ -220,7 +220,7 @@ export const TrainingMatrixView: React.FC = () => {
       />
 
       {heroBannerStats && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between shadow-sm">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 md:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between shadow-sm">
           <div className="flex items-start sm:items-center gap-4">
             <div>
               <h3 className="text-sm font-bold text-red-800">
@@ -251,7 +251,7 @@ export const TrainingMatrixView: React.FC = () => {
         />
 
         {/* Color Legend Bar */}
-        <div className="px-5 py-2.5 bg-slate-50/50 border-b border-t border-slate-200/60 flex items-center gap-3 flex-wrap">
+        <div className="px-4 md:px-5 py-2.5 bg-slate-50/50 border-b border-t border-slate-200/60 flex items-center gap-3 flex-wrap">
           <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap shrink-0">
             Legend
           </span>

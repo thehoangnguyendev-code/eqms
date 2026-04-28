@@ -21,7 +21,7 @@ interface DossierOverviewTabProps {
 
 export const DossierOverviewTab: React.FC<DossierOverviewTabProps> = ({ employee }) => {
   return (
-    <div className="p-6 md:p-8 space-y-8 animate-in fade-in duration-300">
+    <div className="p-4 md:p-5 space-y-8 animate-in fade-in duration-300">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <div className="space-y-8">
           {/* Employment Information */}

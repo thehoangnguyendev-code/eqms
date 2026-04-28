@@ -797,7 +797,7 @@ export const RevisionWorkspaceView: React.FC = () => {
         <TabNav tabs={tabs} activeTab={activeTab} onChange={(id) => setActiveTab(id as TabType)} />
 
         {/* Tab Content */}
-        <div className="p-3 sm:p-4 md:p-6">
+        <div className="p-4 md:p-5">
           {activeTab === "document" && (
             <DocumentTab
               mode="view"
@@ -808,7 +808,7 @@ export const RevisionWorkspaceView: React.FC = () => {
           {activeTab === "general" && currentDocument && (
             <div className="space-y-4 lg:space-y-6">
               {/* Current Document Context */}
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4 lg:p-6">
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4 md:p-5">
                 <div className="flex items-start justify-between gap-3 lg:gap-4">
                   <div className="flex-1 min-w-0">
                     <h3 className="text-base lg:text-lg font-semibold text-slate-900 mb-1.5 lg:mb-2">
@@ -1007,7 +1007,7 @@ export const RevisionWorkspaceView: React.FC = () => {
             Documents in Workspace
           </h3>
         </div>
-        <div className="p-5">
+        <div className="p-4 md:p-5">
           <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-slate-50/10">
             <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50">
               <table className="w-full border-separate border-spacing-0">
@@ -1098,7 +1098,7 @@ export const RevisionWorkspaceView: React.FC = () => {
                         <td className="py-3 px-4 text-xs md:text-sm text-slate-600 hidden md:table-cell whitespace-nowrap">
                           {currentUserName}
                         </td>
-                        <td className="py-3 px-4 text-xs md:text-sm text-slate-700 font-medium max-w-[200px] truncate whitespace-nowrap">
+                        <td className="py-3 px-4 text-xs md:text-sm text-slate-700 font-medium whitespace-nowrap">
                           {doc.name}
                         </td>
                         <td className="py-3 px-4 text-xs md:text-sm whitespace-nowrap">

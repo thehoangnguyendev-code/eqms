@@ -70,7 +70,7 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
     // ─── Read-Only Mode ────────────────────────────────────────────
     if (readOnly) {
         return (
-            <div className="p-4 lg:p-6 space-y-6">
+            <div className="p-4 md:p-5 space-y-6">
                 {/* Training Files */}
                 <div className="space-y-4">
                     {safeFiles.length === 0 ? (
@@ -150,7 +150,7 @@ export const DocumentTab: React.FC<DocumentTrainingTabProps> = ({
     // ─── Edit Mode ─────────────────────────────────────────────────
 
     return (
-        <div className="p-4 lg:p-6 space-y-6">
+        <div className="p-4 md:p-5 space-y-6">
             {/* Section Header */}
             <div>
                 <h3 className="text-base font-semibold text-slate-900">Select Training Materials</h3>

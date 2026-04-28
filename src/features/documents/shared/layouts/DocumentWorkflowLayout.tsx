@@ -334,7 +334,7 @@ export const DocumentWorkflowLayout: React.FC<DocumentWorkflowLayoutProps> = ({
             {/* Tab Navigation + Content */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <TabNav tabs={tabs} activeTab={activeTab} onChange={(id) => onTabChange(id as TabType)} />
-                <div className="p-3 sm:p-4 md:p-6">
+                <div className="p-4 md:p-5">
                     {children}
                 </div>
             </div>

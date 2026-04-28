@@ -626,7 +626,7 @@ export const AddUserView: React.FC = () => {
      {formErrors.status && <p className="text-xs text-red-600 mt-1.5">{formErrors.status}</p>}
     </div>
    </div>
-   <div className="mt-5 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
+   <div className="mt-5 p-4 md:p-5 bg-blue-50 border border-blue-200 rounded-lg">
     <p className="text-xs sm:text-sm font-medium text-blue-800 mb-1">User Account Information</p>
     <ul className="space-y-1 text-xs sm:text-sm text-blue-700">
      <li>• A temporary password will be sent to the user's email</li>

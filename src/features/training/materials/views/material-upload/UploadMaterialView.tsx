@@ -172,7 +172,7 @@ export const UploadMaterialView: React.FC = () => {
   };
 
   const simulateUpload = (file: File) => {
-    const uploadFile: UploadedFile = {
+    const uploadFile: MaterialUploadedFile = {
       id: Date.now().toString(),
       file,
       name: file.name,

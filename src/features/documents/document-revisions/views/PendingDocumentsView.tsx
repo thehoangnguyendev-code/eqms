@@ -716,7 +716,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
           )}
 
           <div className={cn(
-            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300",
+            "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300",
             isTableLoading && "blur-[2px] opacity-80"
           )}>
             {currentRevisions.length > 0 ? (
@@ -760,7 +760,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                               key={idx}
                               onClick={canSort ? () => handleSort(col.id!) : undefined}
                               className={cn(
-                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                "sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
                                 canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
                                 col.width,
                                 col.align || "text-left"
@@ -779,7 +779,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                           );
                         })}
                         {/* Cột Action Sticky */}
-                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center whitespace-nowrap border-b-2 border-slate-200 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                           Action
                         </th>
                       </tr>
@@ -788,14 +788,14 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                       {currentRevisions.map((rev, index) => {
                         const isExpanded = expandedRowId === rev.id;
                         const hasDocs = rev.hasRelatedDocuments || rev.hasCorrelatedDocuments;
-                        const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                        const tdClass = "py-3 px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
                         return (
                           <React.Fragment key={rev.id}>
                             <tr
                               className="hover:bg-slate-50/80 transition-colors group"
                             >
-                              <td className="py-2.5 px-2 md:py-3 md:px-3 border-b border-slate-200 whitespace-nowrap" onClick={(e) => {
+                              <td className="py-3 px-4 border-b border-slate-200 whitespace-nowrap" onClick={(e) => {
                                 e.stopPropagation();
                                 if (hasDocs) setExpandedRowId(isExpanded ? null : rev.id);
                               }}>
@@ -855,7 +855,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                               <td className={tdClass}>{rev.validUntil}</td>
                               <td
                                 onClick={(e) => e.stopPropagation()}
-                                className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                                className="sticky right-0 z-10 bg-white border-b border-slate-200 py-3 px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
                               >
                                 <button
                                   ref={getRef(rev.id)}

@@ -221,7 +221,7 @@ export const ExportTrainingRecordsView: React.FC = () => {
               <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                 <FileText className="h-4 w-4 text-slate-400" /> Content Selection
               </h3>
-              <div className="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+              <div className="space-y-3 bg-slate-50/50 p-4 md:p-5 rounded-xl border border-slate-100">
                 <Checkbox
                   id="includeScores"
                   label="Include Test Scores and Assessments"
@@ -254,7 +254,7 @@ export const ExportTrainingRecordsView: React.FC = () => {
               <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-emerald-500" /> EU-GMP Compliance Options
               </h3>
-              <div className="space-y-3 bg-emerald-50/30 p-4 rounded-xl border border-emerald-100/50">
+              <div className="space-y-3 bg-emerald-50/30 p-4 md:p-5 rounded-xl border border-emerald-100/50">
                 <Checkbox
                   id="includeAuditTrail"
                   label="Include Data Change History (Audit Trail)"
@@ -302,7 +302,7 @@ export const ExportTrainingRecordsView: React.FC = () => {
       </FormSection>
 
       {/* Export Preview */}
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
+      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 md:p-5">
         <h3 className="text-sm font-semibold text-slate-900 mb-4">Export Summary</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div className="flex items-center gap-2">

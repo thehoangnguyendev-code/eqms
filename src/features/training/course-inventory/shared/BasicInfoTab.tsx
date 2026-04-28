@@ -193,7 +193,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({
         options.find((o) => o.value === value)?.label || value;
 
     return (
-        <div className="p-4 lg:p-6">
+        <div className="p-4 md:p-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Course ID */}
                 <div>

@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       email: authUser.email,
       firstName: nameParts[0] || '',
       lastName: nameParts.slice(1).join(' ') || '',
-      role: authUser.role as any,
+      role: authUser.role as User['role'],
       department: authUser.department,
       avatar: authUser.avatar,
     };

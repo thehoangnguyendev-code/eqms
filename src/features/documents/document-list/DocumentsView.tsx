@@ -629,7 +629,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
             </div>
 
             {/* Table Section */}
-            <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
+            <div className="p-4 md:p-5 flex-1 flex flex-col relative">
               {isTableLoading && (
                 <div className="absolute inset-0 z-20 bg-white/40 backdrop-blur-[4px] flex items-center justify-center transition-all duration-300">
                   <SectionLoading text="Searching..." minHeight="150px" />
@@ -654,7 +654,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                       <table className="w-full min-w-max border-separate border-spacing-0 text-left">
                         <thead>
                           <tr>
-                            <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>
+                            <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>
                             {visibleColumns.map(col => {
                               const isSorted = sortConfig.key === col.id;
                               const canSort = col.id !== 'action' && col.id !== 'no' && col.id !== 'relatedDocuments' && col.id !== 'correlatedDocuments' && col.id !== 'template';
@@ -664,7 +664,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                   key={col.id}
                                   onClick={canSort ? () => handleSort(col.id) : undefined}
                                   className={cn(
-                                    "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
+                                    "sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
                                     canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
                                     col.id === 'action' && "right-0 z-30 text-center before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]"
                                   )}
@@ -688,14 +688,14 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                             const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
                             const isExpanded = expandedRowId === doc.id;
                             const hasSubDocs = doc.hasRelatedDocuments || doc.hasCorrelatedDocuments;
-                            const tdClass = "py-2.5 px-2 md:py-3 md:px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                            const tdClass = "py-3 px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
 
                             return (
                               <React.Fragment key={doc.id}>
                                 <tr
                                   className="hover:bg-slate-50/80 transition-colors group"
                                 >
-                                  <td className="py-2.5 px-2 md:py-3 md:px-3 border-b border-slate-200 whitespace-nowrap" onClick={(e) => {
+                                  <td className="py-3 px-4 border-b border-slate-200 whitespace-nowrap" onClick={(e) => {
                                     e.stopPropagation();
                                     if (hasSubDocs) setExpandedRowId(isExpanded ? null : doc.id);
                                   }}>
@@ -711,7 +711,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                                         <td
                                           key={col.id}
                                           onClick={(e) => e.stopPropagation()}
-                                          className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                                          className="sticky right-0 z-10 bg-white border-b border-slate-200 py-3 px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
                                         >
                                           <button
                                             ref={getRef(doc.id)}

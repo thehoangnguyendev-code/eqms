@@ -307,7 +307,7 @@ export const MyTrainingView: React.FC = () => {
         <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-emerald-50/50 to-transparent pointer-events-none" />
 
         {/* Identity Section */}
-        <div className="p-6 md:p-8 flex-1 flex items-center gap-5 border-b md:border-b-0 md:border-r border-slate-100 relative z-10">
+        <div className="p-4 md:p-5 flex-1 flex items-center gap-5 border-b md:border-b-0 md:border-r border-slate-100 relative z-10">
           <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 shrink-0">
             <GraduationCap className="h-8 w-8" />
           </div>
@@ -327,7 +327,7 @@ export const MyTrainingView: React.FC = () => {
 
         {/* Highlight Stats */}
         <div className="flex shrink-0">
-          <div className="p-6 md:p-8 flex flex-col items-center justify-center border-r border-slate-100 min-w-[160px] bg-slate-50/30">
+          <div className="p-4 md:p-5 flex flex-col items-center justify-center border-r border-slate-100 min-w-[160px] bg-slate-50/30">
             <div className="flex items-center gap-1.5 text-emerald-600 mb-2">
               <ShieldCheck className="h-4 w-4" />
               <span className="text-xs font-bold uppercase tracking-widest">
@@ -341,7 +341,7 @@ export const MyTrainingView: React.FC = () => {
               <span className="text-xl font-bold text-slate-400">%</span>
             </div>
           </div>
-          <div className="p-6 md:p-8 flex flex-col items-center justify-center min-w-[160px] bg-slate-50/30">
+          <div className="p-4 md:p-5 flex flex-col items-center justify-center min-w-[160px] bg-slate-50/30">
             <div className="flex items-center gap-1.5 text-amber-500 mb-2">
               <Star className="h-4 w-4 fill-amber-500" />
               <span className="text-xs font-bold uppercase tracking-widest text-amber-600">
@@ -370,7 +370,7 @@ export const MyTrainingView: React.FC = () => {
 
         {/* ── To-do List Tab ── */}
         {activeTab === "todo" && (
-          <div className="p-4 lg:p-6 flex-1 flex flex-col">
+          <div className="p-4 md:p-5 flex-1 flex flex-col">
             {/* Filter / Search row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 items-end mb-5">
               <div className="w-full">
@@ -439,7 +439,7 @@ export const MyTrainingView: React.FC = () => {
                 <table className="w-full min-w-[800px] md:min-w-[950px] lg:min-w-[1100px] xl:min-w-[1300px]">
                   <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-10">
                     <tr>
-                      <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
+                      <th className="py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
                         No.
                       </th>
                       {[
@@ -458,7 +458,7 @@ export const MyTrainingView: React.FC = () => {
                             key={idx}
                             onClick={canSort ? () => handleSort(col.id!) : undefined}
                             className={cn(
-                              "py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
+                              "py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
                               canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
                               col.align || "text-left"
                             )}
@@ -475,7 +475,7 @@ export const MyTrainingView: React.FC = () => {
                           </th>
                         );
                       })}
-                      <th className="sticky right-0 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 lg:px-6 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
+                      <th className="sticky right-0 bg-slate-50 py-3 px-4 lg:px-6 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
                         Action
                       </th>
                     </tr>
@@ -494,12 +494,12 @@ export const MyTrainingView: React.FC = () => {
                               {(currentPage - 1) * itemsPerPage + index + 1}
                             </div>
                           </td>
-                          <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
+                          <td className="py-3 px-4 whitespace-nowrap">
                             <span className="text-xs md:text-sm font-medium text-emerald-600">
                               {task.id}
                             </span>
                           </td>
-                          <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
+                          <td className="py-3 px-4 whitespace-nowrap">
                             <div className="flex items-center gap-1.5 sm:gap-2">
                               <div
                                 className={cn(
@@ -522,7 +522,7 @@ export const MyTrainingView: React.FC = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
+                          <td className="py-3 px-4 whitespace-nowrap">
                             <span className="text-xs md:text-sm text-slate-700 font-medium">
                               {task.materialType}
                             </span>
@@ -565,7 +565,7 @@ export const MyTrainingView: React.FC = () => {
                               {statusStyle.label}
                             </Badge>
                           </td>
-                          <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2.5 px-2 md:py-3 md:px-4 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
+                          <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-3 px-4 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] min-w-[100px] w-[100px] sm:min-w-[120px] sm:w-[120px] md:min-w-[140px] md:w-[140px] lg:min-w-[160px] lg:w-[160px]">
                             <Button
                               size="xs"
                               className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
@@ -611,7 +611,7 @@ export const MyTrainingView: React.FC = () => {
 
         {/* ── My Transcript Tab ── */}
         {activeTab === "transcript" && (
-          <div className="p-4 lg:p-6 flex-1 flex flex-col">
+          <div className="p-4 md:p-5 flex-1 flex flex-col">
             {/* Filter / Search row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-end mb-8">
               <div className="w-full">
@@ -656,7 +656,7 @@ export const MyTrainingView: React.FC = () => {
                 <table className="w-full min-w-[800px] md:min-w-[950px] lg:min-w-[1100px] xl:min-w-[1300px]">
                   <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-10">
                     <tr>
-                      <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
+                      <th className="py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-16">
                         No.
                       </th>
                       {[
@@ -673,7 +673,7 @@ export const MyTrainingView: React.FC = () => {
                             key={idx}
                             onClick={canSort ? () => handleSort(col.id!) : undefined}
                             className={cn(
-                              "py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
+                              "py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap transition-colors",
                               canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700",
                               col.align || "text-left"
                             )}
@@ -690,7 +690,7 @@ export const MyTrainingView: React.FC = () => {
                           </th>
                         );
                       })}
-                      <th className="sticky right-0 bg-slate-50 px-2 py-2.5 md:px-4 md:py-3.5 lg:px-6 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
+                      <th className="sticky right-0 bg-slate-50 py-3 px-4 lg:px-6 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider z-20 whitespace-nowrap before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
                         E-Certificate
                       </th>
                     </tr>
@@ -706,12 +706,12 @@ export const MyTrainingView: React.FC = () => {
                             {(currentPage - 1) * itemsPerPage + index + 1}
                           </div>
                         </td>
-                        <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
+                        <td className="py-3 px-4 whitespace-nowrap">
                           <span className="text-xs md:text-sm font-medium text-emerald-600">
                             {record.id}
                           </span>
                         </td>
-                        <td className="py-2.5 px-2 md:py-3 md:px-4 whitespace-nowrap">
+                        <td className="py-3 px-4 whitespace-nowrap">
                           <div className="flex items-center gap-1.5 sm:gap-2">
                             <div className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-105 transition-transform">
                               <Award className="h-4 w-4" />
@@ -739,7 +739,7 @@ export const MyTrainingView: React.FC = () => {
                             {record.score}%
                           </Badge>
                         </td>
-                        <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-2.5 px-2 md:py-3 md:px-4 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
+                        <td className="sticky right-0 bg-white group-hover:bg-slate-50 py-3 px-4 lg:px-6 text-center whitespace-nowrap z-20 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] w-[80px] sm:w-[150px] md:w-[170px] lg:w-[190px]">
                           <Button
                             size="sm"
                             variant="ghost"

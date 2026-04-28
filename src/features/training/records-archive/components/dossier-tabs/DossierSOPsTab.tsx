@@ -18,7 +18,7 @@ interface DossierSOPsTabProps {
 
 export const DossierSOPsTab: React.FC<DossierSOPsTabProps> = ({ employee }) => {
   return (
-    <div className="p-6 md:p-8 space-y-6 animate-in fade-in duration-300">
+    <div className="p-4 md:p-5 space-y-6 animate-in fade-in duration-300">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold text-slate-900 tracking-tight flex items-center gap-2">

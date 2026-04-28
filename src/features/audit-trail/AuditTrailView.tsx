@@ -384,7 +384,7 @@ export const AuditTrailView: React.FC = () => {
                 </div>
 
                 {/* Table Section */}
-                <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
+                <div className="p-4 md:p-5 flex-1 flex flex-col relative">
                     <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-slate-50/10 transition-all duration-300">
                         {paginatedData.length > 0 ? (
                             <>
@@ -400,7 +400,7 @@ export const AuditTrailView: React.FC = () => {
                                         {/* Table Header */}
                                         <thead className="bg-slate-50 border-b-2 border-slate-200 sticky top-0 z-30">
                                             <tr>
-                                                <th className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                                                <th className="py-3 px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                                     No.
                                                 </th>
                                                 {[
@@ -418,7 +418,7 @@ export const AuditTrailView: React.FC = () => {
                                                         <th 
                                                             key={col.id}
                                                             onClick={() => handleSort(col.id)}
-                                                            className="py-2.5 px-2 md:py-3.5 md:px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group"
+                                                            className="py-3 px-4 text-left text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group"
                                                         >
                                                             <div className="flex items-center justify-between gap-2">
                                                                 <span>{col.label}</span>

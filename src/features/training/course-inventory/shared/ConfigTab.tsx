@@ -44,7 +44,7 @@ export const ConfigTab: React.FC<TrainingConfigTabProps> = ({
     const effectiveMaxAttempts = readOnly ? (externalMaxAttempts ?? 3) : maxAttempts;
 
     return (
-        <div className="p-4 lg:p-6 space-y-6">
+        <div className="p-4 md:p-5 space-y-6">
 
             {/* Read & Understood: simple notice */}
             {trainingMethod === "Read & Understood" && (

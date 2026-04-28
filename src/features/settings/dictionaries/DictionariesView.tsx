@@ -106,7 +106,7 @@ export const DictionariesView: React.FC = () => {
                   key={dict.id}
                   onClick={() => setSelectedDictionary(dict.id)}
                   className={cn(
-                    "flex items-center gap-2 px-3 sm:px-4 md:px-6 py-2.5 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors border-r border-slate-200 last:border-r-0",
+                    "flex items-center gap-2 px-3 sm:px-4 md:px-5 py-2.5 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors border-r border-slate-200 last:border-r-0",
                     isSelected
                       ? "border-b-emerald-600 text-emerald-700 bg-emerald-50/50"
                       : "border-b-transparent text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
@@ -120,7 +120,7 @@ export const DictionariesView: React.FC = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="flex-1 overflow-auto p-3 sm:p-4 md:p-6">
+          <div className="flex-1 overflow-auto p-4 md:p-5">
             {renderTabContent()}
           </div>
         </div>

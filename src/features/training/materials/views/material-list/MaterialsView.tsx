@@ -527,7 +527,7 @@ export const MaterialsView: React.FC = () => {
         <TabNav tabs={MATERIAL_TABS} activeTab={activeTab} onChange={handleTabChange} variant="underline" />
 
         {activeTab === "overview" ? (
-          <div className="p-4 lg:p-5 space-y-5">
+          <div className="p-4 md:p-5 space-y-5">
             {/* Stats cards */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-4">
               {/* Total Materials */}
@@ -829,7 +829,7 @@ export const MaterialsView: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="p-4 lg:p-6 flex-1 flex flex-col">
+          <div className="p-4 md:p-5 flex-1 flex flex-col">
             <div className="pb-4 md:pb-5">
               <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-end">
@@ -968,61 +968,58 @@ export const MaterialsView: React.FC = () => {
                   )}
                   {...dragEvents}
                 >
-                  <table className="w-full border-separate border-spacing-0 text-left">
+                  <table className="w-full min-w-[1200px] border-separate border-spacing-0">
                     <thead>
-                      <tr>
-                        <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16 text-center">
+                      <tr className="bg-slate-50 border-b-2 border-slate-200">
+                        <th className="sticky top-0 z-10 bg-slate-50 py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-12">
                           No.
                         </th>
                         {[
-                          { label: "Material ID", id: "materialId" as keyof TrainingMaterial, sortable: true },
-                          { label: "Title", id: "title" as keyof TrainingMaterial, sortable: true },
-                          { label: "Type", id: "type" as keyof TrainingMaterial, sortable: true },
-                          { label: "Version", id: "version" as keyof TrainingMaterial, sortable: true },
-                          { label: "Uploaded At", id: "uploadedAt" as keyof TrainingMaterial, sortable: true },
-                          { label: "Uploaded By", id: "uploadedBy" as keyof TrainingMaterial, sortable: true },
-                          { label: "Usage", id: "usageCount" as keyof TrainingMaterial, sortable: true, align: "text-center" },
-                          { label: "Status", id: "status" as keyof TrainingMaterial, sortable: true, align: "text-center" }
-                        ].map((col, idx) => {
-                          const isSorted = sortConfig.key === col.id;
-                          const canSort = col.sortable;
+                          { label: "Material ID", key: "materialId" },
+                          { label: "Title", key: "title" },
+                          { label: "Type", key: "type" },
+                          { label: "Department", key: "department" },
+                          { label: "Version", key: "version" },
+                          { label: "Status", key: "status" },
+                          { label: "Uploaded By", key: "uploadedBy" },
+                          { label: "Date", key: "uploadedAt" },
+                          { label: "Usage", key: "usageCount", align: "text-center" },
+                        ].map((col) => {
+                          const isSorted = sortConfig.key === col.key;
                           return (
                             <th
-                              key={idx}
-                              onClick={canSort ? () => handleSort(col.id!) : undefined}
+                              key={col.key as string}
                               className={cn(
-                                "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap transition-colors",
-                                canSort && "cursor-pointer hover:bg-slate-100 hover:text-slate-700 group",
+                                "sticky top-0 z-10 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors group",
                                 col.align || "text-left"
                               )}
+                              onClick={() => handleSort(col.key as keyof TrainingMaterial)}
                             >
-                              <div className="flex items-center justify-between gap-2 w-full">
-                                <span className="truncate">{col.label}</span>
-                                {canSort && (
-                                  <div className="flex flex-col text-slate-500 flex-shrink-0 group-hover:text-slate-700 transition-colors">
-                                    <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600" : "")} />
-                                    <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600" : "")} />
-                                  </div>
-                                )}
+                              <div className="flex items-center justify-between gap-2">
+                                <span>{col.label}</span>
+                                <div className="flex flex-col text-slate-400 group-hover:text-slate-500 transition-colors">
+                                  <ChevronUp className={cn("h-3 w-3 -mb-1", isSorted && sortConfig.direction === 'asc' ? "text-emerald-600 font-bold" : "")} />
+                                  <ChevronDown className={cn("h-3 w-3", isSorted && sortConfig.direction === 'desc' ? "text-emerald-600 font-bold" : "")} />
+                                </div>
                               </div>
                             </th>
                           );
                         })}
-                        <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
+                        <th className="sticky top-0 right-0 z-20 bg-slate-50 py-3 px-4 lg:px-6 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap border-l border-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">
                           Action
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white">
+                    <tbody className="divide-y divide-slate-200 bg-white">
                       {paginatedData.length > 0 ? (
                         paginatedData.map((m, index) => {
-                          const tdClass = "px-2 py-2 md:px-4 md:py-3.5 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                          const tdClass = "py-3 px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
                           return (
                             <tr
                               key={m.id}
                               className="hover:bg-slate-50/80 transition-colors group"
                             >
-                              <td className={cn(tdClass, "text-center text-slate-500")}>
+                              <td className={cn(tdClass, "text-center text-slate-500 font-medium")}>
                                 {(currentPage - 1) * itemsPerPage + index + 1}
                               </td>
 
@@ -1079,7 +1076,7 @@ export const MaterialsView: React.FC = () => {
                               </td>
 
                               <td
-                                className="sticky right-0 z-10 bg-white border-b border-slate-200 px-2 py-2.5 md:px-4 md:py-3 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
+                                className="sticky right-0 z-10 bg-white border-b border-slate-200 py-3 px-4 lg:px-6 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors"
                               >
                                 <button
                                   ref={getRef(m.id)}
@@ -1108,7 +1105,7 @@ export const MaterialsView: React.FC = () => {
                         })
                       ) : (
                         <tr>
-                          <td colSpan={12}>
+                          <td colSpan={10}>
                             <TableEmptyState
                               title="No Training Materials Found"
                               description="We couldn’t find any training materials matching your filters. Try adjusting your search criteria or clear filters."
@@ -1138,7 +1135,6 @@ export const MaterialsView: React.FC = () => {
           </div>
         )}
       </div>
-
 
       <MarkObsoleteModal
         isOpen={obsoleteModalOpen}

@@ -34,7 +34,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
     <div
       className={cn("bg-white rounded-xl border border-slate-200 overflow-hidden", className)}
     >
-      <div className="flex items-center justify-between gap-2.5 px-5 py-4 border-b border-slate-200 bg-white">
+      <div className="flex items-center justify-between gap-2.5 px-4 md:px-5 py-4 border-b border-slate-200 bg-white">
         <div className="flex items-center gap-2.5">
           {icon && (
             <span className="text-emerald-600 flex-shrink-0">
@@ -50,7 +50,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
         </div>
         {headerRight && <div className="flex-shrink-0">{headerRight}</div>}
       </div>
-      <div className="p-5">{children}</div>
+      <div className="p-4 md:p-5">{children}</div>
     </div>
   );
 };

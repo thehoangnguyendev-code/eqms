@@ -471,16 +471,16 @@ export const UsageReportView: React.FC = () => {
               <table className="w-full min-w-[920px] md:min-w-[1120px] lg:min-w-[1280px] xl:min-w-[1420px]">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-12">No.</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Course ID</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Course Name</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Department</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Version Used</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Instructor</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Period</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Learners</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Completion</th>
-                    <th className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                    <th className="py-3 px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-10 sm:w-12">No.</th>
+                    <th className="py-3 px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Course ID</th>
+                    <th className="py-3 px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Course Name</th>
+                    <th className="py-3 px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Department</th>
+                    <th className="py-3 px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Version Used</th>
+                    <th className="py-3 px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Instructor</th>
+                    <th className="py-3 px-4 text-left text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Period</th>
+                    <th className="py-3 px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Learners</th>
+                    <th className="py-3 px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Completion</th>
+                    <th className="py-3 px-4 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 bg-white">
@@ -505,19 +505,19 @@ export const UsageReportView: React.FC = () => {
                       return (
                         <tr key={record.courseId} className="hover:bg-slate-50/80 transition-colors">
                           {/* No */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center text-slate-500 font-medium">{index + 1}</td>
+                          <td className="py-3 px-4 text-xs sm:text-sm text-center text-slate-500 font-medium">{index + 1}</td>
                           {/* Course ID */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                          <td className="py-3 px-4 text-xs sm:text-sm whitespace-nowrap">
                             <span className="font-medium text-emerald-700">{record.courseId}</span>
                           </td>
                           {/* Course Name */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                          <td className="py-3 px-4 text-xs sm:text-sm whitespace-nowrap">
                             <p className="font-medium text-slate-900">{record.courseName}</p>
                           </td>
                           {/* Department */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{record.department}</td>
+                          <td className="py-3 px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{record.department}</td>
                           {/* Version Used */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
+                          <td className="py-3 px-4 text-xs sm:text-sm text-center whitespace-nowrap">
                             <span className={cn(
                               "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border",
                               record.isCurrentVersion
@@ -529,9 +529,9 @@ export const UsageReportView: React.FC = () => {
                             </span>
                           </td>
                           {/* Instructor */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{record.instructor}</td>
+                          <td className="py-3 px-4 text-xs sm:text-sm whitespace-nowrap text-slate-700">{record.instructor}</td>
                           {/* Period */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
+                          <td className="py-3 px-4 text-xs sm:text-sm whitespace-nowrap">
                             <div className="text-slate-700">{formatDateUS(record.startDate)}</div>
                             {record.endDate ? (
                               <div className="text-xs text-slate-500">→ {formatDateUS(record.endDate)}</div>
@@ -540,12 +540,12 @@ export const UsageReportView: React.FC = () => {
                             )}
                           </td>
                           {/* Learners */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
+                          <td className="py-3 px-4 text-xs sm:text-sm text-center whitespace-nowrap">
                             <span className="font-semibold text-slate-900">{record.learnersCompleted}</span>
                             <span className="text-slate-400 text-xs"> / {record.learnersEnrolled}</span>
                           </td>
                           {/* Completion Rate */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
+                          <td className="py-3 px-4 text-xs sm:text-sm text-center whitespace-nowrap">
                             <div className="flex flex-col items-center gap-1">
                               <span className={cn(
                                 "text-sm font-bold",
@@ -569,7 +569,7 @@ export const UsageReportView: React.FC = () => {
                             </div>
                           </td>
                           {/* Status */}
-                          <td className="py-2 px-2 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-center whitespace-nowrap">
+                          <td className="py-3 px-4 text-xs sm:text-sm text-center whitespace-nowrap">
                             <StatusBadge
                               status={statusConfig.type}
                               label={statusConfig.label}

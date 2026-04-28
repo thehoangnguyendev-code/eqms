@@ -346,7 +346,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
         {/* Filter Section */}
         <div className="p-4 md:p-5 border-b border-slate-50">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div>
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Search</label>
               <div className="relative">
@@ -409,13 +409,13 @@ export const EmployeeTrainingFilesView: React.FC = () => {
         </div>
 
         {/* Table Body */}
-        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
+        <div className="p-4 md:p-5 flex-1 flex flex-col relative">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300">
             <div ref={scrollerRef} className={cn("flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400", isDragging ? "cursor-grabbing select-none" : "cursor-grab")} {...dragEvents}>
               <table className="w-full border-separate border-spacing-0 text-left">
                 <thead>
                   <tr>
-                    <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">No.</th>
+                    <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">No.</th>
                     {[
                       { label: "Employee code", id: "employeeId" },
                       { label: "Employee Name", id: "employeeName" },
@@ -433,7 +433,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                           key={idx}
                           onClick={() => handleSort(col.id)}
                           className={cn(
-                            "sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap cursor-pointer hover:bg-slate-100 transition-colors group",
+                            "sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap cursor-pointer hover:bg-slate-100 transition-colors group",
                             col.align || "text-left"
                           )}
                         >
@@ -447,13 +447,13 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                         </th>
                       );
                     })}
-                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10_px_-4px_rgba(0,0,0,0.05)]">Action</th>
+                    <th className="sticky top-0 right-0 z-30 bg-slate-50 py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)]">Action</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
                   {paginatedSortedData.length > 0 ? (
                     paginatedSortedData.map((emp, index) => {
-                      const tdClass = "py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
+                      const tdClass = "py-3 px-4 text-xs md:text-sm text-slate-500 font-medium border-b border-slate-200 whitespace-nowrap";
                       const completionRate = getEffectiveCompletionRate(emp);
                       const isObsolete = emp.coursesObsolete > 0;
                       const hasGaps = emp.coursesCompleted < emp.totalCoursesRequired;
@@ -543,7 +543,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
                               )}
                             </div>
                           </td>
-                          <td className="sticky right-0 z-10 bg-white border-b border-slate-200 py-2.5 px-2 md:py-3.5 md:px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors">
+                          <td className="sticky right-0 z-10 bg-white border-b border-slate-200 py-3 px-4 text-center whitespace-nowrap before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.05)] group-hover:bg-slate-50 transition-colors">
                             <button
                               ref={getRef(emp.id)}
                               onClick={(e) => handleDropdownToggle(emp.id, e)}
