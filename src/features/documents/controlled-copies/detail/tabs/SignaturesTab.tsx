@@ -11,7 +11,7 @@ interface SignatureRecord {
 // Popover content for user details
 const UserDetailPopoverContent: React.FC = () => {
   return (
-    <div className="p-4">
+    <div className="p-4 md:p-5">
       <p className="text-sm text-slate-600">User details would be displayed here</p>
     </div>
   );

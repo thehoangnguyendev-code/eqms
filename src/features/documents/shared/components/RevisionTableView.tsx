@@ -127,7 +127,7 @@ const RevisionTableViewInner = <
 
   if (!revisions || paginatedRevisions.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
+      <div className="rounded-xl border border-slate-200 bg-white p-4 md:p-5 text-center">
         <TableEmptyState title={emptyStateTitle} description={emptyStateMessage} />
       </div>
     );

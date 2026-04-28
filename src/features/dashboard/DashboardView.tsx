@@ -165,7 +165,7 @@ export const DashboardView: React.FC = () => {
         {/* Welcome & Quick Actions Section */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Welcome Banner - Modern & Bright Design */}
-          <div className="lg:col-span-2 relative overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm p-4 sm:p-6 lg:p-8 group">
+          <div className="lg:col-span-2 relative overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm p-4 md:p-5 group">
             {/* Animated Background Elements */}
             <div className="absolute top-0 right-0 w-full h-full overflow-hidden z-0 pointer-events-none">
               <motion.div
@@ -288,7 +288,7 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* Quick Actions Panel */}
-          <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6 shadow-sm flex flex-col justify-between">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-5 shadow-sm flex flex-col justify-between">
             <div>
               <h2 className="text-lg font-bold text-slate-900 mb-1">Quick Actions</h2>
               <p className="text-sm text-slate-500 mb-4">Common tasks and shortcuts</p>
@@ -362,7 +362,7 @@ export const DashboardView: React.FC = () => {
               key={idx}
               variants={itemVariants}
               whileHover={{ y: -5, scale: 1.02 }}
-              className="group bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-lg hover:border-emerald-100 transition-all cursor-default"
+              className="group bg-white rounded-xl border border-slate-200 p-4 md:p-5 shadow-sm hover:shadow-lg hover:border-emerald-100 transition-all cursor-default"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={cn("p-2.5 rounded-lg", stat.bg)}>
@@ -395,7 +395,7 @@ export const DashboardView: React.FC = () => {
             whileHover={{ boxShadow: "0 10px 30px -5px rgba(0, 0, 0, 0.05)" }}
             className="xl:col-span-2 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col transition-shadow duration-300"
           >
-            <div className="p-3 sm:p-4 md:p-6 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4">
+            <div className="p-4 md:p-5 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-emerald-50 border border-emerald-100 rounded-lg">
                   <PieChart className="h-5 w-5 text-emerald-600" />
@@ -420,7 +420,7 @@ export const DashboardView: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 sm:p-4 md:p-6 flex-1 min-h-[250px] md:min-h-[350px] lg:min-h-[400px]">
+            <div className="p-4 md:p-5 flex-1 min-h-[250px] md:min-h-[350px] lg:min-h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={MOCK_CHART_DATA.monthlyData}
@@ -473,7 +473,7 @@ export const DashboardView: React.FC = () => {
               variants={itemVariants}
               className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
             >
-              <div className="p-3 sm:p-4 md:p-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+              <div className="p-4 md:p-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
                   <Clock className="h-4 w-4 text-slate-500" />
                   Priority Deadlines
@@ -521,13 +521,13 @@ export const DashboardView: React.FC = () => {
               variants={itemVariants}
               className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
             >
-              <div className="p-3 sm:p-4 md:p-5 border-b border-slate-100 bg-slate-50/50">
+              <div className="p-4 md:p-5 border-b border-slate-100 bg-slate-50/50">
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
                   <Activity className="h-4 w-4 text-slate-500" />
                   Recent Activity
                 </h3>
               </div>
-              <div className="p-3 sm:p-4 md:p-5">
+              <div className="p-4 md:p-5">
                 <div className="relative">
                   <div className="absolute top-0 bottom-0 left-[7px] w-px bg-slate-200" />
                   <motion.div

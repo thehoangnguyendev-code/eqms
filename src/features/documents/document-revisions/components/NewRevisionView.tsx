@@ -137,7 +137,7 @@ export const NewRevisionView: React.FC = () => {
       </div>
 
       {/* Source Document Info */}
-      <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm p-4 lg:p-6">
+      <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm p-4 md:p-5">
         <div className="flex items-start gap-3 lg:gap-4">
           <div className="flex-shrink-0 w-10 h-10 lg:w-12 lg:h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
             <FileText className="h-5 w-5 lg:h-6 lg:w-6 text-emerald-600" />
@@ -336,7 +336,7 @@ export const NewRevisionView: React.FC = () => {
             Impact Analysis Summary
           </h3>
         </div>
-        <div className="p-5">
+        <div className="p-4 md:p-5">
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-xs lg:text-sm">
             <div className="flex items-center gap-2">
               <span className="text-slate-500 font-medium text-[10px] sm:text-xs">Total Related Documents:</span>

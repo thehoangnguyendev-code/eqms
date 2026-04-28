@@ -76,7 +76,7 @@ const Timeline: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
 
             {/* Event content */}
             <div className="flex-1 pb-6">
-              <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="rounded-lg border border-slate-200 bg-white p-4 md:p-5 shadow-sm">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900">
@@ -318,7 +318,7 @@ export const ControlledCopyDetailView: React.FC<ControlledCopyDetailViewProps> =
         <TabNav tabs={tabs} activeTab={activeTab} onChange={(id) => setActiveTab(id as TabType)} />
 
         {/* Tab Content */}
-        <div className="p-3 sm:p-4 md:p-6">
+        <div className="p-4 md:p-5">
           <div className={cn(activeTab !== "document" && "hidden")}>
             <DocumentInformationTab controlledCopy={controlledCopy} />
           </div>

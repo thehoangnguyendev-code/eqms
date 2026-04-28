@@ -127,7 +127,7 @@ export const SessionTimeoutModal: React.FC = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-8 pt-6">
+              <form onSubmit={handleSubmit} className="p-4 md:p-5 pt-6">
                 <div className="mb-6 rounded-lg bg-teal-50 p-4">
                   <p className="text-sm text-teal-800">
                     Locked user: <span className="font-bold">{user?.username || 'Unknown'}</span>

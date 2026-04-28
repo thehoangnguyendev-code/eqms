@@ -249,7 +249,7 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
         <TabNav tabs={tabs} activeTab={activeTab} onChange={(id) => setActiveTab(id as TabType)} />
 
         {/* Tab Content */}
-        <div className="p-3 sm:p-4 md:p-6">
+        <div className="p-4 md:p-5">
           {activeTab === "general" && (
             <GeneralInformationTab document={document} />
           )}
@@ -276,7 +276,7 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <TabNav tabs={subTabs} activeTab={activeSubTab} onChange={(id) => setActiveSubTab(id as SubTabType)} />
 
-          <div className="p-3 sm:p-4 md:p-6">
+          <div className="p-4 md:p-5">
             {activeSubTab === "revisions" && (
               <DocumentRevisionsTab
                 revisions={USE_EMPTY_STATE ? [] : MOCK_REVISIONS}

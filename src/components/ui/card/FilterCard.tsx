@@ -33,7 +33,7 @@ export const FilterCard: React.FC<FilterCardProps> & {
   return (
     <div
       className={cn(
-        'bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm w-full',
+        'bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm w-full',
         className
       )}
     >

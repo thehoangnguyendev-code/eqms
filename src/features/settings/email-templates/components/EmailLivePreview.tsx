@@ -113,7 +113,7 @@ export const EmailLivePreview: React.FC<EmailLivePreviewProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 md:p-5">
           {content ? (
             <div
               className="prose prose-sm prose-slate max-w-none

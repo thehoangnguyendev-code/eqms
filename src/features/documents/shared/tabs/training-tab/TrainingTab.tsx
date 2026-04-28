@@ -224,7 +224,7 @@ export const TrainingTab: React.FC<TrainingTabProps> = ({
 
                         <div className="border rounded-xl bg-white shadow-sm overflow-hidden">
                             {resolvedEmployees.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center p-6 text-slate-400">
+                                <div className="flex flex-col items-center justify-center p-4 md:p-5 text-slate-400">
                                     <p className="text-xs md:text-sm">No assignees selected for this course</p>
                                 </div>
                             ) : (

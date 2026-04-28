@@ -84,7 +84,7 @@ export const MultiDocumentUpload: React.FC<MultiDocumentUploadProps> = ({
     return (
         <div className="space-y-4 md:space-y-6">
             {/* Header with Progress */}
-            <div className="bg-slate-50 border border-emerald-200 rounded-xl p-4 md:p-6">
+            <div className="bg-slate-50 border border-emerald-200 rounded-xl p-4 md:p-5">
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div className="flex-1">
                         <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-2">

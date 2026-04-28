@@ -139,7 +139,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
  if (!file) {
  return (
  <div className="h-full flex items-center justify-center bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
- <div className="text-center p-6 md:p-8">
+ <div className="text-center p-4 md:p-5">
  <FileIcon className="h-12 w-12 md:h-16 md:w-16 text-slate-300 mx-auto mb-3 md:mb-4" />
  <p className="text-slate-500 font-medium text-sm md:text-base">No file selected</p>
  <p className="text-xs md:text-sm text-slate-400 mt-1.5 md:mt-2">
@@ -183,7 +183,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
  {/* Preview Content */}
  <div className="flex-1 overflow-auto">
  {error && (
- <div className="h-full flex items-center justify-center p-4 md:p-6">
+ <div className="h-full flex items-center justify-center p-4 md:p-5">
  <div className="text-center max-w-md">
  <AlertCircle className="h-12 w-12 md:h-16 md:w-16 text-red-500 mx-auto mb-3 md:mb-4" />
  <h4 className="text-base md:text-lg font-semibold text-slate-900 mb-1.5 md:mb-2">
@@ -205,7 +205,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
  )}
 
  {!error && previewType ==="image" && previewUrl && (
- <div className="flex items-center justify-center h-full p-4 md:p-6">
+ <div className="flex items-center justify-center h-full p-4 md:p-5">
  <img
  src={previewUrl}
  alt={file.name}
@@ -215,7 +215,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
  )}
 
  {!error && previewType ==="text" && (
- <div className="p-4 md:p-6">
+ <div className="p-4 md:p-5">
  <div className="bg-slate-50 rounded-lg p-3 md:p-4 text-xs md:text-sm">
  <pre className="whitespace-pre-wrap text-slate-700">{textContent}</pre>
  </div>
@@ -285,10 +285,10 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
  )}
 
  {!error && previewType ==="unsupported" && (
- <div className="h-full flex items-center justify-center p-4 md:p-6">
+ <div className="h-full flex items-center justify-center p-4 md:p-5">
  <div className="text-center w-full">
  <div className="w-full h-[calc(100vh-280px)]" style={{ minHeight:"500px" }}>
- <div className="flex flex-col items-center justify-center h-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-8">
+ <div className="flex flex-col items-center justify-center h-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-4 md:p-5">
   <AlertTriangle className="h-12 w-12 text-amber-500 mb-4" />
   <p className="text-slate-700 font-semibold mb-2">Detailed Preview Unavailable</p>
   <p className="text-slate-500 text-sm max-w-xs mx-auto mb-6">

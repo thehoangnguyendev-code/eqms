@@ -634,7 +634,7 @@ export const DestroyControlledCopyView: React.FC = () => {
             />
 
             {/* Foreground content */}
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6 lg:p-8">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-5">
               <button
                 onClick={() => setSelectedImageIndex(null)}
                 className="absolute top-2 right-2 md:top-4 md:right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-10"

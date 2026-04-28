@@ -335,7 +335,7 @@ export const KnowledgeView: React.FC = () => {
                         </div>
 
                         {/* 3. Main Content Area */}
-                        <div className="p-4 md:p-6 overflow-auto flex-1 min-h-0">
+                        <div className="p-4 md:p-5 overflow-auto flex-1 min-h-0">
                             {filteredDepartments.length === 0 ? (
                                 <div className="text-center py-8 md:py-12">
                                     <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3 md:mb-4">
@@ -358,7 +358,7 @@ export const KnowledgeView: React.FC = () => {
                                             onClick={() => handleFolderClick(dept)}
                                             onPointerEnter={() => setHoveredDeptId(dept.id)}
                                             onPointerLeave={() => setHoveredDeptId(null)}
-                                            className="group relative bg-white border border-slate-200 rounded-xl p-4 md:p-6 lg:p-8 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 text-left flex flex-col items-center gap-6"
+                                            className="group relative bg-white border border-slate-200 rounded-xl p-4 md:p-5 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 text-left flex flex-col items-center gap-6"
                                         >
                                             <div className="shrink-0 flex items-center justify-center">
                                                 <Folder

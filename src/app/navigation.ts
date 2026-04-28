@@ -104,17 +104,17 @@ const FOUNDATION_MODULES: NavItem[] = [
             label: "All Revisions",
             path: ROUTES.DOCUMENTS.REVISIONS.ALL,
           },
-          {
-            id: "pending-review",
-            label: "Pending My Review",
-            path: ROUTES.DOCUMENTS.REVISIONS.PENDING_REVIEW,
-          },
-          {
-            id: "pending-approval",
-            label: "Pending My Approval",
-            path: ROUTES.DOCUMENTS.REVISIONS.PENDING_APPROVAL,
-          },
         ],
+      },
+      {
+        id: "pending-review",
+        label: "Pending My Review",
+        path: ROUTES.DOCUMENTS.REVISIONS.PENDING_REVIEW,
+      },
+      {
+        id: "pending-approval",
+        label: "Pending My Approval",
+        path: ROUTES.DOCUMENTS.REVISIONS.PENDING_APPROVAL,
       },
       {
         id: "controlled-copies",
@@ -172,13 +172,11 @@ const FOUNDATION_MODULES: NavItem[] = [
             id: "training-pending-review",
             label: "Pending Review",
             path: ROUTES.TRAINING.PENDING_REVIEW,
-            allowedRoles: ["Admin", "Manager"],
           },
           {
             id: "training-pending-approval",
             label: "Pending Approval",
             path: ROUTES.TRAINING.PENDING_APPROVAL,
-            allowedRoles: ["Admin", "Manager"],
           },
         ],
       },

@@ -571,7 +571,7 @@ export const UploadMaterialView: React.FC = () => {
               {/* ── Link Mode ────────────────────────────── */}
               {uploadMode === "link" && (
                 <div className="space-y-3">
-                  <div className="border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center border-slate-300 bg-slate-50/50">
+                  <div className="border-2 border-dashed rounded-xl p-4 md:p-5 flex flex-col items-center justify-center border-slate-300 bg-slate-50/50">
                     <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-slate-100">
                       <Link2 className="h-7 w-7 text-slate-400" />
                     </div>

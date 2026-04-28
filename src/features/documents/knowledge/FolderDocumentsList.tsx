@@ -213,7 +213,7 @@ export const FolderDocumentsList: React.FC<FolderDocumentsListProps> = ({
                     </div>
                 </div>
 
-                <div className={cn("p-2 md:p-6 flex-1", viewMode === "list" ? "overflow-x-auto" : "overflow-y-auto")}>
+                <div className={cn("p-4 md:p-5 flex-1", viewMode === "list" ? "overflow-x-auto" : "overflow-y-auto")}>
                     {filteredAndSortedDocs.length === 0 ? (
                         <div className="text-center py-20">
                             <img src={FILE_ICONS_MAP["file"]} alt="No docs" className="h-10 w-10 md:h-12 md:w-12 text-slate-200 mx-auto mb-4 opacity-20 grayscale" />

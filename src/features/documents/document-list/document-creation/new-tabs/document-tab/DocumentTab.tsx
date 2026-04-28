@@ -158,7 +158,7 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
       {/* Show "No attachment" message when hideUpload is true */}
       {hideUpload ? (
         <div className="border-2 border-dashed rounded-xl flex items-center justify-center bg-slate-50">
-          <div className="text-center p-8">
+          <div className="text-center p-4 md:p-5">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center">
               <File className="h-8 w-8 text-slate-400" />
             </div>
@@ -368,7 +368,7 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
                 if (!selected || selected.status !== "success") {
                   return (
                     <div className="h-full flex items-center justify-center border rounded-xl bg-slate-50">
-                      <div className="text-center p-8">
+                      <div className="text-center p-4 md:p-5">
                         <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-100 flex items-center justify-center">
                           {selected?.status === "uploading" ? (
                             <Upload className="h-6 w-6 text-slate-400 animate-pulse" />

@@ -1055,24 +1055,28 @@ export const MaterialsView: React.FC = () => {
                                 </div>
                               </td>
 
+                              <td className={tdClass}>
+                                {m.department}
+                              </td>
+
                               <td className={cn(tdClass, "font-medium")}>
                                 {m.version}
                               </td>
 
                               <td className={tdClass}>
-                                {formatDateUS(m.uploadedAt)}
+                                <StatusBadge status={mapMaterialStatusToStatusType(getEffectiveStatus(m) as TrainingMaterial["status"])} />
                               </td>
 
                               <td className={tdClass}>
                                 {m.uploadedBy}
                               </td>
 
-                              <td className={cn(tdClass, "text-center")}>
-                                <span className="font-medium">{m.usageCount}</span>
+                              <td className={tdClass}>
+                                {formatDateUS(m.uploadedAt)}
                               </td>
 
-                              <td className={tdClass}>
-                                <StatusBadge status={mapMaterialStatusToStatusType(getEffectiveStatus(m) as TrainingMaterial["status"])} />
+                              <td className={cn(tdClass, "text-center")}>
+                                <span className="font-medium">{m.usageCount}</span>
                               </td>
 
                               <td

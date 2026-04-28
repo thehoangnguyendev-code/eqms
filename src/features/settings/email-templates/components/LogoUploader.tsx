@@ -169,7 +169,7 @@ export const LogoUploader: React.FC<LogoUploaderProps> = ({ value, onChange }) =
             onClick={() => setShowLightbox(false)}
             aria-hidden="true"
           />
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6 md:p-12">
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-5">
             <button
               onClick={() => setShowLightbox(false)}
               className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
