@@ -256,10 +256,7 @@ const NotificationRow: React.FC<{
           {index}
         </td>
 
-        <td
-          className={cn(tdClass, "cursor-pointer")}
-          onClick={() => onView(notification)}
-        >
+        <td className={tdClass}>
           <div className="flex items-start gap-3">
             <div className="relative shrink-0">
               <div
@@ -278,7 +275,7 @@ const NotificationRow: React.FC<{
             <div className="flex-1 min-w-0">
               <p
                 className={cn(
-                  "text-sm hover:underline",
+                  "text-sm",
                   notification.status === "unread"
                     ? "font-bold text-slate-900"
                     : "font-medium text-slate-500",
@@ -663,147 +660,147 @@ export const NotificationsView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                      <div className="w-full">
-                        <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
-                          Search
-                        </label>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                            <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                          </div>
-                          <input
-                            type="text"
-                            placeholder="Search notifications..."
-                            value={search}
-                            onChange={(e) => {
-                              setSearch(e.target.value);
-                              setCurrentPage(1);
-                            }}
-                            className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                          />
-                          {search && (
-                            <button
-                              onClick={() => setSearch("")}
-                              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
+                  Search
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                    <Search className="h-4 w-4 text-slate-400 transition-colors" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search notifications..."
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
+                  />
+                  {search && (
+                    <button
+                      onClick={() => setSearch("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
 
-                      <div className="w-full">
-                        <Select
-                          label="Status"
-                          value={statusFilter}
-                          onChange={(val) => {
-                            setStatusFilter(val as string);
-                            setCurrentPage(1);
-                          }}
-                          options={[
-                            { label: "All Status", value: "all" },
-                            { label: "Unread Only", value: "unread" },
-                            { label: "Read Only", value: "read" },
-                          ]}
-                        />
-                      </div>
-                      <div className="w-full">
-                        <Select
-                          label="Notification Type"
-                          value={type}
-                        onChange={(val) => {
-                          setType(val as string);
-                          setCurrentPage(1);
-                        }}
-                        options={[
-                          { label: "All Types", value: "all" },
-                          { label: "Review Request", value: "review-request" },
-                          { label: "Approval", value: "approval" },
-                          {
-                            label: "CAPA Assignment",
-                            value: "capa-assignment",
-                          },
-                          {
-                            label: "Training Completion",
-                            value: "training-completion",
-                          },
-                          {
-                            label: "Document Update",
-                            value: "document-update",
-                          },
-                          { label: "Comment Reply", value: "comment-reply" },
-                          {
-                            label: "Deviation Assignment",
-                            value: "deviation-assignment",
-                          },
-                          { label: "Change Control", value: "change-control" },
-                        ]}
-                      />
-                    </div>
+              <div className="w-full">
+                <Select
+                  label="Status"
+                  value={statusFilter}
+                  onChange={(val) => {
+                    setStatusFilter(val as string);
+                    setCurrentPage(1);
+                  }}
+                  options={[
+                    { label: "All Status", value: "all" },
+                    { label: "Unread Only", value: "unread" },
+                    { label: "Read Only", value: "read" },
+                  ]}
+                />
+              </div>
+              <div className="w-full">
+                <Select
+                  label="Notification Type"
+                  value={type}
+                  onChange={(val) => {
+                    setType(val as string);
+                    setCurrentPage(1);
+                  }}
+                  options={[
+                    { label: "All Types", value: "all" },
+                    { label: "Review Request", value: "review-request" },
+                    { label: "Approval", value: "approval" },
+                    {
+                      label: "CAPA Assignment",
+                      value: "capa-assignment",
+                    },
+                    {
+                      label: "Training Completion",
+                      value: "training-completion",
+                    },
+                    {
+                      label: "Document Update",
+                      value: "document-update",
+                    },
+                    { label: "Comment Reply", value: "comment-reply" },
+                    {
+                      label: "Deviation Assignment",
+                      value: "deviation-assignment",
+                    },
+                    { label: "Change Control", value: "change-control" },
+                  ]}
+                />
+              </div>
 
-                    <div className="w-full">
-                      <Select
-                        label="Module"
-                        value={module}
-                        onChange={(val) => {
-                          setModule(val as string);
-                          setCurrentPage(1);
-                        }}
-                        options={[
-                          { label: "All Modules", value: "all" },
-                          { label: "Document", value: "Document" },
-                          { label: "Deviation", value: "Deviation" },
-                          { label: "CAPA", value: "CAPA" },
-                          { label: "Training", value: "Training" },
-                          { label: "Change Control", value: "Change Control" },
-                        ]}
-                      />
-                    </div>
+              <div className="w-full">
+                <Select
+                  label="Module"
+                  value={module}
+                  onChange={(val) => {
+                    setModule(val as string);
+                    setCurrentPage(1);
+                  }}
+                  options={[
+                    { label: "All Modules", value: "all" },
+                    { label: "Document", value: "Document" },
+                    { label: "Deviation", value: "Deviation" },
+                    { label: "CAPA", value: "CAPA" },
+                    { label: "Training", value: "Training" },
+                    { label: "Change Control", value: "Change Control" },
+                  ]}
+                />
+              </div>
 
-                    <div className="w-full">
-                      <Select
-                        label="Priority"
-                        value={priority}
-                        onChange={(val) => {
-                          setPriority(val as string);
-                          setCurrentPage(1);
-                        }}
-                        options={[
-                          { label: "All Priorities", value: "all" },
-                          { label: "Critical", value: "critical" },
-                          { label: "High", value: "high" },
-                          { label: "Medium", value: "medium" },
-                          { label: "Low", value: "low" },
-                        ]}
-                      />
-                    </div>
+              <div className="w-full">
+                <Select
+                  label="Priority"
+                  value={priority}
+                  onChange={(val) => {
+                    setPriority(val as string);
+                    setCurrentPage(1);
+                  }}
+                  options={[
+                    { label: "All Priorities", value: "all" },
+                    { label: "Critical", value: "critical" },
+                    { label: "High", value: "high" },
+                    { label: "Medium", value: "medium" },
+                    { label: "Low", value: "low" },
+                  ]}
+                />
+              </div>
 
-                    <div className="w-full">
-                      <DateRangePicker
-                        label="Time Range"
-                        startDate={dateFrom}
-                        endDate={dateTo}
-                        onStartDateChange={(val) => {
-                          setDateFrom(val);
-                          setCurrentPage(1);
-                        }}
-                        onEndDateChange={(val) => {
-                          setDateTo(val);
-                          setCurrentPage(1);
-                        }}
-                        placeholder="Select date range"
-                      />
-                    </div>
-                    <div className="col-span-full flex justify-start">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleClearFilters}
-                        className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
-                      >
-                        Clear Filters
-                      </Button>
-                    </div>
+              <div className="w-full">
+                <DateRangePicker
+                  label="Time Range"
+                  startDate={dateFrom}
+                  endDate={dateTo}
+                  onStartDateChange={(val) => {
+                    setDateFrom(val);
+                    setCurrentPage(1);
+                  }}
+                  onEndDateChange={(val) => {
+                    setDateTo(val);
+                    setCurrentPage(1);
+                  }}
+                  placeholder="Select date range"
+                />
+              </div>
+              <div className="w-full flex justify-start">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearFilters}
+                  className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           </div>
         </div>

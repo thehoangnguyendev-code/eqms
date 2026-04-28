@@ -148,7 +148,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
                     <p className="text-slate-500 text-sm max-w-xs mx-auto mb-6">
                         This file type does not support in-browser previewing. Please download the file to view its contents.
                     </p>
-                    <div className="flex flex-col items-center p-4 bg-white rounded-lg border border-slate-200">
+                    <div className="flex flex-col items-center p-4 md:p-5 bg-white rounded-lg border border-slate-200">
                         <img src={filePlaceholder} alt="File" className="h-16 w-16 mb-2 opacity-50" />
                         <span className="text-xs font-medium text-slate-900">{file.name}</span>
                     </div>

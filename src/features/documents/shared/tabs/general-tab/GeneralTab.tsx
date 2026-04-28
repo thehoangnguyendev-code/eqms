@@ -405,13 +405,17 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
           </label>
           <input
             type="number"
+            min="1"
             value={formData.periodicReviewCycle || ""}
-            onChange={(e) =>
-              !isObsoleted && !lockAllEditableFields &&
-              setFormData({
-                periodicReviewCycle: parseInt(e.target.value) || 0,
-              })
-            }
+            onChange={(e) => {
+              if (isObsoleted || lockAllEditableFields) return;
+              const val = parseInt(e.target.value);
+              if (e.target.value === "" || val > 0) {
+                setFormData({
+                  periodicReviewCycle: e.target.value === "" ? 0 : val,
+                });
+              }
+            }}
             placeholder="Enter review cycle in months"
             readOnly={isObsoleted || lockAllEditableFields}
             className={cn(
@@ -429,13 +433,17 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
           </label>
           <input
             type="number"
+            min="1"
             value={formData.periodicReviewNotification || ""}
-            onChange={(e) =>
-              !isObsoleted && !lockAllEditableFields &&
-              setFormData({
-                periodicReviewNotification: parseInt(e.target.value) || 0,
-              })
-            }
+            onChange={(e) => {
+              if (isObsoleted || lockAllEditableFields) return;
+              const val = parseInt(e.target.value);
+              if (e.target.value === "" || val > 0) {
+                setFormData({
+                  periodicReviewNotification: e.target.value === "" ? 0 : val,
+                });
+              }
+            }}
             placeholder="Enter notification days before review"
             readOnly={isObsoleted || lockAllEditableFields}
             className={cn(

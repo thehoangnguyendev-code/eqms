@@ -51,7 +51,9 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
   onCorrelatedModalClose: externalCorrelatedModalClose,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSearchQuery, setSelectedSearchQuery] = useState("");
   const [correlatedSearchQuery, setCorrelatedSearchQuery] = useState("");
+  const [selectedCorrelatedSearchQuery, setSelectedCorrelatedSearchQuery] = useState("");
   const [selectedAvailableIds, setSelectedAvailableIds] = useState<string[]>([]);
   const [selectedDocIds, setSelectedDocIds] = useState<string[]>([]);
   const [selectedAvailableCorrelatedIds, setSelectedAvailableCorrelatedIds] = useState<string[]>([]);
@@ -79,6 +81,7 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
     if (isParentModalOpen) {
       setTempCorrelatedDocuments(correlatedDocuments);
       setCorrelatedSearchQuery("");
+      setSelectedCorrelatedSearchQuery("");
       setSelectedAvailableCorrelatedIds([]);
       setSelectedCorrelatedDocIds([]);
       setFocusedCorrelatedId(null);
@@ -89,6 +92,7 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
     if (isRelatedModalOpen) {
       setTempRelatedDocuments(relatedDocuments);
       setSearchQuery("");
+      setSelectedSearchQuery("");
       setSelectedAvailableIds([]);
       setSelectedDocIds([]);
       setFocusedRelatedId(null);
@@ -135,6 +139,28 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
         doc.title.toLowerCase().includes(query),
     );
   }, [availableCorrelatedDocs, correlatedSearchQuery]);
+
+  const filteredSelectedCorrelatedDocs = useMemo(() => {
+    if (!selectedCorrelatedSearchQuery.trim()) return tempCorrelatedDocuments;
+    const query = selectedCorrelatedSearchQuery.toLowerCase();
+    return tempCorrelatedDocuments.filter(
+      (doc) =>
+        doc.id.toLowerCase().includes(query) ||
+        doc.documentNumber.toLowerCase().includes(query) ||
+        doc.documentName.toLowerCase().includes(query),
+    );
+  }, [tempCorrelatedDocuments, selectedCorrelatedSearchQuery]);
+
+  const filteredSelectedRelatedDocs = useMemo(() => {
+    if (!selectedSearchQuery.trim()) return tempRelatedDocuments;
+    const query = selectedSearchQuery.toLowerCase();
+    return tempRelatedDocuments.filter(
+      (doc) =>
+        doc.id.toLowerCase().includes(query) ||
+        doc.documentNumber.toLowerCase().includes(query) ||
+        doc.documentName.toLowerCase().includes(query),
+    );
+  }, [tempRelatedDocuments, selectedSearchQuery]);
 
   // --- Actions for Related Modal ---
   const handleToggleAvailable = (id: string) => {
@@ -200,6 +226,111 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
 
   const handleDoubleClickSelected = (id: string) => {
     setTempRelatedDocuments(tempRelatedDocuments.filter((doc) => doc.id !== id));
+  };
+
+  // --- Drag and Drop Handlers for Related Modal ---
+  const handleDragStart = (e: React.DragEvent, id: string, source: "available" | "selected") => {
+    e.dataTransfer.setData("docId", id);
+    e.dataTransfer.setData("source", source);
+    e.dataTransfer.effectAllowed = "move";
+    
+    // Add a ghost image or style if needed, but default is fine
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.style.opacity = "0.5";
+    }
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.style.opacity = "1";
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDropToSelected = (e: React.DragEvent) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("docId");
+    const source = e.dataTransfer.getData("source");
+
+    if (source === "available") {
+      const doc = availableDocuments.find((d) => d.id === id) as any;
+      if (doc) {
+        const newRelatedDoc: RelatedDocument = {
+          id: doc.id,
+          documentNumber: doc.id,
+          created: doc.created || "2024-01-10",
+          openedBy: doc.openedBy || "John Doe",
+          documentName: doc.title,
+          state: (doc.status?.toLowerCase() as any) || "effective",
+          documentType: doc.type,
+          department: doc.department || "Quality Assurance",
+          authorCoAuthor: doc.author || "John Doe",
+          effectiveDate: doc.effectiveDate || "2024-02-01",
+          validUntil: doc.validUntil || "2025-02-01"
+        };
+        setTempRelatedDocuments((prev) => [...prev, newRelatedDoc]);
+      }
+    }
+  };
+
+  const handleDropToAvailable = (e: React.DragEvent) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("docId");
+    const source = e.dataTransfer.getData("source");
+
+    if (source === "selected") {
+      setTempRelatedDocuments((prev) => prev.filter((doc) => doc.id !== id));
+    }
+  };
+
+  // --- Drag and Drop Handlers for Correlated Modal ---
+  const handleDragStartCorrelated = (e: React.DragEvent, id: string, source: "available" | "selected") => {
+    e.dataTransfer.setData("docId", id);
+    e.dataTransfer.setData("source", source);
+    e.dataTransfer.effectAllowed = "move";
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.style.opacity = "0.5";
+    }
+  };
+
+  const handleDropToSelectedCorrelated = (e: React.DragEvent) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("docId");
+    const source = e.dataTransfer.getData("source");
+
+    if (source === "available") {
+      const doc = availableCorrelatedDocs.find((d) => d.id === id) as any;
+      if (doc) {
+        const newCorrelatedDoc: ParentDocument = {
+          id: doc.id,
+          documentNumber: doc.id,
+          created: doc.created || "2024-01-10",
+          openedBy: doc.openedBy || "John Doe",
+          documentName: doc.title,
+          state: (doc.status?.toLowerCase() as any) || "effective",
+          documentType: doc.type,
+          department: doc.department || "Quality Assurance",
+          authorCoAuthor: doc.author || "John Doe",
+          effectiveDate: doc.effectiveDate || "2024-02-01",
+          validUntil: doc.validUntil || "2025-02-01"
+        };
+        setTempCorrelatedDocuments((prev) => [...prev, newCorrelatedDoc]);
+      }
+    }
+  };
+
+  const handleDropToAvailableCorrelated = (e: React.DragEvent) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("docId");
+    const source = e.dataTransfer.getData("source");
+
+    if (source === "selected") {
+      setTempCorrelatedDocuments((prev) => prev.filter((doc) => doc.id !== id));
+    }
   };
 
   const handleSaveRelated = () => {
@@ -360,12 +491,19 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
                   className="w-full h-9 pl-9 pr-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm"
                 />
               </div>
-              <div className="border border-slate-200 rounded-lg bg-slate-50/50 flex-1 min-h-[100px] sm:min-h-[180px] max-h-[160px] sm:max-h-[240px] overflow-y-auto custom-scrollbar">
+              <div 
+                onDragOver={handleDragOver}
+                onDrop={handleDropToAvailableCorrelated}
+                className="border border-slate-200 rounded-lg bg-slate-50/50 flex-1 min-h-[100px] sm:min-h-[180px] max-h-[160px] sm:max-h-[240px] overflow-y-auto custom-scrollbar"
+              >
                 {filteredAvailableCorrelatedDocs.length > 0 ? (
                   <div className="divide-y divide-slate-100">
                     {filteredAvailableCorrelatedDocs.map((doc) => (
                       <div
                         key={doc.id}
+                        draggable={true}
+                        onDragStart={(e) => handleDragStartCorrelated(e, doc.id, "available")}
+                        onDragEnd={handleDragEnd}
                         onClick={() => handleToggleAvailableCorrelated(doc.id)}
                         onDoubleClick={() => handleDoubleClickAvailableCorrelated(doc.id)}
                         className={cn(
@@ -415,13 +553,29 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
             {/* Selected Documents */}
             <div className="flex flex-col min-w-0">
               <h3 className="text-xs sm:text-sm font-semibold text-slate-900 mb-2 sm:mb-3">Selected Documents</h3>
-              <div className="hidden lg:block h-10 mb-3" />
-              <div className="border border-slate-200 rounded-lg bg-slate-50/50 flex-1 min-h-[100px] sm:min-h-[180px] max-h-[160px] sm:max-h-[240px] overflow-y-auto custom-scrollbar">
-                {tempCorrelatedDocuments.length > 0 ? (
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type="text"
+                  value={selectedCorrelatedSearchQuery}
+                  onChange={(e) => setSelectedCorrelatedSearchQuery(e.target.value)}
+                  placeholder="Search in selected..."
+                  className="w-full h-9 pl-9 pr-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm"
+                />
+              </div>
+              <div 
+                onDragOver={handleDragOver}
+                onDrop={handleDropToSelectedCorrelated}
+                className="border border-slate-200 rounded-lg bg-slate-50/50 flex-1 min-h-[100px] sm:min-h-[180px] max-h-[160px] sm:max-h-[240px] overflow-y-auto custom-scrollbar"
+              >
+                {filteredSelectedCorrelatedDocs.length > 0 ? (
                   <div className="divide-y divide-slate-100">
-                    {tempCorrelatedDocuments.map((doc) => (
+                    {filteredSelectedCorrelatedDocs.map((doc) => (
                       <div
                         key={doc.id}
+                        draggable={true}
+                        onDragStart={(e) => handleDragStartCorrelated(e, doc.id, "selected")}
+                        onDragEnd={handleDragEnd}
                         onClick={() => handleToggleSelectedCorrelated(doc.id)}
                         onDoubleClick={() => handleDoubleClickSelectedCorrelated(doc.id)}
                         className={cn(
@@ -486,12 +640,19 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
                 />
               </div>
 
-              <div className="border border-slate-200 rounded-lg bg-slate-50/50 flex-1 min-h-[100px] sm:min-h-[180px] max-h-[160px] sm:max-h-[240px] overflow-y-auto custom-scrollbar">
+              <div 
+                onDragOver={handleDragOver}
+                onDrop={handleDropToAvailable}
+                className="border border-slate-200 rounded-lg bg-slate-50/50 flex-1 min-h-[100px] sm:min-h-[180px] max-h-[160px] sm:max-h-[240px] overflow-y-auto custom-scrollbar"
+              >
                 {filteredAvailableDocs.length > 0 ? (
                   <div className="divide-y divide-slate-100">
                     {filteredAvailableDocs.map((doc) => (
                       <div
                         key={doc.id}
+                        draggable={true}
+                        onDragStart={(e) => handleDragStart(e, doc.id, "available")}
+                        onDragEnd={handleDragEnd}
                         onClick={() => handleToggleAvailable(doc.id)}
                         onDoubleClick={() => handleDoubleClickAvailable(doc.id)}
                         className={cn(
@@ -546,14 +707,30 @@ export const DocumentRelationships: React.FC<DocumentRelationshipsProps> = ({
                 Selected Documents
               </h3>
 
-              <div className="hidden lg:block h-10 mb-3"></div>
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type="text"
+                  value={selectedSearchQuery}
+                  onChange={(e) => setSelectedSearchQuery(e.target.value)}
+                  placeholder="Search in selected..."
+                  className="w-full h-9 pl-9 pr-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm"
+                />
+              </div>
 
-              <div className="border border-slate-200 rounded-lg bg-slate-50/50 flex-1 min-h-[100px] sm:min-h-[180px] max-h-[160px] sm:max-h-[240px] overflow-y-auto custom-scrollbar">
-                {tempRelatedDocuments.length > 0 ? (
+              <div 
+                onDragOver={handleDragOver}
+                onDrop={handleDropToSelected}
+                className="border border-slate-200 rounded-lg bg-slate-50/50 flex-1 min-h-[100px] sm:min-h-[180px] max-h-[160px] sm:max-h-[240px] overflow-y-auto custom-scrollbar"
+              >
+                {filteredSelectedRelatedDocs.length > 0 ? (
                   <div className="divide-y divide-slate-100">
-                    {tempRelatedDocuments.map((doc) => (
+                    {filteredSelectedRelatedDocs.map((doc) => (
                       <div
                         key={doc.id}
+                        draggable={true}
+                        onDragStart={(e) => handleDragStart(e, doc.id, "selected")}
+                        onDragEnd={handleDragEnd}
                         onClick={() => handleToggleSelected(doc.id)}
                         onDoubleClick={() => handleDoubleClickSelected(doc.id)}
                         className={cn(

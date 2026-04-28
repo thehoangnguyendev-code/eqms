@@ -262,7 +262,7 @@ export const DestroyControlledCopyView: React.FC = () => {
       </div>
 
       {/* Warning Banner */}
-      <div className="bg-red-50 border border-red-200 rounded-xl p-5">
+      <div className="bg-red-50 border border-red-200 rounded-xl p-4 md:p-5">
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0">
             <AlertTriangle className="h-6 w-6 text-red-600" />

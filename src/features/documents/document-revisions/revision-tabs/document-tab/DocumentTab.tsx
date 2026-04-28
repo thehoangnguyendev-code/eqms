@@ -47,9 +47,9 @@ interface DocumentTabProps {
 export const DocumentTab: React.FC<DocumentTabProps> = ({
   mode = "edit",
   uploadedFiles = [],
-  onFilesChange = () => {},
+  onFilesChange = () => { },
   selectedFile = null,
-  onSelectFile = () => {},
+  onSelectFile = () => { },
 }) => {
   const docxContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,36 +60,18 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   // Detect file type
-  const getFileType = (): 'pdf' | 'docx' | 'image' | 'unknown' => {
+  const getFileType = (): 'pdf' | 'image' | 'unknown' => {
     if (!selectedFile) return 'unknown';
     const name = selectedFile.name.toLowerCase();
     const type = selectedFile.type.toLowerCase();
     if (name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/) || type.startsWith('image/')) return 'image';
     if (name.endsWith('.pdf') || type === 'application/pdf') return 'pdf';
-    if (name.endsWith('.docx') || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') return 'docx';
     return 'unknown';
   };
 
   const fileType = getFileType();
-  const isDocx = fileType === 'docx';
   const isPdf = fileType === 'pdf';
   const isImage = fileType === 'image';
-
-  useEffect(() => {
-    if (mode === "view" && isDocx && selectedFile && docxContainerRef.current) {
-      docxContainerRef.current.innerHTML = "";
-      renderAsync(selectedFile, docxContainerRef.current, undefined, {
-        breakPages: true,
-        inWrapper: true,
-        ignoreWidth: false,
-        ignoreHeight: false,
-        renderHeaders: true,
-        renderFooters: true,
-      }).catch((error) => {
-        console.error("Error rendering docx:", error);
-      });
-    }
-  }, [selectedFile, isDocx, mode]);
 
   useEffect(() => {
     if (mode === "view" && isImage && selectedFile) {
@@ -116,7 +98,7 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
   const handleZoomOut = () => setZoomLevel((prev) => Math.max(prev - 10, 20));
   const handleResetZoom = () => setZoomLevel(80);
 
-  // VIEW MODE - Read-only document viewer (PDF, DOCX & Images)
+  // VIEW MODE - Read-only document viewer (PDF & Images)
   if (mode === "view") {
     // Image viewer
     if (isImage && imagePreviewUrl) {
@@ -182,74 +164,6 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({
                 alt={selectedFile?.name || "Preview"}
                 className="max-w-full h-auto shadow-lg"
                 style={{ maxHeight: 'calc(100vh - 280px)' }}
-              />
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (isDocx) {
-      return (
-        <div
-          className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col"
-          style={{ height: "calc(100vh - 180px)", minHeight: "600px" }}
-        >
-          {/* Toolbar */}
-          <div className="flex items-center justify-between px-3 md:px-4 py-2.5 md:py-3 bg-slate-50 border-b border-slate-200">
-            <div className="flex items-center gap-1.5 md:gap-2">       
-              <FileText className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-600" />
-            </div>
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={handleZoomOut}
-                disabled={zoomLevel <= 50}
-                title="Zoom Out"
-              >
-                <ZoomOut className="h-3.5 w-3.5 md:h-4 md:w-4" />
-              </Button>
-              <div className="min-w-[60px] md:min-w-[70px] text-center">
-                <span className="text-xs md:text-xs sm:text-sm font-medium text-slate-700">
-                  {zoomLevel}%
-                </span>
-              </div>
-              <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={handleZoomIn}
-                disabled={zoomLevel >= 200}
-                title="Zoom In"
-              >
-                <ZoomIn className="h-3.5 w-3.5 md:h-4 md:w-4" />
-              </Button>
-              <div className="w-px h-5 md:h-6 bg-slate-300 mx-0.5 md:mx-1" />
-              <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={handleResetZoom}
-                title="Reset Zoom"
-              >
-                <RotateCcw className="h-3.5 w-3.5 md:h-4 md:w-4" />
-              </Button>
-            </div>
-          </div>
-          {/* Document Content */}
-          <div className="flex-1 overflow-auto p-2 md:p-4">
-            <div 
-              className="inline-block min-w-full"
-              style={{
-                width: `${(100 / zoomLevel) * 100}%`,
-              }}
-            >
-              <div
-                ref={docxContainerRef}
-                className="docx-preview-container transition-transform duration-200 origin-top-left"
-                style={{
-                  transform: `scale(${zoomLevel / 100})`,
-                  transformOrigin: "top left",
-                }}
               />
             </div>
           </div>

@@ -226,7 +226,7 @@ export const UsageReportView: React.FC = () => {
 
       {/* ─── Summary Stats ────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-3 lg:gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
               <GraduationCap className="h-5 w-5 text-emerald-600" />
@@ -239,7 +239,7 @@ export const UsageReportView: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
               <Users className="h-5 w-5 text-blue-600" />
@@ -252,7 +252,7 @@ export const UsageReportView: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
               <TrendingUp className="h-5 w-5 text-amber-600" />
@@ -267,7 +267,7 @@ export const UsageReportView: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
               <GitBranch className="h-5 w-5 text-purple-600" />

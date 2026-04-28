@@ -371,7 +371,7 @@ export const IntegrationTab: React.FC<IntegrationTabProps> = ({ config, onChange
               {config.webhooks.map((webhook) => (
                 <div
                   key={webhook.id}
-                  className="bg-white border border-slate-200 rounded-xl p-4 hover:border-emerald-200 hover:shadow-sm transition-all group"
+                  className="bg-white border border-slate-200 rounded-xl p-4 md:p-5 hover:border-emerald-200 hover:shadow-sm transition-all group"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">

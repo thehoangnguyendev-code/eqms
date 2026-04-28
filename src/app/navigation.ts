@@ -104,17 +104,17 @@ const FOUNDATION_MODULES: NavItem[] = [
             label: "All Revisions",
             path: ROUTES.DOCUMENTS.REVISIONS.ALL,
           },
+          {
+            id: "pending-review",
+            label: "Pending My Review",
+            path: ROUTES.DOCUMENTS.REVISIONS.PENDING_REVIEW,
+          },
+          {
+            id: "pending-approval",
+            label: "Pending My Approval",
+            path: ROUTES.DOCUMENTS.REVISIONS.PENDING_APPROVAL,
+          },
         ],
-      },
-      {
-        id: "pending-review",
-        label: "Pending My Review",
-        path: ROUTES.DOCUMENTS.REVISIONS.PENDING_REVIEW,
-      },
-      {
-        id: "pending-approval",
-        label: "Pending My Approval",
-        path: ROUTES.DOCUMENTS.REVISIONS.PENDING_APPROVAL,
       },
       {
         id: "controlled-copies",

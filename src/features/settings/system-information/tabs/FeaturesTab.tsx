@@ -29,7 +29,7 @@ export const FeaturesTab: React.FC<FeaturesTabProps> = ({ features }) => {
     <div className="p-5 space-y-4">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 md:p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-medium text-slate-500 mb-1">Total Features</p>
@@ -40,7 +40,7 @@ export const FeaturesTab: React.FC<FeaturesTabProps> = ({ features }) => {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-emerald-200 rounded-xl p-4 shadow-sm">
+        <div className="bg-white border border-emerald-200 rounded-xl p-4 md:p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-medium text-emerald-600 mb-1">Enabled</p>
@@ -51,7 +51,7 @@ export const FeaturesTab: React.FC<FeaturesTabProps> = ({ features }) => {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 md:p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-medium text-slate-500 mb-1">Disabled</p>

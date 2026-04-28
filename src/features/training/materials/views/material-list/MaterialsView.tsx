@@ -531,7 +531,7 @@ export const MaterialsView: React.FC = () => {
             {/* Stats cards */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-4">
               {/* Total Materials */}
-              <div className="group bg-white p-4 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-emerald-200">
+              <div className="group bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-emerald-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
                     <FolderOpen className="h-5 w-5 text-emerald-600" />
@@ -550,7 +550,7 @@ export const MaterialsView: React.FC = () => {
               </div>
 
               {/* Videos */}
-              <div className="group bg-white p-4 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-75 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-purple-200">
+              <div className="group bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-75 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-purple-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
                     <Video className="h-5 w-5 text-purple-600" />
@@ -569,7 +569,7 @@ export const MaterialsView: React.FC = () => {
               </div>
 
               {/* Documents (PDF + Document) */}
-              <div className="group bg-white p-4 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-red-200">
+              <div className="group bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-red-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
                     <FileText className="h-5 w-5 text-red-600" />
@@ -588,7 +588,7 @@ export const MaterialsView: React.FC = () => {
               </div>
 
               {/* Images */}
-              <div className="group bg-white p-4 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-150 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-blue-200">
+              <div className="group bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-150 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-blue-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
                     <FileImage className="h-5 w-5 text-blue-600" />
@@ -607,7 +607,7 @@ export const MaterialsView: React.FC = () => {
               </div>
 
               {/* Needs Action (Pending Review + Pending Approval) */}
-              <div className="group bg-white p-4 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-200 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-amber-200">
+              <div className="group bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-200 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-amber-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
                     <Clock className="h-5 w-5 text-amber-600" />
@@ -629,7 +629,7 @@ export const MaterialsView: React.FC = () => {
               </div>
 
               {/* Total Storage */}
-              <div className="group bg-white p-4 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-250 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-cyan-200">
+              <div className="group bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 delay-250 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-cyan-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center flex-shrink-0">
                     <BarChart3 className="h-5 w-5 text-cyan-600" />

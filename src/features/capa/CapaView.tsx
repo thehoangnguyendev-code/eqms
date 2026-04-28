@@ -333,7 +333,7 @@ export const CAPAView: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
                             <Calendar className="h-5 w-5 text-amber-600" />

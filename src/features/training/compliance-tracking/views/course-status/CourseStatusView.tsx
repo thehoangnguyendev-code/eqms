@@ -551,7 +551,7 @@ export const CourseStatusView: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 lg:gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
               <GraduationCap className="h-5 w-5 text-emerald-600" />
@@ -563,7 +563,7 @@ export const CourseStatusView: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
               <Users className="h-5 w-5 text-blue-600" />
@@ -577,7 +577,7 @@ export const CourseStatusView: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
               <CheckCircle2 className="h-5 w-5 text-emerald-600" />
@@ -591,7 +591,7 @@ export const CourseStatusView: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
               <TrendingUp className="h-5 w-5 text-amber-600" />

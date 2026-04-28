@@ -32,6 +32,7 @@ import { StatusBadge, StatusType } from "@/components/ui/badge/Badge";
 import type { DocumentType, DocumentStatus } from "@/features/documents/types";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { revisionWorkspace } from "@/components/ui/breadcrumb/breadcrumbs.config";
+import { useToast } from "@/components/ui/toast";
 
 // --- Types ---
 type ReviewFlowType = "sequential" | "parallel";
@@ -170,6 +171,8 @@ export const RevisionWorkspaceView: React.FC = () => {
   const currentUserName = user
     ? `${user.firstName} ${user.lastName}`.trim()
     : "—";
+
+  const { showToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<TabType>("general");
   const [currentDocIndex, setCurrentDocIndex] = useState(0);
@@ -450,6 +453,12 @@ export const RevisionWorkspaceView: React.FC = () => {
 
       // TODO: Integrate with API service
 
+      showToast({
+        type: "success",
+        title: "Success",
+        message: "Revision workspace has been saved successfully.",
+      });
+
       navigate(ROUTES.DOCUMENTS.REVISIONS.ALL);
     } catch (error) {
       console.error("Error saving revision workspace:", error);
@@ -473,6 +482,11 @@ export const RevisionWorkspaceView: React.FC = () => {
       // TODO: Integrate with API service
       await new Promise((resolve) => setTimeout(resolve, 1500));
       // In a real app, this would update the backend status to 'Pending Review'
+      showToast({
+        type: "success",
+        title: "Submitted",
+        message: "Documents have been submitted for review successfully.",
+      });
       navigate(ROUTES.DOCUMENTS.REVISIONS.ALL, {
         state: {
           from: location.pathname,
@@ -798,12 +812,6 @@ export const RevisionWorkspaceView: React.FC = () => {
 
         {/* Tab Content */}
         <div className="p-4 md:p-5">
-          {activeTab === "document" && (
-            <DocumentTab
-              mode="view"
-              selectedFile={state?.revisionFile ?? null}
-            />
-          )}
 
           {activeTab === "general" && currentDocument && (
             <div className="space-y-4 lg:space-y-6">

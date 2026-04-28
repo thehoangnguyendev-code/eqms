@@ -171,7 +171,7 @@ export const ProductView: React.FC = () => {
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
                             <Package className="h-5 w-5 text-emerald-600" />
@@ -182,7 +182,7 @@ export const ProductView: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
                             <Pill className="h-5 w-5 text-blue-600" />
@@ -195,7 +195,7 @@ export const ProductView: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
                             <FlaskConical className="h-5 w-5 text-amber-600" />
@@ -208,7 +208,7 @@ export const ProductView: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
                             <CheckCircle className="h-5 w-5 text-cyan-600" />

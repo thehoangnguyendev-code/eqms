@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Users, Plus, Trash2, Search, User, X, ShieldCheck, Check, GripVertical, ArrowRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge/Badge";
 import { IconListNumbers } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
@@ -88,7 +89,7 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
 
                 <div className="overflow-y-auto max-h-[350px] -mx-1 px-1 custom-scrollbar min-h-[150px]">
                     {filteredUsers.length > 0 ? (
-                        <div className="space-y-1 divide-y divide-slate-100">
+                        <div className="space-y-2">
                             {filteredUsers.map((user, index) => {
                                 const isAlreadyAdded = existingIds.includes(user.id);
                                 const isSelected = selectedIds.includes(user.id);
@@ -99,18 +100,18 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
                                         onClick={() => !isAlreadyAdded && handleToggleUser(user.id)}
                                         disabled={isAlreadyAdded}
                                         className={cn(
-                                            "w-full flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all group text-left border border-transparent",
-                                            isSelected 
-                                                ? "bg-emerald-50 border-emerald-100" 
+                                            "w-full flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all group text-left border",
+                                            isSelected
+                                                ? "bg-emerald-50 border-emerald-200 shadow-sm"
                                                 : isAlreadyAdded
-                                                    ? "bg-slate-50 opacity-60 cursor-not-allowed"
-                                                    : "hover:bg-slate-50"
+                                                    ? "bg-slate-50 border-slate-100 opacity-60 cursor-not-allowed"
+                                                    : "bg-white border-slate-200 hover:border-emerald-500/30 hover:shadow-sm"
                                         )}
                                     >
                                         <div className={cn(
                                             "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 transition-colors border",
-                                            isSelected 
-                                                ? "bg-emerald-100 border-emerald-200 text-emerald-700" 
+                                            isSelected
+                                                ? "bg-emerald-100 border-emerald-200 text-emerald-700"
                                                 : "bg-slate-100 border-slate-200 text-slate-500"
                                         )}>
                                             {isSelected ? <Check className="h-4 w-4" /> : (index + 1)}
@@ -119,9 +120,9 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
                                             <div className="font-medium text-slate-900 truncate text-sm flex items-center gap-2">
                                                 {user.name}
                                                 {isAlreadyAdded && (
-                                                    <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded font-normal shrink-0">
+                                                    <Badge color="slate" size="sm">
                                                         Added
-                                                    </span>
+                                                    </Badge>
                                                 )}
                                             </div>
                                             <div className="text-xs text-slate-500 truncate mt-0.5">
@@ -129,9 +130,9 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
                                             </div>
                                         </div>
                                         {isSelected && (
-                                            <div className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full shrink-0 uppercase tracking-wider border border-emerald-200">
+                                            <Badge color="emerald" size="sm">
                                                 Selected
-                                            </div>
+                                            </Badge>
                                         )}
                                     </button>
                                 );
@@ -333,16 +334,12 @@ export const ReviewersTab: React.FC<ReviewersTabProps> = ({
                 </div>
             ) : (
                 <div
-                    onClick={handleModalOpen}
-                    className="group relative flex flex-col items-center justify-center py-12 px-4 bg-slate-50 hover:bg-slate-50/80 border-2 border-dashed border-slate-200 hover:border-emerald-500/50 rounded-xl transition-all cursor-pointer"
+                    className="group relative flex flex-col items-center justify-center py-12 px-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl transition-all"
                 >
-                    <div className="h-12 w-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
-                        <Users className="h-6 w-6 text-slate-400 group-hover:text-emerald-500 transition-colors" />
+                    <div className="h-12 w-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 duration-200">
+                        <Users className="h-6 w-6 text-slate-400" />
                     </div>
-                    <p className="text-sm font-medium text-slate-900 group-hover:text-emerald-700 transition-colors">No Reviewers Selected</p>
-                    <p className="text-xs text-slate-500 mt-1 text-center max-w-xs">
-                        Add reviewers who will review this document. Click here to select users.
-                    </p>
+                    <p className="text-sm font-medium text-slate-500">No Reviewers Selected</p>
                 </div>
             )}
 

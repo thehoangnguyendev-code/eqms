@@ -193,7 +193,7 @@ export const FolderDocumentsList: React.FC<FolderDocumentsListProps> = ({
 
             {/* Search & Actions Strip */}
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
-                <div className="p-3 md:p-4 border-b border-slate-100 bg-slate-50/30">
+                <div className="p-4 md:p-5 border-b border-slate-100 bg-slate-50/30">
                     <div className="flex flex-col sm:flex-row sm:items-end gap-3 md:gap-4">
                         <div className="flex-1">
                             <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">

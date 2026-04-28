@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle, Plus, Trash2, Search, User, X, ShieldCheck, Check } from "lucide-react";
+import { Badge } from "@/components/ui/badge/Badge";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
 import { FormModal } from "@/components/ui/modal/FormModal";
@@ -39,7 +40,7 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
         }
     }, [isOpen]);
 
-    const filteredUsers = MOCK_USERS.filter(user => 
+    const filteredUsers = MOCK_USERS.filter(user =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.department.toLowerCase().includes(searchTerm.toLowerCase())
@@ -85,25 +86,25 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
 
                 <div className="overflow-y-auto max-h-[350px] -mx-1 px-1 custom-scrollbar min-h-[150px]">
                     {filteredUsers.length > 0 ? (
-                        <div className="space-y-1 divide-y divide-slate-100">
+                        <div className="space-y-2">
                             {filteredUsers.map((user, index) => {
                                 const isSelected = selectedId === user.id;
-                                
+
                                 return (
                                     <button
                                         key={user.id}
                                         onClick={() => handleToggleUser(user.id)}
                                         className={cn(
-                                            "w-full flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all group text-left border border-transparent",
-                                            isSelected 
-                                                ? "bg-emerald-50 border-emerald-100" 
-                                                : "hover:bg-slate-50"
+                                            "w-full flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all group text-left border",
+                                            isSelected
+                                                ? "bg-emerald-50 border-emerald-200 shadow-sm"
+                                                : "bg-white border-slate-200 hover:border-emerald-500/30 hover:shadow-sm"
                                         )}
                                     >
                                         <div className={cn(
                                             "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 transition-colors border",
-                                            isSelected 
-                                                ? "bg-emerald-100 border-emerald-200 text-emerald-700" 
+                                            isSelected
+                                                ? "bg-emerald-100 border-emerald-200 text-emerald-700"
                                                 : "bg-slate-100 border-slate-200 text-slate-500"
                                         )}>
                                             {isSelected ? <Check className="h-4 w-4" /> : (index + 1)}
@@ -117,9 +118,9 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
                                             </div>
                                         </div>
                                         {isSelected && (
-                                            <div className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full shrink-0 uppercase tracking-wider border border-emerald-200">
+                                            <Badge color="emerald" size="sm">
                                                 Selected
-                                            </div>
+                                            </Badge>
                                         )}
                                     </button>
                                 );
@@ -140,7 +141,7 @@ const UserSelectionModal: React.FC<UserSelectionModalProps> = ({ isOpen, onClose
     );
 };
 
-export const ApproversTab: React.FC<ApproversTabProps> = ({ 
+export const ApproversTab: React.FC<ApproversTabProps> = ({
     onCountChange,
     isModalOpen: externalModalOpen,
     onModalClose: externalModalClose,
@@ -277,22 +278,18 @@ export const ApproversTab: React.FC<ApproversTabProps> = ({
                     </div>
                 </div>
             ) : (
-                <div 
-                    onClick={handleModalOpen}
-                    className="group relative flex flex-col items-center justify-center py-12 px-4 bg-slate-50 hover:bg-slate-50/80 border-2 border-dashed border-slate-200 hover:border-emerald-500/50 rounded-xl transition-all cursor-pointer"
+                <div
+                    className="group relative flex flex-col items-center justify-center py-12 px-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl transition-all"
                 >
-                    <div className="h-12 w-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
-                        <User className="h-6 w-6 text-slate-400 group-hover:text-emerald-500 transition-colors" />
+                    <div className="h-12 w-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3">
+                        <User className="h-6 w-6 text-slate-400" />
                     </div>
-                    <p className="text-sm font-medium text-slate-900 group-hover:text-emerald-700 transition-colors">No Approver Selected</p>
-                    <p className="text-xs text-slate-500 mt-1 text-center max-w-xs">
-                        This document requires a final approver. Click here to select a user from the list.
-                    </p>
+                    <p className="text-sm font-medium text-slate-500">No Approver Selected</p>
                 </div>
             )}
 
-            <UserSelectionModal 
-                isOpen={isModalOpen} 
+            <UserSelectionModal
+                isOpen={isModalOpen}
                 onClose={handleModalClose}
                 onSelect={handleSelectUser}
             />

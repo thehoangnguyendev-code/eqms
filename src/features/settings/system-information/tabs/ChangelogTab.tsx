@@ -39,17 +39,17 @@ export const ChangelogTab: React.FC = () => {
     <div className="p-5 space-y-4">
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 text-center">
           <div className="text-2xl font-bold text-slate-900">{MOCK_CHANGELOG.length}</div>
           <div className="text-[10px] sm:text-xs font-bold text-slate-500 mt-1 uppercase tracking-wider">Total Releases</div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 text-center">
           <div className="text-2xl font-bold text-emerald-600">
             {MOCK_CHANGELOG.reduce((sum, e) => sum + (e.changes.features?.length ?? 0), 0)}
           </div>
           <div className="text-[10px] sm:text-xs font-bold text-emerald-600/70 mt-1 uppercase tracking-wider">New Features</div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 text-center">
           <div className="text-2xl font-bold text-amber-600">
             {MOCK_CHANGELOG.reduce((sum, e) => sum + (e.changes.bugFixes?.length ?? 0), 0)}
           </div>

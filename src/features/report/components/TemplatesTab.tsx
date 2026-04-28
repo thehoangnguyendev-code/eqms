@@ -224,7 +224,7 @@ export function useTemplatesTab(mode: 'templates' | 'compliance') {
       )}>
         {/* Report Templates Grid */}
         <div className={cn(hasCustomizerPanel ? 'lg:col-span-8' : 'col-span-1')}>
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
           <div className="w-full md:w-auto">
             <h2 className="text-sm md:text-base font-semibold text-slate-900">

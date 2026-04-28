@@ -55,8 +55,7 @@ export const WorkingNotesTab: React.FC = () => {
                     rows={4}
                     className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400"
                 />
-                <div className="flex items-center justify-between">
-                    <p className="text-xs text-slate-400">Ctrl + Enter to submit</p>
+                <div className="flex items-center">
                     <Button
                         size="sm"
                         onClick={handleAddNote}
@@ -73,7 +72,7 @@ export const WorkingNotesTab: React.FC = () => {
                 {notes.map((note) => (
                     <div
                         key={note.id}
-                        className="group relative bg-amber-50 border border-amber-200 rounded-xl p-4 transition-all hover:shadow-sm"
+                        className="group relative bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5 transition-all hover:shadow-sm"
                     >
                         <div className="flex items-center justify-between gap-3 mb-2">
                             <span className="text-xs font-semibold text-amber-800">{note.author}</span>

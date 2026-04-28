@@ -239,7 +239,7 @@ export const AssessmentConfigContent: React.FC<AssessmentConfigContentProps> = (
                 {/* Exam Template & Answer Key */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Exam Template */}
-                    <div className="rounded-xl border border-slate-200 bg-white p-5">
+                    <div className="rounded-xl border border-slate-200 bg-white p-4 md:p-5">
                         <div className="flex items-center gap-2 mb-3">
                             <FileText className="h-4 w-4 text-emerald-600" />
                             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -271,7 +271,7 @@ export const AssessmentConfigContent: React.FC<AssessmentConfigContentProps> = (
                     </div>
 
                     {/* Answer Key */}
-                    <div className="rounded-xl border border-slate-200 bg-white p-5">
+                    <div className="rounded-xl border border-slate-200 bg-white p-4 md:p-5">
                         <div className="flex items-center gap-2 mb-3">
                             <FileText className="h-4 w-4 text-amber-600" />
                             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
