@@ -334,7 +334,7 @@ export const ReviewersTab: React.FC<ReviewersTabProps> = ({
                 </div>
             ) : (
                 <div
-                    className="group relative flex flex-col items-center justify-center py-12 px-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl transition-all"
+                    className="group relative flex flex-col items-center justify-center py-12 p-4 md:p-5 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl transition-all"
                 >
                     <div className="h-12 w-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 duration-200">
                         <Users className="h-6 w-6 text-slate-400" />

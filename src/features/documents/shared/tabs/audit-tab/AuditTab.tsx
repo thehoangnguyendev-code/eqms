@@ -209,7 +209,7 @@ export const AuditTab: React.FC = () => {
     return (
         <div className="flex flex-col h-full">
             {/* Filter Section */}
-            <div className="bg-white w-full mb-8">
+            <div className="bg-white w-full p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm mb-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 items-end">
                     {/* Row 1: Search, Action Type, User */}
 

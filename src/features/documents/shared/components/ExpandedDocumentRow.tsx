@@ -39,7 +39,7 @@ export const ExpandedDocumentRow: React.FC<ExpandedDocumentRowProps> = ({
               transition={{ duration: 0.2 }}
               className="overflow-hidden"
             >
-              <div className="px-4 py-3">
+              <div className="p-4 md:p-5">
                 <div className="ml-9 flex flex-wrap gap-6">
                   {revision.relatedDocuments && revision.relatedDocuments.length > 0 && (
                     <div>
