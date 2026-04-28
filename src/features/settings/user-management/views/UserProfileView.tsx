@@ -136,12 +136,12 @@ export const UserProfileView: React.FC = () => {
         <div className="flex flex-col sm:flex-row">
           <div className="flex items-center gap-4 p-4 md:p-5 sm:border-r border-b sm:border-b-0 border-emerald-100/70 sm:min-w-[320px] sm:max-w-[44%] bg-gradient-to-b from-emerald-50/50 to-transparent">
             <div className="h-16 w-16 rounded-full bg-emerald-600 shadow-md flex items-center justify-center flex-shrink-0">
-              <span className="text-xl font-bold text-white">{initials}</span>
+              <span className="text-xl font-medium text-white">{initials}</span>
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="text-lg font-bold text-slate-900 leading-tight">{user.fullName}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 leading-tight">{user.fullName}</h2>
               <p className="text-sm mt-0.5">
-                <span className="text-emerald-600 font-semibold">{user.jobTitle || user.role}</span>
+                <span className="text-emerald-600 font-medium">{user.jobTitle || user.role}</span>
                 <span className="text-slate-400"> &middot; </span>
                 <span className="text-slate-500">{user.department}</span>
               </p>
@@ -149,9 +149,9 @@ export const UserProfileView: React.FC = () => {
                 <Badge
                   color={
                     user.status === "Active" ? "emerald" :
-                    user.status === "Inactive" ? "slate" :
-                    user.status === "Pending" ? "amber" :
-                    user.status === "Suspended" ? "orange" : "red"
+                      user.status === "Inactive" ? "slate" :
+                        user.status === "Pending" ? "amber" :
+                          user.status === "Suspended" ? "orange" : "red"
                   }
                   size="sm"
                   showDot
@@ -162,10 +162,10 @@ export const UserProfileView: React.FC = () => {
                 <Badge
                   color={
                     user.role === "Admin" ? "purple" :
-                    user.role === "QA Manager" ? "emerald" :
-                    user.role === "Approver" ? "blue" :
-                    user.role === "Reviewer" ? "cyan" :
-                    user.role === "Document Owner" ? "indigo" : "slate"
+                      user.role === "QA Manager" ? "emerald" :
+                        user.role === "Approver" ? "blue" :
+                          user.role === "Reviewer" ? "cyan" :
+                            user.role === "Document Owner" ? "indigo" : "slate"
                   }
                   size="sm"
                 >
@@ -177,22 +177,22 @@ export const UserProfileView: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="flex-1 p-4 md:p-5 grid grid-cols-2 gap-x-8 gap-y-5 content-center">
+          <div className="flex-1 p-4 md:p-5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 content-center">
             <div>
               <p className="text-xs font-medium text-slate-400 mb-0.5">Employee Code</p>
-              <p className="text-sm font-bold text-slate-800">{user.employeeCode}</p>
+              <p className="text-sm font-medium text-slate-800">{user.employeeCode}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-slate-400 mb-0.5">Phone Number</p>
-              <p className="text-sm font-bold text-slate-800">{user.phone || "—"}</p>
+              <p className="text-sm font-medium text-slate-800">{user.phone || "—"}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-slate-400 mb-0.5">Username</p>
-              <p className="text-sm font-bold text-slate-800">{user.username}</p>
+              <p className="text-sm font-medium text-slate-800">{user.username}</p>
             </div>
             <div className="min-w-0">
               <p className="text-xs font-medium text-slate-400 mb-0.5">Email</p>
-              <p className="text-sm font-bold text-slate-800 truncate">{user.email}</p>
+              <p className="text-sm font-medium text-slate-800 truncate">{user.email}</p>
             </div>
           </div>
         </div>
