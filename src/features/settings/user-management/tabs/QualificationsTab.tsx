@@ -243,7 +243,7 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
         </div>
 
         {/* Card Body */}
-        <div className="p-5 flex-1 flex flex-col relative text-slate-900">
+        <div className="p-4 md:p-5 flex-1 flex flex-col relative text-slate-900">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col bg-white">
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -351,7 +351,7 @@ export const QualificationsTab: React.FC<QualificationsTabProps> = ({
 
             {/* Footer Summary */}
             {certifications.length > 0 && (
-              <div className="px-5 py-3 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between flex-wrap gap-2">
+              <div className="px-4 md:px-5 py-3 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between flex-wrap gap-2">
                 <p className="text-xs text-slate-500">
                   Showing <span className="font-semibold text-slate-700">{certifications.length}</span> certification{certifications.length !== 1 ? "s" : ""}
                 </p>

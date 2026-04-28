@@ -192,7 +192,7 @@ export const UsageReportView: React.FC = () => {
 
       {/* ─── Material Info Card ───────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 px-5 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 md:p-5">
           <div className="w-12 h-12 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center flex-shrink-0">
             {getTypeIcon(material.type)}
           </div>
@@ -292,7 +292,7 @@ export const UsageReportView: React.FC = () => {
             </div>
             <span className="text-xs text-slate-500">{versionBreakdown.length} version{versionBreakdown.length !== 1 ? "s" : ""}</span>
           </div>
-          <div className="p-5 space-y-4">
+          <div className="p-4 md:p-5 space-y-4">
             {versionBreakdown.map(({ version, count, learners, completed, rate }) => {
               const isCurrent = version === material.currentVersion;
               const pct = Math.round((count / stats.totalCourses) * 100);
@@ -336,7 +336,7 @@ export const UsageReportView: React.FC = () => {
               <h3 className="text-sm font-semibold text-slate-800">Usage by Department</h3>
             </div>
           </div>
-          <div className="p-5 space-y-3">
+          <div className="p-4 md:p-5 space-y-3">
             {deptBreakdown.map(({ dept, count, learners }) => {
               const pct = Math.round((count / maxDeptCount) * 100);
               return (
@@ -365,7 +365,7 @@ export const UsageReportView: React.FC = () => {
               <h3 className="text-sm font-semibold text-slate-800">Insights</h3>
             </div>
           </div>
-          <div className="p-5 space-y-3">
+          <div className="p-4 md:p-5 space-y-3">
             <div className="flex items-start gap-3 p-3 bg-emerald-50 rounded-lg border border-emerald-100">
               <CheckCircle className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
               <div>
@@ -409,7 +409,7 @@ export const UsageReportView: React.FC = () => {
       {/* ─── Course History Table ─────────────────────────────────── */}
       <div className="border rounded-xl bg-white shadow-sm overflow-hidden flex flex-col">
         {/* Table header with filters */}
-        <div className="px-5 py-4">
+        <div className="p-4 md:p-5">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
               <h3 className="text-sm font-semibold text-slate-900">Course History</h3>
@@ -465,7 +465,7 @@ export const UsageReportView: React.FC = () => {
         </div>
 
         {/* Table Container */}
-        <div className="p-5 flex-1 flex flex-col relative">
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col bg-white">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[920px] md:min-w-[1120px] lg:min-w-[1280px] xl:min-w-[1420px]">

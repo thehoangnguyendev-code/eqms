@@ -1,5 +1,6 @@
 import React from "react";
 import { HardDrive, FileText, Upload, Clock, Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge/Badge";
 import type { StorageInfo } from "../types";
 import { formatDateTime } from "@/utils/format";
 
@@ -14,11 +15,11 @@ const SettingsCard: React.FC<{
   noPadding?: boolean;
 }> = ({ title, icon, children, noPadding = false }) => (
   <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+    <div className="flex items-center gap-2.5 px-4 md:px-5 py-4 border-b border-slate-100">
       <span className="text-emerald-600">{icon}</span>
       <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
     </div>
-    <div className={noPadding ? "" : "p-5"}>{children}</div>
+    <div className={noPadding ? "" : "p-4 md:p-5"}>{children}</div>
   </div>
 );
 
@@ -45,7 +46,7 @@ export const StorageTab: React.FC<StorageTabProps> = ({ data }) => {
   };
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-4 md:p-5 space-y-4">
       {/* Card: Storage Overview */}
       <SettingsCard title="Storage Overview" icon={<HardDrive className="h-4 w-4" />}>
         <div className="space-y-4">
@@ -93,9 +94,13 @@ export const StorageTab: React.FC<StorageTabProps> = ({ data }) => {
           {data.fileTypeBreakdown.map((item) => (
             <div key={item.type} className="bg-slate-50 border border-slate-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
               <div className="flex items-center justify-between mb-3">
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getTypeColor(item.type)}`}>
+                <Badge
+                  color={item.type === 'PDF' ? 'red' : item.type === 'DOCX' ? 'blue' : item.type === 'XLSX' ? 'emerald' : item.type === 'Images' ? 'purple' : 'slate'}
+                  size="xs"
+                  pill
+                >
                   {item.type}
-                </span>
+                </Badge>
                 <span className="text-xs font-bold text-slate-500">{item.percentage}%</span>
               </div>
               <div className="space-y-1">

@@ -38,7 +38,7 @@ export const DossierOJTTab: React.FC<DossierOJTTabProps> = ({ employee, onVerify
       <div className="max-h-[460px] overflow-y-auto pr-2 -mr-2 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent hover:scrollbar-thumb-slate-300">
         <div className="grid grid-cols-1 gap-2.5">
           {employee.ojtRecords?.map((record) => (
-            <div key={record.id} className="flex items-center justify-between p-3.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-emerald-200 hover:shadow-sm transition-all group">
+            <div key={record.id} className="flex items-center justify-between p-4 md:p-5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-emerald-200 hover:shadow-sm transition-all group">
               <div className="flex items-center gap-3.5 min-w-0">
                 <div className={cn(
                   "h-8 w-8 rounded-lg flex items-center justify-center shrink-0 border transition-colors",

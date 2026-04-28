@@ -97,10 +97,7 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-start gap-3 p-5 border-b border-slate-100 bg-white min-h-[64px] shrink-0">
-              <div className="h-10 w-10 rounded-full bg-rose-100 flex items-center justify-center flex-shrink-0">
-                <UserX className="h-5 w-5 text-rose-600" />
-              </div>
+            <div className="flex items-start gap-3 p-4 md:p-5 border-b border-slate-100 bg-white min-h-[64px] shrink-0">
               <div className="flex-1 min-w-0">
                 <h2 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900">Terminate Employee</h2>
                 <p className="text-sm text-slate-500 mt-0.5">
@@ -117,7 +114,7 @@ export const TerminateModal: React.FC<TerminateModalProps> = ({
             </div>
 
             {/* Body */}
-            <div className="p-5 space-y-4 overflow-y-auto flex-1 min-h-0">
+            <div className="p-4 md:p-5 space-y-4 overflow-y-auto flex-1 min-h-0">
               <div>
                 <Select
                   label={<>Reason <span className="text-red-500">*</span></>}

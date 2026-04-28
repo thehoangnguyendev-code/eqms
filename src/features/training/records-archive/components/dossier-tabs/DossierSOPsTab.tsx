@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  BookOpen,
   FileText,
   Calendar,
   History,
@@ -11,6 +10,7 @@ import {
 import { Badge, StatusBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button/Button";
 import type { EmployeeTrainingFile } from "@/features/training/types";
+import { IconBook } from "@tabler/icons-react";
 
 interface DossierSOPsTabProps {
   employee: EmployeeTrainingFile;
@@ -22,7 +22,7 @@ export const DossierSOPsTab: React.FC<DossierSOPsTabProps> = ({ employee }) => {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold text-slate-900 tracking-tight flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-emerald-600" />
+            <IconBook className="h-4 w-4 text-emerald-600" />
             Mandatory SOP Training Records
           </h3>
           <p className="text-xs text-slate-500 font-medium mt-0.5">Requirements for {employee.jobPosition} role</p>
@@ -33,7 +33,7 @@ export const DossierSOPsTab: React.FC<DossierSOPsTabProps> = ({ employee }) => {
       <div className="max-h-[460px] overflow-y-auto pr-2 -mr-2 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent hover:scrollbar-thumb-slate-300">
         <div className="grid grid-cols-1 gap-2.5">
           {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-            <div key={i} className="flex items-center justify-between p-3.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-emerald-200 hover:shadow-sm transition-all group">
+            <div key={i} className="flex items-center justify-between p-4 md:p-5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-emerald-200 hover:shadow-sm transition-all group">
               <div className="flex items-center gap-3.5 min-w-0">
                 <div className="h-8 w-8 rounded-lg bg-white border border-slate-200 text-slate-400 flex items-center justify-center group-hover:text-emerald-600 group-hover:border-emerald-100 transition-colors shrink-0">
                   <FileText className="h-4 w-4" />

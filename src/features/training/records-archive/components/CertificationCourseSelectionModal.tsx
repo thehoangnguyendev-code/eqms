@@ -68,7 +68,7 @@ export const CertificationCourseSelectionModal: React.FC<CertificationCourseSele
                   setSelectedCourseId(isSelected ? null : course.id);
                 }}
                 className={cn(
-                  "flex items-center gap-4 p-3 rounded-xl border transition-all cursor-pointer relative",
+                  "flex items-center gap-4 p-4 md:p-5 rounded-xl border transition-all cursor-pointer relative",
                   isSelected
                     ? "border-emerald-500 bg-emerald-50/50 shadow-sm"
                     : isEligible

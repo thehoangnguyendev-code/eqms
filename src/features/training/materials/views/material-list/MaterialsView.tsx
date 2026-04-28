@@ -833,116 +833,116 @@ export const MaterialsView: React.FC = () => {
             <div className="pb-4 md:pb-5">
               <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-end">
-                        <div className="w-full">
-                          <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
-                            Search
-                          </label>
-                          <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                              <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                            </div>
-                            <input
-                              type="text"
-                              placeholder="Search by title, ID, or description..."
-                              value={filters.searchQuery}
-                              onChange={(e) => {
-                                setFilters((prev) => ({ ...prev, searchQuery: e.target.value }));
-                                setCurrentPage(1);
-                              }}
-                              className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                            />
-                            {filters.searchQuery && (
-                              <button
-                                onClick={() => {
-                                  setFilters((prev) => ({ ...prev, searchQuery: "" }));
-                                  setCurrentPage(1);
-                                }}
-                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
+                  <div className="w-full">
+                    <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
+                      Search
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                        <Search className="h-4 w-4 text-slate-400 transition-colors" />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Search by title, ID, or description..."
+                        value={filters.searchQuery}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, searchQuery: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
+                      />
+                      {filters.searchQuery && (
+                        <button
+                          onClick={() => {
+                            setFilters((prev) => ({ ...prev, searchQuery: "" }));
+                            setCurrentPage(1);
+                          }}
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
 
-                        {/* Type */}
-                        <div className="w-full">
-                          <Select
-                            label="Material Type"
-                            value={filters.typeFilter}
-                            onChange={(val) => {
-                              setFilters((prev) => ({ ...prev, typeFilter: val }));
-                              setCurrentPage(1);
-                            }}
-                            options={typeOptions}
-                          />
-                        </div>
+                  {/* Type */}
+                  <div className="w-full">
+                    <Select
+                      label="Material Type"
+                      value={filters.typeFilter}
+                      onChange={(val) => {
+                        setFilters((prev) => ({ ...prev, typeFilter: val }));
+                        setCurrentPage(1);
+                      }}
+                      options={typeOptions}
+                    />
+                  </div>
 
-                        {/* Department */}
-                        <div className="w-full">
-                          <Select
-                            label="Department"
-                            value={filters.departmentFilter}
-                            onChange={(val) => {
-                              setFilters((prev) => ({ ...prev, departmentFilter: val }));
-                              setCurrentPage(1);
-                            }}
-                            options={departmentOptions}
-                          />
-                        </div>
+                  {/* Department */}
+                  <div className="w-full">
+                    <Select
+                      label="Department"
+                      value={filters.departmentFilter}
+                      onChange={(val) => {
+                        setFilters((prev) => ({ ...prev, departmentFilter: val }));
+                        setCurrentPage(1);
+                      }}
+                      options={departmentOptions}
+                    />
+                  </div>
 
-                        {/* Status */}
-                        <div className="w-full">
-                          <Select
-                            label="Status"
-                            value={statusFilterEffective}
-                            onChange={(val) => {
-                              setFilters((prev) => ({ ...prev, statusFilter: val }));
-                              setCurrentPage(1);
-                            }}
-                            options={statusOptions}
-                            disabled={
-                              activeTab === "pending-review" || activeTab === "pending-approval"
-                            }
-                          />
-                        </div>
+                  {/* Status */}
+                  <div className="w-full">
+                    <Select
+                      label="Status"
+                      value={statusFilterEffective}
+                      onChange={(val) => {
+                        setFilters((prev) => ({ ...prev, statusFilter: val }));
+                        setCurrentPage(1);
+                      }}
+                      options={statusOptions}
+                      disabled={
+                        activeTab === "pending-review" || activeTab === "pending-approval"
+                      }
+                    />
+                  </div>
 
-                        {/* Uploaded By */}
-                        <div className="w-full">
-                          <Select
-                            label="Uploaded By"
-                            value={filters.uploadedByFilter}
-                            onChange={(val) => {
-                              setFilters((prev) => ({ ...prev, uploadedByFilter: val }));
-                              setCurrentPage(1);
-                            }}
-                            options={uploadedByOptions}
-                          />
-                        </div>
+                  {/* Uploaded By */}
+                  <div className="w-full">
+                    <Select
+                      label="Uploaded By"
+                      value={filters.uploadedByFilter}
+                      onChange={(val) => {
+                        setFilters((prev) => ({ ...prev, uploadedByFilter: val }));
+                        setCurrentPage(1);
+                      }}
+                      options={uploadedByOptions}
+                    />
+                  </div>
 
-                        {/* Last Updated Date Range */}
-                        <div className="w-full">
-                          <DateRangePicker
-                            label="Last Updated Date Range"
-                            startDate={filters.dateFrom}
-                            endDate={filters.dateTo}
-                            onStartDateChange={(val) => { setFilters((prev) => ({ ...prev, dateFrom: val })); setCurrentPage(1); }}
-                            onEndDateChange={(val) => { setFilters((prev) => ({ ...prev, dateTo: val })); setCurrentPage(1); }}
-                            placeholder="Select Date Range"
-                          />
-                        </div>
+                  {/* Last Updated Date Range */}
+                  <div className="w-full">
+                    <DateRangePicker
+                      label="Last Updated Date Range"
+                      startDate={filters.dateFrom}
+                      endDate={filters.dateTo}
+                      onStartDateChange={(val) => { setFilters((prev) => ({ ...prev, dateFrom: val })); setCurrentPage(1); }}
+                      onEndDateChange={(val) => { setFilters((prev) => ({ ...prev, dateTo: val })); setCurrentPage(1); }}
+                      placeholder="Select Date Range"
+                    />
+                  </div>
 
-                        {/* Clear Filters Button */}
-                        <div className="flex items-end">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={clearFilters}
-                            className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
-                          >
-                            Clear Filters
-                          </Button>
-                        </div>
+                  {/* Clear Filters Button */}
+                  <div className="flex items-end">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -968,7 +968,7 @@ export const MaterialsView: React.FC = () => {
                   )}
                   {...dragEvents}
                 >
-                  <table className="w-full min-w-[1200px] border-separate border-spacing-0">
+                  <table className="w-full min-w-[1200px] border-spacing-0">
                     <thead>
                       <tr className="bg-slate-50 border-b-2 border-slate-200">
                         <th className="sticky top-0 z-10 bg-slate-50 py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap w-12">

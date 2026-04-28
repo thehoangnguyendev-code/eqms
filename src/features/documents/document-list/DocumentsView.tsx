@@ -629,7 +629,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
             </div>
 
             {/* Table Section */}
-            <div className="p-4 md:p-5 flex-1 flex flex-col relative">
+            <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
               {isTableLoading && (
                 <div className="absolute inset-0 z-20 bg-white/40 backdrop-blur-[4px] flex items-center justify-center transition-all duration-300">
                   <SectionLoading text="Searching..." minHeight="150px" />
@@ -651,7 +651,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ viewType, onViewDo
                       style={{ WebkitOverflowScrolling: 'touch' }}
                       {...dragEvents}
                     >
-                      <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                      <table className="w-full min-w-max  border-spacing-0 text-left">
                         <thead>
                           <tr>
                             <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-9"></th>

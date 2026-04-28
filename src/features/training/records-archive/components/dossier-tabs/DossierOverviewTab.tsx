@@ -81,7 +81,7 @@ export const DossierOverviewTab: React.FC<DossierOverviewTabProps> = ({ employee
           {/* Training & Compliance Summary */}
           <FormSection title="Compliance Status" icon={<ShieldCheck className="h-4 w-4" />}>
             <div className="space-y-5">
-              <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center justify-between">
+              <div className="p-4 md:p-5 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-1">Audit Status</p>
                   <p className="text-sm font-bold text-emerald-900">GMP COMPLIANT - AUDIT READY</p>
@@ -103,14 +103,14 @@ export const DossierOverviewTab: React.FC<DossierOverviewTabProps> = ({ employee
               </div>
 
               <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="p-3 bg-red-50 rounded-lg border border-red-100">
+                <div className="p-4 md:p-5 bg-red-50 rounded-lg border border-red-100">
                   <div className="flex items-center gap-2 mb-1">
                     <Clock className="h-3.5 w-3.5 text-red-500" />
                     <span className="text-[10px] font-black text-red-700 uppercase">Alert</span>
                   </div>
                   <p className="text-xs text-red-600 font-bold leading-tight">Refresher Due in 12 days</p>
                 </div>
-                <div className="p-3 bg-amber-50 rounded-lg border border-amber-100">
+                <div className="p-4 md:p-5 bg-amber-50 rounded-lg border border-amber-100">
                   <div className="flex items-center gap-2 mb-1">
                     <Info className="h-3.5 w-3.5 text-amber-500" />
                     <span className="text-[10px] font-black text-amber-700 uppercase">Remark</span>
@@ -125,7 +125,7 @@ export const DossierOverviewTab: React.FC<DossierOverviewTabProps> = ({ employee
           <FormSection title="Assignment & Qualifications" icon={<Award className="h-4 w-4" />}>
             <div className="space-y-6">
               {/* Active JD Card */}
-              <div className="p-4 rounded-xl bg-slate-900 text-white relative overflow-hidden shadow-lg group cursor-pointer">
+              <div className="p-4 md:p-5 rounded-xl bg-slate-900 text-white relative overflow-hidden shadow-lg group cursor-pointer">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 blur-3xl -mr-12 -mt-12 transition-colors group-hover:bg-emerald-500/20" />
                 <div className="relative z-10">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1.5 lead">Primary Assignment</p>

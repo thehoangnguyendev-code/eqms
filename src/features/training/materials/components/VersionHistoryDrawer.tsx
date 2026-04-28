@@ -137,7 +137,7 @@ const VersionCard: React.FC<VersionCardProps> = ({ entry, isLatest, fileType, is
               )}
 
               {/* Form-style Body */}
-              <div className="p-4 space-y-5">
+              <div className="p-4 md:p-5 space-y-5">
                 {/* Creation Row */}
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -446,7 +446,7 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
         )}
 
         {/* Header */}
-        <div className="px-4 py-3 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
+        <div className="p-4 md:p-5 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 min-w-0">
             <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
               <History className="h-4 w-4 text-emerald-600" />
@@ -472,7 +472,7 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
 
         {/* Global Actions Toggle */}
         {sorted.length > 0 && (
-          <div className="px-4 pt-2 pb-2.5 border-b border-slate-200 flex items-center justify-start bg-slate-50/10 shrink-0">
+          <div className="p-4 md:p-5 pt-2 pb-2.5 border-b border-slate-200 flex items-center justify-start bg-slate-50/10 shrink-0">
             <Button
               variant="outline-emerald"
               size="sm"
@@ -495,7 +495,7 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
 
         {/* Body */}
         <div
-          className="flex-1 overflow-y-auto px-4 pb-4 pt-0 space-y-4 bg-slate-50/30 custom-drawer-scrollbar"
+          className="flex-1 overflow-y-auto p-4 md:p-5 pb-4 pt-0 space-y-4 bg-slate-50/30 custom-drawer-scrollbar"
           style={{
             WebkitOverflowScrolling: "touch",
             overscrollBehavior: "contain"
@@ -539,7 +539,7 @@ export const VersionHistoryDrawer: React.FC<VersionHistoryDrawerProps> = ({ mate
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-slate-200 bg-white shrink-0 flex items-center justify-between">
+        <div className="p-4 md:p-5 border-t border-slate-200 bg-white shrink-0 flex items-center justify-between">
           <p className="text-xs font-medium text-slate-400 tracking-tight">
             {sorted.length} Revision{sorted.length !== 1 ? "s" : ""}
           </p>

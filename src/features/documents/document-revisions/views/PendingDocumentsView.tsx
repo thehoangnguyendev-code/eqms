@@ -534,11 +534,11 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
     return config.revisions.filter((rev) => {
       return viewType === "review"
         ? rev.reviewers?.some(
-            (r) => r.userId === CURRENT_USER.id && r.status === "Pending",
-          )
+          (r) => r.userId === CURRENT_USER.id && r.status === "Pending",
+        )
         : rev.approvers?.some(
-            (a) => a.userId === CURRENT_USER.id && a.status === "Pending",
-          );
+          (a) => a.userId === CURRENT_USER.id && a.status === "Pending",
+        );
     });
   }, [config.revisions, viewType]);
 
@@ -660,49 +660,49 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <DocumentFilters
-                    showCard={false}
-                    searchQuery={searchQuery}
-                    onSearchChange={setSearchQuery}
-                    statusFilter={config.statusFilter}
-                    onStatusChange={() => { }} // No-op since disabled
-                    typeFilter={typeFilter}
-                    onTypeChange={setTypeFilter}
-                    businessUnitFilter={businessUnitFilter}
-                    onBusinessUnitChange={setBusinessUnitFilter}
-                    departmentFilter={departmentFilter}
-                    onDepartmentChange={setDepartmentFilter}
-                    authorFilter={authorFilter}
-                    onAuthorChange={setAuthorFilter}
-                    createdFromDate={createdFromDate}
-                    onCreatedFromDateChange={setCreatedFromDate}
-                    createdToDate={createdToDate}
-                    onCreatedToDateChange={setCreatedToDate}
-                    effectiveFromDate={effectiveFromDate}
-                    onEffectiveFromDateChange={setEffectiveFromDate}
-                    effectiveToDate={effectiveToDate}
-                    onEffectiveToDateChange={setEffectiveToDate}
-                    validFromDate={validFromDate}
-                    onValidFromDateChange={setValidFromDate}
-                    validToDate={validToDate}
-                    onValidToDateChange={setValidToDate}
-                    disableStatusFilter={true}
-                    authorFilterDisabled={true}
-                    relatedDocumentFilter={relatedDocumentFilter}
-                    onRelatedDocumentFilterChange={(value) => {
-                      setRelatedDocumentFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    correlatedDocumentFilter={correlatedDocumentFilter}
-                    onCorrelatedDocumentFilterChange={(value) => {
-                      setCorrelatedDocumentFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    templateFilter={templateFilter}
-                    onTemplateFilterChange={(value) => {
-                      setTemplateFilter(value);
-                      setCurrentPage(1);
-                    }}
-                    onClearFilters={handleClearFilters}
+              showCard={false}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              statusFilter={config.statusFilter}
+              onStatusChange={() => { }} // No-op since disabled
+              typeFilter={typeFilter}
+              onTypeChange={setTypeFilter}
+              businessUnitFilter={businessUnitFilter}
+              onBusinessUnitChange={setBusinessUnitFilter}
+              departmentFilter={departmentFilter}
+              onDepartmentChange={setDepartmentFilter}
+              authorFilter={authorFilter}
+              onAuthorChange={setAuthorFilter}
+              createdFromDate={createdFromDate}
+              onCreatedFromDateChange={setCreatedFromDate}
+              createdToDate={createdToDate}
+              onCreatedToDateChange={setCreatedToDate}
+              effectiveFromDate={effectiveFromDate}
+              onEffectiveFromDateChange={setEffectiveFromDate}
+              effectiveToDate={effectiveToDate}
+              onEffectiveToDateChange={setEffectiveToDate}
+              validFromDate={validFromDate}
+              onValidFromDateChange={setValidFromDate}
+              validToDate={validToDate}
+              onValidToDateChange={setValidToDate}
+              disableStatusFilter={true}
+              authorFilterDisabled={true}
+              relatedDocumentFilter={relatedDocumentFilter}
+              onRelatedDocumentFilterChange={(value) => {
+                setRelatedDocumentFilter(value);
+                setCurrentPage(1);
+              }}
+              correlatedDocumentFilter={correlatedDocumentFilter}
+              onCorrelatedDocumentFilterChange={(value) => {
+                setCorrelatedDocumentFilter(value);
+                setCurrentPage(1);
+              }}
+              templateFilter={templateFilter}
+              onTemplateFilterChange={(value) => {
+                setTemplateFilter(value);
+                setCurrentPage(1);
+              }}
+              onClearFilters={handleClearFilters}
             />
           </div>
         </div>
@@ -729,7 +729,7 @@ export const PendingDocumentsView: React.FC<PendingDocumentsViewProps> = ({
                   )}
                   {...dragEvents}
                 >
-                  <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                  <table className="w-full min-w-max  border-spacing-0 text-left">
                     <thead>
                       <tr>
                         {[

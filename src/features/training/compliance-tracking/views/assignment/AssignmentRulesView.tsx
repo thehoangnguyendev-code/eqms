@@ -140,7 +140,7 @@ const RuleCard: React.FC<RuleCardProps> = ({ rule, onToggle }) => {
   return (
     <div className={cn("bg-white border rounded-xl shadow-sm overflow-hidden transition-all", rule.isActive ? "border-slate-200" : "border-slate-200 opacity-60")}>
       {/* Header */}
-      <div className="p-5">
+      <div className="p-4 md:p-5">
         <div className="flex items-start gap-4">
           {/* Icon */}
           <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center flex-shrink-0", meta.bg)}>
@@ -233,7 +233,7 @@ const RuleCard: React.FC<RuleCardProps> = ({ rule, onToggle }) => {
 
       {/* Expanded conditions */}
       {expanded && (
-        <div className="px-5 pb-5 pt-0 border-t border-slate-100 bg-slate-50/50">
+        <div className="px-4 md:px-5 pb-4 md:pb-5 pt-0 border-t border-slate-100 bg-slate-50/50">
           <div className="pt-4 space-y-3">
             <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Trigger Conditions</p>
             {Object.keys(rule.triggerConditions).length === 0 ? (

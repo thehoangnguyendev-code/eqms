@@ -3,13 +3,9 @@ import { createPortal } from "react-dom";
 import {
   X,
   AlertTriangle,
-  BookOpen,
   CheckCircle,
   Clock,
-  Activity,
-  Lock,
   AlertCircle,
-  Link2,
   ShieldAlert,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,7 +13,9 @@ import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
 import { cn } from "@/components/ui/utils";
 import { InlineLoading } from "@/components/ui/loading/Loading";
-import { IconCheck } from "@tabler/icons-react";
+import { IconBook, IconCheck } from "@tabler/icons-react";
+import { StatusType, StatusBadge } from "@/components/ui/badge/Badge";
+import { ESignatureModal } from "@/components/ui/esign-modal";
 
 // ─── Types ───────────────────────────────────────────────────────────
 export interface ObsoleteMaterial {
@@ -82,23 +80,21 @@ const JUSTIFICATION_OPTIONS = [
   { value: "other", label: "Other reason" },
 ];
 
-const getCourseStatusConfig = (status: CourseStatus) => {
-  switch (status) {
-    case "Active":
-      return { classes: "bg-blue-50 text-blue-700 border-blue-200", icon: <Activity className="h-3 w-3" /> };
-    case "In Progress":
-      return { classes: "bg-amber-50 text-amber-700 border-amber-200", icon: <Clock className="h-3 w-3" /> };
-    case "Completed":
-      return { classes: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: <IconCheck className="h-3 w-3" /> };
-    case "Cancelled":
-      return { classes: "bg-red-50 text-red-700 border-red-200", icon: <AlertTriangle className="h-3 w-3" /> };
-  }
+const getCourseStatusConfig = (status: CourseStatus): { status: StatusType } => {
+  const statusMap: Record<CourseStatus, StatusType> = {
+    "Active": "active",
+    "In Progress": "inProgress",
+    "Completed": "completed",
+    "Cancelled": "cancelled",
+  };
+  return {
+    status: statusMap[status] || 'draft'
+  };
 };
 
 const STEPS = [
   { label: "Impact Analysis", short: "Impact" },
   { label: "Justification", short: "Reason" },
-  { label: "E-Signature", short: "Sign" },
 ];
 
 export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
@@ -113,10 +109,8 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
   const [justificationNote, setJustificationNote] = useState("");
   const [replacedByCode, setReplacedByCode] = useState("");
 
-  const [password, setPassword] = useState("");
-  const [signReason, setSignReason] = useState("");
-  const [signError, setSignError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showESign, setShowESign] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -124,10 +118,8 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
       setJustificationCode("");
       setJustificationNote("");
       setReplacedByCode("");
-      setPassword("");
-      setSignReason("");
-      setSignError("");
       setIsSubmitting(false);
+      setShowESign(false);
     }
   }, [isOpen]);
 
@@ -147,9 +139,11 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
     (!isReplacedByVersion || replacedByCode.trim().length > 0);
 
   const handleESign = () => {
-    if (!password.trim()) { setSignError("Password is required."); return; }
-    if (!signReason.trim()) { setSignError("Reason is required for audit trail."); return; }
-    setSignError("");
+    setShowESign(true);
+  };
+
+  const handleESignConfirm = (reason: string) => {
+    setShowESign(false);
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
@@ -224,16 +218,16 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
                 return (
                   <React.Fragment key={s.label}>
                     <div className="flex flex-col items-center gap-2">
-                        <div className={cn(
-                          "relative w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all shadow-sm",
-                          isDone ? "bg-emerald-600 text-white" :
+                      <div className={cn(
+                        "relative w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold transition-all shadow-sm",
+                        isDone ? "bg-emerald-600 text-white" :
                           isCurrent ? "bg-red-600 text-white ring-4 ring-red-100" :
-                          "bg-slate-100 text-slate-400 border border-slate-200"
-                        )}>
-                          {isDone ? <IconCheck className="h-4 w-4" /> : i + 1}
-                        </div>
+                            "bg-slate-100 text-slate-400 border border-slate-200"
+                      )}>
+                        {isDone ? <IconCheck className="h-4 w-4" /> : i + 1}
+                      </div>
                       <span className={cn(
-                        "text-[10px] font-semibold text-center leading-tight transition-colors",
+                        "text-[12px] font-semibold text-center leading-tight transition-colors",
                         isCurrent ? "text-red-700" : isDone ? "text-emerald-700" : "text-slate-400"
                       )}>
                         {s.short}
@@ -262,7 +256,7 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
                   </div>
 
                   {hasActiveCourses && (
-                    <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div className="flex items-start gap-3 p-4 md:p-5 bg-red-50 border border-red-200 rounded-xl">
                       <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-sm font-bold text-red-800">
@@ -276,7 +270,7 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
                   )}
 
                   {!linkedDetails.length && (
-                    <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                    <div className="flex items-start gap-3 p-4 md:p-5 bg-emerald-50 border border-emerald-200 rounded-xl">
                       <CheckCircle className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                       <p className="text-sm font-medium text-emerald-800 italic">No active courses affected. Safe to proceed.</p>
                     </div>
@@ -290,14 +284,12 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
                           const cfg = getCourseStatusConfig(c.status);
                           return (
                             <div key={c.courseId} className="flex items-center gap-3 px-4 py-3 bg-white">
-                              <BookOpen className="h-4 w-4 text-slate-300" />
+                              <IconBook className="h-4 w-4 text-slate-400" />
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-slate-900 truncate">{c.title}</p>
-                                <p className="text-[10px] text-slate-400">{c.courseId} · {c.department}</p>
+                                <p className="text-sm font-medium text-slate-900 truncate">{c.title}</p>
+                                <p className="text-[10px] text-slate-500">{c.courseId} · {c.department}</p>
                               </div>
-                              <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border", cfg?.classes)}>
-                                {c.status}
-                              </span>
+                              <StatusBadge status={cfg.status} size="sm" />
                             </div>
                           );
                         })}
@@ -354,46 +346,6 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
                 </div>
               )}
 
-              {step === 2 && (
-                <div className="space-y-5">
-                  <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-3">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Confirmation Summary</p>
-                    <div className="space-y-2 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Material:</span>
-                        <span className="font-bold text-slate-900">{material.materialId} v{material.version}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Reason:</span>
-                        <span className="font-bold text-slate-900">{JUSTIFICATION_OPTIONS.find(o => o.value === justificationCode)?.label}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="space-y-1">
-                      <label className="text-xs sm:text-sm font-medium text-slate-700">Password <span className="text-red-500">*</span></label>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => { setPassword(e.target.value); setSignError(""); }}
-                        className="w-full h-10 px-4 border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-emerald-500"
-                        autoComplete="current-password"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs sm:text-sm font-medium text-slate-700">Regulatory Reason <span className="text-red-500">*</span></label>
-                      <textarea
-                        value={signReason}
-                        onChange={(e) => { setSignReason(e.target.value); setSignError(""); }}
-                        rows={2}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm resize-none"
-                      />
-                    </div>
-                    {signError && <p className="text-xs text-red-600 font-medium">{signError}</p>}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Footer */}
@@ -408,13 +360,13 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
               </Button>
               <Button
                 size="sm"
-                onClick={step < 2 ? () => setStep(s => s + 1) : handleESign}
+                onClick={step < 1 ? () => setStep(s => s + 1) : handleESign}
                 disabled={(step === 1 && !step2Valid) || isSubmitting}
                 className={cn(
-                  step === 2 || (step === 0 && hasActiveCourses) ? "bg-red-600 hover:bg-red-700 text-white border-red-600" : ""
+                  step === 1 || (step === 0 && hasActiveCourses) ? "bg-red-600 hover:bg-red-700 text-white border-red-600" : ""
                 )}
               >
-                {isSubmitting ? <InlineLoading size="xs" color="white" /> : (step === 2 ? "Confirm & Sign" : "Continue")}
+                {isSubmitting ? <InlineLoading size="xs" color="white" /> : (step === 1 ? "Confirm & Sign" : "Continue")}
               </Button>
             </div>
           </motion.div>
@@ -424,5 +376,15 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
     document.body
   );
 
-  return portalContent;
+  return (
+    <>
+      {portalContent}
+      <ESignatureModal
+        isOpen={showESign}
+        onClose={() => setShowESign(false)}
+        onConfirm={handleESignConfirm}
+        actionTitle="Obsolete Material"
+      />
+    </>
+  );
 };

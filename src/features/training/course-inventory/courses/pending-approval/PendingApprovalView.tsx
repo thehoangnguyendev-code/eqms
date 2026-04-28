@@ -169,101 +169,101 @@ export const PendingApprovalView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
-                  <div className="w-full">
-                    <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
-                      Search
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                        <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Search by title, ID, or instructor..."
-                        value={searchQuery}
-                        onChange={(e) => {
-                          setSearchQuery(e.target.value);
-                          setCurrentPage(1);
-                        }}
-                        className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                      />
-                      {searchQuery && (
-                        <button
-                          onClick={() => setSearchQuery("")}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
+                  Search
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                    <Search className="h-4 w-4 text-slate-400 transition-colors" />
                   </div>
-
-                  {/* Training Type */}
-                  <Select
-                    label="Training Type"
-                    value={typeFilter}
-                    onChange={(val) => {
-                      setTypeFilter(val);
+                  <input
+                    type="text"
+                    placeholder="Search by title, ID, or instructor..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
                       setCurrentPage(1);
                     }}
-                    options={TYPE_OPTIONS}
+                    className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
                   />
-
-                  {/* Training Method */}
-                  <Select
-                    label="Training Method"
-                    value={methodFilter}
-                    onChange={(val) => {
-                      setMethodFilter(val);
-                      setCurrentPage(1);
-                    }}
-                    options={METHOD_OPTIONS}
-                  />
-
-                  {/* Status (readonly) */}
-                  <Select
-                    label="Status"
-                    value="Pending Approval"
-                    onChange={() => { }}
-                    options={[{ label: "Pending Approval", value: "Pending Approval" }]}
-                    disabled
-                  />
-
-                  {/* Date Range */}
-                  <div className="lg:col-span-1">
-                    <DateRangePicker
-                      label="Scheduled Date Range"
-                      startDate={dateFrom}
-                      endDate={dateTo}
-                      onStartDateChange={(val) => {
-                        setDateFrom(val);
-                        setCurrentPage(1);
-                      }}
-                      onEndDateChange={(val) => {
-                        setDateTo(val);
-                        setCurrentPage(1);
-                      }}
-                      placeholder="Select date range"
-                    />
-                  </div>
-
-                  <div className="flex items-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setTypeFilter("All");
-                        setMethodFilter("All");
-                        setDateFrom("");
-                        setDateTo("");
-                        setSearchQuery("");
-                        setCurrentPage(1);
-                      }}
-                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                      Clear Filters
-                    </Button>
-                  </div>
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Training Type */}
+              <Select
+                label="Training Type"
+                value={typeFilter}
+                onChange={(val) => {
+                  setTypeFilter(val);
+                  setCurrentPage(1);
+                }}
+                options={TYPE_OPTIONS}
+              />
+
+              {/* Training Method */}
+              <Select
+                label="Training Method"
+                value={methodFilter}
+                onChange={(val) => {
+                  setMethodFilter(val);
+                  setCurrentPage(1);
+                }}
+                options={METHOD_OPTIONS}
+              />
+
+              {/* Status (readonly) */}
+              <Select
+                label="Status"
+                value="Pending Approval"
+                onChange={() => { }}
+                options={[{ label: "Pending Approval", value: "Pending Approval" }]}
+                disabled
+              />
+
+              {/* Date Range */}
+              <div className="lg:col-span-1">
+                <DateRangePicker
+                  label="Scheduled Date Range"
+                  startDate={dateFrom}
+                  endDate={dateTo}
+                  onStartDateChange={(val) => {
+                    setDateFrom(val);
+                    setCurrentPage(1);
+                  }}
+                  onEndDateChange={(val) => {
+                    setDateTo(val);
+                    setCurrentPage(1);
+                  }}
+                  placeholder="Select date range"
+                />
+              </div>
+
+              <div className="flex items-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setTypeFilter("All");
+                    setMethodFilter("All");
+                    setDateFrom("");
+                    setDateTo("");
+                    setSearchQuery("");
+                    setCurrentPage(1);
+                  }}
+                  className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -288,7 +288,7 @@ export const PendingApprovalView: React.FC = () => {
               )}
               {...dragEvents}
             >
-              <table className="w-full border-separate border-spacing-0 text-left">
+              <table className="w-full  border-spacing-0 text-left">
                 <thead>
                   <tr>
                     <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">

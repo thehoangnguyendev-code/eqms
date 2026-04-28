@@ -22,11 +22,11 @@ const SettingsCard: React.FC<{
   children: React.ReactNode;
 }> = ({ title, icon, children }) => (
   <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+    <div className="flex items-center gap-2.5 px-4 md:px-5 py-4 border-b border-slate-100">
       <span className="text-emerald-600">{icon}</span>
       <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
     </div>
-    <div className="p-5">{children}</div>
+    <div className="p-4 md:p-5">{children}</div>
   </div>
 );
 
@@ -130,7 +130,7 @@ export const NotificationTab: React.FC<NotificationTabProps> = ({ config, onChan
   };
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-4 md:p-5 space-y-4">
       {/* Notification Channels */}
       <SettingsCard title="Notification Channels" icon={<Bell className="h-4 w-4" />}>
         <div className="space-y-3">

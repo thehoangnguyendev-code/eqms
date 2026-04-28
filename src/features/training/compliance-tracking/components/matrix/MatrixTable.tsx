@@ -90,7 +90,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
             </div>
           )}
 
-          <table className="w-full border-separate border-spacing-0 text-sm md:text-base">
+          <table className="w-full  border-spacing-0 text-sm md:text-base">
             <MatrixHead onSOPHeaderClick={onSOPHeaderClick} />
             <MatrixBody
               employees={employees}
@@ -106,7 +106,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
       </div>
 
       {/* Summary bar - responsive */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-t border-slate-200/60 bg-white backdrop-blur-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 md:px-5 py-3 md:py-4 border-t border-slate-200/60 bg-white backdrop-blur-sm">
         <span className="text-[11px] sm:text-xs text-slate-500 flex items-center gap-1.5" style={{ fontVariantNumeric: "tabular-nums" }}>
           <span className="font-semibold text-slate-700">{employees.length}</span> employees ×{" "}
           <span className="font-semibold text-slate-700">{MOCK_SOPS.length}</span> Courses

@@ -510,7 +510,7 @@ export const UploadMaterialView: React.FC = () => {
 
               {/* Uploaded File Preview */}
               {uploadMode === "file" && uploadedFile && (
-                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+                <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
                       <img src={getFileIconSrc(uploadedFile.name)} alt="file icon" className="h-6 w-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
@@ -591,7 +591,7 @@ export const UploadMaterialView: React.FC = () => {
 
                   {/* Link Preview */}
                   {formData.externalUrl && isValidUrl(formData.externalUrl) && (
-                    <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+                    <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
                           <Link2 className="h-5 w-5 text-emerald-600" />

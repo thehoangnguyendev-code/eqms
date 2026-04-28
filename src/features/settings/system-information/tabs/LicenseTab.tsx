@@ -13,11 +13,11 @@ const SettingsCard: React.FC<{
   children: React.ReactNode;
 }> = ({ title, icon, children }) => (
   <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+    <div className="flex items-center gap-2.5 px-4 md:px-5 py-4 border-b border-slate-100">
       <span className="text-emerald-600">{icon}</span>
       <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
     </div>
-    <div className="p-5">{children}</div>
+    <div className="p-4 md:p-5">{children}</div>
   </div>
 );
 
@@ -26,7 +26,7 @@ export const LicenseTab: React.FC<LicenseTabProps> = ({ data }) => {
   const userUsagePercent = (data.activeUsers / data.maxUsers) * 100;
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-4 md:p-5 space-y-4">
       {/* Expiry Warning Banner */}
       {isExpiringSoon && (
         <div className="flex gap-3 px-4 py-4 bg-amber-50 border border-amber-200 rounded-xl">

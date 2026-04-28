@@ -306,7 +306,7 @@ export const EmployeeTrainingFilesView: React.FC = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between mb-2 shadow-sm relative overflow-hidden"
+            className="bg-red-50 border border-red-200 rounded-xl p-4 md:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between mb-2 shadow-sm relative overflow-hidden"
           >
             <div className="flex items-start sm:items-center gap-4 relative z-10">
               <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
@@ -409,10 +409,10 @@ export const EmployeeTrainingFilesView: React.FC = () => {
         </div>
 
         {/* Table Body */}
-        <div className="p-4 md:p-5 flex-1 flex flex-col relative">
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300">
             <div ref={scrollerRef} className={cn("flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400", isDragging ? "cursor-grabbing select-none" : "cursor-grab")} {...dragEvents}>
-              <table className="w-full border-separate border-spacing-0 text-left">
+              <table className="w-full  border-spacing-0 text-left">
                 <thead>
                   <tr>
                     <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">No.</th>

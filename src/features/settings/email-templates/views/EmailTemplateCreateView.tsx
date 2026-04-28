@@ -226,7 +226,7 @@ export const EmailTemplateCreateView: React.FC = () => {
             </div>
 
             {/* Preview — always mounted, hidden when not in preview mode */}
-            <div className={isPreviewMode ? "block p-5" : "hidden"}>
+            <div className={isPreviewMode ? "block p-4 md:p-5" : "hidden"}>
               <EmailLivePreview
                 subject={formData.subject}
                 content={formData.content}
@@ -238,7 +238,7 @@ export const EmailTemplateCreateView: React.FC = () => {
             </div>
 
             {/* Edit form — always mounted, hidden when in preview mode */}
-            <div className={isPreviewMode ? "hidden" : "p-5 flex-1 flex flex-col gap-4"}>
+            <div className={isPreviewMode ? "hidden" : "p-4 md:p-5 flex-1 flex flex-col gap-4"}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Field label="Template Name" required error={errors.name}>
                     <Input

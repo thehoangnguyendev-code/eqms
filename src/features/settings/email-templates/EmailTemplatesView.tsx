@@ -175,92 +175,92 @@ export const EmailTemplatesView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                  <div className="w-full">
-                    <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
-                      Search
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                        <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Search by name, subject, description..."
-                        value={searchQuery}
-                        onChange={(e) => {
-                          setSearchQuery(e.target.value);
-                          setCurrentPage(1);
-                        }}
-                        className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                      />
-                      {searchQuery && (
-                        <button
-                          onClick={() => setSearchQuery("")}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
+                  Search
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                    <Search className="h-4 w-4 text-slate-400 transition-colors" />
                   </div>
-
-                  {/* Type Filter */}
-                  <Select
-                    label="Template Type"
-                    value={typeFilter}
-                    onChange={(value) => setTypeFilter(value as any)}
-                    options={[
-                      { label: "All Types", value: "All" },
-                      ...Object.entries(EMAIL_TEMPLATE_TYPES).map(([key, config]) => ({
-                        label: `${config.icon} ${config.label}`,
-                        value: key
-                      }))
-                    ]}
+                  <input
+                    type="text"
+                    placeholder="Search by name, subject, description..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
                   />
-
-                  {/* Status Filter */}
-                  <Select
-                    label="Status"
-                    value={statusFilter}
-                    onChange={(value) => setStatusFilter(value as any)}
-                    options={[
-                      { label: "All Status", value: "All" },
-                      { label: "Active", value: "Active" },
-                      { label: "Inactive", value: "Inactive" },
-                      { label: "Draft", value: "Draft" },
-                    ]}
-                  />
-
-                  {/* Created Date Range Filter */}
-                  <DateRangePicker
-                    label="Created Date Range"
-                    startDate={dateFrom}
-                    endDate={dateTo}
-                    onStartDateChange={setDateFrom}
-                    onEndDateChange={setDateTo}
-                    placeholder="Select date range"
-                  />
-
-                  {/* Updated Date Range Filter */}
-                  <DateRangePicker
-                    label="Updated Date Range"
-                    startDate={updatedFrom}
-                    endDate={updatedTo}
-                    onStartDateChange={setUpdatedFrom}
-                    onEndDateChange={setUpdatedTo}
-                    placeholder="Select date range"
-                  />
-
-                  <div className="flex items-end pb-0.5">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={clearFilters}
-                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                      Clear Filters
-                    </Button>
-                  </div>
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Type Filter */}
+              <Select
+                label="Template Type"
+                value={typeFilter}
+                onChange={(value) => setTypeFilter(value as any)}
+                options={[
+                  { label: "All Types", value: "All" },
+                  ...Object.entries(EMAIL_TEMPLATE_TYPES).map(([key, config]) => ({
+                    label: `${config.icon} ${config.label}`,
+                    value: key
+                  }))
+                ]}
+              />
+
+              {/* Status Filter */}
+              <Select
+                label="Status"
+                value={statusFilter}
+                onChange={(value) => setStatusFilter(value as any)}
+                options={[
+                  { label: "All Status", value: "All" },
+                  { label: "Active", value: "Active" },
+                  { label: "Inactive", value: "Inactive" },
+                  { label: "Draft", value: "Draft" },
+                ]}
+              />
+
+              {/* Created Date Range Filter */}
+              <DateRangePicker
+                label="Created Date Range"
+                startDate={dateFrom}
+                endDate={dateTo}
+                onStartDateChange={setDateFrom}
+                onEndDateChange={setDateTo}
+                placeholder="Select date range"
+              />
+
+              {/* Updated Date Range Filter */}
+              <DateRangePicker
+                label="Updated Date Range"
+                startDate={updatedFrom}
+                endDate={updatedTo}
+                onStartDateChange={setUpdatedFrom}
+                onEndDateChange={setUpdatedTo}
+                placeholder="Select date range"
+              />
+
+              <div className="flex items-end pb-0.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -287,7 +287,7 @@ export const EmailTemplatesView: React.FC = () => {
                   )}
                   {...dragEvents}
                 >
-                  <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                  <table className="w-full min-w-max  border-spacing-0 text-left">
                     <thead>
                       <tr>
                         {visibleColumns.map((col) => {

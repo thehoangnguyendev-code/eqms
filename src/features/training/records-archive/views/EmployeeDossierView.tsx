@@ -142,7 +142,7 @@ export const EmployeeDossierView: React.FC = () => {
                 <StatusBadge status="effective" label="GMP COMPLIANT" size="xs" className="h-5" />
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-emerald-50/40 p-3 rounded-xl border border-emerald-100 border-dashed">
+            <div className="flex items-center gap-4 bg-emerald-50/40 p-4 md:p-5 rounded-xl border border-emerald-100 border-dashed">
               <div className="h-10 w-10 flex items-center justify-center bg-white rounded-lg shadow-sm border border-emerald-100">
                 <Award className="h-6 w-6 text-emerald-600" />
               </div>

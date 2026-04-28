@@ -250,68 +250,68 @@ export const MyTasksView: React.FC = () => {
               className="overflow-hidden"
               style={{ willChange: "height" }}
             >
-                  <div className="pt-1 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                    <div className="w-full">
-                      <Select
-                        label="Module"
-                        value={moduleFilter}
-                        onChange={(val) => setModuleFilter(val as string)}
-                        options={MODULE_OPTIONS}
-                      />
-                    </div>
+              <div className="pt-1 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div className="w-full">
+                  <Select
+                    label="Module"
+                    value={moduleFilter}
+                    onChange={(val) => setModuleFilter(val as string)}
+                    options={MODULE_OPTIONS}
+                  />
+                </div>
 
-                    <div className="w-full">
-                      <Select
-                        label="Priority"
-                        value={priorityFilter}
-                        onChange={(val) => setPriorityFilter(val as string)}
-                        options={PRIORITY_OPTIONS}
-                      />
-                    </div>
+                <div className="w-full">
+                  <Select
+                    label="Priority"
+                    value={priorityFilter}
+                    onChange={(val) => setPriorityFilter(val as string)}
+                    options={PRIORITY_OPTIONS}
+                  />
+                </div>
 
-                    <div className="w-full">
-                      <Select
-                        label="Status"
-                        value={statusFilter}
-                        onChange={(val) => setStatusFilter(val as string)}
-                        options={STATUS_OPTIONS}
-                      />
-                    </div>
+                <div className="w-full">
+                  <Select
+                    label="Status"
+                    value={statusFilter}
+                    onChange={(val) => setStatusFilter(val as string)}
+                    options={STATUS_OPTIONS}
+                  />
+                </div>
 
-                    <div className="w-full">
-                      <Select
-                        label="Assignee"
-                        value={assigneeFilter}
-                        onChange={(val) => setAssigneeFilter(val as string)}
-                        options={ASSIGNEE_OPTIONS}
-                      />
-                    </div>
+                <div className="w-full">
+                  <Select
+                    label="Assignee"
+                    value={assigneeFilter}
+                    onChange={(val) => setAssigneeFilter(val as string)}
+                    options={ASSIGNEE_OPTIONS}
+                  />
+                </div>
 
-                    <div className="w-full">
-                      <Select
-                        label="Reporter"
-                        value={reporterFilter}
-                        onChange={(val) => setReporterFilter(val as string)}
-                        options={REPORTER_OPTIONS}
-                      />
-                    </div>
+                <div className="w-full">
+                  <Select
+                    label="Reporter"
+                    value={reporterFilter}
+                    onChange={(val) => setReporterFilter(val as string)}
+                    options={REPORTER_OPTIONS}
+                  />
+                </div>
 
-                    <div className="flex items-center">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleClearFilters}
-                        className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
-                      >
-                        Clear Filters
-                      </Button>
-                    </div>
-                  </div>
+                <div className="flex items-center">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearFilters}
+                    className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
 
-        <div className="p-4 md:p-5">
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
           {isLoading ? (
             <SectionLoading text="Loading tasks..." minHeight="300px" />
           ) : (

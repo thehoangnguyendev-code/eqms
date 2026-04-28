@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Globe, CheckCircle2, XCircle, Clock, Copy, Check, BarChart3, Shield, Zap, Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge/Badge";
 import { Button } from "@/components/ui/button/Button";
 import { useToast } from "@/components/ui/toast/Toast";
 import type { ApiInfo } from "../types";
@@ -16,11 +17,11 @@ const SettingsCard: React.FC<{
   noPadding?: boolean;
 }> = ({ title, icon, children, noPadding = false }) => (
   <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+    <div className="flex items-center gap-2.5 px-4 md:px-5 py-4 border-b border-slate-100">
       <span className="text-emerald-600">{icon}</span>
       <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
     </div>
-    <div className={noPadding ? "" : "p-5"}>{children}</div>
+    <div className={noPadding ? "" : "p-4 md:p-5"}>{children}</div>
   </div>
 );
 
@@ -78,9 +79,9 @@ export const ApiTab: React.FC<ApiTabProps> = ({ data }) => {
   };
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-4 md:p-5 space-y-4">
       {/* Status Banner */}
-      <div className={`flex items-center justify-between px-5 py-4 rounded-xl border ${data.status === "online" ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-red-200"
+      <div className={`flex items-center justify-between px-4 md:px-5 py-4 rounded-xl border ${data.status === "online" ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-red-200"
         }`}>
         <div className="flex items-center gap-3">
           <div className={`flex items-center justify-center h-9 w-9 rounded-lg flex-shrink-0 ${data.status === "online" ? "bg-emerald-100" : "bg-red-100"
@@ -99,13 +100,13 @@ export const ApiTab: React.FC<ApiTabProps> = ({ data }) => {
             </p>
           </div>
         </div>
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${data.status === "online"
-          ? "bg-emerald-100 text-emerald-700 border-emerald-300"
-          : "bg-red-100 text-red-700 border-red-300"
-          }`}>
-          <span className={`h-1.5 w-1.5 rounded-full ${data.status === "online" ? "bg-emerald-500" : "bg-red-500"}`} />
+        <Badge
+          color={data.status === "online" ? "emerald" : "red"}
+          showDot
+          pill
+        >
           {data.status === "online" ? "Online" : "Offline"}
-        </span>
+        </Badge>
       </div>
 
       {/* Card: API Configuration */}
@@ -178,17 +179,21 @@ export const ApiTab: React.FC<ApiTabProps> = ({ data }) => {
                   return (
                     <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
                       <td className="py-2 px-3 sm:py-3.5 sm:px-4">
-                        <span className={`inline-flex items-center px-1.5 py-0.5 sm:px-2 rounded text-[10px] sm:text-xs font-bold border ${getMethodColor(endpoint.method)}`}>
+                        <Badge
+                          color={endpoint.method === 'GET' ? 'emerald' : endpoint.method === 'POST' ? 'blue' : endpoint.method === 'PUT' ? 'amber' : endpoint.method === 'PATCH' ? 'purple' : 'red'}
+                          size="xs"
+                          pill={false}
+                          className="font-bold"
+                        >
                           {endpoint.method}
-                        </span>
+                        </Badge>
                       </td>
                       <td className="py-2 px-3 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-900 ">{endpoint.path}</td>
                       <td className="py-2 px-3 sm:py-3.5 sm:px-4 text-xs sm:text-sm text-slate-600 text-right hidden sm:table-cell">{endpoint.avgResponseTime}</td>
                       <td className="py-2 px-3 sm:py-3.5 sm:px-4 text-center">
-                        <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-medium">
-                          <span className={`h-1.5 w-1.5 rounded-full ${statusInfo.color}`} />
-                          <span className="text-slate-600">{statusInfo.label}</span>
-                        </span>
+                        <Badge color={statusInfo.color.includes('emerald') ? 'emerald' : statusInfo.color.includes('amber') ? 'amber' : statusInfo.color.includes('red') ? 'red' : 'slate'} size="xs" showDot pill>
+                          {statusInfo.label}
+                        </Badge>
                       </td>
                     </tr>
                   );

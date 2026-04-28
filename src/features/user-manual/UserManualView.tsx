@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import {
-  BookOpen,
   Search,
   GraduationCap,
   FileBarChart,
@@ -42,6 +41,7 @@ import {
   IconChartHistogram,
   IconBrandAsana,
   IconLifebuoy,
+  IconBook,
 } from "@tabler/icons-react";
 import { cn } from "@/components/ui/utils";
 import { PageHeader } from "@/components/ui/page/PageHeader";
@@ -179,7 +179,7 @@ const SectionContent: React.FC<{ section: ManualSection }> = ({ section }) => (
     {/* Overview */}
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-        <span className="text-emerald-600"><BookOpen className="h-4 w-4" /></span>
+        <span className="text-emerald-600"><IconBook className="h-4 w-4" /></span>
         <h3 className="text-sm font-semibold text-slate-900">Overview</h3>
       </div>
       <div className="p-4 md:p-5">

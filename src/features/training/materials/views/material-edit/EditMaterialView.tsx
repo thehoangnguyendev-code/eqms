@@ -452,7 +452,7 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
       />
 
       {/* ─── Draft-only notice ──────────────────────────────────── */}
-      <div className="flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
+      <div className="flex items-start gap-3 p-4 md:p-5 bg-amber-50 border border-amber-200 rounded-xl">
         <AlertCircle className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
         <div>
           <p className="text-sm font-medium text-amber-800">
@@ -572,7 +572,7 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
                 <>
                   {/* Existing file (until user triggers replace) */}
                   {!isReplacingFile && !newFile && (
-                    <div className="border border-emerald-200 rounded-xl p-4 bg-emerald-50/40">
+                    <div className="border border-emerald-200 rounded-xl p-4 md:p-5 bg-emerald-50/40">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-lg bg-white border border-emerald-200 flex items-center justify-center flex-shrink-0">
                           <img
@@ -695,7 +695,7 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
                   {/* New file preview */}
                   {newFile && (
                     <div className="space-y-3">
-                      <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+                      <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
                         <div className="flex items-start gap-3">
                           <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
                             <img
@@ -790,7 +790,7 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
                     </p>
                   </div>
                   {formData.externalUrl && isValidUrl(formData.externalUrl) && (
-                    <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+                    <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
                           <Link2 className="h-5 w-5 text-emerald-600" />

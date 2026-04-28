@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
 import {
   Search,
@@ -8,11 +7,7 @@ import {
   Users,
   Edit,
   Download,
-  ClipboardList,
-  BarChart3,
   MoreVertical,
-  ArrowDownAZ,
-  ArrowDownZA,
   X,
   ChevronUp,
   ChevronDown,
@@ -23,14 +18,13 @@ import { PageHeader } from "@/components/ui/page/PageHeader";
 import { coursesList } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
-import { DateTimePicker } from "@/components/ui/datetime-picker/DateTimePicker";
 import { DateRangePicker } from "@/components/ui/datetime-picker/DateRangePicker";
 import { TablePagination } from "@/components/ui/table/TablePagination";
 import { TableEmptyState } from "@/components/ui/table/TableEmptyState";
 import { cn } from "@/components/ui/utils";
 import { formatDate } from "@/utils/format";
 import { StatusBadge, Badge } from "@/components/ui/badge/Badge";
-import { getStatusColorClass, getTrainingMethodConfig, mapStatusToStatusType } from "@/utils/status";
+import { getTrainingMethodConfig, mapStatusToStatusType } from "@/utils/status";
 import {
   TrainingRecord,
   TrainingFilters,
@@ -278,99 +272,99 @@ export const CourseListView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
-                  <div className="w-full">
-                    <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
-                      Search
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                        <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Search by title, ID, or instructor..."
-                        value={searchQuery}
-                        onChange={(e) => {
-                          setSearchQuery(e.target.value);
-                          setCurrentPage(1);
-                        }}
-                        className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                      />
-                      {searchQuery && (
-                        <button
-                          onClick={() => setSearchQuery("")}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 block transition-colors px-0.5 mb-1.5">
+                  Search
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                    <Search className="h-4 w-4 text-slate-400 transition-colors" />
                   </div>
-
-                  {/* Training Type */}
-                  <Select
-                    label="Training Type"
-                    value={filters.typeFilter}
-                    onChange={(val) =>
-                      setFilters((prev) => ({ ...prev, typeFilter: val as TrainingType | "All" }))
-                    }
-                    options={typeOptions}
+                  <input
+                    type="text"
+                    placeholder="Search by title, ID, or instructor..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
                   />
-
-                  {/* Training Method */}
-                  <Select
-                    label="Training Method"
-                    value={methodFilter}
-                    onChange={(val) => setMethodFilter(val as TrainingMethod | "All")}
-                    options={methodOptions}
-                  />
-
-                  {/* Status */}
-                  <Select
-                    label="Status"
-                    value={filters.statusFilter}
-                    onChange={(val) =>
-                      setFilters((prev) => ({ ...prev, statusFilter: val as TrainingStatus | "All" }))
-                    }
-                    options={statusOptions}
-                  />
-
-                  {/* Date Range */}
-                  <div className="lg:col-span-1">
-                    <DateRangePicker
-                      label="Scheduled Date Range"
-                      startDate={filters.dateFrom}
-                      endDate={filters.dateTo}
-                      onStartDateChange={(val) =>
-                        setFilters((prev) => ({ ...prev, dateFrom: val }))
-                      }
-                      onEndDateChange={(val) =>
-                        setFilters((prev) => ({ ...prev, dateTo: val }))
-                      }
-                      placeholder="Select date range"
-                    />
-                  </div>
-
-                  <div className="flex items-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setFilters({
-                          typeFilter: "All",
-                          statusFilter: "All",
-                          dateFrom: "",
-                          dateTo: "",
-                        });
-                        setMethodFilter("All");
-                        setSearchQuery("");
-                        setCurrentPage(1);
-                      }}
-                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                      Clear Filters
-                    </Button>
-                  </div>
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Training Type */}
+              <Select
+                label="Training Type"
+                value={filters.typeFilter}
+                onChange={(val) =>
+                  setFilters((prev) => ({ ...prev, typeFilter: val as TrainingType | "All" }))
+                }
+                options={typeOptions}
+              />
+
+              {/* Training Method */}
+              <Select
+                label="Training Method"
+                value={methodFilter}
+                onChange={(val) => setMethodFilter(val as TrainingMethod | "All")}
+                options={methodOptions}
+              />
+
+              {/* Status */}
+              <Select
+                label="Status"
+                value={filters.statusFilter}
+                onChange={(val) =>
+                  setFilters((prev) => ({ ...prev, statusFilter: val as TrainingStatus | "All" }))
+                }
+                options={statusOptions}
+              />
+
+              {/* Date Range */}
+              <div className="lg:col-span-1">
+                <DateRangePicker
+                  label="Scheduled Date Range"
+                  startDate={filters.dateFrom}
+                  endDate={filters.dateTo}
+                  onStartDateChange={(val) =>
+                    setFilters((prev) => ({ ...prev, dateFrom: val }))
+                  }
+                  onEndDateChange={(val) =>
+                    setFilters((prev) => ({ ...prev, dateTo: val }))
+                  }
+                  placeholder="Select date range"
+                />
+              </div>
+
+              <div className="flex items-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setFilters({
+                      typeFilter: "All",
+                      statusFilter: "All",
+                      dateFrom: "",
+                      dateTo: "",
+                    });
+                    setMethodFilter("All");
+                    setSearchQuery("");
+                    setCurrentPage(1);
+                  }}
+                  className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -395,7 +389,7 @@ export const CourseListView: React.FC = () => {
               )}
               {...dragEvents}
             >
-              <table className="w-full min-w-[800px] md:min-w-[980px] lg:min-w-[1160px] xl:min-w-[1320px] border-separate border-spacing-0 text-left">
+              <table className="w-full min-w-[800px] md:min-w-[980px] lg:min-w-[1160px] xl:min-w-[1320px]  border-spacing-0 text-left">
                 <thead>
                   <tr>
                     <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
@@ -479,7 +473,7 @@ export const CourseListView: React.FC = () => {
                             {training.trainingMethod && (() => {
                               const cfg = getTrainingMethodConfig(training.trainingMethod);
                               return (
-                                <Badge 
+                                <Badge
                                   color={cfg.className.includes('purple') ? 'purple' : cfg.className.includes('amber') ? 'amber' : 'slate'}
                                   size="sm"
                                   className="font-medium"
@@ -490,8 +484,8 @@ export const CourseListView: React.FC = () => {
                             })()}
                           </td>
                           <td className={tdClass}>
-                            <StatusBadge 
-                              status={mapStatusToStatusType(training.status) as any} 
+                            <StatusBadge
+                              status={mapStatusToStatusType(training.status) as any}
                               size="sm"
                             />
                           </td>

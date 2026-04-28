@@ -127,7 +127,7 @@ const RevisionTableViewInner = <
 
   if (!revisions || paginatedRevisions.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-4 md:p-5 text-center">
+      <div className="rounded-xl bg-white p-4 md:p-5 text-center">
         <TableEmptyState title={emptyStateTitle} description={emptyStateMessage} />
       </div>
     );
@@ -143,7 +143,7 @@ const RevisionTableViewInner = <
 
       <div
         className={cn(
-          "border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300",
+          "rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300",
           isTableLoading && "blur-[2px] opacity-80 pointer-events-none"
         )}
       >
@@ -156,7 +156,7 @@ const RevisionTableViewInner = <
           )}
           {...dragEvents}
         >
-          <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+          <table className="w-full min-w-max border-spacing-0 text-left">
             {/* Table Header */}
             <thead>
               <tr>

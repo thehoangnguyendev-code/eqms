@@ -395,7 +395,7 @@ export const LearningHistoryDrawer: React.FC<LearningHistoryDrawerProps> = ({
         )}
 
         {/* Header */}
-        <div className="px-4 py-3 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
+        <div className="p-4 md:p-5 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 min-w-0">
             <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
               <History className="h-4 w-4 text-emerald-600" />
@@ -487,7 +487,7 @@ export const LearningHistoryDrawer: React.FC<LearningHistoryDrawerProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-slate-200 bg-white shrink-0 flex items-center justify-between">
+        <div className="p-4 md:p-5 border-t border-slate-200 bg-white shrink-0 flex items-center justify-between">
           <p className="text-xs font-medium text-slate-400 tracking-tight">
             {sorted.length} Record{sorted.length !== 1 ? "s" : ""}
           </p>

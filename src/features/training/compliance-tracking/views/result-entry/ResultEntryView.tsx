@@ -715,7 +715,7 @@ export const ResultEntryView: React.FC = () => {
               )}
               {...dragEvents}
             >
-              <table className="w-full border-separate border-spacing-0 text-left">
+              <table className="w-full  border-spacing-0 text-left">
                 <thead>
                   <tr>
                     <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">

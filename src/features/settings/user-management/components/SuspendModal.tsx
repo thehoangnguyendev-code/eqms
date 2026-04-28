@@ -85,10 +85,7 @@ export const SuspendModal: React.FC<SuspendModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-start gap-3 p-5 border-b border-slate-100 bg-white min-h-[64px] shrink-0">
-              <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="h-5 w-5 text-amber-600" />
-              </div>
+            <div className="flex items-start gap-3 p-4 md:p-5 border-b border-slate-100 bg-white min-h-[64px] shrink-0">
               <div className="flex-1 min-w-0">
                 <h2 className="text-base font-bold text-slate-900">Suspend User</h2>
                 <p className="text-sm text-slate-500 mt-0.5">
@@ -105,7 +102,7 @@ export const SuspendModal: React.FC<SuspendModalProps> = ({
             </div>
 
             {/* Body */}
-            <div className="p-5 space-y-4 overflow-y-auto flex-1 min-h-0">
+            <div className="p-4 md:p-5 space-y-4 overflow-y-auto flex-1 min-h-0">
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">
                   Reason <span className="text-red-500">*</span>

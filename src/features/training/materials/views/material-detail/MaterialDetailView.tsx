@@ -371,7 +371,7 @@ export const MaterialDetailView: React.FC = () => {
           {/* Material Information Card */}
           <FormSection title="Material Information" icon={<Info className="h-4 w-4" />}>
             {/* File preview card */}
-            <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-slate-50/80 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors group">
+            <div className="flex items-center gap-3 sm:gap-4 p-4 md:p-5 bg-slate-50/80 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors group">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center flex-shrink-0 shadow-sm group-hover:border-emerald-200 transition-colors">
                 {material.externalUrl ? (
                   <Link2 className="h-5 w-5 text-emerald-600" />
@@ -481,7 +481,7 @@ export const MaterialDetailView: React.FC = () => {
           <FormSection title="Workflow Assignment" icon={<GitBranch className="h-4 w-4" />}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Reviewer */}
-              <div className="p-4 rounded-lg border border-slate-200 bg-slate-50/50">
+              <div className="p-4 md:p-5 rounded-lg border border-slate-200 bg-slate-50/50">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
                     <Eye className="h-4 w-4 text-amber-600" />
@@ -510,7 +510,7 @@ export const MaterialDetailView: React.FC = () => {
               </div>
 
               {/* Approver */}
-              <div className="p-4 rounded-lg border border-slate-200 bg-slate-50/50">
+              <div className="p-4 md:p-5 rounded-lg border border-slate-200 bg-slate-50/50">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
                     <IconChecks className="h-4 w-4 text-emerald-600" />

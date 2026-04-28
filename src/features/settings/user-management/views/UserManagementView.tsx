@@ -167,128 +167,128 @@ export const UserManagementView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                  <div className="w-full">
-                    <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
-                      Search
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                        <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Search by name, username, email..."
-                        value={searchQuery}
-                        onChange={(e) => {
-                          setSearchQuery(e.target.value);
-                          setCurrentPage(1);
-                        }}
-                        className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                      />
-                      {searchQuery && (
-                        <button
-                          onClick={() => setSearchQuery("")}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
+                  Search
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                    <Search className="h-4 w-4 text-slate-400 transition-colors" />
                   </div>
-
-                  {/* Role Filter */}
-                  <Select
-                    label="Role"
-                    value={roleFilter}
-                    onChange={(value) => setRoleFilter(value as UserRole | "All")}
-                    options={[
-                      { label: "All Roles", value: "All" },
-                      { label: "Admin", value: "Admin" },
-                      { label: "QA Manager", value: "QA Manager" },
-                      { label: "Document Owner", value: "Document Owner" },
-                      { label: "Reviewer", value: "Reviewer" },
-                      { label: "Approver", value: "Approver" },
-                      { label: "Viewer", value: "Viewer" },
-                    ]}
-                  />
-
-                  {/* Status Filter */}
-                  <Select
-                    label="Status"
-                    value={statusFilter}
-                    onChange={(value) => setStatusFilter(value as UserStatus | "All")}
-                    options={[
-                      { label: "All Status", value: "All" },
-                      { label: "Active", value: "Active" },
-                      { label: "Inactive", value: "Inactive" },
-                      { label: "Pending", value: "Pending" },
-                      { label: "Suspended", value: "Suspended" },
-                      { label: "Terminated", value: "Terminated" },
-                    ]}
-                  />
-
-                  {/* Business Unit Filter */}
-                  <Select
-                    label="Business Unit"
-                    value={businessUnitFilter}
-                    onChange={(value) => {
-                      setBusinessUnitFilter(value);
-                      setDepartmentFilter("All");
+                  <input
+                    type="text"
+                    placeholder="Search by name, username, email..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setCurrentPage(1);
                     }}
-                    options={[
-                      { label: "All Units", value: "All" },
-                      ...Object.keys(BUSINESS_UNIT_DEPARTMENTS).map(bu => ({ label: bu, value: bu }))
-                    ]}
+                    className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
                   />
-
-                  {/* Department Filter */}
-                  <Select
-                    label="Department"
-                    value={departmentFilter}
-                    onChange={setDepartmentFilter}
-                    options={availableDepartments.map((dept) => ({ label: dept, value: dept }))}
-                  />
-
-                  {/* Created Date Range Filter */}
-                  <DateRangePicker
-                    label="Created Date Range"
-                    startDate={dateFrom}
-                    endDate={dateTo}
-                    onStartDateChange={setDateFrom}
-                    onEndDateChange={setDateTo}
-                    placeholder="Select date range"
-                  />
-
-                  {/* Suspended Until Range Filter */}
-                  <DateRangePicker
-                    label="Suspended Until Range"
-                    startDate={suspendFrom}
-                    endDate={suspendTo}
-                    onStartDateChange={setSuspendFrom}
-                    onEndDateChange={setSuspendTo}
-                    placeholder="Select date range"
-                  />
-
-                  {/* Termination Date Range Filter */}
-                  <DateRangePicker
-                    label="Termination Date Range"
-                    startDate={terminateFrom}
-                    endDate={terminateTo}
-                    onStartDateChange={setTerminateFrom}
-                    onEndDateChange={setTerminateTo}
-                    placeholder="Select date range"
-                  />
-
-                  <div className="flex items-end pb-0.5">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={clearFilters}
-                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                      Clear Filters
-                    </Button>
-                  </div>
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Role Filter */}
+              <Select
+                label="Role"
+                value={roleFilter}
+                onChange={(value) => setRoleFilter(value as UserRole | "All")}
+                options={[
+                  { label: "All Roles", value: "All" },
+                  { label: "Admin", value: "Admin" },
+                  { label: "QA Manager", value: "QA Manager" },
+                  { label: "Document Owner", value: "Document Owner" },
+                  { label: "Reviewer", value: "Reviewer" },
+                  { label: "Approver", value: "Approver" },
+                  { label: "Viewer", value: "Viewer" },
+                ]}
+              />
+
+              {/* Status Filter */}
+              <Select
+                label="Status"
+                value={statusFilter}
+                onChange={(value) => setStatusFilter(value as UserStatus | "All")}
+                options={[
+                  { label: "All Status", value: "All" },
+                  { label: "Active", value: "Active" },
+                  { label: "Inactive", value: "Inactive" },
+                  { label: "Pending", value: "Pending" },
+                  { label: "Suspended", value: "Suspended" },
+                  { label: "Terminated", value: "Terminated" },
+                ]}
+              />
+
+              {/* Business Unit Filter */}
+              <Select
+                label="Business Unit"
+                value={businessUnitFilter}
+                onChange={(value) => {
+                  setBusinessUnitFilter(value);
+                  setDepartmentFilter("All");
+                }}
+                options={[
+                  { label: "All Units", value: "All" },
+                  ...Object.keys(BUSINESS_UNIT_DEPARTMENTS).map(bu => ({ label: bu, value: bu }))
+                ]}
+              />
+
+              {/* Department Filter */}
+              <Select
+                label="Department"
+                value={departmentFilter}
+                onChange={setDepartmentFilter}
+                options={availableDepartments.map((dept) => ({ label: dept, value: dept }))}
+              />
+
+              {/* Created Date Range Filter */}
+              <DateRangePicker
+                label="Created Date Range"
+                startDate={dateFrom}
+                endDate={dateTo}
+                onStartDateChange={setDateFrom}
+                onEndDateChange={setDateTo}
+                placeholder="Select date range"
+              />
+
+              {/* Suspended Until Range Filter */}
+              <DateRangePicker
+                label="Suspended Until Range"
+                startDate={suspendFrom}
+                endDate={suspendTo}
+                onStartDateChange={setSuspendFrom}
+                onEndDateChange={setSuspendTo}
+                placeholder="Select date range"
+              />
+
+              {/* Termination Date Range Filter */}
+              <DateRangePicker
+                label="Termination Date Range"
+                startDate={terminateFrom}
+                endDate={terminateTo}
+                onStartDateChange={setTerminateFrom}
+                onEndDateChange={setTerminateTo}
+                placeholder="Select date range"
+              />
+
+              <div className="flex items-end pb-0.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -315,7 +315,7 @@ export const UserManagementView: React.FC = () => {
                   )}
                   {...dragEvents}
                 >
-                  <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+                  <table className="w-full min-w-max  border-spacing-0 text-left">
                     <thead>
                       <tr>
                         {visibleColumns.map((col) => {

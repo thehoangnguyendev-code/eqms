@@ -323,7 +323,7 @@ export const EditCourseView: React.FC = () => {
       />
 
       {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-start gap-3">
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 md:p-5 flex items-start gap-3">
         <div>
           <p className="text-sm font-medium text-blue-800">
             Editing: {courseData.trainingId} — {courseData.title}

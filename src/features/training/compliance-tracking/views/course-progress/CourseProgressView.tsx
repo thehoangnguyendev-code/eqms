@@ -475,115 +475,115 @@ export const CourseProgressView: React.FC = () => {
         <div className="p-4 md:p-5 flex flex-col">
           <div className="px-1.5 -mx-1.5 pb-1.5 -mb-1.5">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
-                  <div className="w-full">
-                    <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
-                      Search
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
-                        <Search className="h-4 w-4 text-slate-400 transition-colors" />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Search by name, ID, email..."
-                        value={searchQuery}
-                        onChange={(e) => {
-                          setSearchQuery(e.target.value);
-                          setCurrentPage(1);
-                        }}
-                        className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
-                      />
-                      {searchQuery && (
-                        <button
-                          onClick={() => setSearchQuery("")}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
+              <div className="w-full">
+                <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block transition-colors">
+                  Search
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors">
+                    <Search className="h-4 w-4 text-slate-400 transition-colors" />
                   </div>
-
-                  {/* Enrollment Filter */}
-                  <Select
-                    label="Enrollment"
-                    value={enrollmentFilter}
+                  <input
+                    type="text"
+                    placeholder="Search by name, ID, email..."
+                    value={searchQuery}
                     onChange={(e) => {
-                      setEnrollmentFilter(e.target.value as typeof enrollmentFilter);
+                      setSearchQuery(e.target.value);
                       setCurrentPage(1);
                     }}
-                    options={[
-                      { label: "All Enrollments", value: "All" },
-                      { label: "Completed", value: "Completed" },
-                      { label: "In-Progress", value: "In-Progress" },
-                      { label: "Not Started", value: "Not Started" },
-                      { label: "Overdue", value: "Overdue" },
-                      { label: "Exempt", value: "Exempt" },
-                    ]}
+                    className="block w-full pl-10 pr-10 h-9 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-all placeholder:text-slate-400"
                   />
-
-                  {/* Result Status */}
-                  <Select
-                    label="Result"
-                    value={resultFilter}
-                    onChange={(e) => {
-                      setResultFilter(e.target.value as typeof resultFilter);
-                      setCurrentPage(1);
-                    }}
-                    options={[
-                      { label: "All Results", value: "All" },
-                      { label: "Pass", value: "Pass" },
-                      { label: "Fail", value: "Fail" },
-                      { label: "Pending", value: "Pending" },
-                      { label: "N/A", value: "N/A" },
-                    ]}
-                  />
-
-                  {/* Department */}
-                  <Select
-                    label="Department"
-                    value={departmentFilter}
-                    onChange={(e) => {
-                      setDepartmentFilter(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    options={[
-                      { label: "All Depts", value: "All" },
-                      ...uniqueDepartments.map((d) => ({ label: String(d), value: String(d) })),
-                    ]}
-                  />
-
-                  {/* Business Unit */}
-                  <Select
-                    label="Business Unit"
-                    value={businessUnitFilter}
-                    onChange={(e) => {
-                      setBusinessUnitFilter(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    options={[
-                      { label: "All BUs", value: "All" },
-                      ...uniqueBusinessUnits.map((bu) => ({ label: String(bu), value: String(bu) })),
-                    ]}
-                  />
-
-                  <div className="flex items-end pb-0.5">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setSearchQuery("");
-                        setEnrollmentFilter("All");
-                        setResultFilter("All");
-                        setDepartmentFilter("All");
-                        setBusinessUnitFilter("All");
-                        setCurrentPage(1);
-                      }}
-                      className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                      Clear Filters
-                    </Button>
-                  </div>
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Enrollment Filter */}
+              <Select
+                label="Enrollment"
+                value={enrollmentFilter}
+                onChange={(e) => {
+                  setEnrollmentFilter(e.target.value as typeof enrollmentFilter);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: "All Enrollments", value: "All" },
+                  { label: "Completed", value: "Completed" },
+                  { label: "In-Progress", value: "In-Progress" },
+                  { label: "Not Started", value: "Not Started" },
+                  { label: "Overdue", value: "Overdue" },
+                  { label: "Exempt", value: "Exempt" },
+                ]}
+              />
+
+              {/* Result Status */}
+              <Select
+                label="Result"
+                value={resultFilter}
+                onChange={(e) => {
+                  setResultFilter(e.target.value as typeof resultFilter);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: "All Results", value: "All" },
+                  { label: "Pass", value: "Pass" },
+                  { label: "Fail", value: "Fail" },
+                  { label: "Pending", value: "Pending" },
+                  { label: "N/A", value: "N/A" },
+                ]}
+              />
+
+              {/* Department */}
+              <Select
+                label="Department"
+                value={departmentFilter}
+                onChange={(e) => {
+                  setDepartmentFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: "All Depts", value: "All" },
+                  ...uniqueDepartments.map((d) => ({ label: String(d), value: String(d) })),
+                ]}
+              />
+
+              {/* Business Unit */}
+              <Select
+                label="Business Unit"
+                value={businessUnitFilter}
+                onChange={(e) => {
+                  setBusinessUnitFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: "All BUs", value: "All" },
+                  ...uniqueBusinessUnits.map((bu) => ({ label: String(bu), value: String(bu) })),
+                ]}
+              />
+
+              <div className="flex items-end pb-0.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setEnrollmentFilter("All");
+                    setResultFilter("All");
+                    setDepartmentFilter("All");
+                    setBusinessUnitFilter("All");
+                    setCurrentPage(1);
+                  }}
+                  className="h-9 px-4 gap-2 font-medium transition-all duration-200 hover:bg-red-600 hover:text-white hover:border-red-600 whitespace-nowrap"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -601,7 +601,7 @@ export const CourseProgressView: React.FC = () => {
               )}
               {...dragEvents}
             >
-              <table className="w-full border-separate border-spacing-0 text-left">
+              <table className="w-full  border-spacing-0 text-left">
                 <thead>
                   <tr>
                     <th className="sticky top-0 z-20 bg-slate-50 py-2.5 px-2 md:py-3.5 md:px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
@@ -697,12 +697,12 @@ export const CourseProgressView: React.FC = () => {
                             {emp.businessUnit}
                           </td>
                           <td className={cn(tdClass, "text-center")}>
-                            <Badge 
+                            <Badge
                               color={
-                                emp.enrollmentStatus === "Completed" ? "emerald" : 
-                                emp.enrollmentStatus === "In-Progress" ? "blue" : 
-                                emp.enrollmentStatus === "Overdue" ? "red" : 
-                                "slate"
+                                emp.enrollmentStatus === "Completed" ? "emerald" :
+                                  emp.enrollmentStatus === "In-Progress" ? "blue" :
+                                    emp.enrollmentStatus === "Overdue" ? "red" :
+                                      "slate"
                               }
                               size="sm"
                             >

@@ -806,7 +806,7 @@ export const NotificationsView: React.FC = () => {
         </div>
 
         {/* Table Section */}
-        <div className="p-4 md:p-5 flex-1 flex flex-col relative">
+        <div className="px-4 md:px-5 pb-4 md:pb-5 flex-1 flex flex-col relative">
           <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col flex-1 bg-white transition-all duration-300">
             <div
               ref={scrollerRef}
@@ -816,7 +816,7 @@ export const NotificationsView: React.FC = () => {
               )}
               {...dragEvents}
             >
-              <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+              <table className="w-full min-w-max  border-spacing-0 text-left">
                 <thead>
                   <tr>
                     <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-14 text-center">

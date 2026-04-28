@@ -487,7 +487,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
       </div>
 
       {/* ─── Previous Version Banner ──────────────────────────── */}
-      <div className="flex items-start gap-3 px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl">
+      <div className="flex items-start gap-3 p-4 md:p-5 bg-blue-50 border border-blue-200 rounded-xl">
         <GitBranch className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-blue-800">Creating a new revision from an existing material</p>
@@ -613,7 +613,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                 <>
                   {/* Existing file kept */}
                   {keepExistingFile && !newFile && (
-                    <div className="border border-emerald-200 rounded-xl p-4 bg-emerald-50/40">
+                    <div className="border border-emerald-200 rounded-xl p-4 md:p-5 bg-emerald-50/40">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-lg bg-white border border-emerald-200 flex items-center justify-center flex-shrink-0">
                           <img
@@ -682,7 +682,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                   {/* New file preview */}
                   {newFile && (
                     <div className="space-y-3">
-                      <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+                      <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
                         <div className="flex items-start gap-3">
                           <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
                             <img src={getFileIconSrc(newFile.name)} alt="" className="h-6 w-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
@@ -736,7 +736,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                     />
                   </div>
                   {formData.externalUrl && isValidUrl(formData.externalUrl) && (
-                    <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 flex items-center gap-3">
+                    <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
                         <Link2 className="h-5 w-5 text-emerald-600" />
                       </div>

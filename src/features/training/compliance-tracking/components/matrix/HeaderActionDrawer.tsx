@@ -5,16 +5,10 @@ import {
     X,
     User,
     FileText,
-    BookOpen,
     Download,
     Send,
-    Building2,
-    Briefcase,
-    Calendar,
-    Hash,
     TrendingUp,
     ArrowRight,
-    Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading";
@@ -259,11 +253,11 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
             <div
                 className={cn(
                     "pointer-events-auto bg-white flex flex-col relative overflow-hidden shadow-2xl",
-                    isMobile 
-                        ? cn("w-full transition-all flex flex-col", isFullHeight ? "rounded-none" : "rounded-t-2xl") 
+                    isMobile
+                        ? cn("w-full transition-all flex flex-col", isFullHeight ? "rounded-none" : "rounded-t-2xl")
                         : "w-[500px] h-[calc(100vh-32px)] mr-4 rounded-2xl border border-slate-200",
-                    isClosing 
-                        ? (isMobile ? "mobile-drawer-exit" : "desktop-drawer-exit") 
+                    isClosing
+                        ? (isMobile ? "mobile-drawer-exit" : "desktop-drawer-exit")
                         : (isMobile ? (!isDragging && "mobile-drawer-enter") : "desktop-drawer-enter"),
                 )}
                 style={isMobile ? {
@@ -275,7 +269,7 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
             >
                 {/* Mobile Drag Handle */}
                 {isMobile && (
-                    <div 
+                    <div
                         className="flex flex-col items-center py-3 cursor-grab active:cursor-grabbing select-none touch-none bg-white shrink-0"
                         onTouchStart={handleTouchStart}
                         onTouchMove={handleTouchMove}
@@ -333,16 +327,16 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                 </div>
 
                 {/* ── Scrollable Body ──────────────────────────────────────── */}
-                <div 
-                    className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth" 
-                    style={{ 
+                <div
+                    className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth"
+                    style={{
                         WebkitOverflowScrolling: "touch",
                         overscrollBehavior: "contain"
                     }}
                 >
                     {/* Identification / Info Card */}
-                    <FormSection 
-                        title={empData ? "Personnel Information" : "Material Information"} 
+                    <FormSection
+                        title={empData ? "Personnel Information" : "Material Information"}
                         icon={empData ? <User className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
                     >
                         <div className="space-y-4">

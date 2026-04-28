@@ -282,7 +282,7 @@ export const ReviewCourseView: React.FC = () => {
           </div>
         </div>
         {isRejected && (
-          <div className="flex items-start gap-3 px-5 py-3.5 bg-red-50 border-t border-red-200">
+          <div className="flex items-start gap-3 p-4 md:p-5 bg-red-50 border-t border-red-200">
             <XCircle className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
             <div>
               <p className="text-sm font-semibold text-red-800">

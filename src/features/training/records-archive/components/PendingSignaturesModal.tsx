@@ -154,7 +154,7 @@ export const PendingSignaturesModal: React.FC<PendingSignaturesModalProps> = ({
               {" · "}
               <span className="text-emerald-600 font-medium">{employee.employeeId}</span>
             </p>
-            <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-4 md:p-5">
               <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
               <p className="text-xs text-amber-800 leading-relaxed">
                 These records are{" "}
@@ -190,7 +190,7 @@ export const PendingSignaturesModal: React.FC<PendingSignaturesModalProps> = ({
                 className="overflow-x-auto overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 [&::-webkit-scrollbar]:h-1"
                 style={{ maxHeight: "300px" }}
               >
-                <table className="w-full text-left border-separate border-spacing-0">
+                <table className="w-full text-left  border-spacing-0">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200">
                       {["Course & Version", "Missing Roles", "Completion Date", "Days Pending", "Action"].map((h) => (
@@ -259,7 +259,7 @@ export const PendingSignaturesModal: React.FC<PendingSignaturesModalProps> = ({
             {/* ── Mobile card list (< sm) ── */}
             <div className="flex flex-col gap-2 sm:hidden overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50" style={{ maxHeight: "360px" }}>
               {pendingRecords.map((record) => (
-                <div key={record.id} className="border border-slate-200 rounded-xl p-2.5 bg-white space-y-2">
+                <div key={record.id} className="border border-slate-200 rounded-xl p-4 md:p-5 bg-white space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="text-xs font-bold text-slate-800 leading-tight">{record.courseCode}</p>

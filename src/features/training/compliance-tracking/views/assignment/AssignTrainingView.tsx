@@ -300,7 +300,7 @@ const StepIndicator: React.FC<{
               <div className="relative z-10 flex items-center gap-2 px-6">
                 <div
                   className={cn(
-                    "h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold border leading-none pt-[1.5px]",
+                    "h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold border",
                     isCurrent
                       ? "bg-white text-emerald-600 border-white"
                       : isCompleted
@@ -1499,7 +1499,7 @@ const Step4Review: React.FC<Step4Props> = ({
     >
       <div className="space-y-5">
         {needsESign && (
-          <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+          <div className="flex items-start gap-3 p-4 md:p-5 bg-amber-50 border border-amber-200 rounded-xl">
             <p className="text-sm text-amber-800">
               <span className="font-semibold">E-Signature required</span> — You
               will be prompted to enter your credentials to authorize this
@@ -1527,7 +1527,7 @@ const Step4Review: React.FC<Step4Props> = ({
                 )
               }
             >
-              <div className="p-5 space-y-5">
+              <div className="space-y-5">
                 {/* Course Summary Content */}
                 {course ? (
                   <div className="flex items-start gap-4">

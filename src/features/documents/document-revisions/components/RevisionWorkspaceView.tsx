@@ -1018,7 +1018,7 @@ export const RevisionWorkspaceView: React.FC = () => {
         <div className="p-4 md:p-5">
           <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-slate-50/10">
             <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50">
-              <table className="w-full border-separate border-spacing-0">
+              <table className="w-full  border-spacing-0">
                 <thead>
                   <tr className="bg-slate-50">
                     <th className="py-3 px-4 text-left text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 w-12 whitespace-nowrap">

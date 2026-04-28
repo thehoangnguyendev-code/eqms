@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Bell, Mail, MonitorSmartphone, BellRing, ClipboardSignature, BookOpen, Building2, Plus, X } from 'lucide-react';
+import { Bell, Mail, MonitorSmartphone, BellRing, ClipboardSignature, Plus, X, Building2 } from 'lucide-react';
 import { cn } from '@/components/ui/utils';
 import { Select } from '@/components/ui/select/Select';
+import { IconBook } from '@tabler/icons-react';
 
 const Toggle: React.FC<{ checked: boolean; onChange: () => void }> = ({ checked, onChange }) => (
     <button
@@ -160,7 +161,7 @@ export const NotificationSettingsTab: React.FC = () => {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <span className="w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center">
-                                        <BookOpen className="h-4 w-4 text-slate-600" />
+                                        <IconBook className="h-4 w-4 text-slate-600" />
                                     </span>
                                     <div>
                                         <p className="text-sm font-medium text-slate-900">Training Due</p>

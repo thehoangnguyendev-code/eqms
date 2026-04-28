@@ -12,7 +12,6 @@ import {
   MessageSquareWarning,
   History,
   ClipboardCheck,
-  BookOpen,
   Truck,
   Activity,
   Target,
@@ -29,7 +28,7 @@ import {
   Building2,
 } from 'lucide-react';
 import type { ReportTemplate, ReportHistory, ScheduledReport } from './types';
-import { IconRefresh } from '@tabler/icons-react';
+import { IconBook, IconRefresh } from '@tabler/icons-react';
 
 // --- Report Templates ---
 export const REPORT_TEMPLATES: ReportTemplate[] = [
@@ -592,7 +591,7 @@ export const REPORT_TEMPLATES: ReportTemplate[] = [
     name: 'Risk Register Report',
     type: 'Risk Management',
     description: 'Complete risk register with all identified risks and their current status.',
-    icon: BookOpen,
+    icon: IconBook,
     fields: [
       { id: 'risk-id', label: 'Risk ID', group: 'General', defaultEnabled: true },
       { id: 'risk-title', label: 'Risk Title', group: 'General', defaultEnabled: true },
@@ -745,7 +744,7 @@ export const COMPLIANCE_TEMPLATES: ReportTemplate[] = [
     name: 'Quality Review Report',
     type: 'Compliance',
     description: 'Periodic quality review of documented procedures and compliance.',
-    icon: BookOpen,
+    icon: IconBook,
     regulatoryRef: 'EU-GMP Chapter 1',
     fields: [
       { id: 'review-period', label: 'Review Period', group: 'General', defaultEnabled: true },

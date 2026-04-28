@@ -1,6 +1,7 @@
 import React from "react";
 import { ToggleLeft, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox/Checkbox";
+import { Badge } from "@/components/ui/badge/Badge";
 import type { FeatureFlag } from "../types";
 
 interface FeaturesTabProps {
@@ -13,11 +14,11 @@ const SettingsCard: React.FC<{
   children: React.ReactNode;
 }> = ({ title, icon, children }) => (
   <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+    <div className="flex items-center gap-2.5 px-4 md:px-5 py-4 border-b border-slate-100">
       <span className="text-emerald-600">{icon}</span>
       <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
     </div>
-    <div className="p-5">{children}</div>
+    <div className="p-4 md:p-5">{children}</div>
   </div>
 );
 
@@ -26,7 +27,7 @@ export const FeaturesTab: React.FC<FeaturesTabProps> = ({ features }) => {
   const disabledFeatures = features.filter(f => !f.enabled);
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-4 md:p-5 space-y-4">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white border border-slate-200 rounded-xl p-4 md:p-5 shadow-sm">
@@ -78,9 +79,9 @@ export const FeaturesTab: React.FC<FeaturesTabProps> = ({ features }) => {
                 </label>
                 <p className="text-xs text-slate-500 leading-relaxed">{feature.description}</p>
               </div>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex-shrink-0 uppercase tracking-wider">
-                Active
-              </span>
+                <Badge color="emerald" size="xs" pill className="uppercase tracking-wider">
+                  Active
+                </Badge>
             </div>
           ))}
         </div>
@@ -101,9 +102,9 @@ export const FeaturesTab: React.FC<FeaturesTabProps> = ({ features }) => {
                   </label>
                   <p className="text-xs text-slate-500 leading-relaxed">{feature.description}</p>
                 </div>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200 flex-shrink-0 uppercase tracking-wider">
+                <Badge color="slate" size="xs" pill className="uppercase tracking-wider">
                   Off
-                </span>
+                </Badge>
               </div>
             ))}
           </div>

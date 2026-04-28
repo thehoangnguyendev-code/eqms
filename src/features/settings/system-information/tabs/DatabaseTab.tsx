@@ -1,5 +1,6 @@
 import React from "react";
 import { Database, CheckCircle2, XCircle, Clock, Layers, BarChart3, ShieldAlert, Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge/Badge";
 import type { DatabaseInfo } from "../types";
 import { formatDateTimeLong, formatDateUS } from "@/utils/format";
 import { IconNetwork } from "@tabler/icons-react";
@@ -15,11 +16,11 @@ const SettingsCard: React.FC<{
   noPadding?: boolean;
 }> = ({ title, icon, children, noPadding = false }) => (
   <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+    <div className="flex items-center gap-2.5 px-4 md:px-5 py-4 border-b border-slate-100">
       <span className="text-emerald-600">{icon}</span>
       <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
     </div>
-    <div className={noPadding ? "" : "p-5"}>{children}</div>
+    <div className={noPadding ? "" : "p-4 md:p-5"}>{children}</div>
   </div>
 );
 
@@ -30,9 +31,9 @@ export const DatabaseTab: React.FC<DatabaseTabProps> = ({ data }) => {
   };
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-4 md:p-5 space-y-4">
       {/* Status Banner */}
-      <div className={`flex items-center justify-between px-5 py-4 rounded-xl border ${data.connectionStatus === "connected"
+      <div className={`flex items-center justify-between px-4 md:px-5 py-4 rounded-xl border ${data.connectionStatus === "connected"
         ? "bg-emerald-50 border-emerald-200"
         : "bg-red-50 border-red-200"
         }`}>
@@ -53,13 +54,13 @@ export const DatabaseTab: React.FC<DatabaseTabProps> = ({ data }) => {
             </p>
           </div>
         </div>
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${data.connectionStatus === "connected"
-          ? "bg-emerald-100 text-emerald-700 border-emerald-300"
-          : "bg-red-100 text-red-700 border-red-300"
-          }`}>
-          <span className={`h-1.5 w-1.5 rounded-full ${data.connectionStatus === "connected" ? "bg-emerald-500" : "bg-red-500"}`} />
+        <Badge
+          color={data.connectionStatus === "connected" ? "emerald" : "red"}
+          showDot
+          pill
+        >
           {data.connectionStatus === "connected" ? "Connected" : "Disconnected"}
-        </span>
+        </Badge>
       </div>
 
       {/* Card: Database Configuration */}

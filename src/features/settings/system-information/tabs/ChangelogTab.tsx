@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Calendar, Tag, CheckCircle2, Wrench, Bug } from "lucide-react";
+import { Badge } from "@/components/ui/badge/Badge";
 import { MOCK_CHANGELOG } from "../mockData";
 import { formatDateLong } from "@/utils/format";
 
@@ -10,11 +11,11 @@ const SettingsCard: React.FC<{
   noPadding?: boolean;
 }> = ({ title, icon, children, noPadding = false }) => (
   <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+    <div className="flex items-center gap-2.5 px-4 md:px-5 py-4 border-b border-slate-100">
       <span className="text-emerald-600">{icon}</span>
       <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
     </div>
-    <div className={noPadding ? "" : "p-5"}>{children}</div>
+    <div className={noPadding ? "" : "p-4 md:p-5"}>{children}</div>
   </div>
 );
 
@@ -36,7 +37,7 @@ export const ChangelogTab: React.FC = () => {
   };
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-4 md:p-5 space-y-4">
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 text-center">
@@ -71,7 +72,7 @@ export const ChangelogTab: React.FC = () => {
               <div key={entry.version} className="transition-colors hover:bg-slate-50/30">
                 <button
                   onClick={() => toggleVersion(entry.version)}
-                  className="w-full px-5 py-4 flex items-center justify-between gap-4 text-left"
+                  className="w-full px-4 md:px-5 py-4 flex items-center justify-between gap-4 text-left"
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
                     <span className="text-base font-bold text-slate-900">
@@ -83,22 +84,19 @@ export const ChangelogTab: React.FC = () => {
                     </div>
                     <div className="hidden sm:flex items-center gap-2">
                       {hasFeatures && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-tighter">
-                          <CheckCircle2 className="h-2.5 w-2.5" />
+                        <Badge color="emerald" size="xs" icon={<CheckCircle2 className="h-2.5 w-2.5" />} pill className="uppercase tracking-tighter">
                           {entry.changes.features!.length} New
-                        </span>
+                        </Badge>
                       )}
                       {hasImprovements && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-tighter">
-                          <Wrench className="h-2.5 w-2.5" />
+                        <Badge color="blue" size="xs" icon={<Wrench className="h-2.5 w-2.5" />} pill className="uppercase tracking-tighter">
                           {entry.changes.improvements!.length} Imp.
-                        </span>
+                        </Badge>
                       )}
                       {hasBugFixes && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-tighter">
-                          <Bug className="h-2.5 w-2.5" />
+                        <Badge color="amber" size="xs" icon={<Bug className="h-2.5 w-2.5" />} pill className="uppercase tracking-tighter">
                           {entry.changes.bugFixes!.length} Fix
-                        </span>
+                        </Badge>
                       )}
                     </div>
                   </div>
@@ -112,7 +110,7 @@ export const ChangelogTab: React.FC = () => {
                 </button>
 
                 {isExpanded && (
-                  <div className="px-5 pb-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="px-4 md:px-5 pb-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     {hasFeatures && (
                       <div className="bg-emerald-50/30 border border-emerald-100 rounded-xl p-4">
                         <h4 className="text-xs font-bold text-emerald-900 mb-2.5 flex items-center gap-2 uppercase tracking-tight">

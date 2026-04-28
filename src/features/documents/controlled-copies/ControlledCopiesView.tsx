@@ -493,7 +493,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
       {/* Unified Content Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full overflow-hidden flex flex-col">
         {/* Filter Section */}
-        <div className="p-4 md:p-5 border-b border-slate-50">
+        <div className="p-4 md:p-5">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-end">
             <div>
               <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Search</label>
@@ -572,7 +572,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
               )}
               {...dragEvents}
             >
-              <table className="w-full min-w-max border-separate border-spacing-0 text-left">
+              <table className="w-full min-w-max  border-spacing-0 text-left">
                 <thead>
                   <tr>
                     <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
@@ -748,7 +748,7 @@ export const ControlledCopiesView: React.FC<ControlledCopiesViewProps> = ({ view
         documentDetails={{
           code: selectedCopyForCancel?.documentNumber || "N/A",
           title: selectedCopyForCancel?.name || "N/A",
-          revision: selectedCopyForCancel?.version || "—" 
+          revision: selectedCopyForCancel?.version || "—"
         }}
       />
 
