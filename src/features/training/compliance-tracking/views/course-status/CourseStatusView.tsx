@@ -23,7 +23,8 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { IconTimeline } from "@tabler/icons-react";
+import { IconBellRinging, IconTimeline } from "@tabler/icons-react";
+import { Badge } from "@/components/ui/badge/Badge";
 import { PageHeader } from "@/components/ui/page/PageHeader";
 import { courseStatus } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { Button } from "@/components/ui/button/Button";
@@ -105,16 +106,16 @@ const CourseRow: React.FC<{
             <p className="font-medium text-slate-900 whitespace-nowrap">
               {course.courseTitle}
             </p>
-            <p className="text-[10px] md:text-xs text-slate-500 mt-0.5 whitespace-nowrap">
+            <p className="text-[10px] md:text-xs text-slate-500 mt-1 whitespace-nowrap">
               {course.description}
             </p>
           </div>
         </div>
       </td>
       <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200">
-        <span className="inline-flex px-2 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium border bg-blue-50 text-blue-700 border-blue-200">
+        <Badge color="blue" size="sm">
           {course.courseType}
-        </span>
+        </Badge>
       </td>
       <td className="py-2.5 px-2 md:py-3.5 md:px-4 text-xs md:text-sm border-b border-slate-200">
         <div
@@ -792,14 +793,12 @@ export const CourseStatusView: React.FC = () => {
                     <td className="px-4 py-3 text-slate-900 font-semibold whitespace-nowrap">{emp.name}</td>
                     <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{emp.dept}</td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className={cn(
-                        "px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-bold border whitespace-nowrap",
-                        emp.status === "Completed" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                          emp.status === "In Progress" ? "bg-blue-50 text-blue-700 border-blue-200" :
-                            "bg-red-50 text-red-700 border-red-200"
-                      )}>
+                      <Badge
+                        color={emp.status === "Completed" ? "emerald" : emp.status === "In Progress" ? "blue" : "red"}
+                        size="xs"
+                      >
                         {emp.status}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{emp.date}</td>
                   </tr>
@@ -826,11 +825,11 @@ export const CourseStatusView: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center gap-3">
                 <span className="text-lg sm:text-xl font-bold text-red-600">8</span>
-                <span className="text-[9px] sm:text-[10px] font-bold text-red-800 uppercase tracking-tight bg-red-100/50 px-2 py-0.5 rounded">Overdue</span>
+                <Badge color="red" size="xs">Overdue</Badge>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-lg sm:text-xl font-bold text-blue-600">22</span>
-                <span className="text-[9px] sm:text-[10px] font-bold text-blue-800 uppercase tracking-tight bg-blue-100/50 px-2 py-0.5 rounded">In Progress</span>
+                <Badge color="blue" size="xs">In Progress</Badge>
               </div>
             </div>
           </div>
@@ -846,7 +845,7 @@ export const CourseStatusView: React.FC = () => {
               </button>
             </div>
 
-            <div className="max-h-[200px] overflow-y-auto pr-1 space-y-2">
+            <div className="max-h-[240px] overflow-y-auto pr-2 space-y-2 border border-slate-200 rounded-lg p-2 custom-scrollbar bg-white/50">
               {[
                 { id: "EMP-1010", name: "Le Van Cuong", dept: "Production", title: "Senior Operator", status: "Overdue" },
                 { id: "EMP-1005", name: "Tran Thi Binh", dept: "QC", title: "Lab Technician", status: "In Progress" },
@@ -875,14 +874,12 @@ export const CourseStatusView: React.FC = () => {
                       <span className="text-[9px] sm:text-xs text-slate-500 font-medium">{emp.id} • {emp.title} • {emp.dept}</span>
                     </div>
                   </div>
-                  <span className={cn(
-                    "px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold border whitespace-nowrap",
-                    emp.status === "Overdue"
-                      ? "bg-red-50 text-red-700 border-red-200"
-                      : "bg-blue-50 text-blue-700 border-blue-200"
-                  )}>
+                  <Badge
+                    color={emp.status === "Overdue" ? "red" : "blue"}
+                    size="xs"
+                  >
                     {emp.status}
-                  </span>
+                  </Badge>
                 </div>
               ))}
             </div>
@@ -893,7 +890,7 @@ export const CourseStatusView: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <label className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-all cursor-pointer group">
                 <div className="h-9 w-9 rounded-lg bg-emerald-50 flex items-center justify-center border border-emerald-100 group-hover:bg-emerald-100 transition-colors shrink-0">
-                  <Smartphone className="h-4 w-4 text-emerald-600" />
+                  <IconBellRinging className="h-4 w-4 text-emerald-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-slate-700 text-[10px] sm:text-sm truncate">Push Notification</p>
