@@ -90,7 +90,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = React.memo(({
             </div>
           )}
 
-          <table className="w-full  border-spacing-0 text-sm md:text-base">
+          <table className="w-full border-separate border-spacing-0 text-sm md:text-base">
             <MatrixHead onSOPHeaderClick={onSOPHeaderClick} />
             <MatrixBody
               employees={employees}
