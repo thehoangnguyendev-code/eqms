@@ -976,7 +976,7 @@ export const MaterialsView: React.FC = () => {
                         </th>
                         {[
                           { label: "Material ID", key: "materialId" },
-                          { label: "Title", key: "title" },
+                          { label: "Material Name", key: "title" },
                           { label: "Type", key: "type" },
                           { label: "Department", key: "department" },
                           { label: "Version", key: "version" },

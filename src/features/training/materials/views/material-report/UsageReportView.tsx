@@ -199,7 +199,7 @@ export const UsageReportView: React.FC = () => {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
               <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200 flex-shrink-0">
-                {material.materialCode}
+                {material.materialId}
               </span>
               <h2 className="text-base font-semibold text-slate-900 truncate">{material.title}</h2>
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 flex-shrink-0">
@@ -414,7 +414,7 @@ export const UsageReportView: React.FC = () => {
             <div>
               <h3 className="text-sm font-semibold text-slate-900">Course History</h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                All courses that have used <span className="font-medium text-slate-700">{material.materialCode}</span> · {filteredRecords.length} of {allRecords.length} records
+                All courses that have used <span className="font-medium text-slate-700">{material.materialId}</span> · {filteredRecords.length} of {allRecords.length} records
               </p>
             </div>
           </div>

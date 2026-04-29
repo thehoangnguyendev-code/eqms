@@ -70,6 +70,15 @@ export const courseDetail = (_navigate?: (path: string) => void): BreadcrumbItem
   { label: "Course Detail", isActive: true },
 ];
 
+export const courseDetailFromAssignment = (_navigate?: (path: string) => void): BreadcrumbItem[] => [
+  dashboard(_navigate),
+  { label: "Training Management" },
+  { label: "Compliance Tracking" },
+  { label: "Training Matrix" },
+  { label: "New Training Assignment", onClick: () => _navigate?.(ROUTES.TRAINING.ASSIGNMENT_NEW) },
+  { label: "Course Detail", isActive: true },
+];
+
 export const courseEdit = (_navigate?: (path: string) => void): BreadcrumbItem[] => [
   dashboard(_navigate),
   { label: "Training Management" },

@@ -2,25 +2,10 @@ import React, { useState } from 'react';
 import { Bell, Mail, MonitorSmartphone, BellRing, ClipboardSignature, Plus, X, Building2 } from 'lucide-react';
 import { cn } from '@/components/ui/utils';
 import { Select } from '@/components/ui/select/Select';
+import { Switch } from '@/components/ui';
 import { IconBook } from '@tabler/icons-react';
 
-const Toggle: React.FC<{ checked: boolean; onChange: () => void }> = ({ checked, onChange }) => (
-    <button
-        type="button"
-        onClick={onChange}
-        className={cn(
-            'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2',
-            checked ? 'bg-emerald-500' : 'bg-slate-300'
-        )}
-        role="switch"
-        aria-checked={checked}
-    >
-        <span className={cn(
-            'inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200',
-            checked ? 'translate-x-6' : 'translate-x-1'
-        )} />
-    </button>
-);
+
 
 const DEPARTMENTS = ['QA', 'Production', 'R&D', 'Regulatory', 'Warehouse', 'Engineering', 'HR'];
 
@@ -80,7 +65,7 @@ export const NotificationSettingsTab: React.FC = () => {
                                     <p className="text-xs text-slate-500">Send to your account email: <span className="font-medium text-slate-700">admin@eqms.com</span></p>
                                 </div>
                             </div>
-                            <Toggle checked={channelEmail} onChange={() => setChannelEmail(p => !p)} />
+                            <Switch checked={channelEmail} onChange={() => setChannelEmail(p => !p)} />
                         </div>
 
                         {channelEmail && (
@@ -126,7 +111,7 @@ export const NotificationSettingsTab: React.FC = () => {
                                     <p className="text-xs text-slate-500">Show alerts and badge count inside the application.</p>
                                 </div>
                             </div>
-                            <Toggle checked={channelInApp} onChange={() => setChannelInApp(p => !p)} />
+                            <Switch checked={channelInApp} onChange={() => setChannelInApp(p => !p)} />
                         </div>
 
                         {/* Push */}
@@ -140,7 +125,7 @@ export const NotificationSettingsTab: React.FC = () => {
                                     <p className="text-xs text-slate-500">Receive push alerts even when the tab is not active.</p>
                                 </div>
                             </div>
-                            <Toggle checked={channelPush} onChange={() => setChannelPush(p => !p)} />
+                            <Switch checked={channelPush} onChange={() => setChannelPush(p => !p)} />
                         </div>
                     </div>
                 </section>
@@ -168,7 +153,7 @@ export const NotificationSettingsTab: React.FC = () => {
                                         <p className="text-xs text-slate-500">Remind before training deadlines and license renewals.</p>
                                     </div>
                                 </div>
-                                <Toggle checked={trainingEnabled} onChange={() => setTrainingEnabled(p => !p)} />
+                                <Switch checked={trainingEnabled} onChange={() => setTrainingEnabled(p => !p)} />
                             </div>
                             {trainingEnabled && (
                                 <div className="mt-3 ml-11 flex items-center gap-3">
@@ -198,7 +183,7 @@ export const NotificationSettingsTab: React.FC = () => {
                                         <p className="text-xs text-slate-500">Notify when an electronic signature is required from you.</p>
                                     </div>
                                 </div>
-                                <Toggle checked={signatureEnabled} onChange={() => setSignatureEnabled(p => !p)} />
+                                <Switch checked={signatureEnabled} onChange={() => setSignatureEnabled(p => !p)} />
                             </div>
                             {signatureEnabled && (
                                 <div className="mt-3 ml-11 flex items-center gap-2">
@@ -247,7 +232,7 @@ export const NotificationSettingsTab: React.FC = () => {
                                         <p className="text-xs text-slate-500">Notify when a Standard Operating Procedure is updated or superseded.</p>
                                     </div>
                                 </div>
-                                <Toggle checked={sopEnabled} onChange={() => setSopEnabled(p => !p)} />
+                                <Switch checked={sopEnabled} onChange={() => setSopEnabled(p => !p)} />
                             </div>
                             {sopEnabled && (
                                 <div className="mt-3 ml-11 space-y-2">

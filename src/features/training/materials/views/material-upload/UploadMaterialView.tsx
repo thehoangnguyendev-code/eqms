@@ -87,7 +87,7 @@ const getFileTypeFromName = (name: string): "PDF" | "Video" | "Image" | "Documen
   }
 };
 
-const generateMaterialCode = (fileType: "PDF" | "Video" | "Image" | "Document"): string => {
+const generateMaterialId = (fileType: "PDF" | "Video" | "Image" | "Document"): string => {
   const prefix: Record<string, string> = {
     PDF: "TM-PDF",
     Video: "TM-VID",
@@ -113,7 +113,7 @@ export const UploadMaterialView: React.FC = () => {
   // Form state
   const [formData, setFormData] = useState<MaterialWorkflowFormData>({
     materialName: "",
-    materialCode: "",
+    materialId: "",
     version: "1.0",
     author: "Dr. A. Smith", // Current logged-in user
     businessUnit: "",
@@ -183,12 +183,12 @@ export const UploadMaterialView: React.FC = () => {
     };
     setUploadedFile(uploadFile);
 
-    // Auto-generate material code based on file type
+    // Auto-generate material ID based on file type
     const fileType = getFileTypeFromName(file.name);
-    const autoCode = generateMaterialCode(fileType);
+    const autoCode = generateMaterialId(fileType);
     setFormData((prev) => ({
       ...prev,
-      materialCode: prev.materialCode || autoCode,
+      materialId: prev.materialId || autoCode,
       materialName: prev.materialName || file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
     }));
 
@@ -275,9 +275,9 @@ export const UploadMaterialView: React.FC = () => {
         if (name) updateField("materialName", name);
       } catch { /* ignore */ }
     }
-    // Auto-generate material code if empty
-    if (!formData.materialCode) {
-      updateField("materialCode", generateMaterialCode("Document"));
+    // Auto-generate material ID if empty
+    if (!formData.materialId) {
+      updateField("materialId", generateMaterialId("Document"));
     }
   };
 
@@ -290,7 +290,7 @@ export const UploadMaterialView: React.FC = () => {
       if (!isValidUrl(formData.externalUrl.trim())) return "Please enter a valid URL.";
     }
     if (!formData.materialName.trim()) return "Please enter material name.";
-    if (!formData.materialCode.trim()) return "Material code is required.";
+    if (!formData.materialId.trim()) return "Material ID is required.";
     if (!formData.businessUnit) return "Please select a business unit.";
     if (!formData.department) return "Please select a department.";
     if (!formData.reviewer) return "Please select a reviewer.";
@@ -649,16 +649,16 @@ export const UploadMaterialView: React.FC = () => {
                 />
               </div>
 
-              {/* Row 2: Material Code + Version */}
+              {/* Row 2: Material ID + Version */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
-                    Material Code <span className="text-red-500">*</span>
+                    Material ID <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
-                    value={formData.materialCode}
-                    onChange={(e) => updateField("materialCode", e.target.value)}
+                    value={formData.materialId}
+                    onChange={(e) => updateField("materialId", e.target.value)}
                     placeholder="Auto-generated (e.g., TM-PDF-001)"
                     className="w-full h-9 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400 bg-slate-50"
                   />

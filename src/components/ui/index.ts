@@ -10,6 +10,7 @@ export * from './radio';
 export * from './select';
 export * from './datetime-picker';
 export * from './form';
+export * from './switch';
 
 // Layout Components
 export * from './card';

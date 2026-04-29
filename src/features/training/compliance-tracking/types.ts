@@ -24,6 +24,8 @@ export interface SOPColumn {
   category: string;   // e.g. "GMP", "Safety", "Technical"
   version: string;    // e.g. "v2.1"
   effectiveDate: string;
+  materialId: string;
+  materialName: string;
 }
 
 // ─── Employee Row ────────────────────────────────────────────────────

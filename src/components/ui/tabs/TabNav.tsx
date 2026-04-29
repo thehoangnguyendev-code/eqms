@@ -79,8 +79,8 @@ export const TabNav: React.FC<TabNavProps> = ({
               key={tab.id}
               onClick={() => onChange(tab.id)}
               className={cn(
-                "flex items-center justify-center gap-2 px-3 py-1.5 relative whitespace-nowrap",
-                "text-sm font-medium rounded-lg transition-all duration-200",
+                "flex items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-1.5 relative whitespace-nowrap",
+                "text-[10px] sm:text-sm font-medium rounded-lg transition-all duration-200",
                 "flex-1",
                 isActive
                   ? "text-emerald-700"
@@ -94,14 +94,14 @@ export const TabNav: React.FC<TabNavProps> = ({
                   transition={{ type: "spring", bounce: 0.15, duration: 0.4 }}
                 />
               )}
-              <span className="relative z-10 flex items-center gap-1.5">
+              <span className="relative z-10 flex items-center gap-1 sm:gap-1.5">
                 {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
-                <span className="text-sm">{tab.label}</span>
+                <span className="text-[10px] sm:text-sm truncate">{tab.label}</span>
                 {tab.count !== undefined && (
                   <span
                     className={cn(
-                      "inline-flex items-center justify-center min-w-[18px] h-4.5 px-1.5",
-                      "text-[10px] font-bold rounded-full",
+                      "inline-flex items-center justify-center min-w-[16px] sm:min-w-[18px] h-4 sm:h-4.5 px-1 sm:px-1.5",
+                      "text-[9px] sm:text-[10px] font-bold rounded-full",
                       isActive
                         ? "bg-emerald-100 text-emerald-700"
                         : "bg-slate-200 text-slate-500"

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
 import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { PageHeader } from "@/components/ui/page/PageHeader";
+import { Switch } from "@/components/ui";
 import { newRevision } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { useNavigateWithLoading } from "@/hooks";
@@ -183,9 +184,6 @@ export const NewRevisionView: React.FC = () => {
               <h2 className="text-sm font-semibold text-slate-800">
                 Related Documents ({MOCK_LINKED_DOCUMENTS.length})
               </h2>
-              <p className="text-[11px] text-slate-500 font-medium">
-                {upgradeCount} document(s) selected for upgrade
-              </p>
             </div>
           </div>
           <div className="flex items-center gap-2 text-[10px] sm:text-xs lg:text-sm flex-wrap">
@@ -290,24 +288,10 @@ export const NewRevisionView: React.FC = () => {
                         >
                           Keep
                         </span>
-                        <button
-                          onClick={() => handleToggleDecision(doc.id)}
-                          className={cn(
-                            "relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:ring-offset-2",
-                            isUpgrade ? "bg-emerald-500" : "bg-slate-300",
-                          )}
-                          role="switch"
-                          aria-checked={isUpgrade}
-                        >
-                          <span
-                            className={cn(
-                              "inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 transform rounded-full bg-white transition-transform duration-200",
-                              isUpgrade
-                                ? "translate-x-5 sm:translate-x-6"
-                                : "translate-x-0.5 sm:translate-x-1",
-                            )}
-                          />
-                        </button>
+                        <Switch
+                          checked={isUpgrade}
+                          onChange={() => handleToggleDecision(doc.id)}
+                        />
                         <span
                           className={cn(
                             "text-xs font-medium transition-colors",

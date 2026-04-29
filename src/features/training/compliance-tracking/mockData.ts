@@ -15,23 +15,21 @@ import { AutoAssignmentRule } from "../types/assignment.types";
 
 // ─── SOP / Training Material Columns ────────────────────────────────
 export const MOCK_SOPS: SOPColumn[] = [
-  { id: "SOP-001", code: "SOP-001", title: "GMP Basic Training", category: "GMP", version: "v3.0", effectiveDate: "15/01/2025" },
-  { id: "SOP-002", code: "SOP-002", title: "Cleanroom Operations", category: "Technical", version: "v2.1", effectiveDate: "01/03/2025" },
-  { id: "SOP-003", code: "SOP-003", title: "Workplace Safety & HSE", category: "Safety", version: "v4.0", effectiveDate: "10/02/2025" },
-  { id: "SOP-004", code: "SOP-004", title: "ISO 9001 Internal Auditor", category: "Compliance", version: "v1.2", effectiveDate: "20/11/2024" },
-  { id: "SOP-005", code: "SOP-005", title: "SOP Documentation & Control", category: "GMP", version: "v2.0", effectiveDate: "01/04/2025" },
-  { id: "SOP-006", code: "SOP-006", title: "HPLC Operations", category: "Technical", version: "v3.1", effectiveDate: "20/01/2025" },
-  { id: "SOP-007", code: "SOP-007", title: "Validation IQ/OQ/PQ", category: "Technical", version: "v2.0", effectiveDate: "15/05/2025" },
-  { id: "SOP-008", code: "SOP-008", title: "Risk Assessment & FMEA", category: "Compliance", version: "v1.5", effectiveDate: "01/12/2024" },
-  { id: "SOP-009", code: "SOP-009", title: "Chemical Safety", category: "Safety", version: "v3.2", effectiveDate: "01/06/2025" },
-  { id: "SOP-010", code: "SOP-010", title: "Data Integrity (ALCOA+)", category: "Compliance", version: "v2.0", effectiveDate: "15/03/2025" },
-  { id: "SOP-011", code: "SOP-011", title: "Deviation & CAPA", category: "GMP", version: "v2.3", effectiveDate: "20/02/2025" },
-  { id: "SOP-012", code: "SOP-012", title: "Change Control Process", category: "GMP", version: "v1.1", effectiveDate: "10/04/2025" },
-  { id: "SOP-013", code: "SOP-013", title: "Sampling Procedures", category: "Technical", version: "v2.0", effectiveDate: "05/01/2025" },
-  { id: "SOP-014", code: "SOP-014", title: "Equipment Calibration", category: "Technical", version: "v3.0", effectiveDate: "01/07/2025" },
-  { id: "SOP-015", code: "SOP-015", title: "Batch Record Review", category: "GMP", version: "v1.8", effectiveDate: "20/05/2025" },
-  { id: "TRN-2026-001", code: "TRN-2026-001", title: "GMP Basic Principles (V2.0)", category: "GMP", version: "v2.0", effectiveDate: "15/03/2026" },
-  { id: "TRN-2026-003", code: "TRN-2026-003", title: "Emergency Response Procedures", category: "Safety", version: "v1.0", effectiveDate: "20/01/2026" },
+  { id: "1", code: "TRN-2026-001", title: "GMP Basic Training", category: "GMP", version: "v3.0", effectiveDate: "15/01/2025", materialId: "TM-VID-001", materialName: "GMP Introduction Video" },
+  { id: "2", code: "TRN-2026-002", title: "Cleanroom Operations", category: "Technical", version: "v2.1", effectiveDate: "01/03/2025", materialId: "TM-PDF-002", materialName: "Cleanroom Operations Manual" },
+  { id: "3", code: "TRN-2026-003", title: "Workplace Safety & HSE", category: "Safety", version: "v4.0", effectiveDate: "10/02/2025", materialId: "TM-PDF-003", materialName: "Equipment Handling Guide" },
+  { id: "4", code: "TRN-2026-004", title: "ISO 9001 Internal Auditor", category: "Compliance", version: "v1.2", effectiveDate: "20/11/2024", materialId: "TM-IMG-004", materialName: "Safety Protocol Infographic" },
+  { id: "5", code: "TRN-2026-005", title: "SOP Documentation & Control", category: "GMP", version: "v2.0", effectiveDate: "01/04/2025", materialId: "TM-VID-005", materialName: "ISO 9001 Training Video" },
+  { id: "6", code: "TRN-2026-006", title: "HPLC Operations", category: "Technical", version: "v3.1", effectiveDate: "20/01/2025", materialId: "TM-DOC-006", materialName: "SOP Template Pack" },
+  { id: "7", code: "TRN-2026-007", title: "Validation IQ/OQ/PQ", category: "Technical", version: "v2.0", effectiveDate: "15/05/2025", materialId: "TM-PDF-007", materialName: "Chemical Handling Procedures" },
+  { id: "8", code: "TRN-2026-008", title: "Risk Assessment & FMEA", category: "Compliance", version: "v1.5", effectiveDate: "01/12/2024", materialId: "TM-DOC-008", materialName: "HPLC Training Slides" },
+  { id: "9", code: "TRN-2026-009", title: "Chemical Safety", category: "Safety", version: "v3.2", effectiveDate: "01/06/2025", materialId: "TM-VID-009", materialName: "Deviation Investigation Training" },
+  { id: "10", code: "TRN-2026-010", title: "Data Integrity (ALCOA+)", category: "Compliance", version: "v2.0", effectiveDate: "15/03/2025", materialId: "TM-PDF-010", materialName: "Personal Protective Equipment Guide" },
+  { id: "11", code: "TRN-2026-011", title: "Deviation & CAPA", category: "GMP", version: "v2.3", effectiveDate: "20/02/2025", materialId: "TM-DOC-011", materialName: "Batch Record Review Checklist" },
+  { id: "12", code: "TRN-2026-012", title: "Change Control Process", category: "GMP", version: "v1.1", effectiveDate: "10/04/2025", materialId: "TM-PDF-012", materialName: "Water System Qualification" },
+  { id: "13", code: "SOP-013", title: "Sampling Procedures", category: "Technical", version: "v2.0", effectiveDate: "05/01/2025", materialId: "TM-PDF-013", materialName: "Comprehensive Quality Audit Framework" },
+  { id: "14", code: "SOP-014", title: "Equipment Calibration", category: "Technical", version: "v3.0", effectiveDate: "01/07/2025", materialId: "TM-DOC-014", materialName: "Equipment Calibration SOP" },
+  { id: "15", code: "SOP-015", title: "Batch Record Review", category: "GMP", version: "v1.8", effectiveDate: "20/05/2025", materialId: "TM-PDF-015", materialName: "Batch Record Review Training" },
 ];
 
 // ─── Employee Rows ──────────────────────────────────────────────────
@@ -77,21 +75,21 @@ const randomDate = (start: string, end: string): string => {
 const generateCell = (emp: EmployeeRow, sop: SOPColumn): TrainingCell => {
   // Determine if this SOP is required for this employee's role
   const requiredMap: Record<string, string[]> = {
-    "QA Manager":          ["SOP-001","SOP-004","SOP-005","SOP-010","SOP-011","SOP-008","SOP-012","SOP-015"],
-    "QA Specialist":       ["SOP-001","SOP-004","SOP-005","SOP-010","SOP-011","SOP-008"],
-    "QC Analyst":          ["SOP-001","SOP-006","SOP-009","SOP-010","SOP-005","SOP-013"],
-    "Lab Technician":      ["SOP-001","SOP-006","SOP-009","SOP-010","SOP-014"],
-    "Production Operator": ["SOP-001","SOP-002","SOP-003","SOP-005"],
-    "Production Supervisor":["SOP-001","SOP-002","SOP-003","SOP-005","SOP-011","SOP-012"],
-    "Validation Engineer": ["SOP-001","SOP-007","SOP-008","SOP-010","SOP-012"],
-    "Engineering Manager": ["SOP-001","SOP-007","SOP-008","SOP-010","SOP-011","SOP-012"],
-    "Document Controller": ["SOP-001","SOP-005","SOP-010","SOP-012"],
-    "HSE Coordinator":     ["SOP-001","SOP-003","SOP-009","SOP-008"],
-    "HSE Specialist":      ["SOP-001","SOP-003","SOP-009","SOP-008"],
-    "Warehouse Operator":  ["SOP-001","SOP-003","SOP-005"],
+    "QA Manager":          ["1","4","5","10","11","8","12","15"],
+    "QA Specialist":       ["1","4","5","10","11","8"],
+    "QC Analyst":          ["1","6","9","10","5","13"],
+    "Lab Technician":      ["1","6","9","10","14"],
+    "Production Operator": ["1","2","3","5"],
+    "Production Supervisor":["1","2","3","5","11","12"],
+    "Validation Engineer": ["1","7","8","10","12"],
+    "Engineering Manager": ["1","7","8","10","11","12"],
+    "Document Controller": ["1","5","10","12"],
+    "HSE Coordinator":     ["1","3","9","8"],
+    "HSE Specialist":      ["1","3","9","8"],
+    "Warehouse Operator":  ["1","3","5"],
   };
 
-  const requiredSops = requiredMap[emp.jobTitle] || ["SOP-001"];
+  const requiredSops = requiredMap[emp.jobTitle] || ["1"];
   const isRequired = requiredSops.includes(sop.id);
 
   if (!isRequired) {

@@ -384,7 +384,7 @@ export const MaterialReviewView: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                    <Hash className="h-3.5 w-3.5" /> Material Code
+                    <Hash className="h-3.5 w-3.5" /> Material ID
                   </div>
                   <p className="text-sm font-semibold text-emerald-700">
                     {material.materialId}

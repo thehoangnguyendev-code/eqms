@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, User, FileText, CalendarDays, Trophy, Clock, AlertTriangle, CalendarCheck, Layers } from "lucide-react";
+import { X, User, FileText, CalendarDays, Trophy, Clock, AlertTriangle, CalendarCheck, Send, Download } from "lucide-react";
+import { IconBook, IconLocation } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
 import { FormSection } from "@/components/ui/form";
+import { FullPageLoading } from "@/components/ui/loading/Loading";
+import { ROUTES } from "@/app/routes.constants";
 import type { TrainingCell, EmployeeRow, SOPColumn } from "../../types";
 import { CELL_CONFIG, formatDate } from "./constants";
 
@@ -33,6 +37,13 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
     sop,
     onClose,
 }) => {
+    const navigate = useNavigate();
+    const [isNavigating, setIsNavigating] = useState(false);
+
+    const handleNavigate = (path: string) => {
+        setIsNavigating(true);
+        setTimeout(() => navigate(path), 600);
+    };
     const [isClosing, setIsClosing] = useState(false);
     const isMobile = useIsMobile();
 
@@ -142,11 +153,11 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
             <div
                 className={cn(
                     "pointer-events-auto bg-white flex flex-col relative overflow-hidden shadow-2xl",
-                    isMobile 
-                        ? cn("w-full transition-all flex flex-col", isFullHeight ? "rounded-none" : "rounded-t-2xl") 
+                    isMobile
+                        ? cn("w-full transition-all flex flex-col", isFullHeight ? "rounded-none" : "rounded-t-2xl")
                         : "w-[500px] h-[calc(100vh-32px)] mr-4 rounded-2xl border border-slate-200",
-                    isClosing 
-                        ? (isMobile ? "mobile-drawer-exit" : "desktop-drawer-exit") 
+                    isClosing
+                        ? (isMobile ? "mobile-drawer-exit" : "desktop-drawer-exit")
                         : (isMobile ? (!isDragging && "mobile-drawer-enter") : "desktop-drawer-enter"),
                 )}
                 style={isMobile ? {
@@ -158,7 +169,7 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
             >
                 {/* Mobile drag handle */}
                 {isMobile && (
-                    <div 
+                    <div
                         className="flex flex-col items-center py-3 cursor-grab active:cursor-grabbing select-none touch-none bg-white shrink-0"
                         onTouchStart={handleTouchStart}
                         onTouchMove={handleTouchMove}
@@ -193,44 +204,36 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                 </div>
 
                 {/* Scrollable body */}
-                <div 
-                    className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth" 
-                    style={{ 
+                <div
+                    className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth"
+                    style={{
                         WebkitOverflowScrolling: "touch",
                         overscrollBehavior: "contain"
                     }}
                 >
-                    {/* Identification Info */}
-                    <div className="grid grid-cols-1 gap-5">
-                        {/* Employee card */}
-                        <FormSection title="Personnel Information" icon={<User className="h-4 w-4" />}>
-                            <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-                                    <User className="h-4 w-4 text-slate-500" />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-[11px] text-slate-400 font-medium mb-0.5 uppercase tracking-wide">Name</p>
-                                    <p className="text-sm font-semibold text-slate-900 truncate">{employee.name}</p>
-                                    <p className="text-xs text-slate-500 truncate">
-                                        {employee.department} · {employee.jobTitle}
-                                    </p>
-                                </div>
-                            </div>
-                        </FormSection>
-
-                        {/* SOP card */}
-                        <FormSection title="Material Information" icon={<FileText className="h-4 w-4" />}>
-                            <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-                                    <FileText className="h-4 w-4 text-slate-500" />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-[11px] text-slate-400 font-medium mb-0.5 uppercase tracking-wide">Document Code</p>
-                                    <p className="text-sm font-semibold text-slate-900 truncate">{sop.code}</p>
-                                    <p className="text-xs text-slate-500 truncate">{sop.title}</p>
-                                </div>
-                            </div>
-                        </FormSection>
+                    {/* Quick Actions buttons */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <Button
+                            variant="outline-emerald"
+                            size="sm"
+                            onClick={() => {
+                                handleNavigate(ROUTES.TRAINING.ASSIGNMENT_NEW + `?employeeId=${employee.id}&courseId=${sop.id}`);
+                                handleClose();
+                            }}
+                            className="w-full gap-2"
+                        >
+                            <Send className="h-4 w-4" />
+                            Assign Training
+                        </Button>
+                        <Button
+                            variant="outline-emerald"
+                            size="sm"
+                            onClick={handleClose}
+                            className="w-full gap-2"
+                        >
+                            <Download className="h-4 w-4" />
+                            Export Report
+                        </Button>
                     </div>
 
                     {/* ── Contextual alert for Required / InProgress ── */}
@@ -257,6 +260,102 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                             </div>
                         );
                     })()}
+
+                    {/* Identification Info */}
+                    <div className="grid grid-cols-1 gap-5">
+                        {/* Employee card */}
+                        <FormSection title="Personnel Information" icon={<User className="h-4 w-4" />}>
+                            <div className="space-y-3 lg:space-y-4">
+                                {/* Name */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Full Name</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 font-semibold flex-1">{employee.name}</p>
+                                </div>
+                                {/* Employee Code */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Employee Code</label>
+                                    <button
+                                        onClick={() => handleNavigate(ROUTES.SETTINGS.USERS_PROFILE(employee.id))}
+                                        className="text-xs lg:text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors flex-1 text-left"
+                                    >
+                                        {employee.employeeCode}
+                                    </button>
+                                </div>
+                                {/* Email */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Email</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{employee.email}</p>
+                                </div>
+                                {/* Department */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Department</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{employee.department}</p>
+                                </div>
+                                {/* Job Title */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Job Title</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{employee.jobTitle}</p>
+                                </div>
+                            </div>
+                        </FormSection>
+
+                        {/* Course Information card */}
+                        <FormSection title="Course Information" icon={<FileText className="h-4 w-4" />}>
+                            <div className="space-y-3 lg:space-y-4">
+                                {/* General Course Information */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Course Title</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 font-semibold flex-1">{sop.title}</p>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Course ID</label>
+                                    <button
+                                        onClick={() => handleNavigate(ROUTES.TRAINING.COURSE_DETAIL(sop.id))}
+                                        className="text-xs lg:text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors flex-1 text-left"
+                                    >
+                                        {sop.code}
+                                    </button>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Training Type</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{sop.category}</p>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Training Method</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">Self-study</p>
+                                </div>
+                            </div>
+                        </FormSection>
+
+                        {/* Material Information card */}
+                        <FormSection title="Material Information" icon={<FileText className="h-4 w-4" />}>
+                            <div className="space-y-3 lg:space-y-4">
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Material Name</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{sop.materialName}</p>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Material ID</label>
+                                    <button
+                                        onClick={() => handleNavigate(ROUTES.TRAINING.MATERIAL_DETAIL(sop.materialId))}
+                                        className="text-xs lg:text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors flex-1 text-left"
+                                    >
+                                        {sop.materialId}
+                                    </button>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Version</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{sop.version}</p>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Effective Date</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{formatDate(sop.effectiveDate)}</p>
+                                </div>
+                            </div>
+                        </FormSection>
+                    </div>
+
+
 
                     {/* ── Score + Attempts ── */}
                     <FormSection title="Assessment Result" icon={<Trophy className="h-4 w-4" />}>
@@ -343,19 +442,7 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                         </div>
                     </FormSection>
 
-                    {/* SOP Information */}
-                    <FormSection title="Metadata Information" icon={<Layers className="h-4 w-4" />}>
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-slate-50 rounded-lg px-3 py-2">
-                                <p className="text-[10px] text-slate-400 font-medium tracking-wide">Version</p>
-                                <p className="text-sm font-bold text-slate-800">{sop.version}</p>
-                            </div>
-                            <div className="bg-slate-50 rounded-lg px-3 py-2">
-                                <p className="text-[10px] text-slate-400 font-medium tracking-wide">Category</p>
-                                <p className="text-sm font-bold text-slate-800">{sop.category}</p>
-                            </div>
-                        </div>
-                    </FormSection>
+                    {isNavigating && <FullPageLoading text="Navigating..." />}
                 </div>
 
                 {/* Footer */}

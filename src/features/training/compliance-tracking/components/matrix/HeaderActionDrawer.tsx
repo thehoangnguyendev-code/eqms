@@ -31,14 +31,12 @@ export interface HeaderActionDrawerProps {
 
 // ─── Constants ────────────────────────────────────────────────────────
 const EMPLOYEE_ACTIONS = [
-    { icon: User, label: "View Profile" },
     { icon: Send, label: "Assign Training" },
     { icon: Download, label: "Export Report" },
 ] as const;
 
 const SOP_ACTIONS = [
-    { icon: IconInfoCircle, label: "View Details" },
-    { icon: IconBook, label: "Assign Training" },
+    { icon: Send, label: "Assign Training" },
     { icon: Download, label: "Export Report" },
 ] as const;
 
@@ -52,30 +50,7 @@ const getRateColors = (rate: number) => {
     return { text: "text-red-600", bar: "bg-red-500" };
 };
 
-const READ_ONLY_CLASS =
-    "w-full h-9 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-default";
 
-// ─── Sub-components ───────────────────────────────────────────────────
-const ReadOnlyField: React.FC<{
-    icon?: React.FC<{ className?: string }>;
-    label: string;
-    value: string;
-}> = ({ label, value }) => (
-    <div className="flex flex-col gap-1.5">
-        <div className="flex items-center gap-1.5">
-            <label className="text-xs sm:text-sm font-medium text-slate-700">
-                {label}
-            </label>
-        </div>
-        <input
-            type="text"
-            readOnly
-            value={value || ""}
-            placeholder="—"
-            className={READ_ONLY_CLASS}
-        />
-    </div>
-);
 
 const StatTile: React.FC<{
     value: number;
@@ -108,8 +83,14 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
     onClose,
 }) => {
     const navigate = useNavigate();
-    const [isClosing, setIsClosing] = useState(false);
     const [isNavigating, setIsNavigating] = useState(false);
+
+    const handleNavigate = (path: string) => {
+        setIsNavigating(true);
+        setTimeout(() => navigate(path), 600);
+    };
+
+    const [isClosing, setIsClosing] = useState(false);
     const isMobile = useIsMobile();
 
     // Dragging / Bottom Sheet State
@@ -297,7 +278,6 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-sm font-bold text-slate-900 leading-tight truncate">{empData.name}</p>
-                                        <p className="text-[11px] text-slate-500 truncate">{empData.jobTitle} · {empData.department}</p>
                                     </div>
                                 </>
                             ) : sopData ? (
@@ -308,7 +288,7 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                                     </div>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5 flex-wrap">
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Training Course</span>
+                                            <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Training Course</span>
                                         </div>
                                         <p className="text-sm font-bold text-slate-900 leading-tight truncate">{sopData.title}</p>
                                     </div>
@@ -334,37 +314,125 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                         overscrollBehavior: "contain"
                     }}
                 >
+                    {/* Quick Actions buttons */}
+                    <div className="grid grid-cols-2 gap-3">
+                        {actions.map(({ icon: Icon, label: actionLabel }) => (
+                            <Button
+                                key={actionLabel}
+                                variant="outline-emerald"
+                                size="sm"
+                                onClick={() => {
+                                    if (actionLabel === "Assign Training") {
+                                        if (type === "employee") {
+                                            handleNavigate(ROUTES.TRAINING.ASSIGNMENT_NEW + `?employeeId=${(data as EmployeeRow).id}`);
+                                        } else {
+                                            handleNavigate(ROUTES.TRAINING.ASSIGNMENT_NEW + `?courseId=${(data as SOPColumn).id}`);
+                                        }
+                                    }
+                                    handleClose();
+                                }}
+                                className="w-full gap-2"
+                            >
+                                <Icon className="h-4 w-4" />
+                                {actionLabel}
+                            </Button>
+                        ))}
+                    </div>
+
                     {/* Identification / Info Card */}
                     <FormSection
-                        title={empData ? "Personnel Information" : "Material Information"}
+                        title={empData ? "Personnel Information" : "Course Information"}
                         icon={empData ? <User className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
                     >
-                        <div className="space-y-4">
-                            {empData ? (
-                                <>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <ReadOnlyField label="Job Title" value={empData.jobTitle} />
-                                        <ReadOnlyField label="Department" value={empData.department} />
-                                    </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <ReadOnlyField label="Employee Code" value={empData.employeeCode} />
-                                        <ReadOnlyField label="Hire Date" value={formatDate(empData.hireDate)} />
-                                    </div>
-                                </>
-                            ) : sopData ? (
-                                <>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <ReadOnlyField label="Category" value={sopData.category} />
-                                        <ReadOnlyField label="Version" value={`${sopData.version}`} />
-                                    </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <ReadOnlyField label="Course Code" value={sopData.code} />
-                                        <ReadOnlyField label="Effective Date" value={formatDate(sopData.effectiveDate)} />
-                                    </div>
-                                </>
-                            ) : null}
-                        </div>
+                        {empData ? (
+                            <div className="space-y-3 lg:space-y-4">
+                                {/* Name */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Full Name</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 font-semibold flex-1">{empData.name}</p>
+                                </div>
+                                {/* Employee Code */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Employee Code</label>
+                                    <button
+                                        onClick={() => handleNavigate(ROUTES.SETTINGS.USERS_PROFILE(empData.id))}
+                                        className="text-xs lg:text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors flex-1 text-left"
+                                    >
+                                        {empData.employeeCode}
+                                    </button>
+                                </div>
+                                {/* Email */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Email</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{empData.email}</p>
+                                </div>
+                                {/* Department */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Department</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{empData.department}</p>
+                                </div>
+                                {/* Job Title */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Job Title</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{empData.jobTitle}</p>
+                                </div>
+                            </div>
+                        ) : sopData ? (
+                            <div className="space-y-3 lg:space-y-4">
+                                {/* General Course Information */}
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Course Title</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 font-semibold flex-1">{sopData.title}</p>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Course ID</label>
+                                    <button
+                                        onClick={() => handleNavigate(ROUTES.TRAINING.COURSE_DETAIL(sopData.id))}
+                                        className="text-xs lg:text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors flex-1 text-left"
+                                    >
+                                        {sopData.code}
+                                    </button>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Training Type</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{sopData.category}</p>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Training Method</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">Self-study</p>
+                                </div>
+                            </div>
+                        ) : null}
                     </FormSection>
+
+                    {/* Dedicated Material Information Card */}
+                    {sopData && (
+                        <FormSection title="Material Information" icon={<FileText className="h-4 w-4" />}>
+                            <div className="space-y-3 lg:space-y-4">
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Material Name</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{sopData.materialName}</p>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Material ID</label>
+                                    <button
+                                        onClick={() => handleNavigate(ROUTES.TRAINING.MATERIAL_DETAIL(sopData.materialId))}
+                                        className="text-xs lg:text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors flex-1 text-left"
+                                    >
+                                        {sopData.materialId}
+                                    </button>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Version</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{sopData.version}</p>
+                                </div>
+                                <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2">
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Effective Date</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{formatDate(sopData.effectiveDate)}</p>
+                                </div>
+                            </div>
+                        </FormSection>
+                    )}
 
                     {/* Compliance summary card */}
                     {stats && (
@@ -395,40 +463,7 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                         </FormSection>
                     )}
 
-                    {/* Quick Actions card */}
-                    <FormSection title="Quick Actions" icon={<IconLocation className="h-4 w-4" />}>
-                        <div className="-mx-3 -my-3">
-                            {actions.map(({ icon: Icon, label: actionLabel }) => (
-                                <button
-                                    key={actionLabel}
-                                    onClick={() => {
-                                        setIsNavigating(true);
-                                        setTimeout(() => {
-                                            if (actionLabel === "View Profile" && type === "employee") {
-                                                navigate(ROUTES.SETTINGS.USERS_PROFILE((data as EmployeeRow).id));
-                                            } else if (actionLabel === "View Details" && type === "sop") {
-                                                navigate(ROUTES.TRAINING.MATERIAL_DETAIL((data as SOPColumn).id));
-                                            } else if (actionLabel === "Assign Training") {
-                                                if (type === "employee") {
-                                                    navigate(ROUTES.TRAINING.ASSIGNMENT_NEW + `?employeeId=${(data as EmployeeRow).id}`);
-                                                } else {
-                                                    navigate(ROUTES.TRAINING.ASSIGNMENT_NEW + `?courseId=${(data as SOPColumn).id}`);
-                                                }
-                                            }
-                                            handleClose();
-                                        }, 600);
-                                    }}
-                                    className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 rounded-lg transition-colors border-b border-slate-50 last:border-0"
-                                >
-                                    <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-                                        <Icon className="h-4 w-4 text-slate-500" />
-                                    </div>
-                                    <span className="font-medium flex-1 text-left text-[13px]">{actionLabel}</span>
-                                    <ArrowRight className="h-3 w-3 text-slate-300 flex-shrink-0" />
-                                </button>
-                            ))}
-                        </div>
-                    </FormSection>
+
                 </div>
 
                 {/* ── Footer ───────────────────────────────────────────────── */}
@@ -439,7 +474,7 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                 </div>
             </div>
 
-            {isNavigating && <FullPageLoading text="Loading..." />}
+            {isNavigating && <FullPageLoading text="Navigating..." />}
         </div>,
         document.body
     );

@@ -5,36 +5,11 @@ import { Button } from '@/components/ui/button/Button';
 import { Checkbox } from '@/components/ui/checkbox/Checkbox';
 import { cn } from '@/components/ui/utils';
 import { AlertModal } from '@/components/ui/modal/AlertModal';
+import { Switch } from '@/components/ui';
 
 const OTP_LENGTH = 6;
 
-const ToggleSwitch: React.FC<{ checked: boolean; disabled?: boolean; onChange: () => void }> = ({
-  checked,
-  disabled,
-  onChange,
-}) => {
-  return (
-    <button
-      type="button"
-      onClick={onChange}
-      disabled={disabled}
-      className={cn(
-        'relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2',
-        checked ? 'bg-emerald-500' : 'bg-slate-300',
-        disabled && 'cursor-not-allowed opacity-60'
-      )}
-      role="switch"
-      aria-checked={checked}
-    >
-      <span
-        className={cn(
-          'inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200',
-          checked ? 'translate-x-6' : 'translate-x-1'
-        )}
-      />
-    </button>
-  );
-};
+
 
 export const SecuritySettingsTab: React.FC = () => {
   const [appMfaEnabled, setAppMfaEnabled] = useState(false);
@@ -186,7 +161,7 @@ export const SecuritySettingsTab: React.FC = () => {
                 <p className="text-xs text-slate-500">Used when authenticator app is unavailable.</p>
               </div>
             </div>
-            <ToggleSwitch
+            <Switch
               checked={emailFallbackEnabled}
               onChange={() => setEmailFallbackEnabled((prev) => !prev)}
             />

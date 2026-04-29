@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   ToggleLeft,
   ToggleRight,
@@ -15,15 +14,13 @@ import {
   RotateCcw,
   Link2,
   Timer,
-  CheckCircle2,
   Settings,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page/PageHeader";
-import { Button } from "@/components/ui/button/Button";
 import { Select } from "@/components/ui/select/Select";
-import { AlertModal } from "@/components/ui/modal/AlertModal";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/components/ui/utils";
+import { Switch } from "@/components/ui";
 import { SectionLoading } from "@/components/ui/loading";
 import { useNavigateWithLoading } from "@/hooks";
 import breadcrumbs from "@/components/ui/breadcrumb/breadcrumbs.config";
@@ -158,20 +155,10 @@ const RuleCard: React.FC<RuleCardProps> = ({ rule, onToggle }) => {
                 {/* Toggle switch */}
                 <div className="flex items-center justify-start md:justify-center gap-2 sm:gap-3">
                   <span className={cn("text-[10px] sm:text-xs font-medium transition-colors", !rule.isActive ? "text-slate-700" : "text-slate-400")}>Disabled</span>
-                  <button
-                    onClick={() => onToggle(rule.ruleId, !rule.isActive)}
-                    role="switch"
-                    aria-checked={rule.isActive}
-                    className={cn(
-                      "relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:ring-offset-2",
-                      rule.isActive ? "bg-emerald-500" : "bg-slate-300"
-                    )}
-                  >
-                    <span className={cn(
-                      "inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 transform rounded-full bg-white transition-transform duration-200",
-                      rule.isActive ? "translate-x-5 sm:translate-x-6" : "translate-x-0.5 sm:translate-x-1"
-                    )} />
-                  </button>
+                  <Switch
+                    checked={rule.isActive}
+                    onChange={() => onToggle(rule.ruleId, !rule.isActive)}
+                  />
                   <span className={cn("text-[10px] sm:text-xs font-medium transition-colors", rule.isActive ? "text-emerald-700" : "text-slate-400")}>Active</span>
                 </div>
               </div>
@@ -466,21 +453,10 @@ export const AssignmentRulesView: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 pl-3 ml-1 sm:ml-2 sm:border-l sm:border-slate-200">
               <span className={cn("text-xs font-medium transition-colors", activeCount !== autoRules.length ? "text-slate-700" : "text-slate-400")}>Disable All</span>
-              <button
-                type="button"
-                onClick={() => handleToggleAllRequest(activeCount < autoRules.length)}
-                role="switch"
-                aria-checked={activeCount === autoRules.length}
-                className={cn(
-                  "relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:ring-offset-2",
-                  activeCount === autoRules.length ? "bg-emerald-500" : "bg-slate-300"
-                )}
-              >
-                <span className={cn(
-                  "inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 transform rounded-full bg-white transition-transform duration-200",
-                  activeCount === autoRules.length ? "translate-x-5 sm:translate-x-6" : "translate-x-0.5 sm:translate-x-1"
-                )} />
-              </button>
+              <Switch
+                checked={activeCount === autoRules.length}
+                onChange={() => handleToggleAllRequest(activeCount < autoRules.length)}
+              />
               <span className={cn("text-xs font-medium transition-colors", activeCount === autoRules.length ? "text-emerald-700" : "text-slate-400")}>Activate All</span>
             </div>
           </div>

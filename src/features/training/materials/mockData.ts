@@ -265,6 +265,18 @@ export const MOCK_MATERIALS: TrainingMaterial[] = [
     linkedCourses: ["TRN-2026-001", "TRN-2026-008", "TRN-2026-020"],
     versionHistory: V_HISTORY_COMPLEX,
   },
+  {
+    id: "14", materialId: "TM-DOC-014", title: "Equipment Calibration SOP", description: "Standard procedures for equipment calibration and verification",
+    type: "Document", version: "3.0", department: "Technical", status: "Effective", uploadedAt: "01/07/2025", uploadedBy: "Lisa Anderson",
+    fileSize: "2.5 MB", fileSizeBytes: 2621440, usageCount: 12,
+    linkedCourses: ["SOP-014"],
+  },
+  {
+    id: "15", materialId: "TM-PDF-015", title: "Batch Record Review Training", description: "Training module for batch record review and approval process",
+    type: "PDF", version: "1.8", department: "Quality Assurance", status: "Effective", uploadedAt: "20/05/2025", uploadedBy: "James Taylor",
+    fileSize: "3.2 MB", fileSizeBytes: 3355443, usageCount: 18,
+    linkedCourses: ["SOP-015"],
+  },
 ];
 
 // ─── Workflow View Mock Data ──────────────────────────────────────────────────

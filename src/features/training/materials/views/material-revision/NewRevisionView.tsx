@@ -79,7 +79,7 @@ const MOCK_MATERIAL_SOURCE: Record<string, SourceMaterial> = {
     existingFile: { name: "GMP_Introduction_2026.mp4", size: 131072000 },
     form: {
       materialName: "GMP Introduction Video",
-      materialCode: "TM-VID-001",
+      materialId: "TM-VID-001",
       version: "2.1",
       author: "John Doe",
       businessUnit: "Quality",
@@ -95,7 +95,7 @@ const MOCK_MATERIAL_SOURCE: Record<string, SourceMaterial> = {
     existingFile: { name: "Cleanroom_Operations_Manual_v3.pdf", size: 4718592 },
     form: {
       materialName: "Cleanroom Operations Manual",
-      materialCode: "TM-PDF-002",
+      materialId: "TM-PDF-002",
       version: "3.0",
       author: "Jane Smith",
       businessUnit: "Production",
@@ -111,7 +111,7 @@ const MOCK_MATERIAL_SOURCE: Record<string, SourceMaterial> = {
     existingFile: { name: "Safety_Protocol_Infographic.png", size: 2202009 },
     form: {
       materialName: "Safety Protocol Infographic",
-      materialCode: "TM-IMG-004",
+      materialId: "TM-IMG-004",
       version: "1.0",
       author: "Sarah Williams",
       businessUnit: "HSE",
@@ -127,7 +127,7 @@ const MOCK_MATERIAL_SOURCE: Record<string, SourceMaterial> = {
     existingFile: { name: "ISO9001_Training_2026.mp4", size: 220200960 },
     form: {
       materialName: "ISO 9001 Training Video",
-      materialCode: "TM-VID-005",
+      materialId: "TM-VID-005",
       version: "4.2",
       author: "Robert Brown",
       businessUnit: "Quality",
@@ -143,7 +143,7 @@ const MOCK_MATERIAL_SOURCE: Record<string, SourceMaterial> = {
     existingFile: { name: "SOP_Template_Pack_v2.docx", size: 1048576 },
     form: {
       materialName: "SOP Template Pack",
-      materialCode: "TM-DOC-006",
+      materialId: "TM-DOC-006",
       version: "2.0",
       author: "Emily Davis",
       businessUnit: "Quality",
@@ -159,7 +159,7 @@ const MOCK_MATERIAL_SOURCE: Record<string, SourceMaterial> = {
     existingFile: { name: "Deviation_Investigation_Training.mp4", size: 188743680 },
     form: {
       materialName: "Deviation Investigation Training",
-      materialCode: "TM-VID-009",
+      materialId: "TM-VID-009",
       version: "1.0",
       author: "Michael Chen",
       businessUnit: "Quality",
@@ -378,7 +378,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
       setIsLoading(false);
       setModalType("success");
       setModalTitle("Revision Saved as Draft");
-      setModalDescription(`New revision ${formData.version} of ${formData.materialCode} has been saved as draft.`);
+      setModalDescription(`New revision ${formData.version} of ${formData.materialId} has been saved as draft.`);
       setModalAction(() => () => navigate(ROUTES.TRAINING.MATERIALS));
       setIsModalOpen(true);
     }, 1000);
@@ -400,7 +400,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
       setIsLoading(false);
       setModalType("success");
       setModalTitle("Revision Submitted for Review");
-      setModalDescription(`Revision ${formData.version} of ${formData.materialCode} has been submitted for review.`);
+      setModalDescription(`Revision ${formData.version} of ${formData.materialId} has been submitted for review.`);
       setModalAction(() => () => navigate(ROUTES.TRAINING.MATERIALS));
       setIsModalOpen(true);
     }, 1000);
@@ -496,7 +496,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 mr-1">
               v{source.form.version}
             </span>
-            {source.form.materialName} · {source.form.materialCode}
+            {source.form.materialName} · {source.form.materialId}
           </p>
           <p className="text-xs text-blue-600 mt-1">
             New revision will be saved as <span className="font-semibold">Draft</span> and must go through the approval workflow before becoming effective.
@@ -510,77 +510,77 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
         icon={<GitBranch className="h-4 w-4" />}
       >
         <p className="text-xs text-slate-500 -mt-2 mb-4">Choose whether this is a minor update or a major revision.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* Minor Revision */}
-            <button
-              onClick={() => handleRevisionTypeChange("minor")}
-              className={cn(
-                "flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all",
-                revisionType === "minor"
-                  ? "border-emerald-500 bg-emerald-50/50"
-                  : "border-slate-200 hover:border-slate-300 bg-white"
-              )}
-            >
-              <div className={cn(
-                "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors",
-                revisionType === "minor" ? "border-emerald-500 bg-emerald-500" : "border-slate-300"
-              )}>
-                {revisionType === "minor" && <div className="w-2 h-2 rounded-full bg-white" />}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-sm font-semibold text-slate-900">Minor Revision</p>
-                  <div className="flex items-center gap-1.5 text-xs">
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-slate-100 text-slate-700 border border-slate-200">
-                      v{source.form.version}
-                    </span>
-                    <span className="text-slate-400">→</span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">
-                      v{suggestVersion(source.form.version, "minor")}
-                    </span>
-                  </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Minor Revision */}
+          <button
+            onClick={() => handleRevisionTypeChange("minor")}
+            className={cn(
+              "flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all",
+              revisionType === "minor"
+                ? "border-emerald-500 bg-emerald-50/50"
+                : "border-slate-200 hover:border-slate-300 bg-white"
+            )}
+          >
+            <div className={cn(
+              "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors",
+              revisionType === "minor" ? "border-emerald-500 bg-emerald-500" : "border-slate-300"
+            )}>
+              {revisionType === "minor" && <div className="w-2 h-2 rounded-full bg-white" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-sm font-semibold text-slate-900">Minor Revision</p>
+                <div className="flex items-center gap-1.5 text-xs">
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                    v{source.form.version}
+                  </span>
+                  <span className="text-slate-400">→</span>
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    v{suggestVersion(source.form.version, "minor")}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">
-                  Small updates, corrections, or additions that don't change the overall scope.
-                </p>
               </div>
-            </button>
+              <p className="text-xs text-slate-500 mt-1">
+                Small updates, corrections, or additions that don't change the overall scope.
+              </p>
+            </div>
+          </button>
 
-            {/* Major Revision */}
-            <button
-              onClick={() => handleRevisionTypeChange("major")}
-              className={cn(
-                "flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all",
-                revisionType === "major"
-                  ? "border-emerald-500 bg-emerald-50/50"
-                  : "border-slate-200 hover:border-slate-300 bg-white"
-              )}
-            >
-              <div className={cn(
-                "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors",
-                revisionType === "major" ? "border-emerald-500 bg-emerald-500" : "border-slate-300"
-              )}>
-                {revisionType === "major" && <div className="w-2 h-2 rounded-full bg-white" />}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-sm font-semibold text-slate-900">Major Revision</p>
-                  <div className="flex items-center gap-1.5 text-xs">
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-slate-100 text-slate-700 border border-slate-200">
-                      v{source.form.version}
-                    </span>
-                    <span className="text-slate-400">→</span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-amber-100 text-amber-800 border border-amber-200">
-                      v{suggestVersion(source.form.version, "major")}
-                    </span>
-                  </div>
+          {/* Major Revision */}
+          <button
+            onClick={() => handleRevisionTypeChange("major")}
+            className={cn(
+              "flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all",
+              revisionType === "major"
+                ? "border-emerald-500 bg-emerald-50/50"
+                : "border-slate-200 hover:border-slate-300 bg-white"
+            )}
+          >
+            <div className={cn(
+              "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors",
+              revisionType === "major" ? "border-emerald-500 bg-emerald-500" : "border-slate-300"
+            )}>
+              {revisionType === "major" && <div className="w-2 h-2 rounded-full bg-white" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-sm font-semibold text-slate-900">Major Revision</p>
+                <div className="flex items-center gap-1.5 text-xs">
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                    v{source.form.version}
+                  </span>
+                  <span className="text-slate-400">→</span>
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-amber-100 text-amber-800 border border-amber-200">
+                    v{suggestVersion(source.form.version, "major")}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">
-                  Significant restructuring or functional changes requiring full re-review.
-                </p>
               </div>
-            </button>
-          </div>
+              <p className="text-xs text-slate-500 mt-1">
+                Significant restructuring or functional changes requiring full re-review.
+              </p>
+            </div>
+          </button>
+        </div>
       </FormSection>
 
       {/* ─── Main Content Grid ────────────────────────────────── */}
@@ -592,176 +592,176 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
             icon={<CloudUpload className="h-4 w-4" />}
           >
             <p className="text-xs text-slate-500 -mt-2 mb-4">Keep the existing file or upload a new one for this revision.</p>
-              {/* Upload mode tabs */}
-              <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg mb-4">
-                {(["file", "link"] as MaterialUploadMode[]).map((mode) => (
-                  <button
-                    key={mode}
-                    onClick={() => { setUploadMode(mode); setNewFile(null); setKeepExistingFile(true); }}
-                    className={cn(
-                      "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all",
-                      uploadMode === mode ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
-                    )}
-                  >
-                    {mode === "file" ? <><CloudUpload className="h-3.5 w-3.5" />Upload File</> : <><Link2 className="h-3.5 w-3.5" />Paste Link</>}
-                  </button>
-                ))}
-              </div>
-
-              {/* ── File mode ─── */}
-              {uploadMode === "file" && (
-                <>
-                  {/* Existing file kept */}
-                  {keepExistingFile && !newFile && (
-                    <div className="border border-emerald-200 rounded-xl p-4 md:p-5 bg-emerald-50/40">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-white border border-emerald-200 flex items-center justify-center flex-shrink-0">
-                          <img
-                            src={getFileIconSrc(source.existingFile.name)}
-                            alt=""
-                            className="h-6 w-6 object-contain"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-slate-900 truncate">{source.existingFile.name}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">
-                            {formatFileSize(source.existingFile.size)} · {getFileTypeLabel(source.existingFile.name)}
-                          </p>
-                          <div className="flex items-center gap-1.5 mt-2">
-                            <Check className="h-3.5 w-3.5 text-emerald-600" />
-                            <span className="text-xs font-medium text-emerald-600">Carrying over from v{source.form.version}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => { setKeepExistingFile(false); setTimeout(() => fileInputRef.current?.click(), 50); }}
-                        className="mt-3 inline-flex items-center gap-1.5 text-xs text-amber-600 hover:text-amber-700 font-medium transition-colors"
-                      >
-                        <IconRefresh className="h-3.5 w-3.5" />
-                        Upload a new file for this revision
-                      </button>
-                    </div>
+            {/* Upload mode tabs */}
+            <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg mb-4">
+              {(["file", "link"] as MaterialUploadMode[]).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => { setUploadMode(mode); setNewFile(null); setKeepExistingFile(true); }}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all",
+                    uploadMode === mode ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
                   )}
+                >
+                  {mode === "file" ? <><CloudUpload className="h-3.5 w-3.5" />Upload File</> : <><Link2 className="h-3.5 w-3.5" />Paste Link</>}
+                </button>
+              ))}
+            </div>
 
-                  {/* Upload drop zone (triggered by "Upload new file" or no existing) */}
-                  {!keepExistingFile && !newFile && (
-                    <div
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                      onClick={() => fileInputRef.current?.click()}
-                      className={cn(
-                        "border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all min-h-[220px]",
-                        isDragActive
-                          ? "border-emerald-500 bg-emerald-50/50"
-                          : "border-slate-300 bg-slate-50/50 hover:border-emerald-400 hover:bg-emerald-50/30"
-                      )}
-                    >
-                      <div className={cn("w-14 h-14 rounded-full flex items-center justify-center mb-4", isDragActive ? "bg-emerald-100" : "bg-slate-100")}>
-                        <CloudUpload className={cn("h-7 w-7", isDragActive ? "text-emerald-600" : "text-slate-400")} />
-                      </div>
-                      <p className="text-sm font-medium text-slate-700">{isDragActive ? "Drop file here" : "Drag & drop the new file"}</p>
-                      <p className="text-xs text-slate-500 mt-1">or click to browse</p>
-                      <div className="flex items-center gap-2 mt-4">
-                        {[{ icon: FileText, label: "PDF", color: "text-red-500" }, { icon: Video, label: "MP4", color: "text-purple-500" }, { icon: FileImage, label: "JPG/PNG", color: "text-blue-500" }].map(({ icon: Icon, label, color }) => (
-                          <span key={label} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-600">
-                            <Icon className={cn("h-3 w-3", color)} /> {label}
-                          </span>
-                        ))}
-                      </div>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setKeepExistingFile(true); }}
-                        className="mt-4 text-xs text-slate-500 hover:text-slate-700 underline"
-                      >
-                        Keep existing file instead
-                      </button>
-                    </div>
-                  )}
-
-                  {/* New file preview */}
-                  {newFile && (
-                    <div className="space-y-3">
-                      <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
-                            <img src={getFileIconSrc(newFile.name)} alt="" className="h-6 w-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-slate-900 truncate">{newFile.name}</p>
-                            <p className="text-xs text-slate-500 mt-0.5">{formatFileSize(newFile.size)} · {getFileTypeLabel(newFile.name)}</p>
-                            {newFile.status === "uploading" && (
-                              <div className="mt-2">
-                                <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                                  <div className="h-full bg-emerald-500 rounded-full transition-all duration-300" style={{ width: `${newFile.progress}%` }} />
-                                </div>
-                                <p className="text-xs text-slate-500 mt-1">{newFile.progress}% uploaded</p>
-                              </div>
-                            )}
-                            {newFile.status === "success" && (
-                              <div className="flex items-center gap-1.5 mt-2">
-                                <Check className="h-3.5 w-3.5 text-emerald-600" />
-                                <span className="text-xs font-medium text-emerald-600">Ready</span>
-                              </div>
-                            )}
-                          </div>
-                          <button onClick={() => { setNewFile(null); setKeepExistingFile(true); if (fileInputRef.current) fileInputRef.current.value = ""; }} className="p-1 rounded-lg hover:bg-slate-200 transition-colors">
-                            <X className="h-4 w-4 text-slate-500" />
-                          </button>
-                        </div>
-                      </div>
-                      <p className="text-xs text-slate-500">
-                        Replacing: <span className="font-medium text-slate-700">{source.existingFile.name}</span>
-                        {" "}→{" "}<span className="font-medium text-emerald-700">{newFile.name}</span>
-                      </p>
-                    </div>
-                  )}
-                </>
-              )}
-
-              {/* ── Link mode ─── */}
-              {uploadMode === "link" && (
-                <div className="space-y-3">
-                  <div className="border-2 border-dashed rounded-xl p-4 md:p-5 flex flex-col items-center border-slate-300 bg-slate-50/50">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-slate-100">
-                      <Link2 className="h-7 w-7 text-slate-400" />
-                    </div>
-                    <p className="text-sm font-medium text-slate-700 mb-3">Paste external resource URL</p>
-                    <input
-                      type="url"
-                      value={formData.externalUrl}
-                      onChange={(e) => updateField("externalUrl", e.target.value)}
-                      placeholder="https://example.com/resource.pdf"
-                      className="w-full h-9 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400"
-                    />
-                  </div>
-                  {formData.externalUrl && isValidUrl(formData.externalUrl) && (
-                    <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
-                        <Link2 className="h-5 w-5 text-emerald-600" />
+            {/* ── File mode ─── */}
+            {uploadMode === "file" && (
+              <>
+                {/* Existing file kept */}
+                {keepExistingFile && !newFile && (
+                  <div className="border border-emerald-200 rounded-xl p-4 md:p-5 bg-emerald-50/40">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-white border border-emerald-200 flex items-center justify-center flex-shrink-0">
+                        <img
+                          src={getFileIconSrc(source.existingFile.name)}
+                          alt=""
+                          className="h-6 w-6 object-contain"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-900 truncate">{formData.externalUrl}</p>
-                        <div className="flex items-center gap-1.5 mt-1">
+                        <p className="text-sm font-medium text-slate-900 truncate">{source.existingFile.name}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          {formatFileSize(source.existingFile.size)} · {getFileTypeLabel(source.existingFile.name)}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-2">
                           <Check className="h-3.5 w-3.5 text-emerald-600" />
-                          <span className="text-xs font-medium text-emerald-600">Valid URL</span>
+                          <span className="text-xs font-medium text-emerald-600">Carrying over from v{source.form.version}</span>
                         </div>
                       </div>
-                      <button onClick={() => updateField("externalUrl", "")} className="p-1 rounded-lg hover:bg-slate-200 transition-colors">
-                        <X className="h-4 w-4 text-slate-500" />
-                      </button>
                     </div>
-                  )}
-                </div>
-              )}
+                    <button
+                      onClick={() => { setKeepExistingFile(false); setTimeout(() => fileInputRef.current?.click(), 50); }}
+                      className="mt-3 inline-flex items-center gap-1.5 text-xs text-amber-600 hover:text-amber-700 font-medium transition-colors"
+                    >
+                      <IconRefresh className="h-3.5 w-3.5" />
+                      Upload a new file for this revision
+                    </button>
+                  </div>
+                )}
 
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept={ACCEPTED_EXTENSIONS.join(",")}
-                onChange={(e) => handleFileSelect(e.target.files)}
-                className="hidden"
-              />
+                {/* Upload drop zone (triggered by "Upload new file" or no existing) */}
+                {!keepExistingFile && !newFile && (
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={cn(
+                      "border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all min-h-[220px]",
+                      isDragActive
+                        ? "border-emerald-500 bg-emerald-50/50"
+                        : "border-slate-300 bg-slate-50/50 hover:border-emerald-400 hover:bg-emerald-50/30"
+                    )}
+                  >
+                    <div className={cn("w-14 h-14 rounded-full flex items-center justify-center mb-4", isDragActive ? "bg-emerald-100" : "bg-slate-100")}>
+                      <CloudUpload className={cn("h-7 w-7", isDragActive ? "text-emerald-600" : "text-slate-400")} />
+                    </div>
+                    <p className="text-sm font-medium text-slate-700">{isDragActive ? "Drop file here" : "Drag & drop the new file"}</p>
+                    <p className="text-xs text-slate-500 mt-1">or click to browse</p>
+                    <div className="flex items-center gap-2 mt-4">
+                      {[{ icon: FileText, label: "PDF", color: "text-red-500" }, { icon: Video, label: "MP4", color: "text-purple-500" }, { icon: FileImage, label: "JPG/PNG", color: "text-blue-500" }].map(({ icon: Icon, label, color }) => (
+                        <span key={label} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-600">
+                          <Icon className={cn("h-3 w-3", color)} /> {label}
+                        </span>
+                      ))}
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setKeepExistingFile(true); }}
+                      className="mt-4 text-xs text-slate-500 hover:text-slate-700 underline"
+                    >
+                      Keep existing file instead
+                    </button>
+                  </div>
+                )}
+
+                {/* New file preview */}
+                {newFile && (
+                  <div className="space-y-3">
+                    <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
+                          <img src={getFileIconSrc(newFile.name)} alt="" className="h-6 w-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-slate-900 truncate">{newFile.name}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{formatFileSize(newFile.size)} · {getFileTypeLabel(newFile.name)}</p>
+                          {newFile.status === "uploading" && (
+                            <div className="mt-2">
+                              <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                <div className="h-full bg-emerald-500 rounded-full transition-all duration-300" style={{ width: `${newFile.progress}%` }} />
+                              </div>
+                              <p className="text-xs text-slate-500 mt-1">{newFile.progress}% uploaded</p>
+                            </div>
+                          )}
+                          {newFile.status === "success" && (
+                            <div className="flex items-center gap-1.5 mt-2">
+                              <Check className="h-3.5 w-3.5 text-emerald-600" />
+                              <span className="text-xs font-medium text-emerald-600">Ready</span>
+                            </div>
+                          )}
+                        </div>
+                        <button onClick={() => { setNewFile(null); setKeepExistingFile(true); if (fileInputRef.current) fileInputRef.current.value = ""; }} className="p-1 rounded-lg hover:bg-slate-200 transition-colors">
+                          <X className="h-4 w-4 text-slate-500" />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Replacing: <span className="font-medium text-slate-700">{source.existingFile.name}</span>
+                      {" "}→{" "}<span className="font-medium text-emerald-700">{newFile.name}</span>
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* ── Link mode ─── */}
+            {uploadMode === "link" && (
+              <div className="space-y-3">
+                <div className="border-2 border-dashed rounded-xl p-4 md:p-5 flex flex-col items-center border-slate-300 bg-slate-50/50">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-slate-100">
+                    <Link2 className="h-7 w-7 text-slate-400" />
+                  </div>
+                  <p className="text-sm font-medium text-slate-700 mb-3">Paste external resource URL</p>
+                  <input
+                    type="url"
+                    value={formData.externalUrl}
+                    onChange={(e) => updateField("externalUrl", e.target.value)}
+                    placeholder="https://example.com/resource.pdf"
+                    className="w-full h-9 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400"
+                  />
+                </div>
+                {formData.externalUrl && isValidUrl(formData.externalUrl) && (
+                  <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
+                      <Link2 className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-900 truncate">{formData.externalUrl}</p>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        <span className="text-xs font-medium text-emerald-600">Valid URL</span>
+                      </div>
+                    </div>
+                    <button onClick={() => updateField("externalUrl", "")} className="p-1 rounded-lg hover:bg-slate-200 transition-colors">
+                      <X className="h-4 w-4 text-slate-500" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={ACCEPTED_EXTENSIONS.join(",")}
+              onChange={(e) => handleFileSelect(e.target.files)}
+              className="hidden"
+            />
           </FormSection>
 
           {/* Revision Notes */}
@@ -825,14 +825,14 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                 />
               </div>
 
-              {/* Material Code + Version */}
+              {/* Material ID + Version */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Material Code</label>
+                  <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">Material ID</label>
                   <div className="relative">
                     <input
                       type="text"
-                      value={formData.materialCode}
+                      value={formData.materialId}
                       readOnly
                       className="w-full h-9 px-4 pr-8 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-900 cursor-default focus:outline-none"
                     />

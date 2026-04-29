@@ -22,7 +22,7 @@ export interface UsageCourseRecord {
 
 export interface UsageReportMaterialInfo {
   id: string;
-  materialCode: string;
+  materialId: string;
   title: string;
   type: UsageReportMaterialType;
   currentVersion: string;
@@ -35,7 +35,7 @@ export interface UsageReportMaterialInfo {
 export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterialInfo> = {
   "1": {
     id: "1",
-    materialCode: "TM-VID-001",
+    materialId: "TM-VID-001",
     title: "GMP Introduction Video",
     type: "Video",
     currentVersion: "2.1",
@@ -46,7 +46,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "2": {
     id: "2",
-    materialCode: "TM-PDF-002",
+    materialId: "TM-PDF-002",
     title: "Cleanroom Operations Manual",
     type: "PDF",
     currentVersion: "3.0",
@@ -57,7 +57,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "3": {
     id: "3",
-    materialCode: "TM-PDF-003",
+    materialId: "TM-PDF-003",
     title: "Equipment Handling Guide",
     type: "PDF",
     currentVersion: "1.5",
@@ -68,7 +68,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "4": {
     id: "4",
-    materialCode: "TM-IMG-004",
+    materialId: "TM-IMG-004",
     title: "Safety Protocol Infographic",
     type: "Image",
     currentVersion: "1.0",
@@ -79,7 +79,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "5": {
     id: "5",
-    materialCode: "TM-VID-005",
+    materialId: "TM-VID-005",
     title: "ISO 9001 Training Video",
     type: "Video",
     currentVersion: "4.2",
@@ -90,7 +90,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "6": {
     id: "6",
-    materialCode: "TM-DOC-006",
+    materialId: "TM-DOC-006",
     title: "SOP Template Pack",
     type: "Document",
     currentVersion: "2.0",
@@ -101,7 +101,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "7": {
     id: "7",
-    materialCode: "TM-PDF-007",
+    materialId: "TM-PDF-007",
     title: "Chemical Handling Procedures",
     type: "PDF",
     currentVersion: "1.2",
@@ -112,7 +112,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "8": {
     id: "8",
-    materialCode: "TM-DOC-008",
+    materialId: "TM-DOC-008",
     title: "HPLC Training Slides",
     type: "Document",
     currentVersion: "2.3",
@@ -123,7 +123,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "9": {
     id: "9",
-    materialCode: "TM-VID-009",
+    materialId: "TM-VID-009",
     title: "Deviation Investigation Training",
     type: "Video",
     currentVersion: "1.0",
@@ -134,7 +134,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "10": {
     id: "10",
-    materialCode: "TM-PDF-010",
+    materialId: "TM-PDF-010",
     title: "Personal Protective Equipment Guide",
     type: "PDF",
     currentVersion: "3.1",
@@ -145,7 +145,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "11": {
     id: "11",
-    materialCode: "TM-DOC-011",
+    materialId: "TM-DOC-011",
     title: "Batch Record Review Checklist",
     type: "Document",
     currentVersion: "1.8",
@@ -156,7 +156,7 @@ export const MOCK_USAGE_REPORT_MATERIAL_INFO: Record<string, UsageReportMaterial
   },
   "12": {
     id: "12",
-    materialCode: "TM-PDF-012",
+    materialId: "TM-PDF-012",
     title: "Water System Qualification",
     type: "PDF",
     currentVersion: "2.0",

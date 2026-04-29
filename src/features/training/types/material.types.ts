@@ -99,7 +99,7 @@ export interface MaterialUploadedFile {
 
 export interface MaterialWorkflowFormData {
   materialName: string;
-  materialCode: string;
+  materialId: string;
   version: string;
   author: string;
   businessUnit: string;

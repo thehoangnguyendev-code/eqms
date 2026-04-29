@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ROUTES } from "@/app/routes.constants";
 import {
   Check,
@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { TabNav } from "@/components/ui/tabs/TabNav";
 import { PageHeader } from "@/components/ui/page/PageHeader";
-import { courseDetail } from "@/components/ui/breadcrumb/breadcrumbs.config";
+import { courseDetail, courseDetailFromAssignment } from "@/components/ui/breadcrumb/breadcrumbs.config";
 import { FullPageLoading } from "@/components/ui/loading/Loading";
 import { Button } from "@/components/ui/button/Button";
 import { cn } from "@/components/ui/utils";
@@ -62,13 +62,21 @@ const getWorkflowStepForStatus = (status: TrainingStatus) => {
 
 export const CourseDetailView: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const from = searchParams.get("from");
   const { courseId = "" } = useParams<{ courseId: string }>();
   const [activeTab, setActiveTab] = useState<TabType>("basic-info");
   const [isNavigating, setIsNavigating] = useState(false);
 
+  const backPath = from === "assignment" ? ROUTES.TRAINING.ASSIGNMENT_NEW : ROUTES.TRAINING.COURSES_LIST;
+
   const handleNavigate = (path: string | number) => {
     setIsNavigating(true);
-    setTimeout(() => navigate(path as any), 600);
+    if (path === -1) {
+      setTimeout(() => navigate(backPath as any), 600);
+    } else {
+      setTimeout(() => navigate(path as any), 600);
+    }
   };
 
   // Find course by ID with fallback to MOCK_TRAININGS
@@ -155,7 +163,7 @@ export const CourseDetailView: React.FC = () => {
       {/* Header */}
       <PageHeader
         title="Course Detail"
-        breadcrumbItems={courseDetail(navigate)}
+        breadcrumbItems={from === "assignment" ? courseDetailFromAssignment(navigate) : courseDetail(navigate)}
         actions={
           <>
             <Button
@@ -300,7 +308,7 @@ export const CourseDetailView: React.FC = () => {
         <Button
           variant="outline-emerald"
           size="sm"
-          onClick={() => handleNavigate(ROUTES.TRAINING.COURSES_LIST)}
+          onClick={() => handleNavigate(-1)}
           className="whitespace-nowrap"
         >
           Back
