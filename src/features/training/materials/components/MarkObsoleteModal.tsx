@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import {
-  X,
   AlertTriangle,
   CheckCircle,
-  Clock,
   AlertCircle,
   ShieldAlert,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button/Button";
+
 import { Select } from "@/components/ui/select/Select";
+import { FormModal } from "@/components/ui/modal/FormModal";
 import { cn } from "@/components/ui/utils";
 import { InlineLoading } from "@/components/ui/loading/Loading";
 import { IconBook, IconCheck } from "@tabler/icons-react";
@@ -159,226 +156,157 @@ export const MarkObsoleteModal: React.FC<MarkObsoleteModalProps> = ({
     if (!isSubmitting) onClose();
   };
 
-  const portalContent = createPortal(
-    <AnimatePresence mode="wait">
-      {isOpen && material && (
-        <motion.div
-          key="mark-obsolete-modal-wrapper"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden"
-        >
-          {/* Backdrop */}
-          <motion.div
-            key="mark-obsolete-modal-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            onClick={handleClose}
-            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-          />
-
-          {/* Modal Content */}
-          <motion.div
-            key="mark-obsolete-modal-content"
-            initial={{ opacity: 0, scale: 0.95, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 12 }}
-            transition={{
-              type: "spring",
-              damping: 25,
-              stiffness: 350,
-              duration: 0.3
-            }}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl border border-slate-200 overflow-hidden relative z-10 flex flex-col max-h-[90vh]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-slate-200 shrink-0 bg-white min-h-[64px]">
-              <div className="min-w-0">
-                <h2 className="text-sm md:text-base lg:text-lg font-semibold text-slate-900">Mark as Obsolete</h2>
-                <p className="text-xs text-slate-500 mt-0.5 truncate leading-tight">
-                  {material.materialId} · {material.title} · v{material.version}
-                </p>
-              </div>
-              <button
-                onClick={handleClose}
-                disabled={isSubmitting}
-                className="flex-shrink-0 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4 text-slate-500" />
-              </button>
-            </div>
-
-            {/* Indicator */}
-            <div className="flex items-center justify-center gap-0 px-6 py-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
-              {STEPS.map((s, i) => {
-                const isDone = i < step;
-                const isCurrent = i === step;
-                return (
-                  <React.Fragment key={s.label}>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className={cn(
-                        "relative w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold transition-all shadow-sm",
-                        isDone ? "bg-emerald-600 text-white" :
-                          isCurrent ? "bg-red-600 text-white ring-4 ring-red-100" :
-                            "bg-slate-100 text-slate-400 border border-slate-200"
-                      )}>
-                        {isDone ? <IconCheck className="h-4 w-4" /> : i + 1}
-                      </div>
-                      <span className={cn(
-                        "text-[12px] font-semibold text-center leading-tight transition-colors",
-                        isCurrent ? "text-red-700" : isDone ? "text-emerald-700" : "text-slate-400"
-                      )}>
-                        {s.short}
-                      </span>
-                    </div>
-                    {i < STEPS.length - 1 && (
-                      <div className={cn(
-                        "flex-1 mx-2 h-0.5 transition-all max-w-[40px] mb-4 rounded-full",
-                        isDone ? "bg-emerald-500" : "bg-slate-200"
-                      )} />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </div>
-
-            {/* Body */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-              {step === 0 && (
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                      <ShieldAlert className="h-4 w-4 text-red-600" />
-                      Impact Analysis
-                    </h3>
-                  </div>
-
-                  {hasActiveCourses && (
-                    <div className="flex items-start gap-3 p-4 md:p-5 bg-red-50 border border-red-200 rounded-xl">
-                      <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-bold text-red-800">
-                          {activeCourses.length} active course{activeCourses.length > 1 ? "s" : ""} will be affected
-                        </p>
-                        <p className="text-xs text-red-700 mt-1 leading-relaxed">
-                          This material is used in {activeCourses.length} active courses with {totalAffectedLearners} learners. Marking as obsolete will disrupt these courses.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {!linkedDetails.length && (
-                    <div className="flex items-start gap-3 p-4 md:p-5 bg-emerald-50 border border-emerald-200 rounded-xl">
-                      <CheckCircle className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm font-medium text-emerald-800 italic">No active courses affected. Safe to proceed.</p>
-                    </div>
-                  )}
-
-                  {activeCourses.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active Courses</p>
-                      <div className="border border-slate-100 rounded-xl overflow-hidden divide-y divide-slate-100">
-                        {activeCourses.map((c) => {
-                          const cfg = getCourseStatusConfig(c.status);
-                          return (
-                            <div key={c.courseId} className="flex items-center gap-3 px-4 py-3 bg-white">
-                              <IconBook className="h-4 w-4 text-slate-400" />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-slate-900 truncate">{c.title}</p>
-                                <p className="text-[10px] text-slate-500">{c.courseId} · {c.department}</p>
-                              </div>
-                              <StatusBadge status={cfg.status} size="sm" />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {step === 1 && (
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-amber-600" />
-                      Justification
-                    </h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Select
-                      label={<>Reason <span className="text-red-500">*</span></>}
-                      value={justificationCode}
-                      onChange={(val) => {
-                        setJustificationCode(val);
-                        if (val !== "replaced_new_version") setReplacedByCode("");
-                      }}
-                      options={JUSTIFICATION_OPTIONS}
-                      placeholder="Choose a reason..."
-                    />
-
-                    {isReplacedByVersion && (
-                      <div className="space-y-1.5">
-                        <label className="text-xs sm:text-sm font-medium text-slate-700">New Version Material ID <span className="text-red-500">*</span></label>
-                        <input
-                          type="text"
-                          value={replacedByCode}
-                          onChange={(e) => setReplacedByCode(e.target.value)}
-                          placeholder="e.g. TRN-TM-001 v2.0"
-                          className="w-full h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm"
-                        />
-                      </div>
-                    )}
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs sm:text-sm font-medium text-slate-700">Notes {justificationCode === "other" && "*"}</label>
-                      <textarea
-                        value={justificationNote}
-                        onChange={(e) => setJustificationNote(e.target.value)}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm resize-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-            </div>
-
-            {/* Footer */}
-            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-between shrink-0">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={step === 0 ? handleClose : () => setStep(s => s - 1)}
-                disabled={isSubmitting}
-              >
-                {step === 0 ? "Cancel" : "Back"}
-              </Button>
-              <Button
-                size="sm"
-                onClick={step < 1 ? () => setStep(s => s + 1) : handleESign}
-                disabled={(step === 1 && !step2Valid) || isSubmitting}
-                className={cn(
-                  step === 1 || (step === 0 && hasActiveCourses) ? "bg-red-600 hover:bg-red-700 text-white border-red-600" : ""
-                )}
-              >
-                {isSubmitting ? <InlineLoading size="xs" color="white" /> : (step === 1 ? "Confirm & Sign" : "Continue")}
-              </Button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>,
-    document.body
-  );
-
   return (
     <>
-      {portalContent}
+      <FormModal
+        isOpen={isOpen}
+        onClose={step === 0 ? handleClose : () => setStep(s => s - 1)}
+        title="Mark as Obsolete"
+        description={material ? `${material.materialId} · ${material.title} · v${material.version}` : undefined}
+        size="lg"
+        showFooter={true}
+        cancelText={step === 0 ? "Cancel" : "Back"}
+        confirmText={isSubmitting ? <InlineLoading size="xs" color="white" /> : (step === 1 ? "Confirm & Sign" : "Continue")}
+        confirmDisabled={(step === 1 && !step2Valid) || isSubmitting}
+        onConfirm={step < 1 ? () => setStep(s => s + 1) : handleESign}
+        confirmVariant={step === 1 || (step === 0 && hasActiveCourses) ? "destructive" : "default"}
+      >
+        <div className="space-y-6">
+          {/* Indicator */}
+          <div className="flex items-center justify-center gap-0 px-2 py-1 border-b border-slate-100 bg-slate-50/50 -mx-4 sm:-mx-6 -mt-4 sm:-mt-5 mb-5 shrink-0">
+            {STEPS.map((s, i) => {
+              const isDone = i < step;
+              const isCurrent = i === step;
+              return (
+                <React.Fragment key={s.label}>
+                  <div className="flex flex-col items-center gap-2 py-3">
+                    <div className={cn(
+                      "relative w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold transition-all shadow-sm",
+                      isDone ? "bg-emerald-600 text-white" :
+                        isCurrent ? "bg-red-600 text-white ring-4 ring-red-100" :
+                          "bg-slate-100 text-slate-400 border border-slate-200"
+                    )}>
+                      {isDone ? <IconCheck className="h-4 w-4" /> : i + 1}
+                    </div>
+                    <span className={cn(
+                      "text-[10px] sm:text-[12px] font-semibold text-center leading-tight transition-colors",
+                      isCurrent ? "text-red-700" : isDone ? "text-emerald-700" : "text-slate-400"
+                    )}>
+                      {s.short}
+                    </span>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div className={cn(
+                      "flex-1 mx-1 sm:mx-2 h-0.5 transition-all max-w-[30px] sm:max-w-[40px] mb-4 rounded-full",
+                      isDone ? "bg-emerald-500" : "bg-slate-200"
+                    )} />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+
+          {step === 0 && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <ShieldAlert className="h-4 w-4 text-red-600" />
+                  Impact Analysis
+                </h3>
+              </div>
+
+              {hasActiveCourses && (
+                <div className="flex items-start gap-3 p-4 md:p-5 bg-red-50 border border-red-200 rounded-xl">
+                  <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-bold text-red-800">
+                      {activeCourses.length} active course{activeCourses.length > 1 ? "s" : ""} will be affected
+                    </p>
+                    <p className="text-xs text-red-700 mt-1 leading-relaxed">
+                      This material is used in {activeCourses.length} active courses with {totalAffectedLearners} learners. Marking as obsolete will disrupt these courses.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {!linkedDetails.length && (
+                <div className="flex items-start gap-3 p-4 md:p-5 bg-emerald-50 border border-emerald-200 rounded-xl">
+                  <CheckCircle className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm font-medium text-emerald-800 italic">No active courses affected. Safe to proceed.</p>
+                </div>
+              )}
+
+              {activeCourses.length > 0 && (
+                <div className="space-y-2">
+                  <p className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">Active Courses</p>
+                  <div className="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
+                    {activeCourses.map((c) => {
+                      const cfg = getCourseStatusConfig(c.status);
+                      return (
+                        <div key={c.courseId} className="flex items-center gap-3 px-4 py-3 bg-white">
+                          <IconBook className="h-4 w-4 text-slate-400" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs md:text-sm font-medium text-slate-900 truncate">{c.title}</p>
+                            <p className="text-[10px] text-slate-500 mt-0.5">{c.courseId} · {c.department}</p>
+                          </div>
+                          <StatusBadge status={cfg.status} size="sm" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {step === 1 && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  Justification
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                <Select
+                  label={<>Reason <span className="text-red-500">*</span></>}
+                  value={justificationCode}
+                  onChange={(val) => {
+                    setJustificationCode(val);
+                    if (val !== "replaced_new_version") setReplacedByCode("");
+                  }}
+                  options={JUSTIFICATION_OPTIONS}
+                  placeholder="Choose a reason..."
+                />
+
+                {isReplacedByVersion && (
+                  <div className="space-y-1.5">
+                    <label className="text-xs sm:text-sm font-medium text-slate-700">New Version Material ID <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      value={replacedByCode}
+                      onChange={(e) => setReplacedByCode(e.target.value)}
+                      placeholder="e.g. TRN-TM-001 v2.0"
+                      className="w-full h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm"
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-1.5">
+                  <label className="text-xs sm:text-sm font-medium text-slate-700">Notes {justificationCode === "other" && "*"}</label>
+                  <textarea
+                    value={justificationNote}
+                    onChange={(e) => setJustificationNote(e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </FormModal>
       <ESignatureModal
         isOpen={showESign}
         onClose={() => setShowESign(false)}

@@ -13,12 +13,15 @@ export interface FormModalProps {
   title?: string;
   description?: React.ReactNode;
   children?: React.ReactNode;
-  confirmText?: string;
-  cancelText?: string;
+  confirmText?: React.ReactNode;
+  cancelText?: React.ReactNode;
   isLoading?: boolean;
   confirmDisabled?: boolean;
   showCancel?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  confirmVariant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  showFooter?: boolean;
+  footerLeft?: React.ReactNode;
   className?: string;
 }
 
@@ -42,6 +45,9 @@ export const FormModal: React.FC<FormModalProps> = ({
   isLoading = false,
   confirmDisabled = false,
   showCancel = true,
+  confirmVariant = 'default',
+  showFooter = true,
+  footerLeft,
   size = 'xl',
   className,
 }) => {
@@ -173,7 +179,7 @@ export const FormModal: React.FC<FormModalProps> = ({
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   {title && (
-                    <h3 id={titleId} className="text-sm md:text-base lg:text-lg font-semibold text-slate-900 leading-6 truncate">{title}</h3>
+                    <h3 id={titleId} className="text-sm sm:text-base font-semibold text-slate-900 leading-tight truncate">{title}</h3>
                   )}
                 </div>
                 <button
@@ -186,7 +192,7 @@ export const FormModal: React.FC<FormModalProps> = ({
                 </button>
               </div>
               {description && (
-                <div id={descriptionId} className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">{description}</div>
+                <div id={descriptionId} className="mt-1 text-[10px] sm:text-xs text-slate-500 leading-relaxed line-clamp-2">{description}</div>
               )}
             </div>
 
@@ -194,16 +200,28 @@ export const FormModal: React.FC<FormModalProps> = ({
               {children}
             </div>
 
-            <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50/50 border-t border-slate-200 flex justify-end gap-2 sm:gap-3 shrink-0">
-              {showCancel && (
-                <Button size="sm" variant="outline" onClick={onClose} disabled={isLoading}>
-                  {cancelText}
-                </Button>
-              )}
-              <Button size="sm" onClick={onConfirm || onClose} disabled={isLoading || confirmDisabled}>
-                {isLoading ? <ButtonLoading text="Processing..." /> : confirmText}
-              </Button>
-            </div>
+            {showFooter && (
+              <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50/50 border-t border-slate-200 flex justify-between items-center shrink-0">
+                <div className="flex-1">
+                  {footerLeft}
+                </div>
+                <div className="flex justify-end gap-2 sm:gap-3">
+                  {showCancel && (
+                    <Button size="sm" variant="outline" onClick={onClose} disabled={isLoading}>
+                      {cancelText}
+                    </Button>
+                  )}
+                  <Button 
+                    size="sm" 
+                    variant={confirmVariant}
+                    onClick={onConfirm || onClose} 
+                    disabled={isLoading || confirmDisabled}
+                  >
+                    {isLoading ? <ButtonLoading text="Processing..." /> : confirmText}
+                  </Button>
+                </div>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}

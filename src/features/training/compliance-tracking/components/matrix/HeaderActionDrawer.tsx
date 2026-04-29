@@ -308,7 +308,7 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
 
                 {/* ── Scrollable Body ──────────────────────────────────────── */}
                 <div
-                    className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth"
+                    className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50/30 scroll-smooth custom-scrollbar"
                     style={{
                         WebkitOverflowScrolling: "touch",
                         overscrollBehavior: "contain"

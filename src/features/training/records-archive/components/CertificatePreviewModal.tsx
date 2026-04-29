@@ -163,7 +163,7 @@ export const CertificatePreviewModal: React.FC<CertificatePreviewModalProps> = (
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-slate-900/40"
+            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
           />
 
           {/* Modal Content */}
