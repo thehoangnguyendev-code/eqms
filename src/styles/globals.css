@@ -374,6 +374,60 @@ textarea::placeholder,
   flex-shrink: 0 !important;
 }
 
+/* Responsive values for all input, textarea, select, multiselect, date/datetime pickers across the project */
+input,
+select,
+textarea,
+[contenteditable="true"],
+button[role="combobox"],
+button[aria-haspopup="dialog"],
+button[aria-haspopup="listbox"],
+input[readonly],
+textarea[readonly],
+input:disabled,
+textarea:disabled,
+input.text-sm,
+input.text-base,
+select.text-sm,
+select.text-base,
+textarea.text-sm,
+textarea.text-base,
+button[role="combobox"].text-sm,
+button[role="combobox"].text-base {
+  font-size: 0.75rem !important; /* text-xs for mobile */
+}
+
+button[role="combobox"] span,
+button[aria-haspopup="dialog"] span,
+button[aria-haspopup="listbox"] span {
+  font-size: inherit !important;
+}
+
+@media (min-width: 768px) {
+  input,
+  select,
+  textarea,
+  [contenteditable="true"],
+  button[role="combobox"],
+  button[aria-haspopup="dialog"],
+  button[aria-haspopup="listbox"],
+  input[readonly],
+  textarea[readonly],
+  input:disabled,
+  textarea:disabled,
+  input.text-sm,
+  input.text-base,
+  select.text-sm,
+  select.text-base,
+  textarea.text-sm,
+  textarea.text-base,
+  button[role="combobox"].text-sm,
+  button[role="combobox"].text-base {
+    font-size: 0.875rem !important; /* text-sm for desktop */
+  }
+}
+
+
 /* Reset & Base Styles */
 * {
   margin: 0;

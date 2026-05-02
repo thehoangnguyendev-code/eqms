@@ -316,7 +316,7 @@ export const PendingSignaturesModal: React.FC<PendingSignaturesModalProps> = ({
                         className="flex-1 h-7 text-[10px] gap-1 px-2 bg-emerald-600 hover:bg-emerald-700 text-white border-none"
                         onClick={() => setESignTarget(record)}
                       >
-                        <PenTool className="h-3 w-3 shrink-0" />
+                        <PenTool className="h-3 w-3 shrink-0 -rotate-[90deg]" />
                         Sign Now
                       </Button>
                     )}

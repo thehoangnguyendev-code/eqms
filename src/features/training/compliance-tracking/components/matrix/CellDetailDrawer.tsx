@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, User, FileText, CalendarDays, Trophy, Clock, AlertTriangle, CalendarCheck, Send, Download } from "lucide-react";
+import { X, User, FileText, CalendarDays, Trophy, Clock, AlertTriangle, CalendarCheck, Send, Download, GraduationCap, Info } from "lucide-react";
 import { IconBook, IconLocation } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button/Button";
@@ -300,7 +300,7 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                         </FormSection>
 
                         {/* Course Information card */}
-                        <FormSection title="Course Information" icon={<FileText className="h-4 w-4" />}>
+                        <FormSection title="Course Information" icon={<GraduationCap className="h-4 w-4" />}>
                             <div className="space-y-3 lg:space-y-4">
                                 {/* General Course Information */}
                                 <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
@@ -328,7 +328,7 @@ export const CellDetailDrawer: React.FC<CellDetailDrawerProps> = ({
                         </FormSection>
 
                         {/* Material Information card */}
-                        <FormSection title="Material Information" icon={<FileText className="h-4 w-4" />}>
+                        <FormSection title="Material Information" icon={<Info className="h-4 w-4" />}>
                             <div className="space-y-3 lg:space-y-4">
                                 <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
                                     <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Material Name</label>

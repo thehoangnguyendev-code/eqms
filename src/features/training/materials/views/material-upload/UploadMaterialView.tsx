@@ -16,6 +16,7 @@ import {
   Send,
   Link2,
   ExternalLink,
+  Info,
 } from "lucide-react";
 import { cn } from "@/components/ui/utils";
 import { FormSection } from "@/components/ui/form";
@@ -35,6 +36,7 @@ import {
   type MaterialUploadedFile,
   WORKFLOW_STEPS,
 } from "@/features/training/materials/types";
+import { TabNav, type TabItem } from "@/components/ui/tabs/TabNav";
 
 const ACCEPTED_FORMATS: Record<string, string[]> = {
   "application/pdf": [".pdf"],
@@ -133,6 +135,11 @@ export const UploadMaterialView: React.FC = () => {
       ...departments.map((dept) => ({ label: dept, value: dept })),
     ];
   }, [formData.businessUnit]);
+
+  const uploadModeTabs = useMemo<TabItem[]>(() => [
+    { id: "file", label: "Upload File", icon: CloudUpload },
+    { id: "link", label: "Paste Link", icon: Link2 },
+  ], []);
 
   // Upload mode state
   const [uploadMode, setUploadMode] = useState<MaterialUploadMode>("file");
@@ -399,8 +406,8 @@ export const UploadMaterialView: React.FC = () => {
                             ? "bg-red-500 text-white"
                             : "bg-emerald-600 text-white ring-4 ring-emerald-100"
                           : isCompleted
-                          ? "bg-emerald-600 text-white"
-                          : "bg-slate-100 text-slate-400 border border-slate-200",
+                            ? "bg-emerald-600 text-white"
+                            : "bg-slate-100 text-slate-400 border border-slate-200",
                       )}
                     >
                       {isCompleted ? <Check className="h-3.5 w-3.5" /> : index + 1}
@@ -411,8 +418,8 @@ export const UploadMaterialView: React.FC = () => {
                         isCurrent
                           ? "text-emerald-700"
                           : isCompleted
-                          ? "text-emerald-700"
-                          : "text-slate-400",
+                            ? "text-emerald-700"
+                            : "text-slate-400",
                       )}
                     >
                       {step}
@@ -495,32 +502,14 @@ export const UploadMaterialView: React.FC = () => {
                 : "Paste a URL to an external training resource"}
             </p>
             {/* Upload Mode Tabs */}
-            <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg mb-4">
-              <button
-                onClick={() => setUploadMode("file")}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all",
-                  uploadMode === "file"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-500 hover:text-slate-700"
-                )}
-              >
-                <CloudUpload className="h-3.5 w-3.5" />
-                Upload File
-              </button>
-              <button
-                onClick={() => setUploadMode("link")}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all",
-                  uploadMode === "link"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-500 hover:text-slate-700"
-                )}
-              >
-                <Link2 className="h-3.5 w-3.5" />
-                Paste Link
-              </button>
-            </div>
+            <TabNav
+              tabs={uploadModeTabs}
+              activeTab={uploadMode}
+              onChange={(tabId) => setUploadMode(tabId as MaterialUploadMode)}
+              variant="pill"
+              className="mb-4"
+              layoutId="uploadModeTabIndicator"
+            />
 
             {/* ── File Upload Mode ─────────────────────────── */}
             {uploadMode === "file" && !uploadedFile && (
@@ -684,7 +673,7 @@ export const UploadMaterialView: React.FC = () => {
         <div className="xl:col-span-7">
           <FormSection
             title="Material Information"
-            icon={<FileText className="h-4 w-4" />}
+            icon={<Info className="h-4 w-4" />}
           >
             <div className="space-y-5">
               {/* Row 1: Material Name */}

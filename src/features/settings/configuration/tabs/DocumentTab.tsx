@@ -187,7 +187,7 @@ export const DocumentTab: React.FC<DocumentTabProps> = ({ config, onChange }) =>
       </SettingsCard>
 
       {/* E-Signature Settings */}
-      <SettingsCard title="Electronic Signature" icon={<PenTool className="h-4 w-4" />}>
+      <SettingsCard title="Electronic Signature" icon={<PenTool className="h-4 w-4 -rotate-[90deg]" />}>
         <div className="space-y-4">
           <div>
             <Checkbox

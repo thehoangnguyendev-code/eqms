@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   Flag,
-  PenTool,
-  Zap,
   GraduationCap,
   Clock,
   ChevronRight,

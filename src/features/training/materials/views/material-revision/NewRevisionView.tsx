@@ -13,6 +13,7 @@ import {
   GitBranch,
   AlertCircle,
   ArrowLeft,
+  Info,
 } from "lucide-react";
 import { IconRefresh } from "@tabler/icons-react";
 import { cn } from "@/components/ui/utils";
@@ -457,8 +458,8 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                             ? "bg-red-500 text-white"
                             : "bg-emerald-600 text-white ring-4 ring-emerald-100"
                           : isCompleted
-                          ? "bg-emerald-600 text-white"
-                          : "bg-slate-100 text-slate-400 border border-slate-200",
+                            ? "bg-emerald-600 text-white"
+                            : "bg-slate-100 text-slate-400 border border-slate-200",
                       )}
                     >
                       {isCompleted ? <Check className="h-3.5 w-3.5" /> : index + 1}
@@ -469,8 +470,8 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
                         isCurrent
                           ? "text-emerald-700"
                           : isCompleted
-                          ? "text-emerald-700"
-                          : "text-slate-400",
+                            ? "text-emerald-700"
+                            : "text-slate-400",
                       )}
                     >
                       {step}
@@ -862,7 +863,7 @@ const NewRevisionForm: React.FC<NewRevisionFormProps> = ({ materialId, source })
           {/* Material Information */}
           <FormSection
             title="Material Information"
-            icon={<FileText className="h-4 w-4" />}
+            icon={<Info className="h-4 w-4" />}
           >
             <p className="text-xs text-slate-500 -mt-2 mb-5">Pre-filled from previous version. Update as needed.</p>
             <div className="space-y-5">

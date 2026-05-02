@@ -9,6 +9,8 @@ import {
     Send,
     TrendingUp,
     ArrowRight,
+    GraduationCap,
+    Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
 import { FullPageLoading } from "@/components/ui/loading";
@@ -342,7 +344,7 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                     {/* Identification / Info Card */}
                     <FormSection
                         title={empData ? "Personnel Information" : "Course Information"}
-                        icon={empData ? <User className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
+                        icon={empData ? <User className="h-4 w-4" /> : <GraduationCap className="h-4 w-4" />}
                     >
                         {empData ? (
                             <div className="space-y-3 lg:space-y-4">
@@ -407,7 +409,7 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
 
                     {/* Dedicated Material Information Card */}
                     {sopData && (
-                        <FormSection title="Material Information" icon={<FileText className="h-4 w-4" />}>
+                        <FormSection title="Material Information" icon={<Info className="h-4 w-4" />}>
                             <div className="space-y-3 lg:space-y-4">
                                 <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2 pb-3 lg:pb-4 border-b border-slate-200">
                                     <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Material Name</label>

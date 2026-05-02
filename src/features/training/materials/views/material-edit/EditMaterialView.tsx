@@ -12,6 +12,7 @@ import {
   Link2,
   ArrowLeft,
   Lock,
+  Info,
 } from "lucide-react";
 import { IconRefresh } from "@tabler/icons-react";
 import { cn } from "@/components/ui/utils";
@@ -491,8 +492,8 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
                             ? "bg-red-500 text-white"
                             : "bg-emerald-600 text-white ring-4 ring-emerald-100"
                           : isCompleted
-                          ? "bg-emerald-600 text-white"
-                          : "bg-slate-100 text-slate-400 border border-slate-200",
+                            ? "bg-emerald-600 text-white"
+                            : "bg-slate-100 text-slate-400 border border-slate-200",
                       )}
                     >
                       {isCompleted ? <Check className="h-3.5 w-3.5" /> : index + 1}
@@ -503,8 +504,8 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
                         isCurrent
                           ? "text-emerald-700"
                           : isCompleted
-                          ? "text-emerald-700"
-                          : "text-slate-400",
+                            ? "text-emerald-700"
+                            : "text-slate-400",
                       )}
                     >
                       {step}
@@ -889,7 +890,7 @@ const EditMaterialForm: React.FC<EditMaterialFormProps> = ({
         <div className="xl:col-span-7">
           <FormSection
             title="Material Information"
-            icon={<FileText className="h-4 w-4" />}
+            icon={<Info className="h-4 w-4" />}
           >
             <p className="text-xs text-slate-500 -mt-2 mb-5">
               Update the details for this training material
