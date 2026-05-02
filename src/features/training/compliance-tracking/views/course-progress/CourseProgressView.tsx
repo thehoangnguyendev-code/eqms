@@ -684,7 +684,7 @@ export const CourseProgressView: React.FC = () => {
                           <td className={tdClass}>
                             <div>
                               <p className="font-medium text-slate-900">{emp.name}</p>
-                              <p className="text-[10px] md:text-xs text-slate-500 mt-0.5">{emp.jobTitle}</p>
+                              <p className="text-[10px] md:text-xs text-slate-500 mt-0.5">{emp.position}</p>
                             </div>
                           </td>
                           <td className={cn(tdClass, "text-slate-600 hidden lg:table-cell")}>

@@ -9,7 +9,7 @@ interface AccountInfoTabProps {
         fullName: string;
         username: string;
         employeeCode: string;
-        jobTitle: string;
+        position: string;
         department: string;
         systemRole: string;
         nationality: string;
@@ -169,8 +169,8 @@ export const AccountInfoTab: React.FC<AccountInfoTabProps> = ({
                         <h3 className="text-sm font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">Role & Permissions</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">Job Title</label>
-                                <input type="text" value={formData.jobTitle} readOnly className="w-full h-9 px-3.5 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-900 cursor-default focus:outline-none" />
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">Position</label>
+                                <input type="text" value={formData.position} readOnly className="w-full h-9 px-3.5 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-900 cursor-default focus:outline-none" />
                             </div>
                             <div>
                                 <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5">Department</label>

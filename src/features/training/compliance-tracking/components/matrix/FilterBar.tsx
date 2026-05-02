@@ -25,7 +25,7 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
   const hasActiveFilters =
     filters.searchQuery !== "" ||
     filters.department !== "All" ||
-    filters.jobTitle !== "All" ||
+    filters.position !== "All" ||
     filters.status !== "All";
 
   const clearAll = () =>
@@ -33,7 +33,7 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
       ...filters,
       searchQuery: "",
       department: "All",
-      jobTitle: "All",
+      position: "All",
       status: "All",
     });
 
@@ -63,9 +63,9 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
           options={DEPARTMENT_OPTIONS}
         />
         <Select
-          label="Job Title"
-          value={filters.jobTitle}
-          onChange={(val) => set({ jobTitle: val })}
+          label="Position"
+          value={filters.position}
+          onChange={(val) => set({ position: val })}
           options={JOB_TITLE_OPTIONS}
         />
         <Select
@@ -108,10 +108,10 @@ export const FilterBar: React.FC<FilterBarProps> = React.memo(({
               onRemove={() => set({ department: "All" })}
             />
           )}
-          {filters.jobTitle !== "All" && (
+          {filters.position !== "All" && (
             <FilterChip
-              label={`Job: ${filters.jobTitle}`}
-              onRemove={() => set({ jobTitle: "All" })}
+              label={`Job: ${filters.position}`}
+              onRemove={() => set({ position: "All" })}
             />
           )}
           {filters.status !== "All" && (

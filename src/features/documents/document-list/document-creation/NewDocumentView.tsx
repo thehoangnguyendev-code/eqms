@@ -410,7 +410,93 @@ export const NewDocumentView: React.FC = () => {
 
       {/* Status Stepper */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+        {/* Mobile View (Compact circles) */}
+        <div className="flex sm:hidden items-center justify-start gap-0 px-2 py-4 bg-slate-50/50 border-b border-slate-100 overflow-x-auto">
+          <div className="flex items-center justify-start min-w-max mx-auto">
+            {statusSteps.map((step, index) => {
+              const isCompleted = index < currentStepIndex;
+              const isCurrent = index === currentStepIndex;
+              const isLast = index === statusSteps.length - 1;
+
+              // Special case: When status is "Obsoleted", show "Closed - Cancelled" as skipped (striped)
+              const isObsoletedStatus = documentStatus === "Obsoleted";
+              const isClosedCancelledStep = step === "Closed - Cancelled";
+              const isSkippedForObsoleted =
+                isObsoletedStatus && isClosedCancelledStep;
+
+              // For Obsoleted status: Draft and Active are considered completed
+              const showAsCompletedForObsoleted =
+                isObsoletedStatus && (step === "Draft" || step === "Active");
+
+              // Special case: When status is "Closed - Cancelled", show Active and Obsoleted as skipped (striped)
+              const isCancelledStatus = documentStatus === "Closed - Cancelled";
+              const isSkippedForCancelled =
+                isCancelledStatus &&
+                (step === "Active" || step === "Obsoleted");
+
+              // For Cancelled status: Draft is considered completed
+              const showAsCompletedForCancelled =
+                isCancelledStatus && step === "Draft";
+
+              // Combine skip conditions
+              const isSkipped = isSkippedForObsoleted || isSkippedForCancelled;
+
+              // Combine completed conditions
+              const showAsCompleted =
+                showAsCompletedForObsoleted || showAsCompletedForCancelled;
+
+              return (
+                <React.Fragment key={step}>
+                  <div className="flex flex-col items-center gap-1.5 select-none w-[80px] flex-shrink-0">
+                    <div
+                      className={cn(
+                        "relative w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold transition-all shadow-sm",
+                        isSkipped
+                          ? "bg-slate-100 text-slate-300 border border-slate-200"
+                          : isCompleted || showAsCompleted
+                          ? "bg-emerald-600 text-white"
+                          : isCurrent
+                          ? "bg-emerald-600 text-white ring-4 ring-emerald-100"
+                          : "bg-slate-100 text-slate-400 border border-slate-200",
+                      )}
+                    >
+                      {(isCompleted || showAsCompleted) && !isSkipped ? (
+                        <Check className="h-3.5 w-3.5" />
+                      ) : (
+                        index + 1
+                      )}
+                    </div>
+                    <span
+                      className={cn(
+                        "text-[10px] font-semibold text-center leading-tight transition-colors whitespace-normal break-words max-w-[72px] min-h-[24px]",
+                        isSkipped
+                          ? "text-slate-300"
+                          : isCurrent
+                          ? "text-emerald-700"
+                          : isCompleted || showAsCompleted
+                          ? "text-emerald-700"
+                          : "text-slate-400",
+                      )}
+                    >
+                      {step}
+                    </span>
+                  </div>
+                  {!isLast && (
+                    <div
+                      className={cn(
+                        "w-6 h-0.5 flex-shrink-0 transition-all self-start mt-3.5 rounded-full",
+                        isCompleted || showAsCompleted ? "bg-emerald-500" : "bg-slate-200",
+                      )}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop View (Arrow shapes) */}
+        <div className="hidden sm:block overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
           <div className="flex items-stretch min-w-full">
             {statusSteps.map((step, index) => {
               const isCompleted = index < currentStepIndex;
@@ -509,7 +595,7 @@ export const NewDocumentView: React.FC = () => {
         (reviewers.length === 0 || approvers.length === 0) &&
         documentStatus !== "Obsoleted" &&
         documentStatus !== "Closed - Cancelled" && (
-          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-2 text-center">
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-2 text-center">
             <p className="text-sm font-medium text-red-700">
               Please add at least one reviewer and one approver in order to
               upload revisions.
@@ -885,27 +971,27 @@ export const NewDocumentView: React.FC = () => {
               moved to <strong>Closed - Cancelled</strong> status.
             </p>
           </div>
-          
+
           <div className="space-y-2">
             <label
               htmlFor="activity-summary"
-            className="text-xs sm:text-sm font-medium text-slate-700 block"
-          >
-            Activity Summary <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            id="activity-summary"
-            value={cancelActivitySummary}
-            onChange={(e) => setCancelActivitySummary(e.target.value)}
-            placeholder="Please provide a reason for cancelling this document..."
-            rows={4}
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400 text-sm resize-none"
-          />
-          {!cancelActivitySummary.trim() && (
-            <p className="text-xs text-slate-500">
-              Activity Summary is required to cancel the document.
-            </p>
-          )}
+              className="text-xs sm:text-sm font-medium text-slate-700 block"
+            >
+              Activity Summary <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              id="activity-summary"
+              value={cancelActivitySummary}
+              onChange={(e) => setCancelActivitySummary(e.target.value)}
+              placeholder="Please provide a reason for cancelling this document..."
+              rows={4}
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400 text-sm resize-none"
+            />
+            {!cancelActivitySummary.trim() && (
+              <p className="text-xs text-slate-500">
+                Activity Summary is required to cancel the document.
+              </p>
+            )}
           </div>
         </div>
       </FormModal>

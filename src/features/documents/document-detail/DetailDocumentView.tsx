@@ -186,7 +186,58 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
 
       {/* Status Stepper */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+        {/* Mobile View (Compact circles) */}
+        <div className="flex sm:hidden items-center justify-start gap-0 px-2 py-4 bg-slate-50/50 border-b border-slate-100 overflow-x-auto">
+          <div className="flex items-center justify-start min-w-max mx-auto">
+            {statusSteps.map((step, index) => {
+              const isCompleted = index < currentStepIndex;
+              const isCurrent = index === currentStepIndex;
+              const isLast = index === statusSteps.length - 1;
+
+              return (
+                <React.Fragment key={step}>
+                  <div className="flex flex-col items-center gap-1.5 select-none w-[80px] flex-shrink-0">
+                    <div
+                      className={cn(
+                        "relative w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold transition-all shadow-sm",
+                        isCompleted
+                          ? "bg-emerald-600 text-white"
+                          : isCurrent
+                          ? "bg-emerald-600 text-white ring-4 ring-emerald-100"
+                          : "bg-slate-100 text-slate-400 border border-slate-200",
+                      )}
+                    >
+                      {isCompleted ? <Check className="h-3.5 w-3.5" /> : index + 1}
+                    </div>
+                    <span
+                      className={cn(
+                        "text-[10px] font-semibold text-center leading-tight transition-colors whitespace-nowrap",
+                        isCurrent
+                          ? "text-emerald-700"
+                          : isCompleted
+                          ? "text-emerald-700"
+                          : "text-slate-400",
+                      )}
+                    >
+                      {step.split(" ")[0]}
+                    </span>
+                  </div>
+                  {!isLast && (
+                    <div
+                      className={cn(
+                        "w-6 h-0.5 flex-shrink-0 transition-all self-start mt-3.5 rounded-full",
+                        isCompleted ? "bg-emerald-500" : "bg-slate-200",
+                      )}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop View (Arrow shapes) */}
+        <div className="hidden sm:block overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
           <div className="flex items-stretch min-w-full">
             {statusSteps.map((step, index) => {
               const isCompleted = index < currentStepIndex;
@@ -207,15 +258,15 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
                       isCompleted
                         ? "bg-emerald-100"
                         : isCurrent
-                          ? "bg-emerald-600"
-                          : "bg-slate-100",
+                        ? "bg-emerald-600"
+                        : "bg-slate-100",
                     )}
                     style={{
                       clipPath: isFirst
-                        ? "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%)" // Đầu nhọn, đuôi phẳng
+                        ? "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%)"
                         : isLast
-                          ? "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 20px 50%)" // Đầu phẳng, đuôi cắt chữ V
-                          : "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%, 20px 50%)", // Đầu nhọn, đuôi cắt chữ V
+                        ? "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 20px 50%)"
+                        : "polygon(0% 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 0% 100%, 20px 50%)",
                     }}
                   />
 
@@ -230,8 +281,8 @@ export const DetailDocumentView: React.FC<DetailDocumentViewProps> = ({
                         isCurrent
                           ? "text-white"
                           : isCompleted
-                            ? "text-slate-700"
-                            : "text-slate-400",
+                          ? "text-slate-700"
+                          : "text-slate-400",
                       )}
                     >
                       {step}

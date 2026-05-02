@@ -112,7 +112,7 @@ export interface AssignmentProgress {
   employeeId: string;
   employeeName: string;
   employeeDepartment: string;
-  employeeJobTitle: string;
+  employeePosition: string;
 
   status: AssigneeStatus;
   assignedAt: string;
@@ -148,7 +148,7 @@ export interface ESignRecord {
 
 export interface TriggerConditions {
   departments?: string[];
-  jobTitles?: string[];
+  positions?: string[];
   courseCategories?: string[];
   minPriorityLevel?: AssignmentPriority;
 }

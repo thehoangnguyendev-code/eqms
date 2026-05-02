@@ -202,7 +202,7 @@ export interface EmployeeProgress {
   email: string;
   department: string;
   businessUnit: string;
-  jobTitle: string;
+  position: string;
   enrollmentStatus: EnrollmentStatus;
   resultStatus: ResultStatus;
   score: number | null;

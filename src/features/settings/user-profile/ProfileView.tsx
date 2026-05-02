@@ -40,7 +40,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onBack }) => {
         fullName: 'admin hệ thống 1',
         username: 'adminhethong',
         employeeCode: 'EMP-2025-001',
-        jobTitle: 'Quality Assurance Manager',
+        position: 'Quality Assurance Manager',
         department: 'Quality Assurance',
         systemRole: 'Admin',
         nationality: 'Việt Nam',

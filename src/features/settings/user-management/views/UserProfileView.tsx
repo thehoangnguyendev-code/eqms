@@ -141,7 +141,7 @@ export const UserProfileView: React.FC = () => {
             <div className="min-w-0 flex-1">
               <h2 className="text-lg font-semibold text-slate-900 leading-tight">{user.fullName}</h2>
               <p className="text-sm mt-0.5">
-                <span className="text-emerald-600 font-medium">{user.jobTitle || user.role}</span>
+                <span className="text-emerald-600 font-medium">{user.position || user.role}</span>
                 <span className="text-slate-400"> &middot; </span>
                 <span className="text-slate-500">{user.department}</span>
               </p>

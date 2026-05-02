@@ -380,7 +380,60 @@ export const UploadMaterialView: React.FC = () => {
 
       {/* ─── Workflow Stepper ───────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+        {/* Mobile View (Compact circles) */}
+        <div className="flex sm:hidden items-center justify-start gap-0 px-2 py-4 bg-slate-50/50 border-b border-slate-100 overflow-x-auto">
+          <div className="flex items-center justify-start min-w-max mx-auto">
+            {WORKFLOW_STEPS.map((step, index) => {
+              const isCompleted = index < currentStepIndex;
+              const isCurrent = index === currentStepIndex;
+              const isLast = index === WORKFLOW_STEPS.length - 1;
+
+              return (
+                <React.Fragment key={step}>
+                  <div className="flex flex-col items-center gap-1.5 select-none w-[80px] flex-shrink-0">
+                    <div
+                      className={cn(
+                        "relative w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold transition-all shadow-sm",
+                        isCurrent
+                          ? step === "Obsoleted"
+                            ? "bg-red-500 text-white"
+                            : "bg-emerald-600 text-white ring-4 ring-emerald-100"
+                          : isCompleted
+                          ? "bg-emerald-600 text-white"
+                          : "bg-slate-100 text-slate-400 border border-slate-200",
+                      )}
+                    >
+                      {isCompleted ? <Check className="h-3.5 w-3.5" /> : index + 1}
+                    </div>
+                    <span
+                      className={cn(
+                        "text-[10px] font-semibold text-center leading-tight transition-colors whitespace-normal break-words max-w-[72px] min-h-[24px]",
+                        isCurrent
+                          ? "text-emerald-700"
+                          : isCompleted
+                          ? "text-emerald-700"
+                          : "text-slate-400",
+                      )}
+                    >
+                      {step}
+                    </span>
+                  </div>
+                  {!isLast && (
+                    <div
+                      className={cn(
+                        "w-6 h-0.5 flex-shrink-0 transition-all self-start mt-3.5 rounded-full",
+                        isCompleted ? "bg-emerald-500" : "bg-slate-200",
+                      )}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop View (Arrow shapes) */}
+        <div className="hidden sm:block overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
           <div className="flex items-stretch min-w-full">
             {WORKFLOW_STEPS.map((step, index) => {
               const isCompleted = index < currentStepIndex;
@@ -414,7 +467,7 @@ export const UploadMaterialView: React.FC = () => {
                     {isCompleted && <Check className="h-4 w-4 text-emerald-600 shrink-0" />}
                     <span
                       className={cn(
-                        "text-xs md:text-sm font-medium text-center whitespace-nowrap",
+                        "text-xs md:text-sm font-medium text-center whitespace-normal break-words",
                         isCurrent ? "text-white" : isCompleted ? "text-slate-700" : "text-slate-400"
                       )}
                     >
@@ -441,189 +494,189 @@ export const UploadMaterialView: React.FC = () => {
                 ? `Supported formats: PDF, MP4, JPG, PNG · Max: ${MAX_FILE_SIZE_MB}MB`
                 : "Paste a URL to an external training resource"}
             </p>
-              {/* Upload Mode Tabs */}
-              <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg mb-4">
-                <button
-                  onClick={() => setUploadMode("file")}
-                  className={cn(
-                    "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all",
-                    uploadMode === "file"
-                      ? "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700"
-                  )}
-                >
-                  <CloudUpload className="h-3.5 w-3.5" />
-                  Upload File
-                </button>
-                <button
-                  onClick={() => setUploadMode("link")}
-                  className={cn(
-                    "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all",
-                    uploadMode === "link"
-                      ? "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700"
-                  )}
-                >
-                  <Link2 className="h-3.5 w-3.5" />
-                  Paste Link
-                </button>
-              </div>
+            {/* Upload Mode Tabs */}
+            <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg mb-4">
+              <button
+                onClick={() => setUploadMode("file")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all",
+                  uploadMode === "file"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                <CloudUpload className="h-3.5 w-3.5" />
+                Upload File
+              </button>
+              <button
+                onClick={() => setUploadMode("link")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all",
+                  uploadMode === "link"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                <Link2 className="h-3.5 w-3.5" />
+                Paste Link
+              </button>
+            </div>
 
-              {/* ── File Upload Mode ─────────────────────────── */}
-              {uploadMode === "file" && !uploadedFile && (
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={cn(
-                    "border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 min-h-[220px]",
-                    isDragActive
-                      ? "border-emerald-500 bg-emerald-50/50"
-                      : "border-slate-300 bg-slate-50/50 hover:border-emerald-400 hover:bg-emerald-50/30"
-                  )}
-                >
-                  <div className={cn(
-                    "w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-colors",
-                    isDragActive ? "bg-emerald-100" : "bg-slate-100"
-                  )}>
-                    <CloudUpload className={cn("h-7 w-7", isDragActive ? "text-emerald-600" : "text-slate-400")} />
-                  </div>
-                  <p className="text-xs sm:text-sm font-medium text-slate-700 text-center">
-                    {isDragActive ? "Drop your file here" : "Drag & drop your file here"}
-                  </p>
-                  <p className="text-xs text-slate-500 mt-1">or click to browse</p>
-                  <div className="flex items-center gap-2 mt-4">
-                    {[
-                      { icon: FileText, label: "PDF", color: "text-red-500" },
-                      { icon: Video, label: "MP4", color: "text-purple-500" },
-                      { icon: FileImage, label: "JPG/PNG", color: "text-blue-500" },
-                    ].map(({ icon: Icon, label, color }) => (
-                      <span key={label} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-600">
-                        <Icon className={cn("h-3 w-3", color)} />
-                        {label}
-                      </span>
-                    ))}
-                  </div>
+            {/* ── File Upload Mode ─────────────────────────── */}
+            {uploadMode === "file" && !uploadedFile && (
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className={cn(
+                  "border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 min-h-[220px]",
+                  isDragActive
+                    ? "border-emerald-500 bg-emerald-50/50"
+                    : "border-slate-300 bg-slate-50/50 hover:border-emerald-400 hover:bg-emerald-50/30"
+                )}
+              >
+                <div className={cn(
+                  "w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-colors",
+                  isDragActive ? "bg-emerald-100" : "bg-slate-100"
+                )}>
+                  <CloudUpload className={cn("h-7 w-7", isDragActive ? "text-emerald-600" : "text-slate-400")} />
                 </div>
-              )}
+                <p className="text-xs sm:text-sm font-medium text-slate-700 text-center">
+                  {isDragActive ? "Drop your file here" : "Drag & drop your file here"}
+                </p>
+                <p className="text-xs text-slate-500 mt-1">or click to browse</p>
+                <div className="flex items-center gap-2 mt-4">
+                  {[
+                    { icon: FileText, label: "PDF", color: "text-red-500" },
+                    { icon: Video, label: "MP4", color: "text-purple-500" },
+                    { icon: FileImage, label: "JPG/PNG", color: "text-blue-500" },
+                  ].map(({ icon: Icon, label, color }) => (
+                    <span key={label} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-600">
+                      <Icon className={cn("h-3 w-3", color)} />
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
-              {/* Uploaded File Preview */}
-              {uploadMode === "file" && uploadedFile && (
-                <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
-                      <img src={getFileIconSrc(uploadedFile.name)} alt="file icon" className="h-6 w-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900 truncate">{uploadedFile.name}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        {formatFileSize(uploadedFile.size)} · {getFileTypeFromName(uploadedFile.name)}
-                      </p>
-                      {uploadedFile.status === "uploading" && (
-                        <div className="mt-2">
-                          <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-                              style={{ width: `${uploadedFile.progress}%` }}
-                            />
-                          </div>
-                          <p className="text-xs text-slate-500 mt-1">{uploadedFile.progress}% uploaded</p>
+            {/* Uploaded File Preview */}
+            {uploadMode === "file" && uploadedFile && (
+              <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
+                    <img src={getFileIconSrc(uploadedFile.name)} alt="file icon" className="h-6 w-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-900 truncate">{uploadedFile.name}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {formatFileSize(uploadedFile.size)} · {getFileTypeFromName(uploadedFile.name)}
+                    </p>
+                    {uploadedFile.status === "uploading" && (
+                      <div className="mt-2">
+                        <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+                            style={{ width: `${uploadedFile.progress}%` }}
+                          />
                         </div>
-                      )}
-                      {uploadedFile.status === "success" && (
+                        <p className="text-xs text-slate-500 mt-1">{uploadedFile.progress}% uploaded</p>
+                      </div>
+                    )}
+                    {uploadedFile.status === "success" && (
+                      <div className="flex items-center gap-1.5 mt-2">
+                        <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        <span className="text-xs font-medium text-emerald-600">Upload complete</span>
+                      </div>
+                    )}
+                    {uploadedFile.status === "error" && (
+                      <div className="flex items-center gap-1.5 mt-2">
+                        <AlertCircle className="h-3.5 w-3.5 text-red-600" />
+                        <span className="text-xs font-medium text-red-600">Upload failed</span>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={removeFile}
+                    className="flex-shrink-0 p-1 rounded-lg hover:bg-slate-200 transition-colors"
+                    title="Remove file"
+                  >
+                    <X className="h-4 w-4 text-slate-500" />
+                  </button>
+                </div>
+
+                {/* Replace file */}
+                {uploadedFile.status === "success" && (
+                  <button
+                    onClick={() => {
+                      removeFile();
+                      setTimeout(() => fileInputRef.current?.click(), 100);
+                    }}
+                    className="mt-3 text-xs text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                  >
+                    Replace with another file
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ── Link Mode ────────────────────────────── */}
+            {uploadMode === "link" && (
+              <div className="space-y-3">
+                <div className="border-2 border-dashed rounded-xl p-4 md:p-5 flex flex-col items-center justify-center border-slate-300 bg-slate-50/50">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-slate-100">
+                    <Link2 className="h-7 w-7 text-slate-400" />
+                  </div>
+                  <p className="text-xs sm:text-sm font-medium text-slate-700 text-center mb-3">Paste external resource URL</p>
+                  <div className="w-full flex items-center gap-2">
+                    <input
+                      type="url"
+                      value={formData.externalUrl}
+                      onChange={(e) => updateField("externalUrl", e.target.value)}
+                      onBlur={handleAddLink}
+                      placeholder="https://example.com/training-document.pdf"
+                      className="flex-1 h-9 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400"
+                    />
+                  </div>
+                  <p className="text-xs text-slate-400 mt-2">Supports any URL: YouTube, Google Drive, SharePoint, web pages, etc.</p>
+                </div>
+
+                {/* Link Preview */}
+                {formData.externalUrl && isValidUrl(formData.externalUrl) && (
+                  <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
+                        <Link2 className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-900 truncate">{formData.externalUrl}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">External Link</p>
                         <div className="flex items-center gap-1.5 mt-2">
                           <Check className="h-3.5 w-3.5 text-emerald-600" />
-                          <span className="text-xs font-medium text-emerald-600">Upload complete</span>
+                          <span className="text-xs font-medium text-emerald-600">Valid URL</span>
                         </div>
-                      )}
-                      {uploadedFile.status === "error" && (
-                        <div className="flex items-center gap-1.5 mt-2">
-                          <AlertCircle className="h-3.5 w-3.5 text-red-600" />
-                          <span className="text-xs font-medium text-red-600">Upload failed</span>
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      onClick={removeFile}
-                      className="flex-shrink-0 p-1 rounded-lg hover:bg-slate-200 transition-colors"
-                      title="Remove file"
-                    >
-                      <X className="h-4 w-4 text-slate-500" />
-                    </button>
-                  </div>
-
-                  {/* Replace file */}
-                  {uploadedFile.status === "success" && (
-                    <button
-                      onClick={() => {
-                        removeFile();
-                        setTimeout(() => fileInputRef.current?.click(), 100);
-                      }}
-                      className="mt-3 text-xs text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
-                    >
-                      Replace with another file
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {/* ── Link Mode ────────────────────────────── */}
-              {uploadMode === "link" && (
-                <div className="space-y-3">
-                  <div className="border-2 border-dashed rounded-xl p-4 md:p-5 flex flex-col items-center justify-center border-slate-300 bg-slate-50/50">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-slate-100">
-                      <Link2 className="h-7 w-7 text-slate-400" />
-                    </div>
-                    <p className="text-xs sm:text-sm font-medium text-slate-700 text-center mb-3">Paste external resource URL</p>
-                    <div className="w-full flex items-center gap-2">
-                      <input
-                        type="url"
-                        value={formData.externalUrl}
-                        onChange={(e) => updateField("externalUrl", e.target.value)}
-                        onBlur={handleAddLink}
-                        placeholder="https://example.com/training-document.pdf"
-                        className="flex-1 h-9 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm placeholder:text-slate-400"
-                      />
-                    </div>
-                    <p className="text-xs text-slate-400 mt-2">Supports any URL: YouTube, Google Drive, SharePoint, web pages, etc.</p>
-                  </div>
-
-                  {/* Link Preview */}
-                  {formData.externalUrl && isValidUrl(formData.externalUrl) && (
-                    <div className="border border-slate-200 rounded-xl p-4 md:p-5 bg-slate-50/50">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
-                          <Link2 className="h-5 w-5 text-emerald-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-slate-900 truncate">{formData.externalUrl}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">External Link</p>
-                          <div className="flex items-center gap-1.5 mt-2">
-                            <Check className="h-3.5 w-3.5 text-emerald-600" />
-                            <span className="text-xs font-medium text-emerald-600">Valid URL</span>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => updateField("externalUrl", "")}
-                          className="flex-shrink-0 p-1 rounded-lg hover:bg-slate-200 transition-colors"
-                          title="Remove link"
-                        >
-                          <X className="h-4 w-4 text-slate-500" />
-                        </button>
                       </div>
+                      <button
+                        onClick={() => updateField("externalUrl", "")}
+                        className="flex-shrink-0 p-1 rounded-lg hover:bg-slate-200 transition-colors"
+                        title="Remove link"
+                      >
+                        <X className="h-4 w-4 text-slate-500" />
+                      </button>
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
+            )}
 
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept={ACCEPTED_EXTENSIONS.join(",")}
-                onChange={(e) => handleFileSelect(e.target.files)}
-                className="hidden"
-              />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={ACCEPTED_EXTENSIONS.join(",")}
+              onChange={(e) => handleFileSelect(e.target.files)}
+              className="hidden"
+            />
           </FormSection>
         </div>
 
@@ -633,7 +686,6 @@ export const UploadMaterialView: React.FC = () => {
             title="Material Information"
             icon={<FileText className="h-4 w-4" />}
           >
-            <p className="text-xs text-slate-500 -mt-2 mb-5">Fill in the details for this training material</p>
             <div className="space-y-5">
               {/* Row 1: Material Name */}
               <div>

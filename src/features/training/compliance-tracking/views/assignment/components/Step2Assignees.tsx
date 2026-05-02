@@ -1,9 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Search, X, Building2, Briefcase } from "lucide-react";
 import { IconUsers, IconCheck } from "@tabler/icons-react";
 import { TabNav } from "@/components/ui/tabs/TabNav";
 import { Checkbox } from "@/components/ui/checkbox/Checkbox";
 import { FormSection } from "@/components/ui/form";
+import { Badge } from "@/components/ui/badge/Badge";
+import { TablePagination } from "@/components/ui/table/TablePagination";
 import { cn } from "@/components/ui/utils";
 import type { AssignmentScope } from "../../../../types/assignment.types";
 import type { EmployeeRow } from "../../../types";
@@ -60,6 +62,15 @@ export const Step2Assignees: React.FC<Step2Props> = ({
     [employees],
   );
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const totalPages = Math.ceil(resolvedAssignees.length / itemsPerPage);
+  const currentAssignees = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return resolvedAssignees.slice(startIndex, startIndex + itemsPerPage);
+  }, [resolvedAssignees, currentPage, itemsPerPage]);
+
   return (
     <FormSection
       title="Select Target Assignees"
@@ -68,7 +79,7 @@ export const Step2Assignees: React.FC<Step2Props> = ({
       <div className="space-y-5">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: Scope selector + content */}
-          <div className="space-y-4 lg:col-span-8">
+          <div className="space-y-4 lg:col-span-3">
             <TabNav
               tabs={SCOPE_TABS}
               activeTab={scopeTab}
@@ -85,7 +96,7 @@ export const Step2Assignees: React.FC<Step2Props> = ({
                   <input
                     value={employeeSearch}
                     onChange={(e) => onEmployeeSearchChange(e.target.value)}
-                    placeholder="Search by name, department, code…"
+                    placeholder="Search…"
                     className="w-full h-9 pl-9 pr-10 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-slate-400"
                   />
                   {employeeSearch && (
@@ -105,31 +116,31 @@ export const Step2Assignees: React.FC<Step2Props> = ({
                       Employee List
                     </p>
                   </div>
-                  <div className="space-y-1 max-h-[360px] overflow-y-auto px-3 pb-3">
+                  <div className="space-y-1 max-h-[360px] overflow-y-auto px-2 pb-2">
                     {employees.map((emp) => (
                       <label
                         key={emp.id}
-                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer border border-transparent hover:border-slate-200 transition-all"
+                        className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer border border-transparent hover:border-slate-200 transition-all"
                       >
                         <Checkbox
                           id={`emp-${emp.id}`}
                           checked={selectedEmployeeIds.includes(emp.id)}
                           onChange={() => onEmployeeToggle(emp.id)}
                         />
-                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 text-xs font-bold text-emerald-700">
+                        <div className="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-emerald-700">
                           {getInitials(emp.name)}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <p className="text-sm font-medium text-slate-900 truncate leading-tight">
+                          <div className="flex items-center flex-wrap gap-1.5">
+                            <p className="text-xs font-medium text-slate-900 truncate leading-tight">
                               {emp.name}
                             </p>
-                            <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full flex-shrink-0 border border-emerald-200">
+                            <Badge color="emerald" size="xs" pill>
                               {emp.employeeCode}
-                            </span>
+                            </Badge>
                           </div>
-                          <p className="text-xs text-slate-500 truncate">
-                            {emp.jobTitle} · {emp.department}
+                          <p className="text-[10px] text-slate-500 truncate mt-0.5 leading-tight">
+                            {emp.position}
                           </p>
                         </div>
                       </label>
@@ -141,13 +152,13 @@ export const Step2Assignees: React.FC<Step2Props> = ({
 
             {/* Business Unit */}
             {scopeTab === "business_unit" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 {BUSINESS_UNITS.map((bu) => (
                   <button
                     key={bu}
                     onClick={() => onBusinessUnitToggle(bu)}
                     className={cn(
-                      "text-left p-4 rounded-xl border-2 transition-all",
+                      "text-left p-3 rounded-xl border-2 transition-all",
                       selectedBusinessUnits.includes(bu)
                         ? "border-emerald-500 bg-emerald-50"
                         : "border-slate-200 bg-white hover:border-slate-300",
@@ -163,7 +174,7 @@ export const Step2Assignees: React.FC<Step2Props> = ({
                               : "text-slate-400",
                           )}
                         />
-                        <span className="text-sm font-medium text-slate-800">
+                        <span className="text-xs font-medium text-slate-800 truncate">
                           {bu}
                         </span>
                       </div>
@@ -171,7 +182,7 @@ export const Step2Assignees: React.FC<Step2Props> = ({
                         <IconCheck className="h-4 w-4 text-emerald-500" />
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 ml-6">
+                    <p className="text-[10px] text-slate-400 mt-1 flex items-center gap-1 ml-6">
                       {buEmployeeCount[bu] ?? 0} employees
                     </p>
                   </button>
@@ -181,13 +192,13 @@ export const Step2Assignees: React.FC<Step2Props> = ({
 
             {/* Department */}
             {scopeTab === "department" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 {DEPARTMENTS.map((dept) => (
                   <button
                     key={dept}
                     onClick={() => onDeptToggle(dept)}
                     className={cn(
-                      "text-left p-4 rounded-xl border-2 transition-all",
+                      "text-left p-3 rounded-xl border-2 transition-all",
                       selectedDepartments.includes(dept)
                         ? "border-emerald-500 bg-emerald-50"
                         : "border-slate-200 bg-white hover:border-slate-300",
@@ -203,7 +214,7 @@ export const Step2Assignees: React.FC<Step2Props> = ({
                               : "text-slate-400",
                           )}
                         />
-                        <span className="text-sm font-medium text-slate-800">
+                        <span className="text-xs font-medium text-slate-800 truncate">
                           {dept}
                         </span>
                       </div>
@@ -211,62 +222,111 @@ export const Step2Assignees: React.FC<Step2Props> = ({
                         <IconCheck className="h-4 w-4 text-emerald-500" />
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 ml-6">
+                    <p className="text-[10px] text-slate-400 mt-1 flex items-center gap-1 ml-6">
                       {deptEmployeeCount[dept] ?? 0} employees
                     </p>
                   </button>
                 ))}
               </div>
             )}
-          </div>
+          </div>          {/* Right: Selected summary in a table format */}
+          <div className="lg:col-span-9 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-xs sm:text-sm font-semibold text-slate-700">Selected Assignees</p>
+              {resolvedAssignees.length > 0 && (
+                <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">
+                  {resolvedAssignees.length} employee{resolvedAssignees.length !== 1 ? "s" : ""}
+                </span>
+              )}
+            </div>
 
-          {/* Right: Selected summary */}
-          <div className="lg:col-span-4">
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 lg:sticky lg:top-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs sm:text-sm font-semibold text-slate-700">Selected</p>
-                {resolvedAssignees.length > 0 && (
-                  <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">
-                    {resolvedAssignees.length} employee
-                    {resolvedAssignees.length !== 1 ? "s" : ""}
-                  </span>
-                )}
+            <div className="border border-slate-200 rounded-xl overflow-hidden flex flex-col bg-white shadow-sm">
+              <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 hover:scrollbar-thumb-slate-400 pb-1.5 transition-colors">
+                <table className="w-full min-w-[700px] border-spacing-0 text-left">
+                  <thead>
+                    <tr className="bg-slate-50">
+                      <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-center text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-16">
+                        No.
+                      </th>
+                      <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-36">
+                        Employee Code
+                      </th>
+                      <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap">
+                        Full Name
+                      </th>
+                      <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-44">
+                        Position
+                      </th>
+                      <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-44">
+                        Department
+                      </th>
+                      <th className="sticky top-0 z-20 bg-slate-50 py-3 px-4 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b-2 border-slate-200 whitespace-nowrap w-44">
+                        Business Unit
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white">
+                    {resolvedAssignees.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="p-0">
+                          <div className="flex flex-col items-center justify-center p-6 text-center">
+                            <IconUsers className="h-8 w-8 text-slate-300" />
+                            <h4 className="text-sm font-semibold text-slate-900 mt-2">No assignees selected</h4>
+                            <p className="text-xs text-slate-500 max-w-xs mt-1">
+                              Select assignees from the scope selector on the left.
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      currentAssignees.map((emp, idx) => {
+                        const tdClass = "py-3 px-4 text-xs md:text-sm text-slate-700 border-b border-slate-200 whitespace-nowrap";
+                        return (
+                          <tr key={emp.id} className="hover:bg-slate-50/80 transition-colors">
+                            <td className={cn(tdClass, "text-center font-medium text-slate-500 w-16")}>
+                              {(currentPage - 1) * itemsPerPage + idx + 1}
+                            </td>
+                            <td className={tdClass}>
+                              <span className="font-semibold text-emerald-600">
+                                {emp.employeeCode}
+                              </span>
+                            </td>
+                            <td className={tdClass}>
+                              <div className="flex items-center gap-2">
+                                <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 text-[9px] font-bold text-emerald-700">
+                                  {getInitials(emp.name)}
+                                </div>
+                                <span className="font-medium text-slate-900">
+                                  {emp.name}
+                                </span>
+                              </div>
+                            </td>
+                            <td className={tdClass}>
+                              {emp.position}
+                            </td>
+                            <td className={tdClass}>
+                              {emp.department}
+                            </td>
+                            <td className={tdClass}>
+                              {emp.businessUnit || "Operation Unit"}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
-              {resolvedAssignees.length === 0 ? (
-                <p className="text-xs text-slate-400 italic py-4 text-center">
-                  No assignees selected yet
-                </p>
-              ) : (
-                <div className="space-y-1 max-h-[300px] overflow-y-auto">
-                  {resolvedAssignees.slice(0, 12).map((e, index) => (
-                    <div
-                      key={e.id}
-                      className="flex items-center gap-2.5 py-1 border-b border-slate-100 last:border-0 group"
-                    >
-                      <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 text-[9px] font-bold text-emerald-700">
-                        {getInitials(e.name)}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
-                          <p className="text-xs font-medium text-slate-800 truncate leading-none">
-                            {e.name}
-                          </p>
-                          <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded flex-shrink-0">
-                            {e.employeeCode}
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-slate-500 truncate">
-                          {e.jobTitle} · {e.department}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                  {resolvedAssignees.length > 12 && (
-                    <p className="text-xs text-slate-400 pl-2">
-                      +{resolvedAssignees.length - 12} more…
-                    </p>
-                  )}
-                </div>
+
+              {resolvedAssignees.length > 0 && (
+                <TablePagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={resolvedAssignees.length}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                />
               )}
             </div>
           </div>

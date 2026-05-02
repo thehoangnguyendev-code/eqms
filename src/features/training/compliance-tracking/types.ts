@@ -36,7 +36,7 @@ export interface EmployeeRow {
   email: string;
   department: string;
   businessUnit?: string;
-  jobTitle: string;
+  position: string;
   hireDate: string;
 }
 
@@ -63,7 +63,7 @@ export interface MatrixKPI {
 export interface MatrixFilters {
   searchQuery: string;
   department: string;
-  jobTitle: string;
+  position: string;
   status: CellStatus | "All";
   gapAnalysis: boolean;       // hide "Qualified" cells
 }

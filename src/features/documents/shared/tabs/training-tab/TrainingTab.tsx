@@ -273,7 +273,7 @@ export const TrainingTab: React.FC<TrainingTabProps> = ({
                                                         {e.department}
                                                     </td>
                                                     <td className="py-1.5 px-2 sm:py-2.5 sm:px-3 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
-                                                        {e.jobTitle}
+                                                        {e.position}
                                                     </td>
                                                     <td className="py-1.5 px-2 sm:py-2.5 sm:px-3 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
                                                         {e.email}

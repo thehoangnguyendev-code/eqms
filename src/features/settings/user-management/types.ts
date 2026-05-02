@@ -52,7 +52,7 @@ export interface User {
   lastName?: string;
   permissions: string[];
   // Extended profile fields
-  jobTitle?: string;
+  position?: string;
   dateOfBirth?: string;
   gender?: UserGender;
   nationality?: string;

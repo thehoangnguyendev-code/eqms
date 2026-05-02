@@ -371,10 +371,10 @@ export const HeaderActionDrawer: React.FC<HeaderActionDrawerProps> = ({
                                     <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Department</label>
                                     <p className="text-xs lg:text-sm text-slate-900 flex-1">{empData.department}</p>
                                 </div>
-                                {/* Job Title */}
+                                {/* Position */}
                                 <div className="flex flex-col lg:flex-row lg:items-center gap-1.5 lg:gap-2">
-                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Job Title</label>
-                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{empData.jobTitle}</p>
+                                    <label className="text-xs sm:text-sm font-medium text-slate-700 w-full lg:w-40 flex-shrink-0">Position</label>
+                                    <p className="text-xs lg:text-sm text-slate-900 flex-1">{empData.position}</p>
                                 </div>
                             </div>
                         ) : sopData ? (

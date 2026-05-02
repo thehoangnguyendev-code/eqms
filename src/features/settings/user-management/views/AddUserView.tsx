@@ -77,8 +77,8 @@ export const AddUserView: React.FC = () => {
  errors.email = "Invalid email format";
  }
 
- if (!newUser.jobTitle?.trim()) {
- errors.jobTitle = "Job Title is required";
+ if (!newUser.position?.trim()) {
+ errors.position = "Position is required";
  }
 
  if (!newUser.startDate) {
@@ -518,22 +518,22 @@ export const AddUserView: React.FC = () => {
      {formErrors.department && <p className="text-xs text-red-600 mt-1.5">{formErrors.department}</p>}
     </div>
 
-    {/* Job Title */}
+    {/* Position */}
     <div className="md:col-span-2">
      <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1.5 block">
-      Job Title <span className="text-red-500">*</span>
+      Position <span className="text-red-500">*</span>
      </label>
      <input
       type="text"
-      value={newUser.jobTitle || ""}
-      onChange={(e) => { setNewUser({ ...newUser, jobTitle: e.target.value }); setFormErrors({ ...formErrors, jobTitle: "" }); }}
+      value={newUser.position || ""}
+      onChange={(e) => { setNewUser({ ...newUser, position: e.target.value }); setFormErrors({ ...formErrors, position: "" }); }}
       placeholder="e.g. Quality Specialist"
       className={cn(
        "w-full h-9 px-3 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors placeholder:text-slate-400",
-       formErrors.jobTitle ? "border-red-300 bg-red-50" : "border-slate-200"
+       formErrors.position ? "border-red-300 bg-red-50" : "border-slate-200"
       )}
      />
-     {formErrors.jobTitle && <p className="text-xs text-red-600 mt-1.5">{formErrors.jobTitle}</p>}
+     {formErrors.position && <p className="text-xs text-red-600 mt-1.5">{formErrors.position}</p>}
     </div>
 
     {/* Employment Type */}

@@ -41,7 +41,7 @@ interface ResultRow {
   userId: string;
   name: string;
   email: string;
-  jobTitle: string;
+  position: string;
   department: string;
   businessUnit: string;
   examDate: string;
@@ -86,13 +86,13 @@ const generateMockRows = (count: number): ResultRow[] => {
     "Lam Van Anh",
   ];
   const departments = ["QA", "QC Lab", "Production", "R&D", "Engineering", "Warehouse"];
-  const jobTitles = ["QA Specialist", "Lab Technician", "Production Manager", "R&D Scientist", "Senior Engineer", "Warehouse Supervisor"];
+  const positions = ["QA Specialist", "Lab Technician", "Production Manager", "R&D Scientist", "Senior Engineer", "Warehouse Supervisor"];
   const businessUnits = ["Operation Unit", "Quality Unit"];
   const rows: ResultRow[] = Array.from({ length: count }, (_, i) => ({
     userId: `EMP-${String(i + 1001).padStart(4, "0")}`,
     name: names[i % names.length],
     email: `${names[i % names.length].toLowerCase().replace(/ /g, '.')}@company.com`,
-    jobTitle: jobTitles[i % jobTitles.length],
+    position: positions[i % positions.length],
     department: departments[i % departments.length],
     businessUnit: businessUnits[i % businessUnits.length],
     examDate: "2026-03-20", // Pre-filled for older rows
@@ -107,7 +107,7 @@ const generateMockRows = (count: number): ResultRow[] => {
     userId: "EMP-NEW",
     name: "Alex Turner",
     email: "alex.turner@company.com",
-    jobTitle: "QA Specialist",
+    position: "QA Specialist",
     department: "Quality Assurance",
     businessUnit: "Quality Unit",
     examDate: "",
@@ -725,7 +725,7 @@ export const ResultEntryView: React.FC = () => {
                       { label: "Employee Code", id: "userId" },
                       { label: "Name", id: "name" },
                       { label: "Email", id: "email", hidden: "hidden lg:table-cell" },
-                      { label: "Job Title", id: "jobTitle", hidden: "hidden xl:table-cell" },
+                      { label: "Position", id: "position", hidden: "hidden xl:table-cell" },
                       { label: "Department", id: "department", hidden: "hidden md:table-cell" },
                       { label: "Business Unit", id: "businessUnit" },
                       { label: "Exam Date", id: "examDate" },
@@ -800,7 +800,7 @@ export const ResultEntryView: React.FC = () => {
                             {row.email}
                           </td>
                           <td className={cn(tdClass, "text-slate-600 hidden xl:table-cell")}>
-                            {row.jobTitle}
+                            {row.position}
                           </td>
                           <td className={cn(tdClass, "text-slate-600 hidden md:table-cell")}>
                             {row.department}

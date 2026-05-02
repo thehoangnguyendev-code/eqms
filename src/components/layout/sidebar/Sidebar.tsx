@@ -1185,16 +1185,16 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(
           title="Leave current page?"
           description={
             <>
-              <p className="mb-1">
+              <p className="mb-1 text-xs md:text-sm text-slate-500">
                 You are currently working in{" "}
-                <span className="font-semibold">
+                <span className="font-semibold text-red-600">
                   {pendingPageTitle || currentScreenLabel || "this screen"}
                 </span>
                 .
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs md:text-sm text-slate-500">
                 If you navigate to{" "}
-                <span className="font-semibold">
+                <span className="font-semibold text-red-600">
                   {pendingNavLabel || "another page"}
                 </span>
                 , any unsaved progress on this screen may be lost.

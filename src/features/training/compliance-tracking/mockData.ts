@@ -34,26 +34,26 @@ export const MOCK_SOPS: SOPColumn[] = [
 
 // ─── Employee Rows ──────────────────────────────────────────────────
 export const MOCK_EMPLOYEES: EmployeeRow[] = [
-  { id: "EMP-005", name: "David Brown", employeeCode: "ENG-005", email: "david.brown@eqms.com", department: "Engineering", businessUnit: "Pharma Manufacturing", jobTitle: "Validation Engineer", hireDate: "01/03/2026" },
-  { id: "EMP-001", name: "John Smith", employeeCode: "QA-001", email: "john.smith@eqms.com", department: "Quality Assurance", businessUnit: "Pharma Manufacturing", jobTitle: "QA Manager", hireDate: "15/03/2019" },
-  { id: "EMP-002", name: "Sarah Johnson", employeeCode: "QC-002", email: "sarah.johnson@eqms.com", department: "Quality Control", businessUnit: "Pharma Manufacturing", jobTitle: "QC Analyst", hireDate: "01/06/2020" },
-  { id: "EMP-003", name: "Michael Chen", employeeCode: "PRD-003", email: "michael.chen@eqms.com", department: "Production", businessUnit: "Logistics & Supply", jobTitle: "Production Operator", hireDate: "10/01/2021" },
-  { id: "EMP-004", name: "Emma Wilson", employeeCode: "DOC-004", email: "emma.wilson@eqms.com", department: "Documentation", businessUnit: "Corporate", jobTitle: "Document Controller", hireDate: "20/08/2022" },
-  { id: "EMP-006", name: "David Park", employeeCode: "QC-003", email: "david.park@ntp.com", department: "Quality Control", businessUnit: "Quality Unit", jobTitle: "Lab Technician", hireDate: "10/04/2020" },
-  { id: "EMP-007", name: "Sarah Kim", employeeCode: "PRD-001", email: "sarah.kim@ntp.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Production Operator", hireDate: "20/07/2021" },
-  { id: "EMP-008", name: "Michael Brown", employeeCode: "PRD-002", email: "michael.brown@ntp.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Production Operator", hireDate: "15/01/2022" },
-  { id: "EMP-009", name: "Emily Davis", employeeCode: "PRD-003", email: "emily.davis@ntp.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Production Supervisor", hireDate: "05/09/2019" },
-  { id: "EMP-010", name: "Kevin Wilson", employeeCode: "PRD-004", email: "kevin.wilson@ntp.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Production Operator", hireDate: "12/03/2023" },
-  { id: "EMP-011", name: "Jennifer Lee", employeeCode: "ENG-001", email: "jennifer.lee@ntp.com", department: "Engineering", businessUnit: "Operation Unit", jobTitle: "Validation Engineer", hireDate: "01/11/2020" },
-  { id: "EMP-012", name: "Thomas Wright", employeeCode: "ENG-002", email: "thomas.wright@ntp.com", department: "Engineering", businessUnit: "Operation Unit", jobTitle: "Validation Engineer", hireDate: "10/05/2021" },
-  { id: "EMP-013", name: "Jessica Martinez", employeeCode: "ENG-003", email: "jessica.martinez@ntp.com", department: "Engineering", businessUnit: "Operation Unit", jobTitle: "Engineering Manager", hireDate: "15/08/2018" },
-  { id: "EMP-014", name: "Daniel Taylor", employeeCode: "DOC-001", email: "daniel.taylor@ntp.com", department: "Documentation", businessUnit: "Operation Unit", jobTitle: "Document Controller", hireDate: "01/02/2022" },
-  { id: "EMP-015", name: "Amanda Garcia", employeeCode: "DOC-002", email: "amanda.garcia@ntp.com", department: "Documentation", businessUnit: "Operation Unit", jobTitle: "Document Controller", hireDate: "20/06/2023" },
-  { id: "EMP-016", name: "Chris Anderson", employeeCode: "HSE-001", email: "chris.anderson@ntp.com", department: "HSE", businessUnit: "Operation Unit", jobTitle: "HSE Coordinator", hireDate: "05/10/2020" },
-  { id: "EMP-017", name: "Patricia White", employeeCode: "HSE-002", email: "patricia.white@ntp.com", department: "HSE", businessUnit: "Operation Unit", jobTitle: "HSE Specialist", hireDate: "15/12/2021" },
-  { id: "EMP-018", name: "Steven Harris", employeeCode: "SC-001", email: "steven.harris@ntp.com", department: "Supply Chain", businessUnit: "Operation Unit", jobTitle: "Warehouse Operator", hireDate: "10/04/2022" },
-  { id: "EMP-019", name: "Nancy Clark", employeeCode: "SC-002", email: "nancy.clark@ntp.com", department: "Supply Chain", businessUnit: "Operation Unit", jobTitle: "Warehouse Operator", hireDate: "20/07/2023" },
-  { id: "EMP-020", name: "Richard Moore", employeeCode: "QC-004", email: "richard.moore@ntp.com", department: "Quality Control", businessUnit: "Quality Unit", jobTitle: "QC Analyst", hireDate: "15/02/2020" },
+  { id: "EMP-005", name: "David Brown", employeeCode: "ENG-005", email: "david.brown@eqms.com", department: "Engineering", businessUnit: "Pharma Manufacturing", position: "Validation Engineer", hireDate: "01/03/2026" },
+  { id: "EMP-001", name: "John Smith", employeeCode: "QA-001", email: "john.smith@eqms.com", department: "Quality Assurance", businessUnit: "Pharma Manufacturing", position: "QA Manager", hireDate: "15/03/2019" },
+  { id: "EMP-002", name: "Sarah Johnson", employeeCode: "QC-002", email: "sarah.johnson@eqms.com", department: "Quality Control", businessUnit: "Pharma Manufacturing", position: "QC Analyst", hireDate: "01/06/2020" },
+  { id: "EMP-003", name: "Michael Chen", employeeCode: "PRD-003", email: "michael.chen@eqms.com", department: "Production", businessUnit: "Logistics & Supply", position: "Production Operator", hireDate: "10/01/2021" },
+  { id: "EMP-004", name: "Emma Wilson", employeeCode: "DOC-004", email: "emma.wilson@eqms.com", department: "Documentation", businessUnit: "Corporate", position: "Document Controller", hireDate: "20/08/2022" },
+  { id: "EMP-006", name: "David Park", employeeCode: "QC-003", email: "david.park@ntp.com", department: "Quality Control", businessUnit: "Quality Unit", position: "Lab Technician", hireDate: "10/04/2020" },
+  { id: "EMP-007", name: "Sarah Kim", employeeCode: "PRD-001", email: "sarah.kim@ntp.com", department: "Production", businessUnit: "Operation Unit", position: "Production Operator", hireDate: "20/07/2021" },
+  { id: "EMP-008", name: "Michael Brown", employeeCode: "PRD-002", email: "michael.brown@ntp.com", department: "Production", businessUnit: "Operation Unit", position: "Production Operator", hireDate: "15/01/2022" },
+  { id: "EMP-009", name: "Emily Davis", employeeCode: "PRD-003", email: "emily.davis@ntp.com", department: "Production", businessUnit: "Operation Unit", position: "Production Supervisor", hireDate: "05/09/2019" },
+  { id: "EMP-010", name: "Kevin Wilson", employeeCode: "PRD-004", email: "kevin.wilson@ntp.com", department: "Production", businessUnit: "Operation Unit", position: "Production Operator", hireDate: "12/03/2023" },
+  { id: "EMP-011", name: "Jennifer Lee", employeeCode: "ENG-001", email: "jennifer.lee@ntp.com", department: "Engineering", businessUnit: "Operation Unit", position: "Validation Engineer", hireDate: "01/11/2020" },
+  { id: "EMP-012", name: "Thomas Wright", employeeCode: "ENG-002", email: "thomas.wright@ntp.com", department: "Engineering", businessUnit: "Operation Unit", position: "Validation Engineer", hireDate: "10/05/2021" },
+  { id: "EMP-013", name: "Jessica Martinez", employeeCode: "ENG-003", email: "jessica.martinez@ntp.com", department: "Engineering", businessUnit: "Operation Unit", position: "Engineering Manager", hireDate: "15/08/2018" },
+  { id: "EMP-014", name: "Daniel Taylor", employeeCode: "DOC-001", email: "daniel.taylor@ntp.com", department: "Documentation", businessUnit: "Operation Unit", position: "Document Controller", hireDate: "01/02/2022" },
+  { id: "EMP-015", name: "Amanda Garcia", employeeCode: "DOC-002", email: "amanda.garcia@ntp.com", department: "Documentation", businessUnit: "Operation Unit", position: "Document Controller", hireDate: "20/06/2023" },
+  { id: "EMP-016", name: "Chris Anderson", employeeCode: "HSE-001", email: "chris.anderson@ntp.com", department: "HSE", businessUnit: "Operation Unit", position: "HSE Coordinator", hireDate: "05/10/2020" },
+  { id: "EMP-017", name: "Patricia White", employeeCode: "HSE-002", email: "patricia.white@ntp.com", department: "HSE", businessUnit: "Operation Unit", position: "HSE Specialist", hireDate: "15/12/2021" },
+  { id: "EMP-018", name: "Steven Harris", employeeCode: "SC-001", email: "steven.harris@ntp.com", department: "Supply Chain", businessUnit: "Operation Unit", position: "Warehouse Operator", hireDate: "10/04/2022" },
+  { id: "EMP-019", name: "Nancy Clark", employeeCode: "SC-002", email: "nancy.clark@ntp.com", department: "Supply Chain", businessUnit: "Operation Unit", position: "Warehouse Operator", hireDate: "20/07/2023" },
+  { id: "EMP-020", name: "Richard Moore", employeeCode: "QC-004", email: "richard.moore@ntp.com", department: "Quality Control", businessUnit: "Quality Unit", position: "QC Analyst", hireDate: "15/02/2020" },
 ];
 
 // ─── Helper: random date in range ───────────────────────────────────
@@ -89,7 +89,7 @@ const generateCell = (emp: EmployeeRow, sop: SOPColumn): TrainingCell => {
     "Warehouse Operator":  ["1","3","5"],
   };
 
-  const requiredSops = requiredMap[emp.jobTitle] || ["1"];
+  const requiredSops = requiredMap[emp.position] || ["1"];
   const isRequired = requiredSops.includes(sop.id);
 
   if (!isRequired) {
@@ -218,7 +218,7 @@ export const DEPARTMENT_OPTIONS = [
 ];
 
 export const JOB_TITLE_OPTIONS = [
-  { label: "All Job Titles", value: "All" },
+  { label: "All Positions", value: "All" },
   { label: "QA Manager", value: "QA Manager" },
   { label: "QA Specialist", value: "QA Specialist" },
   { label: "QC Analyst", value: "QC Analyst" },
@@ -378,31 +378,31 @@ export const MOCK_PROGRESS_INFO: CourseProgressInfo = {
 };
 
 export const MOCK_EMPLOYEE_PROGRESS: EmployeeProgress[] = [
-  { userId: "EMP-1001", name: "Nguyen Van An", email: "an.nguyen@company.com", department: "QA", businessUnit: "Quality Unit", jobTitle: "QA Specialist", enrollmentStatus: "Completed", resultStatus: "Pass", score: 9, completedAt: "2026-02-10", examDate: "2026-02-10", attempts: 1 },
-  { userId: "EMP-1002", name: "Tran Thi Binh", email: "binh.tran@company.com", department: "QC Lab", businessUnit: "Quality Unit", jobTitle: "Lab Technician", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-11", examDate: "2026-02-11", attempts: 1 },
-  { userId: "EMP-1003", name: "Le Van Cuong", email: "cuong.le@company.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Production Manager", enrollmentStatus: "Completed", resultStatus: "Fail", score: 5, completedAt: "2026-02-12", examDate: "2026-02-12", attempts: 2 },
-  { userId: "EMP-1004", name: "Pham Thi Dung", email: "dung.pham@company.com", department: "QA", businessUnit: "Quality Unit", jobTitle: "QA Specialist", enrollmentStatus: "Completed", resultStatus: "Pass", score: 10, completedAt: "2026-02-09", examDate: "2026-02-09", attempts: 1 },
-  { userId: "EMP-1005", name: "Hoang Van Em", email: "em.hoang@company.com", department: "R&D", businessUnit: "Operation Unit", jobTitle: "R&D Scientist", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1006", name: "Vo Thi Phuong", email: "phuong.vo@company.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Production Supervisor", enrollmentStatus: "Completed", resultStatus: "Pass", score: 7, completedAt: "2026-02-13", someOtherField: null, attempts: 2 } as any,
-  { userId: "EMP-1007", name: "Dang Van Gia", email: "gia.dang@company.com", department: "QC Lab", businessUnit: "Quality Unit", jobTitle: "Senior Analyst", enrollmentStatus: "Overdue", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1008", name: "Bui Thi Hanh", email: "hanh.bui@company.com", department: "Engineering", businessUnit: "Operation Unit", jobTitle: "Senior Engineer", enrollmentStatus: "Not Started", resultStatus: "N/A", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1009", name: "Ngo Van Ich", email: "ich.ngo@company.com", department: "Warehouse", businessUnit: "Operation Unit", jobTitle: "Warehouse Supervisor", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-14", examDate: "2026-02-14", attempts: 1 },
-  { userId: "EMP-1010", name: "Trinh Thi Kim", email: "kim.trinh@company.com", department: "QA", businessUnit: "Quality Unit", jobTitle: "QA Manager", enrollmentStatus: "Completed", resultStatus: "Pass", score: 9, completedAt: "2026-02-08", examDate: "2026-02-08", attempts: 1 },
-  { userId: "EMP-1011", name: "Do Van Lam", email: "lam.do@company.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Operator", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1012", name: "Ly Thi Mai", email: "mai.ly@company.com", department: "R&D", businessUnit: "Operation Unit", jobTitle: "Research Associate", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-15", examDate: "2026-02-15", attempts: 1 },
-  { userId: "EMP-1013", name: "Truong Van Nam", email: "nam.truong@company.com", department: "Engineering", businessUnit: "Operation Unit", jobTitle: "Maintenance Technician", enrollmentStatus: "Not Started", resultStatus: "N/A", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1014", name: "Huynh Thi Oanh", email: "oanh.huynh@company.com", department: "QC Lab", businessUnit: "Quality Unit", jobTitle: "Lab Supervisor", enrollmentStatus: "Completed", resultStatus: "Pass", score: 9, completedAt: "2026-02-10", examDate: "2026-02-10", attempts: 1 },
-  { userId: "EMP-1015", name: "Phan Van Phuc", email: "phuc.phan@company.com", department: "Warehouse", businessUnit: "Operation Unit", jobTitle: "Logistics Coordinator", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1016", name: "Duong Thi Quynh", email: "quynh.duong@company.com", department: "QA", businessUnit: "Quality Unit", jobTitle: "Document Controller", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-12", examDate: "2026-02-12", attempts: 1 },
-  { userId: "EMP-1017", name: "Cao Van Rang", email: "rang.cao@company.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Operator", enrollmentStatus: "Overdue", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1018", name: "Ta Thi Son", email: "son.ta@company.com", department: "Engineering", businessUnit: "Operation Unit", jobTitle: "Calibration Technician", enrollmentStatus: "Completed", resultStatus: "Pass", score: 7, completedAt: "2026-02-16", examDate: "2026-02-16", attempts: 3 },
-  { userId: "EMP-1019", name: "Mai Van Tuan", email: "tuan.mai@company.com", department: "QC Lab", businessUnit: "Quality Unit", jobTitle: "Microbiologist", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1020", name: "Luu Thi Uyen", email: "uyen.luu@company.com", department: "QA", businessUnit: "Quality Unit", jobTitle: "QA Specialist", enrollmentStatus: "Completed", resultStatus: "Pass", score: 10, completedAt: "2026-02-09", examDate: "2026-02-09", attempts: 1 },
-  { userId: "EMP-1021", name: "Dinh Van Vinh", email: "vinh.dinh@company.com", department: "Production", businessUnit: "Operation Unit", jobTitle: "Shift Leader", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-17", examDate: "2026-02-17", attempts: 1 },
-  { userId: "EMP-1022", name: "Ha Thi Xuan", email: "xuan.ha@company.com", department: "R&D", businessUnit: "Operation Unit", jobTitle: "Formulation Scientist", enrollmentStatus: "Not Started", resultStatus: "N/A", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1023", name: "Tong Van Yen", email: "yen.tong@company.com", department: "Warehouse", businessUnit: "Operation Unit", jobTitle: "Receiving Inspector", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
-  { userId: "EMP-1024", name: "Chu Thi Zen", email: "zen.chu@company.com", department: "Engineering", businessUnit: "Operation Unit", jobTitle: "Process Engineer", enrollmentStatus: "Completed", resultStatus: "Pass", score: 9, completedAt: "2026-02-18", examDate: "2026-02-18", attempts: 1 },
-  { userId: "EMP-1025", name: "Lam Van Anh", email: "anh.lam@company.com", department: "QA", businessUnit: "Quality Unit", jobTitle: "Validation Specialist", enrollmentStatus: "Exempt", resultStatus: "N/A", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1001", name: "Nguyen Van An", email: "an.nguyen@company.com", department: "QA", businessUnit: "Quality Unit", position: "QA Specialist", enrollmentStatus: "Completed", resultStatus: "Pass", score: 9, completedAt: "2026-02-10", examDate: "2026-02-10", attempts: 1 },
+  { userId: "EMP-1002", name: "Tran Thi Binh", email: "binh.tran@company.com", department: "QC Lab", businessUnit: "Quality Unit", position: "Lab Technician", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-11", examDate: "2026-02-11", attempts: 1 },
+  { userId: "EMP-1003", name: "Le Van Cuong", email: "cuong.le@company.com", department: "Production", businessUnit: "Operation Unit", position: "Production Manager", enrollmentStatus: "Completed", resultStatus: "Fail", score: 5, completedAt: "2026-02-12", examDate: "2026-02-12", attempts: 2 },
+  { userId: "EMP-1004", name: "Pham Thi Dung", email: "dung.pham@company.com", department: "QA", businessUnit: "Quality Unit", position: "QA Specialist", enrollmentStatus: "Completed", resultStatus: "Pass", score: 10, completedAt: "2026-02-09", examDate: "2026-02-09", attempts: 1 },
+  { userId: "EMP-1005", name: "Hoang Van Em", email: "em.hoang@company.com", department: "R&D", businessUnit: "Operation Unit", position: "R&D Scientist", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1006", name: "Vo Thi Phuong", email: "phuong.vo@company.com", department: "Production", businessUnit: "Operation Unit", position: "Production Supervisor", enrollmentStatus: "Completed", resultStatus: "Pass", score: 7, completedAt: "2026-02-13", someOtherField: null, attempts: 2 } as any,
+  { userId: "EMP-1007", name: "Dang Van Gia", email: "gia.dang@company.com", department: "QC Lab", businessUnit: "Quality Unit", position: "Senior Analyst", enrollmentStatus: "Overdue", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1008", name: "Bui Thi Hanh", email: "hanh.bui@company.com", department: "Engineering", businessUnit: "Operation Unit", position: "Senior Engineer", enrollmentStatus: "Not Started", resultStatus: "N/A", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1009", name: "Ngo Van Ich", email: "ich.ngo@company.com", department: "Warehouse", businessUnit: "Operation Unit", position: "Warehouse Supervisor", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-14", examDate: "2026-02-14", attempts: 1 },
+  { userId: "EMP-1010", name: "Trinh Thi Kim", email: "kim.trinh@company.com", department: "QA", businessUnit: "Quality Unit", position: "QA Manager", enrollmentStatus: "Completed", resultStatus: "Pass", score: 9, completedAt: "2026-02-08", examDate: "2026-02-08", attempts: 1 },
+  { userId: "EMP-1011", name: "Do Van Lam", email: "lam.do@company.com", department: "Production", businessUnit: "Operation Unit", position: "Operator", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1012", name: "Ly Thi Mai", email: "mai.ly@company.com", department: "R&D", businessUnit: "Operation Unit", position: "Research Associate", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-15", examDate: "2026-02-15", attempts: 1 },
+  { userId: "EMP-1013", name: "Truong Van Nam", email: "nam.truong@company.com", department: "Engineering", businessUnit: "Operation Unit", position: "Maintenance Technician", enrollmentStatus: "Not Started", resultStatus: "N/A", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1014", name: "Huynh Thi Oanh", email: "oanh.huynh@company.com", department: "QC Lab", businessUnit: "Quality Unit", position: "Lab Supervisor", enrollmentStatus: "Completed", resultStatus: "Pass", score: 9, completedAt: "2026-02-10", examDate: "2026-02-10", attempts: 1 },
+  { userId: "EMP-1015", name: "Phan Van Phuc", email: "phuc.phan@company.com", department: "Warehouse", businessUnit: "Operation Unit", position: "Logistics Coordinator", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1016", name: "Duong Thi Quynh", email: "quynh.duong@company.com", department: "QA", businessUnit: "Quality Unit", position: "Document Controller", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-12", examDate: "2026-02-12", attempts: 1 },
+  { userId: "EMP-1017", name: "Cao Van Rang", email: "rang.cao@company.com", department: "Production", businessUnit: "Operation Unit", position: "Operator", enrollmentStatus: "Overdue", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1018", name: "Ta Thi Son", email: "son.ta@company.com", department: "Engineering", businessUnit: "Operation Unit", position: "Calibration Technician", enrollmentStatus: "Completed", resultStatus: "Pass", score: 7, completedAt: "2026-02-16", examDate: "2026-02-16", attempts: 3 },
+  { userId: "EMP-1019", name: "Mai Van Tuan", email: "tuan.mai@company.com", department: "QC Lab", businessUnit: "Quality Unit", position: "Microbiologist", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1020", name: "Luu Thi Uyen", email: "uyen.luu@company.com", department: "QA", businessUnit: "Quality Unit", position: "QA Specialist", enrollmentStatus: "Completed", resultStatus: "Pass", score: 10, completedAt: "2026-02-09", examDate: "2026-02-09", attempts: 1 },
+  { userId: "EMP-1021", name: "Dinh Van Vinh", email: "vinh.dinh@company.com", department: "Production", businessUnit: "Operation Unit", position: "Shift Leader", enrollmentStatus: "Completed", resultStatus: "Pass", score: 8, completedAt: "2026-02-17", examDate: "2026-02-17", attempts: 1 },
+  { userId: "EMP-1022", name: "Ha Thi Xuan", email: "xuan.ha@company.com", department: "R&D", businessUnit: "Operation Unit", position: "Formulation Scientist", enrollmentStatus: "Not Started", resultStatus: "N/A", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1023", name: "Tong Van Yen", email: "yen.tong@company.com", department: "Warehouse", businessUnit: "Operation Unit", position: "Receiving Inspector", enrollmentStatus: "In-Progress", resultStatus: "Pending", score: null, completedAt: null, examDate: null, attempts: 0 },
+  { userId: "EMP-1024", name: "Chu Thi Zen", email: "zen.chu@company.com", department: "Engineering", businessUnit: "Operation Unit", position: "Process Engineer", enrollmentStatus: "Completed", resultStatus: "Pass", score: 9, completedAt: "2026-02-18", examDate: "2026-02-18", attempts: 1 },
+  { userId: "EMP-1025", name: "Lam Van Anh", email: "anh.lam@company.com", department: "QA", businessUnit: "Quality Unit", position: "Validation Specialist", enrollmentStatus: "Exempt", resultStatus: "N/A", score: null, completedAt: null, examDate: null, attempts: 0 },
 ];
 
 export const MOCK_AUTO_RULES: AutoAssignmentRule[] = [

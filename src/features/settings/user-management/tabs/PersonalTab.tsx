@@ -144,7 +144,7 @@ export const PersonalTab: React.FC<PersonalTabProps> = ({
         >
           <div className="flex items-start justify-between gap-3 pb-4 mb-4 border-b border-slate-100">
             <div className="min-w-0">
-              <p className="text-sm font-bold text-slate-900">{user.jobTitle || "—"}</p>
+              <p className="text-sm font-bold text-slate-900">{user.position || "—"}</p>
               <p className="text-xs text-slate-500 mt-0.5">
                 {user.businessUnit}{user.department ? ` · ${user.department}` : ""}
               </p>
@@ -157,9 +157,9 @@ export const PersonalTab: React.FC<PersonalTabProps> = ({
           </div>
           <div className="grid grid-cols-2 gap-x-6 gap-y-5">
             <EditableField
-              label="Job Title" value={user.jobTitle} draftValue={draft.jobTitle}
+              label="Position" value={user.position} draftValue={draft.position}
               isEditing={isWorkEditing}
-              field={{ type: "text", fieldKey: "jobTitle" }}
+              field={{ type: "text", fieldKey: "position" }}
               onChange={onDraftChange}
             />
             <EditableField

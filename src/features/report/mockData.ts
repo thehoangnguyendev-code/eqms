@@ -135,7 +135,7 @@ export const REPORT_TEMPLATES: ReportTemplate[] = [
       { id: 'employee-name', label: 'Employee Name', group: 'Employee', defaultEnabled: true },
       { id: 'employee-id', label: 'Employee Code', group: 'Employee', defaultEnabled: true },
       { id: 'department', label: 'Department', group: 'Employee', defaultEnabled: true },
-      { id: 'job-title', label: 'Job Title', group: 'Employee', defaultEnabled: false },
+      { id: 'job-title', label: 'Position', group: 'Employee', defaultEnabled: false },
       { id: 'course-name', label: 'Course Name', group: 'Training', defaultEnabled: true },
       { id: 'completion-status', label: 'Completion Status', group: 'Training', defaultEnabled: true },
       { id: 'completion-date', label: 'Completion Date', group: 'Training', defaultEnabled: true },

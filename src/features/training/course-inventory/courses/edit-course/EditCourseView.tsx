@@ -336,7 +336,60 @@ export const EditCourseView: React.FC = () => {
 
       {/* Status Workflow Stepper */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+        {/* Mobile View (Compact circles) */}
+        <div className="flex sm:hidden items-center justify-start gap-0 px-2 py-4 bg-slate-50/50 border-b border-slate-100 overflow-x-auto">
+          <div className="flex items-center justify-start min-w-max mx-auto">
+            {WORKFLOW_STEPS.map((step, index) => {
+              const isCompleted = index < courseData.workflowStep;
+              const isCurrent = index === courseData.workflowStep;
+              const isLast = index === WORKFLOW_STEPS.length - 1;
+
+              return (
+                <React.Fragment key={step}>
+                  <div className="flex flex-col items-center gap-1.5 select-none w-[80px] flex-shrink-0">
+                    <div
+                      className={cn(
+                        "relative w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold transition-all shadow-sm",
+                        isCurrent
+                          ? step === "Obsoleted"
+                            ? "bg-red-500 text-white"
+                            : "bg-emerald-600 text-white ring-4 ring-emerald-100"
+                          : isCompleted
+                          ? "bg-emerald-600 text-white"
+                          : "bg-slate-100 text-slate-400 border border-slate-200",
+                      )}
+                    >
+                      {isCompleted ? <Check className="h-3.5 w-3.5" /> : index + 1}
+                    </div>
+                    <span
+                      className={cn(
+                        "text-[10px] font-semibold text-center leading-tight transition-colors whitespace-normal break-words max-w-[72px] min-h-[24px]",
+                        isCurrent
+                          ? "text-emerald-700"
+                          : isCompleted
+                          ? "text-emerald-700"
+                          : "text-slate-400",
+                      )}
+                    >
+                      {step}
+                    </span>
+                  </div>
+                  {!isLast && (
+                    <div
+                      className={cn(
+                        "w-6 h-0.5 flex-shrink-0 transition-all self-start mt-3.5 rounded-full",
+                        isCompleted ? "bg-emerald-500" : "bg-slate-200",
+                      )}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop View (Arrow shapes) */}
+        <div className="hidden sm:block overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
           <div className="flex items-stretch min-w-full">
             {WORKFLOW_STEPS.map((step, index) => {
               const isCompleted = index < courseData.workflowStep;
@@ -372,7 +425,7 @@ export const EditCourseView: React.FC = () => {
                     )}
                     <span
                       className={cn(
-                        "text-xs md:text-sm font-medium text-center whitespace-nowrap",
+                        "text-xs md:text-sm font-medium text-center whitespace-normal break-words",
                         isCurrent
                           ? "text-white"
                           : isCompleted

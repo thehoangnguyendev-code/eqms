@@ -346,6 +346,34 @@ html, body {
   --header-height-desktop: 72px;
 }
 
+/* Responsive placeholder fonts across whole project */
+input::placeholder,
+select::placeholder,
+textarea::placeholder,
+[contenteditable="true"]::placeholder {
+  font-size: 0.75rem !important; /* text-xs for mobile */
+}
+
+@media (min-width: 768px) {
+  input::placeholder,
+  select::placeholder,
+  textarea::placeholder,
+  [contenteditable="true"]::placeholder {
+    font-size: 0.875rem !important; /* text-sm for desktop */
+  }
+}
+
+/* Ensure search icons in input fields are always above background and never squish */
+.relative svg.absolute.left-3,
+.relative svg.absolute.left-3\.5,
+.relative svg.absolute.left-4,
+.relative svg.absolute.left-2\.5,
+.relative .absolute.left-0 svg {
+  z-index: 10 !important;
+  pointer-events: none !important;
+  flex-shrink: 0 !important;
+}
+
 /* Reset & Base Styles */
 * {
   margin: 0;

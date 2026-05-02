@@ -333,43 +333,45 @@ const StepIndicator: React.FC<{
 }> = ({ currentStep, onStepChange }) => (
   <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
     {/* Mobile View (Compact circles) */}
-    <div className="flex sm:hidden items-center justify-center gap-0 px-4 py-4 bg-slate-50/50 border-b border-slate-100">
-      {STEP_LABELS.map((label, i) => {
-        const step = (i + 1) as WizardStep;
-        const isCompleted = step < currentStep;
-        const isCurrent = step === currentStep;
-        const isLast = i === STEP_LABELS.length - 1;
+    <div className="flex sm:hidden items-center justify-start gap-0 px-2 py-4 bg-slate-50/50 border-b border-slate-100 overflow-x-auto">
+      <div className="flex items-center justify-start min-w-max mx-auto">
+        {STEP_LABELS.map((label, i) => {
+          const step = (i + 1) as WizardStep;
+          const isCompleted = step < currentStep;
+          const isCurrent = step === currentStep;
+          const isLast = i === STEP_LABELS.length - 1;
 
-        return (
-          <React.Fragment key={step}>
-            <div 
-              className="flex flex-col items-center gap-1.5 cursor-pointer"
-              onClick={() => onStepChange(step)}
-            >
-              <div className={cn(
-                "relative w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold transition-all shadow-sm",
-                isCompleted ? "bg-emerald-600 text-white" :
-                  isCurrent ? "bg-emerald-600 text-white ring-4 ring-emerald-100" :
-                    "bg-slate-100 text-slate-400 border border-slate-200"
-              )}>
-                {isCompleted ? <IconCheck className="h-3.5 w-3.5" /> : step}
+          return (
+            <React.Fragment key={step}>
+              <div 
+                className="flex flex-col items-center gap-1.5 cursor-pointer w-[80px] flex-shrink-0"
+                onClick={() => onStepChange(step)}
+              >
+                <div className={cn(
+                  "relative w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold transition-all shadow-sm",
+                  isCompleted ? "bg-emerald-600 text-white" :
+                    isCurrent ? "bg-emerald-600 text-white ring-4 ring-emerald-100" :
+                      "bg-slate-100 text-slate-400 border border-slate-200"
+                )}>
+                  {isCompleted ? <IconCheck className="h-3.5 w-3.5" /> : step}
+                </div>
+                <span className={cn(
+                  "text-[10px] font-semibold text-center leading-tight transition-colors",
+                  isCurrent ? "text-emerald-700" : isCompleted ? "text-emerald-700" : "text-slate-400"
+                )}>
+                  {label.split(" ").pop()}
+                </span>
               </div>
-              <span className={cn(
-                "text-[10px] font-semibold text-center leading-tight transition-colors",
-                isCurrent ? "text-emerald-700" : isCompleted ? "text-emerald-700" : "text-slate-400"
-              )}>
-                {label.split(" ").pop()}
-              </span>
-            </div>
-            {!isLast && (
-              <div className={cn(
-                "flex-1 mx-2 h-0.5 transition-all max-w-[30px] mb-4 rounded-full",
-                isCompleted ? "bg-emerald-500" : "bg-slate-200"
-              )} />
-            )}
-          </React.Fragment>
-        );
-      })}
+              {!isLast && (
+                <div className={cn(
+                  "w-6 h-0.5 flex-shrink-0 transition-all self-start mt-3.5 rounded-full",
+                  isCompleted ? "bg-emerald-500" : "bg-slate-200"
+                )} />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
     </div>
 
     {/* Desktop View (Arrow shapes) */}
@@ -557,7 +559,7 @@ export const AssignTrainingView: React.FC = () => {
         !q ||
         e.name.toLowerCase().includes(q) ||
         e.department.toLowerCase().includes(q) ||
-        e.jobTitle.toLowerCase().includes(q) ||
+        e.position.toLowerCase().includes(q) ||
         e.employeeCode.toLowerCase().includes(q)
       );
     });

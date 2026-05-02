@@ -44,7 +44,7 @@ export const TrainingMatrixView: React.FC = () => {
     return {
       searchQuery: searchParam,
       department: "All",
-      jobTitle: "All",
+      position: "All",
       status: "All",
       gapAnalysis: false,
     };
@@ -71,7 +71,7 @@ export const TrainingMatrixView: React.FC = () => {
   // ── Derived data ───────────────────────────────────────────────────
   const filteredEmployees = useMemo(() => {
     const q = filters.searchQuery.toLowerCase();
-    const { department, jobTitle, status } = filters;
+    const { department, position, status } = filters;
 
     return employees.filter((emp) => {
       const matchesSearch =
@@ -79,14 +79,14 @@ export const TrainingMatrixView: React.FC = () => {
         emp.name.toLowerCase().includes(q) ||
         emp.employeeCode.toLowerCase().includes(q) ||
         emp.department.toLowerCase().includes(q) ||
-        emp.jobTitle.toLowerCase().includes(q);
+        emp.position.toLowerCase().includes(q);
 
       if (!matchesSearch) return false;
 
       const matchesDept = department === "All" || emp.department === department;
       if (!matchesDept) return false;
 
-      const matchesJob = jobTitle === "All" || emp.jobTitle === jobTitle;
+      const matchesJob = position === "All" || emp.position === position;
       if (!matchesJob) return false;
 
       if (status !== "All") {
@@ -104,7 +104,7 @@ export const TrainingMatrixView: React.FC = () => {
   const hasActiveFilters = useMemo(() =>
     filters.searchQuery !== "" ||
     filters.department !== "All" ||
-    filters.jobTitle !== "All" ||
+    filters.position !== "All" ||
     filters.status !== "All",
     [filters]
   );
@@ -182,7 +182,7 @@ export const TrainingMatrixView: React.FC = () => {
       ...prev,
       searchQuery: "",
       department: "All",
-      jobTitle: "All",
+      position: "All",
       status: "All",
     }));
   }, []);
